@@ -153,7 +153,7 @@ export default function Home() {
                 <li><Link href="/quiz" className="hover:text-white transition-colors">Take Quiz</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">How It Works</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Archetypes</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Science</a></li>
+                <li><Link href="/science" className="hover:text-white transition-colors">Science</Link></li>
               </ul>
             </div>
             

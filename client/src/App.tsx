@@ -7,6 +7,7 @@ import Home from "@/pages/home";
 import Quiz from "@/pages/quiz";
 import Results from "@/pages/results";
 import About from "@/pages/about";
+import Science from "@/pages/science";
 
 function Router() {
   return (
@@ -14,6 +15,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/quiz" component={Quiz} />
       <Route path="/about" component={About} />
+      <Route path="/science" component={Science} />
       <Route path="/results/:sessionId" component={Results} />
       <Route path="/results" component={Results} />
     </Switch>
