@@ -106,7 +106,7 @@ export default function Results() {
               <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
                 <i className="fas fa-brain text-white text-lg"></i>
               </div>
-              <h1 className="text-xl font-bold text-neutral-800">ProductiveMind</h1>
+              <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
             </div>
             <Link href="/">
               <Button variant="outline">

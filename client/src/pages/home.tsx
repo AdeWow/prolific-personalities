@@ -14,7 +14,7 @@ export default function Home() {
               <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
                 <i className="fas fa-brain text-white text-lg"></i>
               </div>
-              <h1 className="text-xl font-bold text-neutral-800">ProductiveMind</h1>
+              <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
               <a href="#about" className="text-neutral-600 hover:text-primary transition-colors">About</a>
@@ -140,7 +140,7 @@ export default function Home() {
                 <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
                   <i className="fas fa-brain text-white text-lg"></i>
                 </div>
-                <h3 className="text-xl font-bold">ProductiveMind</h3>
+                <h3 className="text-xl font-bold">Prolific Personalities</h3>
               </div>
               <p className="text-neutral-400">
                 Discover your productivity potential with scientifically-backed assessments and personalized insights.
@@ -179,7 +179,7 @@ export default function Home() {
           </div>
           
           <div className="border-t border-neutral-700 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-neutral-400">© 2024 ProductiveMind. All rights reserved.</p>
+            <p className="text-neutral-400">© 2024 Prolific Personalities. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-neutral-400 hover:text-white transition-colors">
                 <i className="fab fa-twitter"></i>

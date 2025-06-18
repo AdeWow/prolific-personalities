@@ -83,7 +83,7 @@ export default function Quiz() {
               <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
                 <i className="fas fa-brain text-white text-lg"></i>
               </div>
-              <h1 className="text-xl font-bold text-neutral-800">ProductiveMind</h1>
+              <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
             </div>
             <div className="text-sm font-medium text-neutral-600">
               Question {currentQuestionIndex + 1} of {questions.length}
