@@ -18,6 +18,13 @@ export default function Results() {
 
   const { data: result, isLoading, error } = useQuery<QuizResult>({
     queryKey: ['/api/quiz/results', sessionId],
+    queryFn: async () => {
+      const response = await fetch(`/api/quiz/results/${sessionId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch quiz results');
+      }
+      return response.json();
+    },
     enabled: !!sessionId,
   });
 
