@@ -1,4 +1,6 @@
 import { users, quizResults, type User, type InsertUser, type QuizResult, type InsertQuizResult } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -8,50 +10,37 @@ export interface IStorage {
   getQuizResultBySessionId(sessionId: string): Promise<QuizResult | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private quizResults: Map<string, QuizResult>;
-  private currentUserId: number;
-  private currentQuizId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.quizResults = new Map();
-    this.currentUserId = 1;
-    this.currentQuizId = 1;
-  }
-
+export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   async saveQuizResult(insertResult: InsertQuizResult): Promise<QuizResult> {
-    const id = this.currentQuizId++;
-    const result: QuizResult = {
-      ...insertResult,
-      id,
-      completedAt: new Date(),
-    };
-    this.quizResults.set(insertResult.sessionId, result);
+    const [result] = await db
+      .insert(quizResults)
+      .values(insertResult)
+      .returning();
     return result;
   }
 
   async getQuizResultBySessionId(sessionId: string): Promise<QuizResult | undefined> {
-    return this.quizResults.get(sessionId);
+    const [result] = await db.select().from(quizResults).where(eq(quizResults.sessionId, sessionId));
+    return result || undefined;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
