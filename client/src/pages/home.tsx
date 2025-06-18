@@ -95,7 +95,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {archetypes.map((archetype) => (
-              <ArchetypeCard key={archetype.id} archetype={archetype} />
+              <ArchetypeCard key={archetype.id} archetype={archetype} clickable={true} />
             ))}
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function Home() {
               <ul className="space-y-2 text-neutral-400">
                 <li><Link href="/quiz" className="hover:text-white transition-colors">Take Quiz</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">How It Works</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Archetypes</a></li>
+                <li><Link href="/archetypes" className="hover:text-white transition-colors">Archetypes</Link></li>
                 <li><Link href="/science" className="hover:text-white transition-colors">Science</Link></li>
               </ul>
             </div>
@@ -140,7 +140,7 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-neutral-400">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                <li><Link href="/about" className="hover:text-white transition-colors">About</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Terms</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
