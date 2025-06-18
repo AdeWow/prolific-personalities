@@ -76,37 +76,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative">
-              <img 
-                src="https://images.unsplash.com/photo-1586953208448-b95a79798f07?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
-                alt="Modern productive workspace" 
-                className="rounded-2xl shadow-2xl w-full" 
-              />
-              
-              <div className="absolute -top-4 -left-4 bg-white p-4 rounded-xl shadow-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                    <i className="fas fa-check text-white text-sm"></i>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-neutral-800">Progress Tracker</div>
-                    <div className="text-sm text-neutral-600">Stay on track</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-xl shadow-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                    <i className="fas fa-chart-line text-white text-sm"></i>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-neutral-800">Insights</div>
-                    <div className="text-sm text-neutral-600">Personalized tips</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            
           </div>
         </div>
       </section>
