@@ -40,7 +40,7 @@ export default function Results() {
   const handleShare = (platform: string) => {
     if (!archetype || !shareUrl) return;
 
-    const text = `I just discovered I'm ${archetype.name}! Take the ProductiveMind assessment to find your productivity archetype.`;
+    const text = `I just discovered I'm ${archetype.name}! Take the Prolific Personalities assessment to find your productivity archetype.`;
     
     let url = '';
     switch (platform) {

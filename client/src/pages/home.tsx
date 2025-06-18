@@ -17,9 +17,9 @@ export default function Home() {
               <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#about" className="text-neutral-600 hover:text-primary transition-colors">About</a>
+              <Link href="/about" className="text-neutral-600 hover:text-primary transition-colors">About</Link>
               <Link href="/quiz" className="text-neutral-600 hover:text-primary transition-colors">Take Quiz</Link>
-              <a href="#results" className="text-neutral-600 hover:text-primary transition-colors">Results</a>
+              <a href="#contact" className="text-neutral-600 hover:text-primary transition-colors">Contact</a>
             </nav>
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function Home() {
                 <h3 className="text-xl font-bold">Prolific Personalities</h3>
               </div>
               <p className="text-neutral-400">
-                Discover your productivity potential with scientifically-backed assessments and personalized insights.
+                Overcome procrastination, distraction, and overwhelm through personalized, research-backed productivity strategies.
               </p>
             </div>
             
