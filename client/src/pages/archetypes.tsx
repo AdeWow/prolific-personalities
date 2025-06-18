@@ -25,6 +25,7 @@ export default function Archetypes() {
       id: "strategist",
       name: "The Architect",
       tagline: "You thrive in clarity.",
+      image: "/assets/adeola2020_an_expressive_illustration_of_a_thoughtful_person_ga_a6681bc9-45e9-4c2c-b1fa-961885775c35_1750287981899.png",
       description: "The Architect is a master planner—deliberate, detail-oriented, and structured. You like knowing where things are going and exactly how they'll get there. When the world feels messy, you respond by creating systems. Calendars, spreadsheets, routines—they aren't just tools, they're anchors.",
       fullDescription: [
         "You tend to map out your time with intention, and there's a quiet pride in staying organized. Your focus isn't always flashy, but it's dependable. People often rely on you to \"figure it out,\" because they know you'll bring a plan and execute with precision.",
@@ -33,9 +34,22 @@ export default function Archetypes() {
       ]
     },
     {
+      id: "explorer",
+      name: "The Explorer",
+      tagline: "You create your own path.",
+      image: "/assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png",
+      description: "The Explorer is naturally curious and thrives on variety. You prefer flexibility over rigid schedules, and you're energized by new experiences. Traditional productivity advice often feels restrictive because your mind works best when it has room to wander and discover.",
+      fullDescription: [
+        "You might have a dozen interests at once, and that's not a problem—it's how you learn. You connect ideas across disciplines and find inspiration in unexpected places. Structure feels confining, but complete chaos doesn't work either.",
+        "Your challenge is finding systems that bend without breaking. You need frameworks that support your curiosity rather than limit it. When you find the right balance of freedom and focus, you can accomplish remarkable things.",
+        "You thrive when you have permission to explore and the tools to capture what you find."
+      ]
+    },
+    {
       id: "accelerator", 
       name: "The Firestarter",
       tagline: "You are driven by spark.",
+      image: "/assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png",
       description: "The Firestarter is a creative ignition switch—bursting with energy when inspiration hits. You move fast, think in flashes, and often ride the wave of adrenaline as a project comes alive. When you're \"on,\" there's nothing quite like it.",
       fullDescription: [
         "Deadlines don't scare you—they activate you. In fact, without a sense of urgency, your attention can drift. Structure might feel stifling. You often resist rigid schedules and traditional routines because they dull your instincts.",
@@ -47,6 +61,7 @@ export default function Archetypes() {
       id: "harmonizer",
       name: "The Integrator", 
       tagline: "You crave alignment.",
+      image: "/assets/adeola2020_an_expressive_illustration_of_a_thoughtful_person_ga_a6681bc9-45e9-4c2c-b1fa-961885775c35_1750287981899.png",
       description: "The Integrator is introspective and values-driven. You don't just want to be productive—you want your actions to feel meaningful. If you're going to spend time on something, it needs to resonate.",
       fullDescription: [
         "You're deeply thoughtful and emotionally intelligent. You think in connections, often linking ideas across fields, people, or systems. You might journal, reflect, or talk things through before you act. You're not easily influenced by trends—you have your own compass.",
@@ -58,6 +73,7 @@ export default function Archetypes() {
       id: "analyzer",
       name: "The Executor",
       tagline: "You are a finisher.",
+      image: "/assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png",
       description: "The Executor is focused, efficient, and steady. You love getting things done—and you're great at it. While others may lose steam, you keep showing up. Your strength is in follow-through.",
       fullDescription: [
         "You naturally break tasks down and move through them with consistency. You might not need elaborate systems—you just need a clear goal and space to get it done. You like when expectations are defined and progress is measurable.",
@@ -69,6 +85,7 @@ export default function Archetypes() {
       id: "innovator",
       name: "The Visionary",
       tagline: "You are a pattern-seer.",
+      image: "/assets/adeola2020_an_expressive_illustration_of_a_thoughtful_person_ga_a6681bc9-45e9-4c2c-b1fa-961885775c35_1750287981899.png",
       description: "The Visionary operates in possibility. You're constantly scanning for big ideas, future trends, or new ways to see the world. You think abstractly and thrive when you have space to imagine without limits.",
       fullDescription: [
         "Your creativity is expansive. One idea leads to another, and before long, you've mapped out an entirely new system or concept. You don't just dream—you conceptualize. You might find yourself jumping between notebooks, whiteboards, or voice notes just to keep up.",
@@ -80,6 +97,7 @@ export default function Archetypes() {
       id: "collaborator",
       name: "The Alchemist",
       tagline: "You are a shapeshifter.",
+      image: "/assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png",
       description: "The Alchemist works in cycles, not checklists. Your productivity isn't linear—it's rhythmic. You rely on intuition, energy, and emotional resonance to guide your focus. Some days you move mountains. Other days, you need to retreat and recharge.",
       fullDescription: [
         "You may not always know how you get things done—but you do. You adapt, pivot, and find your way through by feeling it out. You don't just respond to structure; you remix it. Conventional systems often feel too rigid or artificial.",
@@ -154,9 +172,20 @@ export default function Archetypes() {
 
                     {/* Content */}
                     <div className="p-8 space-y-6">
-                      <p className="text-lg text-neutral-700 leading-relaxed">
-                        {archetype.description}
-                      </p>
+                      <div className="flex flex-col lg:flex-row gap-8 items-start">
+                        <div className="flex-1">
+                          <p className="text-lg text-neutral-700 leading-relaxed">
+                            {archetype.description}
+                          </p>
+                        </div>
+                        <div className="lg:w-80 flex-shrink-0">
+                          <img 
+                            src={archetype.image} 
+                            alt={`${archetype.name} illustration`}
+                            className="w-full h-auto rounded-lg shadow-lg"
+                          />
+                        </div>
+                      </div>
                       
                       {archetype.fullDescription.map((paragraph, i) => (
                         <p key={i} className="text-lg text-neutral-700 leading-relaxed">
