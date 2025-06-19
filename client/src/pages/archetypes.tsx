@@ -113,12 +113,12 @@ export default function Archetypes() {
       <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
                 <i className="fas fa-brain text-white text-lg"></i>
               </div>
               <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
-            </div>
+            </Link>
             <nav className="hidden md:flex items-center space-x-8">
               <Link href="/" className="text-neutral-600 hover:text-primary transition-colors">Home</Link>
               <Link href="/about" className="text-neutral-600 hover:text-primary transition-colors">About</Link>
@@ -139,7 +139,11 @@ export default function Archetypes() {
             <h2 className="text-4xl lg:text-5xl font-bold text-neutral-800">
               Six Distinct <span className="text-gradient">Productivity Personalities</span>
             </h2>
-            <p className="text-xl text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-neutral-600 max-w-3xl mx-auto leading-relaxed mb-6">
+              Everyone approaches productivity differently. Some thrive on structure, others crave spontaneity. 
+              This framework is built on real psychological principles and helps you understand how you focus, plan, and follow through.
+            </p>
+            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
               Each archetype represents a unique blend of cognitive patterns, motivational tendencies, and behavioral strategies. Discover which one resonates with you.
             </p>
           </div>

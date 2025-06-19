@@ -10,12 +10,12 @@ export default function Home() {
       <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
                 <i className="fas fa-brain text-white text-lg"></i>
               </div>
               <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
-            </div>
+            </Link>
             <nav className="hidden md:flex items-center space-x-8">
               <Link href="/about" className="text-neutral-600 hover:text-primary transition-colors">About</Link>
               <Link href="/quiz" className="text-neutral-600 hover:text-primary transition-colors">Take Quiz</Link>
@@ -54,10 +54,12 @@ export default function Home() {
                     Start Assessment
                   </Button>
                 </Link>
-                <Button variant="outline" className="border-2 border-neutral-200 text-neutral-700 px-8 py-4 rounded-xl font-semibold text-lg hover:border-primary hover:text-primary transition-colors">
-                  <i className="fas fa-info-circle mr-2"></i>
-                  Learn More
-                </Button>
+                <Link href="/archetypes">
+                  <Button variant="outline" className="border-2 border-neutral-200 text-neutral-700 px-8 py-4 rounded-xl font-semibold text-lg hover:border-primary hover:text-primary transition-colors">
+                    <i className="fas fa-info-circle mr-2"></i>
+                    Learn More
+                  </Button>
+                </Link>
               </div>
 
               <div className="flex items-center space-x-8 pt-4">
@@ -121,7 +123,6 @@ export default function Home() {
               <h4 className="font-semibold mb-4">Assessment</h4>
               <ul className="space-y-2 text-neutral-400">
                 <li><Link href="/quiz" className="hover:text-white transition-colors">Take Quiz</Link></li>
-                <li><a href="#" className="hover:text-white transition-colors">How It Works</a></li>
                 <li><Link href="/archetypes" className="hover:text-white transition-colors">Archetypes</Link></li>
                 <li><Link href="/science" className="hover:text-white transition-colors">Science</Link></li>
               </ul>

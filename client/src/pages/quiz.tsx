@@ -79,12 +79,12 @@ export default function Quiz() {
       <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
                 <i className="fas fa-brain text-white text-lg"></i>
               </div>
               <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
-            </div>
+            </Link>
             <div className="text-sm font-medium text-neutral-600">
               Question {currentQuestionIndex + 1} of {questions.length}
             </div>
