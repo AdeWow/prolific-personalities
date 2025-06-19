@@ -206,63 +206,15 @@ export default function Archetypes() {
                         ))}
                       </div>
 
-                      {/* Strengths and Growth Areas */}
-                      <div className="grid md:grid-cols-2 gap-8 pt-6">
-                        <div>
-                          <h4 className="font-bold text-neutral-800 mb-4 flex items-center">
-                            <i className="fas fa-star text-yellow-500 mr-2"></i>
-                            Core Strengths
-                          </h4>
-                          <ul className="space-y-2">
-                            {archetypeData.strengths.map((strength, i) => (
-                              <li key={i} className="flex items-start space-x-2">
-                                <i className="fas fa-check-circle text-green-500 mt-1"></i>
-                                <span className="text-neutral-700">{strength}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        
-                        <div>
-                          <h4 className="font-bold text-neutral-800 mb-4 flex items-center">
-                            <i className="fas fa-arrow-up text-blue-500 mr-2"></i>
-                            Growth Areas
-                          </h4>
-                          <ul className="space-y-2">
-                            {archetypeData.growthAreas.map((area, i) => (
-                              <li key={i} className="flex items-start space-x-2">
-                                <i className={`fas fa-arrow-up text-${archetypeData.color}-500 mt-1`}></i>
-                                <span className="text-neutral-700">{area}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      {/* Recommended Tools */}
-                      <div className="bg-neutral-50 rounded-xl p-6 mt-8">
-                        <h4 className="font-bold text-neutral-800 mb-4 flex items-center">
-                          <i className="fas fa-tools text-primary mr-2"></i>
-                          Recommended Tools & Strategies
-                        </h4>
-                        <div className="space-y-3">
-                          {archetypeData.tools.map((tool, i) => (
-                            <div key={i} className="flex items-center justify-between">
-                              <span className="text-neutral-700 font-medium">{tool.name}</span>
-                              <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700">
-                                {tool.match}% Match
-                              </Badge>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* CTA */}
-                      <div className="text-center pt-6">
+                      {/* Call to Action */}
+                      <div className="text-center pt-8 border-t border-neutral-200 mt-8">
+                        <p className="text-neutral-600 mb-4">
+                          Want to discover your personalized strengths, growth areas, and tool recommendations?
+                        </p>
                         <Link href="/quiz">
                           <Button className={`bg-gradient-to-r ${archetypeData.gradientFrom} ${archetypeData.gradientTo} text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200`}>
                             <i className="fas fa-play mr-2"></i>
-                            Discover Your Archetype
+                            Take the Assessment
                           </Button>
                         </Link>
                       </div>
