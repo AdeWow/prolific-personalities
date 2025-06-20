@@ -63,7 +63,7 @@ export default function Archetypes() {
       id: "harmonizer",
       name: "The Integrator", 
       tagline: "You crave alignment.",
-      image: "/assets/adeola2020_an_expressive_illustration_of_a_thoughtful_person_ga_a6681bc9-45e9-4c2c-b1fa-961885775c35_1750287981899.png",
+      image: thoughtfulPersonImage,
       description: "The Integrator is introspective and values-driven. You don't just want to be productive—you want your actions to feel meaningful. If you're going to spend time on something, it needs to resonate.",
       fullDescription: [
         "You're deeply thoughtful and emotionally intelligent. You think in connections, often linking ideas across fields, people, or systems. You might journal, reflect, or talk things through before you act. You're not easily influenced by trends—you have your own compass.",
@@ -75,7 +75,7 @@ export default function Archetypes() {
       id: "analyzer",
       name: "The Executor",
       tagline: "You are a finisher.",
-      image: "/assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png",
+      image: cheerfulPersonImage,
       description: "The Executor is focused, efficient, and steady. You love getting things done—and you're great at it. While others may lose steam, you keep showing up. Your strength is in follow-through.",
       fullDescription: [
         "You naturally break tasks down and move through them with consistency. You might not need elaborate systems—you just need a clear goal and space to get it done. You like when expectations are defined and progress is measurable.",
@@ -87,7 +87,7 @@ export default function Archetypes() {
       id: "innovator",
       name: "The Visionary",
       tagline: "You are a pattern-seer.",
-      image: "/assets/adeola2020_an_expressive_illustration_of_a_thoughtful_person_ga_a6681bc9-45e9-4c2c-b1fa-961885775c35_1750287981899.png",
+      image: thoughtfulPersonImage,
       description: "The Visionary operates in possibility. You're constantly scanning for big ideas, future trends, or new ways to see the world. You think abstractly and thrive when you have space to imagine without limits.",
       fullDescription: [
         "Your creativity is expansive. One idea leads to another, and before long, you've mapped out an entirely new system or concept. You don't just dream—you conceptualize. You might find yourself jumping between notebooks, whiteboards, or voice notes just to keep up.",
