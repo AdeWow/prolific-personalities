@@ -132,8 +132,6 @@ export default function Home() {
               <h4 className="font-semibold mb-4">Resources</h4>
               <ul className="space-y-2 text-neutral-400">
                 <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Research</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Support</a></li>
               </ul>
             </div>
             
