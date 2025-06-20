@@ -78,7 +78,15 @@ export default function Home() {
               </div>
             </div>
 
-            
+            {/* Hero Image */}
+            <div className="relative">
+              <img 
+                src="/assets/adeola2020_an_inclusive_group_of_people_engaged_in_focused_work_d26c58c2-1296-4274-ac46-c7a942411aed_1750379682084.png" 
+                alt="Diverse group of people engaged in focused, productive work"
+                className="w-full h-auto rounded-2xl shadow-2xl"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent rounded-2xl"></div>
+            </div>
           </div>
         </div>
       </section>
