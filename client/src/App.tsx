@@ -9,6 +9,7 @@ import Results from "@/pages/results";
 import About from "@/pages/about";
 import Science from "@/pages/science";
 import Archetypes from "@/pages/archetypes";
+import FAQ from "@/pages/faq";
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/science" component={Science} />
       <Route path="/archetypes" component={Archetypes} />
+      <Route path="/faq" component={FAQ} />
       <Route path="/results/:sessionId" component={Results} />
       <Route path="/results" component={Results} />
     </Switch>
