@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { archetypes } from "@/data/archetypes";
+import thoughtfulPersonImage from "@assets/adeola2020_an_expressive_illustration_of_a_thoughtful_person_ga_a6681bc9-45e9-4c2c-b1fa-961885775c35_1750287981899.png";
+import cheerfulPersonImage from "@assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png";
 
 export default function Archetypes() {
   const [location] = useLocation();
@@ -25,7 +27,7 @@ export default function Archetypes() {
       id: "strategist",
       name: "The Architect",
       tagline: "You thrive in clarity.",
-      image: "/assets/adeola2020_an_expressive_illustration_of_a_thoughtful_person_ga_a6681bc9-45e9-4c2c-b1fa-961885775c35_1750287981899.png",
+      image: thoughtfulPersonImage,
       description: "The Architect is a master planner—deliberate, detail-oriented, and structured. You like knowing where things are going and exactly how they'll get there. When the world feels messy, you respond by creating systems. Calendars, spreadsheets, routines—they aren't just tools, they're anchors.",
       fullDescription: [
         "You tend to map out your time with intention, and there's a quiet pride in staying organized. Your focus isn't always flashy, but it's dependable. People often rely on you to \"figure it out,\" because they know you'll bring a plan and execute with precision.",
@@ -37,7 +39,7 @@ export default function Archetypes() {
       id: "explorer",
       name: "The Explorer",
       tagline: "You create your own path.",
-      image: "/assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png",
+      image: cheerfulPersonImage,
       description: "The Explorer is naturally curious and thrives on variety. You prefer flexibility over rigid schedules, and you're energized by new experiences. Traditional productivity advice often feels restrictive because your mind works best when it has room to wander and discover.",
       fullDescription: [
         "You might have a dozen interests at once, and that's not a problem—it's how you learn. You connect ideas across disciplines and find inspiration in unexpected places. Structure feels confining, but complete chaos doesn't work either.",
@@ -49,7 +51,7 @@ export default function Archetypes() {
       id: "accelerator", 
       name: "The Firestarter",
       tagline: "You are driven by spark.",
-      image: "/assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png",
+      image: cheerfulPersonImage,
       description: "The Firestarter is a creative ignition switch—bursting with energy when inspiration hits. You move fast, think in flashes, and often ride the wave of adrenaline as a project comes alive. When you're \"on,\" there's nothing quite like it.",
       fullDescription: [
         "Deadlines don't scare you—they activate you. In fact, without a sense of urgency, your attention can drift. Structure might feel stifling. You often resist rigid schedules and traditional routines because they dull your instincts.",

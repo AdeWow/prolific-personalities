@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArchetypeCard } from "@/components/archetype-card";
 import { archetypes } from "@/data/archetypes";
 import { Link } from "wouter";
+import heroImage from "@assets/adeola2020_an_inclusive_group_of_people_engaged_in_focused_work_d26c58c2-1296-4274-ac46-c7a942411aed_1750379682084.png";
 
 export default function Home() {
   return (
@@ -81,7 +82,7 @@ export default function Home() {
             {/* Hero Image */}
             <div className="relative">
               <img 
-                src="/assets/adeola2020_an_inclusive_group_of_people_engaged_in_focused_work_d26c58c2-1296-4274-ac46-c7a942411aed_1750379682084.png" 
+                src={heroImage} 
                 alt="Diverse group of people engaged in focused, productive work"
                 className="w-full h-auto rounded-2xl shadow-2xl"
               />
