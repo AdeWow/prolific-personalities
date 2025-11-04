@@ -199,21 +199,6 @@ export default function Archetypes() {
                         ))}
                       </div>
 
-                      {/* Why You Struggle Section */}
-                      <div className="bg-amber-50 border-l-4 border-amber-400 rounded-lg p-6">
-                        <h4 className="text-2xl font-bold text-neutral-800 mb-4 flex items-center">
-                          <i className="fas fa-exclamation-triangle text-amber-500 mr-3"></i>
-                          Why You Struggle
-                        </h4>
-                        <div className="space-y-4">
-                          {archetypeData.struggle.map((paragraph, i) => (
-                            <p key={i} className="text-neutral-700 leading-relaxed">
-                              {paragraph}
-                            </p>
-                          ))}
-                        </div>
-                      </div>
-
                       {/* Superpowers Section */}
                       <div className="bg-emerald-50 border-l-4 border-emerald-500 rounded-lg p-6">
                         <h4 className="text-2xl font-bold text-neutral-800 mb-4 flex items-center">
@@ -248,39 +233,6 @@ export default function Archetypes() {
                               </div>
                             </div>
                           ))}
-                        </div>
-                      </div>
-
-                      {/* Quick Wins Section */}
-                      <div className="bg-indigo-50 border-l-4 border-indigo-500 rounded-lg p-6">
-                        <h4 className="text-2xl font-bold text-neutral-800 mb-4 flex items-center">
-                          <i className="fas fa-lightbulb text-indigo-500 mr-3"></i>
-                          Quick Wins: Start Here
-                        </h4>
-                        <div className="space-y-4">
-                          {archetypeData.quickWins.map((win, i) => (
-                            <div key={i} className="bg-white rounded-lg p-5 shadow-sm">
-                              <h5 className="font-bold text-neutral-800 mb-2 flex items-center">
-                                <span className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 font-bold mr-3 flex-shrink-0">
-                                  {i + 1}
-                                </span>
-                                {win.title}
-                              </h5>
-                              <p className="text-neutral-600 ml-11">{win.description}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Recommended Framework */}
-                      <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-6 border-2 border-purple-200">
-                        <h4 className="text-2xl font-bold text-neutral-800 mb-3 flex items-center">
-                          <i className="fas fa-trophy text-purple-500 mr-3"></i>
-                          Recommended Framework
-                        </h4>
-                        <div className="bg-white rounded-lg p-5 shadow-sm">
-                          <h5 className="text-xl font-bold text-neutral-800 mb-2">{archetypeData.framework.name}</h5>
-                          <p className="text-neutral-700">{archetypeData.framework.why}</p>
                         </div>
                       </div>
 
