@@ -7,9 +7,14 @@ Prolific Personalities is a research-backed web application that helps users dis
 The application is built as a full-stack TypeScript web application with a React frontend and Express backend, designed to deliver an engaging, mobile-friendly assessment experience with immediate, shareable results.
 
 **Recent Features Added (November 2025)**:
+- **Blog System**: Full-featured blog with listing and detail pages to share productivity insights
+  - First blog post: "6 Productivity Archetypes Explained" covering all six archetypes with actionable strategies
+  - Each blog post includes CTA to take the assessment
+  - Blog accessible via header and footer navigation links
+  - Posts include metadata: publish date, read time, tags, author
 - **Modern 4-Axis Visualization**: Replaced radar chart with dynamic, animated horizontal bar visualization showing Structure Orientation, Motivation Style, Cognitive Focus, and Task Relationship with real-time score indicators and interpretation guidance
 - **Email Capture**: Users can save their results via email for marketing campaigns and follow-up engagement
-- **Productivity Tools Database**: 15 popular productivity tools (Freedom, Notion, Todoist, etc.) with archetype-specific fit scores (0-100) to recommend the best tools for each user's working style
+- **Productivity Tools Database**: 20 productivity tools (Freedom, Notion, Todoist, Asana, IFTTT, Airtable, etc.) with archetype-specific fit scores (0-100) to recommend the best tools for each user's working style
 - **PDF Export**: Users can export their results as PDF using browser's native print functionality
 - **Tool Recommendations**: Results page displays up to 9 tools filtered and sorted by archetype fit score, showing pricing, pros/cons, and platform information
 - **Enhanced Homepage**:
@@ -39,7 +44,13 @@ This architecture enables type-safe communication between client and server whil
 
 **UI Framework**: The application uses shadcn/ui components (Radix UI primitives) styled with Tailwind CSS. This provides a comprehensive, accessible component library with a consistent "new-york" design style and a custom productivity-focused color palette (primary: indigo, accent: teal, neutral grays).
 
-**Routing**: Client-side routing is handled by Wouter, a lightweight React router that provides path-based navigation without requiring a full routing framework.
+**Routing**: Client-side routing is handled by Wouter, a lightweight React router that provides path-based navigation without requiring a full routing framework. Routes include:
+- `/` - Homepage
+- `/quiz` - Assessment quiz
+- `/results/:sessionId` - Results page with personalized insights
+- `/blog` - Blog listing page
+- `/blog/:slug` - Individual blog post pages
+- `/about`, `/science`, `/archetypes`, `/faq` - Informational pages
 
 **State Management**: 
 - TanStack Query (React Query) manages server state, data fetching, and caching
@@ -164,3 +175,11 @@ Content and archetype definitions are informed by behavioral psychology and moti
 
 ### Asset Management
 The `attached_assets/` directory contains content documents that inform the quiz design, archetype descriptions, and educational content. These are referenced by the frontend pages but not directly imported as modules.
+
+### Blog Content System
+The blog is powered by a simple TypeScript data file (`client/src/data/blog-posts.ts`) containing an array of blog post objects. Each post includes:
+- Metadata: id, title, slug, excerpt, publishDate, author, readTime, tags
+- Content: Markdown-style string with headings and bold formatting
+- Blog listing page (`/blog`) displays all posts in a card grid with metadata
+- Blog post detail page (`/blog/:slug`) renders the full content with simple paragraph/heading parsing
+- Each post ends with a CTA card encouraging users to take the assessment
