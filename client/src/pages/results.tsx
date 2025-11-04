@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { ScoreRadarChart } from "@/components/score-radar-chart";
+import { ToolCard } from "@/components/tool-card";
 import { archetypes } from "@/data/archetypes";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Lock, CheckCircle2, ArrowRight } from "lucide-react";
-import type { QuizResult } from "@shared/schema";
+import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
+import type { QuizResult, Tool } from "@shared/schema";
 
 export default function Results() {
   const params = useParams();
   const sessionId = params.sessionId;
   const [shareUrl, setShareUrl] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailSaved, setEmailSaved] = useState(false);
   const { toast } = useToast();
 
   const { data: result, isLoading, error } = useQuery<QuizResult>({
@@ -28,13 +33,49 @@ export default function Results() {
     enabled: !!sessionId,
   });
 
+  const archetype = result ? archetypes.find(a => a.id === result.archetype) : null;
+  
+  const { data: tools } = useQuery<(Tool & { fitScore: number })[]>({
+    queryKey: ['/api/tools/archetype', archetype?.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/tools/archetype/${archetype?.id}?limit=10`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch tools');
+      }
+      return response.json();
+    },
+    enabled: !!archetype,
+  });
+
+  const emailCaptureMutation = useMutation({
+    mutationFn: async (emailData: { email: string; sessionId: string }) => {
+      return await apiRequest('/api/email-capture', {
+        method: 'POST',
+        body: JSON.stringify(emailData),
+      });
+    },
+    onSuccess: () => {
+      setEmailSaved(true);
+      toast({
+        title: "Email saved!",
+        description: "We'll send your results to your inbox shortly.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to save email. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   useEffect(() => {
     if (sessionId) {
       setShareUrl(`${window.location.origin}/results/${sessionId}`);
     }
   }, [sessionId]);
 
-  const archetype = result ? archetypes.find(a => a.id === result.archetype) : null;
   const scores = result?.scores as any;
 
   const handleShare = () => {
@@ -43,6 +84,17 @@ export default function Results() {
       title: "Link copied!",
       description: "Share link has been copied to your clipboard.",
     });
+  };
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email && sessionId) {
+      emailCaptureMutation.mutate({ email, sessionId });
+    }
+  };
+
+  const handlePDFExport = () => {
+    window.print();
   };
 
   if (isLoading) {
@@ -90,6 +142,10 @@ export default function Results() {
               <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
             </Link>
             <div className="flex gap-3">
+              <Button onClick={handlePDFExport} variant="outline" size="sm" data-testid="button-export-pdf">
+                <Download className="w-4 h-4 mr-2" />
+                Export PDF
+              </Button>
               <Button onClick={handleShare} variant="outline" size="sm">
                 Share Results
               </Button>
@@ -253,6 +309,78 @@ export default function Results() {
           </Card>
         </div>
       </section>
+
+      {/* Email Capture Section */}
+      <section className="py-12 bg-gradient-to-br from-neutral-50 to-indigo-50">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Card className="bg-white shadow-xl" data-testid="email-capture-card">
+            <CardContent className="p-8">
+              <div className="text-center mb-6">
+                <Mail className="w-12 h-12 mx-auto mb-4 text-indigo-600" />
+                <h3 className="text-2xl font-bold text-neutral-800 mb-2">
+                  Get Your Results via Email
+                </h3>
+                <p className="text-neutral-600">
+                  Save your results and receive personalized productivity tips straight to your inbox
+                </p>
+              </div>
+
+              {!emailSaved ? (
+                <form onSubmit={handleEmailSubmit} className="space-y-4">
+                  <div>
+                    <Input
+                      type="email"
+                      placeholder="Enter your email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full"
+                      data-testid="input-email"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg py-6"
+                    disabled={emailCaptureMutation.isPending}
+                    data-testid="button-submit-email"
+                  >
+                    {emailCaptureMutation.isPending ? "Sending..." : "Send My Results"}
+                    <Mail className="w-5 h-5 ml-2" />
+                  </Button>
+                </form>
+              ) : (
+                <div className="text-center py-4" data-testid="email-success-message">
+                  <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-green-600" />
+                  <p className="text-lg font-semibold text-green-700">Email sent successfully!</p>
+                  <p className="text-neutral-600 mt-2">Check your inbox for your complete results.</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Top Productivity Tools Section */}
+      {tools && tools.length > 0 && (
+        <section className="py-12 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
+                Top Tools for {archetype.name}
+              </h2>
+              <p className="text-lg text-neutral-600">
+                Based on your archetype, these are the productivity tools that match your working style
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="tools-grid">
+              {tools.slice(0, 9).map((tool) => (
+                <ToolCard key={tool.id} tool={tool} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Premium Preview Section */}
       <section className="py-16 bg-gradient-to-br from-indigo-600 to-purple-600">
