@@ -1,4 +1,4 @@
-import { users, quizResults, type User, type InsertUser, type QuizResult, type InsertQuizResult } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, type User, type InsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
@@ -8,6 +8,10 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   saveQuizResult(result: InsertQuizResult): Promise<QuizResult>;
   getQuizResultBySessionId(sessionId: string): Promise<QuizResult | undefined>;
+  getTools(): Promise<Tool[]>;
+  getToolsByArchetype(archetype: string, limit?: number): Promise<Tool[]>;
+  createTool(tool: InsertTool): Promise<Tool>;
+  saveEmailCapture(capture: InsertEmailCapture): Promise<EmailCapture>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -40,6 +44,43 @@ export class DatabaseStorage implements IStorage {
   async getQuizResultBySessionId(sessionId: string): Promise<QuizResult | undefined> {
     const [result] = await db.select().from(quizResults).where(eq(quizResults.sessionId, sessionId));
     return result || undefined;
+  }
+
+  async getTools(): Promise<Tool[]> {
+    const allTools = await db.select().from(tools);
+    return allTools;
+  }
+
+  async getToolsByArchetype(archetype: string, limit: number = 10): Promise<Tool[]> {
+    const allTools = await db.select().from(tools);
+    
+    // Sort tools by archetype fit score and return top N
+    const sortedTools = allTools
+      .map(tool => {
+        const archetypeFit = tool.archetypeFit as any;
+        const fitScore = archetypeFit[archetype] || 0;
+        return { ...tool, fitScore };
+      })
+      .sort((a, b) => b.fitScore - a.fitScore)
+      .slice(0, limit);
+    
+    return sortedTools;
+  }
+
+  async createTool(insertTool: InsertTool): Promise<Tool> {
+    const [tool] = await db
+      .insert(tools)
+      .values(insertTool)
+      .returning();
+    return tool;
+  }
+
+  async saveEmailCapture(insertCapture: InsertEmailCapture): Promise<EmailCapture> {
+    const [capture] = await db
+      .insert(emailCaptures)
+      .values(insertCapture)
+      .returning();
+    return capture;
   }
 }
 
