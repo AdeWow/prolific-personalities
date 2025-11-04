@@ -60,6 +60,66 @@
   --radius: 0.5rem;
 }
 
+/* Print Styles for PDF Export */
+@media print {
+  /* Hide elements that shouldn't appear in PDF */
+  header, .no-print, [data-no-print] {
+    display: none !important;
+  }
+
+  /* Optimize page breaks */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure proper page margins */
+  @page {
+    margin: 0.75in;
+    size: letter;
+  }
+
+  /* Remove background colors and gradients for better printing */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Ensure cards and sections print well */
+  .card, section {
+    page-break-inside: avoid;
+  }
+
+  /* Make links visible */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  /* Ensure charts and images print well */
+  img, svg, canvas {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Remove shadows and effects for cleaner print */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Ensure readable text */
+  body, p, li, td {
+    color: black !important;
+  }
+
+  /* Keep borders subtle */
+  .border {
+    border-color: #ccc !important;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;

@@ -139,7 +139,7 @@ export default function Results() {
               </div>
               <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
             </Link>
-            <div className="flex gap-3">
+            <div className="flex gap-3 no-print">
               <Button onClick={handlePDFExport} variant="outline" size="sm" data-testid="button-export-pdf">
                 <Download className="w-4 h-4 mr-2" />
                 Export PDF
