@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import logoImage from "@assets/Logo_1762241139576.png";
 
 export default function About() {
   return (
@@ -11,9 +12,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
-                <i className="fas fa-brain text-white text-lg"></i>
-              </div>
+              <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
               <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
             </Link>
             <nav className="hidden md:flex items-center space-x-8">

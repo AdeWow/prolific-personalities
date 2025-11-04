@@ -9,6 +9,7 @@ import { calculateScores, determineArchetype, generateSessionId, getProgressPerc
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { QuizAnswers } from "@shared/schema";
+import logoImage from "@assets/Logo_1762241139576.png";
 
 export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -80,9 +81,7 @@ export default function Quiz() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
-                <i className="fas fa-brain text-white text-lg"></i>
-              </div>
+              <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
               <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
             </Link>
             <div className="text-sm font-medium text-neutral-600">

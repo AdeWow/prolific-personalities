@@ -3,6 +3,7 @@ import { ArchetypeCard } from "@/components/archetype-card";
 import { archetypes } from "@/data/archetypes";
 import { Link } from "wouter";
 import heroImage from "@assets/adeola2020_an_inclusive_group_of_people_engaged_in_focused_work_d26c58c2-1296-4274-ac46-c7a942411aed_1750379682084.png";
+import logoImage from "@assets/Logo_1762241139576.png";
 
 export default function Home() {
   return (
@@ -12,9 +13,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
-                <i className="fas fa-brain text-white text-lg"></i>
-              </div>
+              <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
               <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
             </Link>
             <nav className="hidden md:flex items-center space-x-8">
@@ -172,9 +171,7 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
-                  <i className="fas fa-brain text-white text-lg"></i>
-                </div>
+                <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
                 <h3 className="text-xl font-bold">Prolific Personalities</h3>
               </div>
               <p className="text-neutral-400">
