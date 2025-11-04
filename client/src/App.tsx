@@ -12,6 +12,7 @@ import Archetypes from "@/pages/archetypes";
 import FAQ from "@/pages/faq";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
+import Founder from "@/pages/founder";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/science" component={Science} />
       <Route path="/archetypes" component={Archetypes} />
       <Route path="/faq" component={FAQ} />
+      <Route path="/founder" component={Founder} />
       <Route path="/blog/:slug" component={BlogPost} />
       <Route path="/blog" component={Blog} />
       <Route path="/results/:sessionId" component={Results} />

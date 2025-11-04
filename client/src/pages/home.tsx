@@ -123,112 +123,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Founder Story & Social Proof */}
+      {/* Founder Story CTA */}
       <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
-              Why I Built Prolific Personalities
-            </h2>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Founder Story */}
-            <div className="space-y-6">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg">
-                <div className="space-y-4 text-neutral-700 leading-relaxed">
-                  <p>
-                    For most of my life, I've carried big dreams—huge ones. But too often, I found myself stuck in the same painful loop: overthinking, procrastinating, planning instead of doing.
-                  </p>
-                  <p>
-                    So I did what most people do—I tried to fix it with systems. I bought every planner, tried every app, every method that promised to help me "finally get organized." Some worked for a while, but eventually, they all fell apart.
-                  </p>
-                  <p className="font-semibold text-neutral-800">
-                    Then one day, it hit me: it's not that I was broken or lazy—it's that those systems were never made for me.
-                  </p>
-                  <p>
-                    I started digging into behavioral psychology, cognitive science, and executive function—and what I found changed everything. Real productivity begins with self-understanding.
-                  </p>
-                  <p className="italic text-neutral-600 border-l-4 border-indigo-500 pl-4">
-                    "I thought I was just lazy. Turns out, I just needed to stop forcing myself to work like everyone else."
-                  </p>
-                  <p className="font-semibold text-neutral-800">
-                    That's exactly what this project does—to free people from the shame of "not being productive enough" and help them find flow on their own terms.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Social Proof / Testimonials */}
-            <div className="space-y-6">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg">
-                <h3 className="text-2xl font-bold text-neutral-800 mb-6">What Users Say</h3>
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="text-yellow-500">⭐⭐⭐⭐⭐</div>
-                      <span className="font-semibold text-neutral-800">Sarah M.</span>
-                      <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-semibold">
-                        The Integrator
-                      </span>
-                    </div>
-                    <p className="text-neutral-700 italic">
-                      "After discovering I'm an Integrator, I doubled my output in three weeks. The personalized framework actually fits how my brain works."
-                    </p>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="text-yellow-500">⭐⭐⭐⭐⭐</div>
-                      <span className="font-semibold text-neutral-800">David K.</span>
-                      <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-semibold">
-                        The Executor
-                      </span>
-                    </div>
-                    <p className="text-neutral-700 italic">
-                      "I've tried every productivity system out there. This is the first one that actually understands me instead of forcing me into a generic mold."
-                    </p>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <div className="text-yellow-500">⭐⭐⭐⭐⭐</div>
-                      <span className="font-semibold text-neutral-800">Lisa R.</span>
-                      <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-semibold">
-                        The Visionary
-                      </span>
-                    </div>
-                    <p className="text-neutral-700 italic">
-                      "The 4-axis framework helped me understand why time-blocking never worked for me. Now I use strategies that match my natural flow state."
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stats */}
-              <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-8 shadow-lg text-white">
-                <h3 className="text-2xl font-bold mb-6">Validated Results</h3>
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <div className="text-4xl font-bold">500+</div>
-                    <div className="text-indigo-100">Quiz Completions</div>
-                  </div>
-                  <div>
-                    <div className="text-4xl font-bold">40%</div>
-                    <div className="text-indigo-100">Productivity Increase</div>
-                  </div>
-                  <div>
-                    <div className="text-4xl font-bold">4.9/5</div>
-                    <div className="text-indigo-100">User Rating</div>
-                  </div>
-                  <div>
-                    <div className="text-4xl font-bold">2 weeks</div>
-                    <div className="text-indigo-100">To See Results</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-6">
+            Why I Built Prolific Personalities
+          </h2>
+          <p className="text-xl text-neutral-700 mb-8 leading-relaxed">
+            For most of my life, I tried every productivity system out there—but they all fell apart. 
+            Then I discovered the truth: <span className="font-semibold text-indigo-700">it's not that I was broken, those systems were never made for me.</span>
+          </p>
+          <Link href="/founder">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-2 border-indigo-600 text-indigo-700 hover:bg-indigo-50 px-8 py-4 rounded-xl font-semibold text-lg"
+              data-testid="button-founder-story"
+            >
+              Read My Story
+            </Button>
+          </Link>
         </div>
       </section>
 
