@@ -1,34 +1,42 @@
-import { users, quizResults, tools, emailCaptures, type User, type InsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type ToolWithFitScore } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type ToolWithFitScore } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  // User operations for Replit Auth
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
+  // Quiz results
   saveQuizResult(result: InsertQuizResult): Promise<QuizResult>;
   getQuizResultBySessionId(sessionId: string): Promise<QuizResult | undefined>;
+  getQuizResultsByUserId(userId: string): Promise<QuizResult[]>;
+  linkQuizResultToUser(sessionId: string, userId: string): Promise<QuizResult | undefined>;
+  // Tools
   getTools(): Promise<Tool[]>;
   getToolsByArchetype(archetype: string, limit?: number): Promise<ToolWithFitScore[]>;
   createTool(tool: InsertTool): Promise<Tool>;
+  // Email captures
   saveEmailCapture(capture: InsertEmailCapture): Promise<EmailCapture>;
 }
 
 export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<User | undefined> {
+  // User operations for Replit Auth
+  async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user || undefined;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values(insertUser)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
       .returning();
     return user;
   }
@@ -43,6 +51,20 @@ export class DatabaseStorage implements IStorage {
 
   async getQuizResultBySessionId(sessionId: string): Promise<QuizResult | undefined> {
     const [result] = await db.select().from(quizResults).where(eq(quizResults.sessionId, sessionId));
+    return result || undefined;
+  }
+
+  async getQuizResultsByUserId(userId: string): Promise<QuizResult[]> {
+    const results = await db.select().from(quizResults).where(eq(quizResults.userId, userId));
+    return results;
+  }
+
+  async linkQuizResultToUser(sessionId: string, userId: string): Promise<QuizResult | undefined> {
+    const [result] = await db
+      .update(quizResults)
+      .set({ userId })
+      .where(eq(quizResults.sessionId, sessionId))
+      .returning();
     return result || undefined;
   }
 

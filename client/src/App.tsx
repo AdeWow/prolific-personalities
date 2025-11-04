@@ -15,6 +15,7 @@ import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
 import Founder from "@/pages/founder";
 import Pricing from "@/pages/pricing";
+import Dashboard from "@/pages/dashboard";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/quiz" component={Quiz} />
       <Route path="/pricing" component={Pricing} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route path="/about" component={About} />
       <Route path="/science" component={Science} />
       <Route path="/archetypes" component={Archetypes} />

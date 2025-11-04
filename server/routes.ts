@@ -1,11 +1,58 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertQuizResultSchema, insertEmailCaptureSchema } from "@shared/schema";
 import { toolsData } from "./tools-data";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup Replit Auth
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Link quiz result to logged-in user
+  app.post("/api/quiz/claim/:sessionId", isAuthenticated, async (req: any, res) => {
+    try {
+      const { sessionId } = req.params;
+      const userId = req.user.claims.sub;
+      const result = await storage.linkQuizResultToUser(sessionId, userId);
+      
+      if (!result) {
+        res.status(404).json({ message: "Quiz result not found" });
+        return;
+      }
+      
+      res.json(result);
+    } catch (error) {
+      console.error("Error linking quiz result:", error);
+      res.status(500).json({ message: "Failed to link quiz result" });
+    }
+  });
+
+  // Get all quiz results for logged-in user
+  app.get("/api/dashboard/results", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const results = await storage.getQuizResultsByUserId(userId);
+      res.json(results);
+    } catch (error) {
+      console.error("Error fetching user results:", error);
+      res.status(500).json({ message: "Failed to retrieve results" });
+    }
+  });
+
   // Save quiz results
   app.post("/api/quiz/results", async (req, res) => {
     try {
