@@ -5,8 +5,41 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertQuizResultSchema, insertEmailCaptureSchema } from "@shared/schema";
 import { toolsData } from "./tools-data";
 import { z } from "zod";
+import rateLimit from "express-rate-limit";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Rate limiters for different types of endpoints
+  
+  // General API rate limiter - 100 requests per 15 minutes
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,
+    message: { message: "Too many requests, please try again later" },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // Strict limiter for write operations - 20 requests per 15 minutes
+  const writeLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 20,
+    message: { message: "Too many submissions, please slow down" },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // Email capture limiter - 5 requests per hour to prevent spam
+  const emailLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 5,
+    message: { message: "Too many email submissions, please try again later" },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // Apply general rate limiting to all API routes
+  app.use("/api/", apiLimiter);
+
   // Setup Replit Auth
   await setupAuth(app);
 
@@ -23,7 +56,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Link quiz result to logged-in user
-  app.post("/api/quiz/claim/:sessionId", isAuthenticated, async (req: any, res) => {
+  app.post("/api/quiz/claim/:sessionId", writeLimiter, isAuthenticated, async (req: any, res) => {
     try {
       const { sessionId } = req.params;
       const userId = req.user.claims.sub;
@@ -74,7 +107,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Save quiz results
-  app.post("/api/quiz/results", async (req, res) => {
+  app.post("/api/quiz/results", writeLimiter, async (req, res) => {
     try {
       const validatedData = insertQuizResultSchema.parse(req.body);
       const result = await storage.saveQuizResult(validatedData);
@@ -128,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Seed tools database (one-time operation)
-  app.post("/api/tools/seed", async (req, res) => {
+  app.post("/api/tools/seed", writeLimiter, async (req, res) => {
     try {
       // Check if tools already exist
       const existingTools = await storage.getTools();
@@ -152,7 +185,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Save email capture
-  app.post("/api/email-capture", async (req, res) => {
+  app.post("/api/email-capture", emailLimiter, async (req, res) => {
     try {
       const validatedData = insertEmailCaptureSchema.parse(req.body);
       const capture = await storage.saveEmailCapture(validatedData);
