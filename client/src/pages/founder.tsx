@@ -60,12 +60,12 @@ export default function FounderPage() {
                   <div className="flex items-center space-x-2">
                     <div className="text-yellow-500">⭐⭐⭐⭐⭐</div>
                     <span className="font-semibold text-neutral-800">Sarah M.</span>
-                    <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-semibold">
-                      The Integrator
+                    <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-semibold">
+                      The Structured Achiever
                     </span>
                   </div>
                   <p className="text-neutral-700 italic">
-                    "After discovering I'm an Integrator, I doubled my output in three weeks. The personalized framework actually fits how my brain works."
+                    "After discovering I'm a Structured Achiever, I doubled my output in three weeks. The personalized framework actually fits how my brain works."
                   </p>
                 </div>
 
@@ -73,8 +73,8 @@ export default function FounderPage() {
                   <div className="flex items-center space-x-2">
                     <div className="text-yellow-500">⭐⭐⭐⭐⭐</div>
                     <span className="font-semibold text-neutral-800">David K.</span>
-                    <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-semibold">
-                      The Executor
+                    <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-semibold">
+                      The Chaotic Creative
                     </span>
                   </div>
                   <p className="text-neutral-700 italic">
@@ -87,7 +87,7 @@ export default function FounderPage() {
                     <div className="text-yellow-500">⭐⭐⭐⭐⭐</div>
                     <span className="font-semibold text-neutral-800">Lisa R.</span>
                     <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-semibold">
-                      The Visionary
+                      The Strategic Planner
                     </span>
                   </div>
                   <p className="text-neutral-700 italic">
