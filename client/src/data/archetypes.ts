@@ -1,9 +1,17 @@
+import anxiousPerfectionistImage from "@assets/7d8c5462-febe-45f3-b3bd-207fb697cc04_1762297180709.png";
+import chaoticCreativeImage from "@assets/763894fc-7172-473f-b45a-30417b2f157a_1762297193215.png";
+import strategicPlannerImage from "@assets/ae5e43be-19bd-4df2-b053-48732a922fc6_1762297362107.png";
+import structuredAchieverImage from "@assets/e3fac029-7f4f-4a16-a237-d141ea58b5d6_1762297404337.png";
+import flexibleImproviserImage from "@assets/84c5e71b-0e9d-4158-b8a2-ea2b5f1f0abd_1762297453206.png";
+import noveltySeekerImage from "@assets/56861868-15df-4eb4-a0ae-f1629437f82e_1762297512686.png";
+
 export interface Archetype {
   id: string;
   name: string;
   title: string;
   tagline: string;
   icon: string;
+  image?: string;
   color: string;
   gradientFrom: string;
   gradientTo: string;
@@ -46,6 +54,7 @@ export const archetypes: Archetype[] = [
     title: 'Organized Goal-Crusher',
     tagline: 'You thrive on systems, accountability, and clear goals. Structure is your superpower.',
     icon: '📊',
+    image: structuredAchieverImage,
     color: 'blue',
     gradientFrom: 'from-blue-400',
     gradientTo: 'to-indigo-400',
@@ -103,6 +112,7 @@ export const archetypes: Archetype[] = [
     title: 'Free-Spirited Innovator',
     tagline: 'Your mind is a fireworks show of ideas. The challenge? Turning sparks into finished projects.',
     icon: '🎨',
+    image: chaoticCreativeImage,
     color: 'purple',
     gradientFrom: 'from-purple-400',
     gradientTo: 'to-violet-400',
@@ -160,6 +170,7 @@ export const archetypes: Archetype[] = [
     title: 'Detail-Obsessed Procrastinator',
     tagline: 'High standards drive your excellence—but perfectionism is sabotaging your progress.',
     icon: '🎯',
+    image: anxiousPerfectionistImage,
     color: 'teal',
     gradientFrom: 'from-teal-400',
     gradientTo: 'to-cyan-400',
@@ -217,6 +228,7 @@ export const archetypes: Archetype[] = [
     title: 'Stimulus-Driven Explorer',
     tagline: 'You\'re powered by excitement and new challenges. The routine? That\'s your kryptonite.',
     icon: '🚀',
+    image: noveltySeekerImage,
     color: 'red',
     gradientFrom: 'from-red-400',
     gradientTo: 'to-pink-400',
@@ -274,6 +286,7 @@ export const archetypes: Archetype[] = [
     title: 'Visionary Architect',
     tagline: 'You see the big picture and build the roadmap. Execution is your superpower—when the vision is clear.',
     icon: '🗺️',
+    image: strategicPlannerImage,
     color: 'indigo',
     gradientFrom: 'from-indigo-400',
     gradientTo: 'to-blue-400',
@@ -331,6 +344,7 @@ export const archetypes: Archetype[] = [
     title: 'Adaptive Action-Taker',
     tagline: 'You ride the waves of change with ease. Planning is optional; action is your default.',
     icon: '🌊',
+    image: flexibleImproviserImage,
     color: 'green',
     gradientFrom: 'from-green-400',
     gradientTo: 'to-emerald-400',

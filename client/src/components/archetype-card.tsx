@@ -19,11 +19,21 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
       className
     )}>
       <CardContent className="p-6">
-        <div className={cn(
-          `w-16 h-16 bg-gradient-to-br ${archetype.gradientFrom} ${archetype.gradientTo} rounded-2xl flex items-center justify-center mb-4`
-        )}>
-          <i className={`${archetype.icon} text-white text-2xl`}></i>
-        </div>
+        {archetype.image ? (
+          <div className="w-16 h-16 rounded-2xl overflow-hidden mb-4 ring-2 ring-neutral-200">
+            <img 
+              src={archetype.image} 
+              alt={archetype.name}
+              className="w-full h-full object-cover object-center scale-125"
+            />
+          </div>
+        ) : (
+          <div className={cn(
+            `w-16 h-16 bg-gradient-to-br ${archetype.gradientFrom} ${archetype.gradientTo} rounded-2xl flex items-center justify-center mb-4`
+          )}>
+            <i className={`${archetype.icon} text-white text-2xl`}></i>
+          </div>
+        )}
         
         <h3 className="text-xl font-bold text-neutral-800 mb-2">
           {archetype.name}
