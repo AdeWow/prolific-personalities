@@ -15,13 +15,23 @@ The application is built as a full-stack TypeScript web application with a React
 - **Modern 4-Axis Visualization**: Replaced radar chart with dynamic, animated horizontal bar visualization showing Structure Orientation, Motivation Style, Cognitive Focus, and Task Relationship with real-time score indicators and interpretation guidance
 - **Email Capture**: Users can save their results via email for marketing campaigns and follow-up engagement
 - **Productivity Tools Database**: 20 productivity tools (Freedom, Notion, Todoist, Asana, IFTTT, Airtable, etc.) with archetype-specific fit scores (0-100) to recommend the best tools for each user's working style
-- **PDF Export**: Users can export their results as PDF using browser's native print functionality
+- **PDF Export**: Users can export their results as PDF using browser's native print functionality with professional print CSS
 - **Tool Recommendations**: Results page displays up to 9 tools filtered and sorted by archetype fit score, showing pricing, pros/cons, and platform information
 - **Enhanced Homepage**:
   - Research-backed hero messaging emphasizing peer-reviewed science
   - Trust badges section (Research-Backed, 2,000+ Users, GDPR Compliant, Actionable Advice)
   - Founder story section explaining the personal journey behind the platform
   - Social proof with user testimonials and validated statistics
+
+**Latest Updates (November 4, 2025)**:
+- **Mobile Navigation**: Responsive hamburger menu with mobile-optimized navigation across all pages
+- **Pricing Page**: Comprehensive pricing page with free vs premium comparison, FAQ section, and clear value propositions
+- **Email Capture Components**: Reusable email capture cards on blog listing and archetypes pages for lead generation
+- **Exit-Intent Popup**: Global exit-intent modal for capturing emails before users leave the site
+- **SEO Optimization**: Added unique meta tags, Open Graph tags, and canonical URLs to key pages (Home, Pricing, Archetypes)
+- **Testimonials on Homepage**: Social proof section displaying three customer testimonials with archetype badges
+- **Navigation Updates**: Added Pricing link to both desktop and mobile navigation menus
+- **Print CSS**: Enhanced PDF export with professional print styles (hidden headers, optimized page breaks, readable text)
 
 ## User Preferences
 

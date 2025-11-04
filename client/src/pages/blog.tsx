@@ -3,11 +3,15 @@ import { blogPosts } from '@/data/blog-posts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Header } from '@/components/header';
+import { EmailCaptureCard } from '@/components/email-capture-card';
 import { Calendar, Clock } from 'lucide-react';
 
 export default function BlogPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <Header />
+      
       <div className="container mx-auto px-4 py-16 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-12">
@@ -17,6 +21,16 @@ export default function BlogPage() {
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Research-backed strategies and insights to help you work with your natural productivity style
           </p>
+        </div>
+
+        {/* Email Capture */}
+        <div className="mb-12 max-w-3xl mx-auto">
+          <EmailCaptureCard 
+            title="Get productivity insights in your inbox"
+            description="Subscribe for research-backed strategies, archetype deep-dives, and exclusive tips delivered weekly."
+            buttonText="Subscribe Free"
+            context="blog-listing"
+          />
         </div>
 
         {/* Blog Posts Grid */}

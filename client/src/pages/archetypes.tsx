@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
+import { SEOHead } from "@/components/seo-head";
+import { EmailCaptureCard } from "@/components/email-capture-card";
 import { archetypes } from "@/data/archetypes";
 import thoughtfulPersonImage from "@assets/adeola2020_an_expressive_illustration_of_a_thoughtful_person_ga_a6681bc9-45e9-4c2c-b1fa-961885775c35_1750287981899.png";
 import cheerfulPersonImage from "@assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png";
@@ -111,6 +113,12 @@ export default function Archetypes() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+      <SEOHead
+        title="Six Productivity Archetypes Explained"
+        description="Discover the 6 distinct productivity archetypes: Structured Achiever, Chaotic Creative, Strategic Planner, and more. Learn which working style matches yours and get personalized strategies."
+        keywords="productivity archetypes, working styles, productivity types, time management styles, executive function, cognitive focus"
+        canonicalUrl={`${window.location.origin}/archetypes`}
+      />
       <Header />
 
       {/* Hero Section */}
@@ -250,6 +258,18 @@ export default function Archetypes() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* Email Capture */}
+      <section className="py-16 bg-gradient-to-br from-neutral-50 to-indigo-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <EmailCaptureCard 
+            title="Get your personalized archetype guide"
+            description="Take the free assessment and receive detailed insights about your productivity style, plus ongoing tips tailored to your archetype."
+            buttonText="Take Free Assessment"
+            context="archetypes-page"
+          />
         </div>
       </section>
 

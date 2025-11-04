@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
+import { SEOHead } from "@/components/seo-head";
 import { CheckCircle2, Sparkles, Lock, Zap } from "lucide-react";
 
 export default function Pricing() {
@@ -30,6 +31,12 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+      <SEOHead
+        title="Pricing - Free Assessment & Premium Report"
+        description="Start with a free productivity assessment. Upgrade to Premium ($27 one-time) for your complete transformation guide with personalized strategies, 90-day action plan, and tool recommendations."
+        keywords="productivity assessment pricing, premium report, productivity tools, time management, personalized strategies"
+        canonicalUrl={`${window.location.origin}/pricing`}
+      />
       <Header />
 
       {/* Hero Section */}
