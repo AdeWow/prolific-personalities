@@ -58,8 +58,8 @@ export function FourAxisVisual({ scores }: FourAxisVisualProps) {
 
       <div className="space-y-6">
         {axes.map((axis, index) => {
-          const score = scores[axis.key as keyof typeof scores] || 50;
-          const percentage = score;
+          const score = scores[axis.key as keyof typeof scores] ?? 50;
+          const percentage = Math.max(0, Math.min(100, score));
 
           return (
             <motion.div
