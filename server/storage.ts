@@ -73,7 +73,25 @@ export class DatabaseStorage implements IStorage {
       .values(insertTool)
       .onConflictDoUpdate({
         target: tools.toolId,
-        set: insertTool as any
+        set: {
+          name: insertTool.name,
+          tagline: insertTool.tagline,
+          description: insertTool.description,
+          logo: insertTool.logo,
+          website: insertTool.website,
+          category: insertTool.category,
+          archetypeFit: insertTool.archetypeFit,
+          pricing: insertTool.pricing,
+          learningCurve: insertTool.learningCurve,
+          platforms: insertTool.platforms,
+          pros: insertTool.pros,
+          cons: insertTool.cons,
+          affiliateLink: insertTool.affiliateLink,
+          directLink: insertTool.directLink,
+          tags: insertTool.tags,
+          bestFor: insertTool.bestFor,
+          notIdealFor: insertTool.notIdealFor,
+        }
       })
       .returning();
     return tool;

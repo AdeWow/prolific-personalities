@@ -27,6 +27,9 @@ export function Header() {
             <Link href="/blog" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-blog">
               Blog
             </Link>
+            <Link href="/pricing" className="text-neutral-600 hover:text-primary transition-colors">
+              Pricing
+            </Link>
             <Link href="/quiz">
               <Button className="gradient-primary text-white px-6 py-2 rounded-xl font-semibold hover:shadow-lg transition-all" data-testid="button-take-quiz">
                 Take Assessment
@@ -56,6 +59,9 @@ export function Header() {
             </Link>
             <Link href="/blog" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-blog-mobile">
               Blog
+            </Link>
+            <Link href="/pricing" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+              Pricing
             </Link>
             <Link href="/quiz" onClick={() => setMobileMenuOpen(false)}>
               <Button className="w-full gradient-primary text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all" data-testid="button-take-quiz-mobile">

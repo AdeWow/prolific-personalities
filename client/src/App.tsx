@@ -13,12 +13,14 @@ import FAQ from "@/pages/faq";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
 import Founder from "@/pages/founder";
+import Pricing from "@/pages/pricing";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/quiz" component={Quiz} />
+      <Route path="/pricing" component={Pricing} />
       <Route path="/about" component={About} />
       <Route path="/science" component={Science} />
       <Route path="/archetypes" component={Archetypes} />
