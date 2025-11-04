@@ -129,6 +129,20 @@ export default function Results() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+      {/* Print-only Header */}
+      <div className="hidden print-only bg-white border-b-2 border-neutral-800 pb-4 mb-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-neutral-800">Prolific Personalities</h1>
+          <p className="text-lg text-neutral-600 mt-2">Productivity Assessment Report</p>
+          <p className="text-sm text-neutral-500 mt-2">
+            Generated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </p>
+          <p className="text-xs text-neutral-400 mt-1">
+            Report ID: {sessionId}
+          </p>
+        </div>
+      </div>
+
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -379,6 +393,83 @@ export default function Results() {
         </section>
       )}
 
+      {/* Print-Only Detailed Analysis Section */}
+      <div className="hidden print-only py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-neutral-800 mb-6 border-b-2 border-neutral-300 pb-2">
+            Detailed Score Analysis
+          </h2>
+          
+          <div className="space-y-6">
+            {/* Structure Orientation */}
+            <div className="border border-neutral-300 p-4">
+              <h3 className="text-lg font-bold text-neutral-800 mb-2">Structure Orientation</h3>
+              <p className="text-sm text-neutral-600 mb-2">
+                Score: {scores?.structureOrientation}/100
+              </p>
+              <p className="text-sm text-neutral-700">
+                This dimension measures your preference for structured routines versus spontaneous flexibility. 
+                A higher score indicates a strong preference for planning and organization, while a lower score 
+                suggests comfort with improvisation and adaptability.
+              </p>
+            </div>
+
+            {/* Motivation Style */}
+            <div className="border border-neutral-300 p-4">
+              <h3 className="text-lg font-bold text-neutral-800 mb-2">Motivation Style</h3>
+              <p className="text-sm text-neutral-600 mb-2">
+                Score: {scores?.motivationStyle}/100
+              </p>
+              <p className="text-sm text-neutral-700">
+                This dimension assesses your primary sources of motivation. Higher scores indicate responsiveness 
+                to external accountability and deadlines, while lower scores reflect stronger intrinsic motivation 
+                and self-direction.
+              </p>
+            </div>
+
+            {/* Cognitive Focus */}
+            <div className="border border-neutral-300 p-4">
+              <h3 className="text-lg font-bold text-neutral-800 mb-2">Cognitive Focus</h3>
+              <p className="text-sm text-neutral-600 mb-2">
+                Score: {scores?.cognitiveFocus}/100
+              </p>
+              <p className="text-sm text-neutral-700">
+                This dimension evaluates your attention patterns and working memory preferences. Higher scores 
+                suggest a preference for deep focus on single tasks, while lower scores indicate comfort with 
+                multitasking and task-switching.
+              </p>
+            </div>
+
+            {/* Task Relationship */}
+            <div className="border border-neutral-300 p-4">
+              <h3 className="text-lg font-bold text-neutral-800 mb-2">Task Relationship</h3>
+              <p className="text-sm text-neutral-600 mb-2">
+                Score: {scores?.taskRelationship}/100
+              </p>
+              <p className="text-sm text-neutral-700">
+                This dimension captures how you initiate and engage with tasks. Higher scores reflect ease 
+                in starting tasks and maintaining momentum, while lower scores indicate patterns of procrastination 
+                or delayed initiation that may stem from anxiety or perfectionism.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 border-t-2 border-neutral-300 pt-6">
+            <h3 className="text-lg font-bold text-neutral-800 mb-4">About This Assessment</h3>
+            <p className="text-sm text-neutral-700 mb-4">
+              This assessment is grounded in established psychological research, including Executive Function Theory 
+              (Barkley), Cognitive Load Theory (Sweller), Self-Determination Theory (Deci & Ryan), procrastination 
+              research (Pychyl, Ferrari), and Flow theory (Csikszentmihalyi).
+            </p>
+            <p className="text-sm text-neutral-700">
+              Your archetype represents a unique combination of these four dimensions. Understanding your productivity 
+              profile can help you choose strategies, tools, and environments that align with your natural working style 
+              rather than fighting against it.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Premium Preview Section */}
       <section className="py-16 bg-gradient-to-br from-indigo-600 to-purple-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -469,7 +560,7 @@ export default function Results() {
       </section>
 
       {/* Retake Section */}
-      <section className="py-12">
+      <section className="py-12 no-print">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="bg-white shadow-lg">
             <CardContent className="p-8 text-center">
@@ -486,6 +577,31 @@ export default function Results() {
           </Card>
         </div>
       </section>
+
+      {/* Print-Only Footer */}
+      <div className="hidden print-only mt-12 pt-8 border-t-2 border-neutral-800">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-neutral-800 mb-2">Next Steps</h3>
+              <ul className="list-disc list-inside text-sm text-neutral-700 space-y-1">
+                <li>Start with one Quick Win from this report and implement it this week</li>
+                <li>Share your archetype with your team to improve collaboration</li>
+                <li>Revisit this assessment every 3-6 months to track your productivity evolution</li>
+                <li>Visit prolificpersonalities.com to access additional resources and tools</li>
+              </ul>
+            </div>
+            
+            <div className="pt-4 border-t border-neutral-300">
+              <p className="text-xs text-neutral-500 text-center">
+                © {new Date().getFullYear()} Prolific Personalities. All rights reserved. | 
+                This report is for personal use only. | 
+                For questions or support, visit our website.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

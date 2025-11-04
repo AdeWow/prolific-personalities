@@ -67,34 +67,65 @@
     display: none !important;
   }
 
+  /* Show print-only elements */
+  .print-only {
+    display: block !important;
+  }
+
   /* Optimize page breaks */
   h1, h2, h3, h4, h5, h6 {
     page-break-after: avoid;
     page-break-inside: avoid;
   }
 
-  /* Ensure proper page margins */
+  /* Ensure proper page margins and headers/footers */
   @page {
     margin: 0.75in;
     size: letter;
   }
 
-  /* Remove background colors and gradients for better printing */
+  /* Professional document styling */
   body {
     background: white !important;
-    color: black !important;
+    color: #1a1a1a !important;
+    font-size: 11pt;
+    line-height: 1.5;
   }
 
-  /* Ensure cards and sections print well */
+  /* Enhanced typography */
+  h1 {
+    font-size: 24pt;
+    margin-bottom: 12pt;
+    color: #1a1a1a !important;
+  }
+
+  h2 {
+    font-size: 18pt;
+    margin-top: 16pt;
+    margin-bottom: 10pt;
+    color: #1a1a1a !important;
+    border-bottom: 2px solid #e5e5e5;
+    padding-bottom: 4pt;
+  }
+
+  h3 {
+    font-size: 14pt;
+    margin-top: 12pt;
+    margin-bottom: 8pt;
+    color: #1a1a1a !important;
+  }
+
+  /* Ensure cards and sections print well with better spacing */
   .card, section {
     page-break-inside: avoid;
+    margin-bottom: 16pt;
+    border: 1px solid #e5e5e5 !important;
+    padding: 12pt;
   }
 
-  /* Make links visible */
+  /* Remove unnecessary link URLs */
   a[href]:after {
-    content: " (" attr(href) ")";
-    font-size: 0.8em;
-    color: #666;
+    content: none !important;
   }
 
   /* Ensure charts and images print well */
@@ -110,13 +141,45 @@
   }
 
   /* Ensure readable text */
-  body, p, li, td {
-    color: black !important;
+  p {
+    color: #333 !important;
+    orphans: 3;
+    widows: 3;
   }
 
   /* Keep borders subtle */
   .border {
     border-color: #ccc !important;
+  }
+
+  /* Remove background colors and gradients */
+  *[class*="bg-gradient"], *[class*="gradient"] {
+    background: white !important;
+  }
+
+  /* Improve badge and tag visibility */
+  .badge {
+    border: 1px solid #ccc !important;
+    background: white !important;
+    color: #1a1a1a !important;
+  }
+
+  /* Better list formatting */
+  ul, ol {
+    margin-left: 20pt;
+  }
+
+  li {
+    margin-bottom: 6pt;
+  }
+
+  /* Grid layouts should stack on print */
+  .grid {
+    display: block !important;
+  }
+
+  .grid > * {
+    margin-bottom: 12pt;
   }
 }
 
