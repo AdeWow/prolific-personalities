@@ -26,6 +26,9 @@ export default function Archetypes() {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }, 100);
+      } else {
+        // No hash - scroll to top of page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     };
 
