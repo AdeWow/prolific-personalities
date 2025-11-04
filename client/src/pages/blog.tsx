@@ -1,0 +1,83 @@
+import { Link } from 'wouter';
+import { blogPosts } from '@/data/blog-posts';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, Clock } from 'lucide-react';
+
+export default function BlogPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto px-4 py-16 max-w-6xl">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+            Productivity Insights
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Research-backed strategies and insights to help you work with your natural productivity style
+          </p>
+        </div>
+
+        {/* Blog Posts Grid */}
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {blogPosts.map((post) => (
+            <Card key={post.id} className="flex flex-col hover:shadow-lg transition-shadow" data-testid={`card-blog-${post.slug}`}>
+              <CardHeader>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {post.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" data-testid={`badge-tag-${tag.toLowerCase()}`}>
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+                <CardTitle className="text-xl leading-tight">
+                  <Link href={`/blog/${post.slug}`}>
+                    <a className="hover:text-primary transition-colors" data-testid={`link-blog-${post.slug}`}>
+                      {post.title}
+                    </a>
+                  </Link>
+                </CardTitle>
+                <CardDescription className="mt-2">
+                  {post.excerpt}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-1" data-testid={`text-date-${post.slug}`}>
+                    <Calendar className="h-4 w-4" />
+                    {new Date(post.publishDate).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </div>
+                  <div className="flex items-center gap-1" data-testid={`text-readtime-${post.slug}`}>
+                    <Clock className="h-4 w-4" />
+                    {post.readTime}
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Link href={`/blog/${post.slug}`}>
+                  <Button variant="outline" className="w-full" data-testid={`button-read-${post.slug}`}>
+                    Read More
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+
+        {/* Back to Home */}
+        <div className="text-center mt-12">
+          <Link href="/">
+            <Button variant="ghost" data-testid="button-back-home">
+              ← Back to Home
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
