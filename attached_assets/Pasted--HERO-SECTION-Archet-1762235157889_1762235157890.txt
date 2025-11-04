@@ -1,0 +1,716 @@
+┌─────────────────────────────────────────┐
+│         HERO SECTION                     │
+│  - Archetype Name + Visual Icon         │
+│  - Tagline/One-Liner                    │
+│  - Score Visualization (4 axes chart)   │
+└─────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│      "YOUR PRODUCTIVITY PROFILE"         │
+│  - Why You Struggle (2-3 paragraphs)    │
+│  - Your Superpowers (positive reframe)  │
+│  - Top 3 Blockers (bullet points)       │
+└─────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│    FREE TIER: QUICK WINS SECTION        │
+│  - 2-3 Immediate Actions                │
+│  - 1 Framework Preview (teaser)         │
+│  - "This is just the beginning..."      │
+└─────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│      🔒 PREMIUM PREVIEW (Blurred)       │
+│  - "Unlock Your Full Report"            │
+│  - What's included in premium           │
+│  - Pricing + CTA button                 │
+└─────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│     EMAIL CAPTURE (if not done yet)     │
+│  - "Send my results + 7-day plan"       │
+└─────────────────────────────────────────┘
+```
+
+---
+
+## **💰 FREE vs. PREMIUM CONTENT BREAKDOWN**
+
+### **FREE TIER (What Users Get Immediately):**
+
+✅ Archetype identification and explanation  
+✅ "Why You Struggle" diagnosis (the hook - this is valuable!)  
+✅ Your superpowers (positive emotional payoff)  
+✅ Top 3 productivity blockers  
+✅ 2-3 immediate "quick wins" they can implement today  
+✅ 1 productivity framework preview (just the name and 1-sentence description)  
+✅ Email delivery of basic results
+
+**Goal:** Provide real value while creating desire for deeper guidance.
+
+---
+
+### **PREMIUM TIER ($19-29 one-time or $9/mo subscription):**
+
+🔓 **Full Personalized Productivity Plan (20-30 pages PDF + interactive dashboard)**
+
+Includes:
+- **3 Matched Frameworks** (full implementation guides tailored to your profile)
+- **Tool Recommendations** (specific apps, costs, setup guides)
+- **30-Day Action Plan** (week-by-week implementation roadmap)
+- **Common Failure Modes** (what to watch out for with your archetype)
+- **Case Studies** (2-3 success stories from people like you)
+- **Research Deep-Dive** (citations + why these strategies work for your brain)
+- **Weekly Email Coaching Series** (7 emails with progressive guidance)
+- **Bonus: Notion/Spreadsheet Templates** customized for your archetype
+- **Future Updates** (as platform evolves, your report updates)
+
+**Goal:** Transform insight into action with step-by-step implementation.
+
+---
+
+## **🎭 ARCHETYPE 1: THE STRUCTURED ACHIEVER**
+
+### **Hero Section:**
+
+**Icon:** 📊 Checklist with gold star  
+**Tagline:** *"You thrive on systems, accountability, and clear goals. Structure is your superpower."*
+
+**4 Axes Scores (Visual Radar Chart):**
+- Structure: HIGH (Rigid)
+- Motivation: HIGH (Extrinsic)
+- Focus: LOW (Detail-Oriented)
+- Task: LOW (Action-Oriented)
+
+---
+
+### **Your Productivity Profile:**
+
+**Why You Struggle:**
+
+You're the person who color-codes their calendar, batch-processes emails, and gets a dopamine hit from checking boxes. When systems are in place, you're unstoppable. But here's the problem: **life doesn't always cooperate with your plans.**
+
+Unexpected changes derail you. Open-ended creative projects feel paralyzing without clear success metrics. You might over-optimize systems instead of doing the work (hello, productivity porn). And when external accountability disappears—remote work, self-directed projects—your motivation can crater.
+
+Research shows that highly conscientious individuals excel in structured environments but struggle when ambiguity is high or when intrinsic motivation is required. You're not broken—you're just mismatched with environments that require constant improvisation.
+
+**Your Superpowers:**
+
+✨ **Reliability:** When you commit, you deliver. Deadlines are sacred.  
+✨ **Efficiency:** You optimize workflows others find tedious.  
+✨ **Accountability:** External deadlines and team expectations drive you to excellence.  
+✨ **Execution:** Once the plan is clear, you execute flawlessly.
+
+**Top 3 Productivity Blockers:**
+
+🚫 **Ambiguous goals** → You freeze without clear success criteria  
+🚫 **Lack of external accountability** → Solo work feels unmotivating  
+🚫 **Over-planning** → You spend more time optimizing systems than doing the work
+
+---
+
+### **FREE TIER: Quick Wins**
+
+**Immediate Actions You Can Take Today:**
+
+**1. Time-Box Your Planning**
+Set a 15-minute timer for planning each day. When it rings, stop planning and start executing. Over-planning is procrastination in disguise for your type.
+
+**2. Create Fake Deadlines**
+Tell a friend, colleague, or online community when you'll finish something. Public commitment = external accountability = your motivational fuel.
+
+**3. Use Implementation Intentions**
+For any vague task, rewrite it as: "When [trigger], I will [specific action]."  
+Example: "When I sit at my desk at 9am, I will write 500 words before checking email."
+
+---
+
+**Your Top Matched Framework (Preview):**
+
+**📅 Time Blocking (Cal Newport Method)**  
+*Why it works for you:* Transforms abstract time into concrete appointments. Gives you the structure and external commitment your brain craves.
+
+🔒 **Unlock full implementation guide, common pitfalls, and tools →**
+
+---
+
+### **PREMIUM TIER PREVIEW (Blurred/Locked Section):**
+
+**🔓 Unlock Your Complete Structured Achiever Playbook**
+
+**What's included:**
+
+✅ **3 Full Framework Guides** tailored to your profile:
+   - Time Blocking (with templates)
+   - Implementation Intentions
+   - External Brain / GTD-Lite
+
+✅ **Tool Recommendations:**
+   - Best calendar apps for time blocking
+   - Accountability apps (Focusmate, Beeminder)
+   - Project management for solo work
+
+✅ **30-Day Implementation Plan:**
+   - Week 1: Build your time blocking system
+   - Week 2: Create accountability loops
+   - Week 3: Handle unexpected changes without derailing
+   - Week 4: Optimize and sustain
+
+✅ **Common Failure Modes for Your Type:**
+   - How to stop over-optimizing
+   - Working without external deadlines
+   - Handling creative, ambiguous projects
+
+✅ **Case Studies:** 2 Structured Achievers who transformed their productivity
+
+✅ **Bonus Templates:** Notion time blocking template, daily planning worksheet, accountability tracker
+
+**[CTA Button] Get My Full Report - $27 →**
+
+*One-time payment. Lifetime access. Updated as platform evolves.*
+
+---
+
+## **🎭 ARCHETYPE 2: THE CHAOTIC CREATIVE**
+
+### **Hero Section:**
+
+**Icon:** 🎨 Colorful brain with lightning bolts  
+**Tagline:** *"Your mind is a fireworks show of ideas. The challenge? Turning sparks into finished projects."*
+
+**4 Axes Scores:**
+- Structure: LOW (Flexible)
+- Motivation: LOW (Intrinsic)
+- Focus: HIGH (Big Picture)
+- Task: HIGH (Avoidant)
+
+---
+
+### **Your Productivity Profile:**
+
+**Why You Struggle:**
+
+You're brilliant at connecting dots, seeing possibilities, and generating ideas that make others go "whoa." But here's what nobody tells you: **your brain is wired for exploration, not execution.**
+
+Starting projects feels electric. Finishing them feels like death by a thousand paper cuts. You've got 47 tabs open, 12 unfinished projects, and a graveyard of abandoned plans. When something becomes routine, your brain screams "BORING!" and wanders off to the next shiny thing.
+
+Research on executive function shows that task initiation and sustained attention are separate neural systems—you're strong on ideation but struggle with follow-through. The guilt about unfinished projects creates emotional avoidance, making the problem worse.
+
+**Your Superpowers:**
+
+✨ **Creativity:** You see solutions and connections others miss.  
+✨ **Adaptability:** When plans change, you pivot easily.  
+✨ **Passion:** When interested, you enter hyperfocus and produce magic.  
+✨ **Innovation:** Your refusal to do things "the normal way" leads to breakthroughs.
+
+**Top 3 Productivity Blockers:**
+
+🚫 **Task initiation paralysis** → Starting feels impossibly hard  
+🚫 **Novelty addiction** → You abandon projects when the excitement fades  
+🚫 **Guilt spirals** → Shame about procrastination creates more avoidance
+
+---
+
+### **FREE TIER: Quick Wins**
+
+**Immediate Actions You Can Take Today:**
+
+**1. The 2-Minute Start Rule**
+Don't commit to finishing anything. Just commit to 2 minutes. "I'll write one sentence." "I'll open the document." Your brain can't resist continuing once you start.
+
+**2. Pair Boring Tasks with Stimulation**
+Body double (work alongside someone, even virtually). Listen to music or podcasts. Add novelty to override boredom.
+
+**3. Externalize Your Brain**
+Capture every idea immediately in a notes app. Your working memory is terrible (not your fault—it's neurology). Get it out of your head so you can focus on ONE thing.
+
+---
+
+**Your Top Matched Framework (Preview):**
+
+**⏱️ Pomodoro + Body Doubling**  
+*Why it works for you:* Short sprints match your attention span. External presence (body double) reduces task initiation friction. Breaks prevent burnout.
+
+🔒 **Unlock full implementation guide, tools, and ADHD-specific modifications →**
+
+---
+
+### **PREMIUM TIER PREVIEW:**
+
+**🔓 Unlock Your Complete Chaotic Creative Playbook**
+
+**What's included:**
+
+✅ **3 Full Framework Guides:**
+   - Pomodoro + Body Doubling (ADHD-adapted)
+   - Implementation Intentions (for task initiation)
+   - Energy Management (work WITH your hyperfocus cycles)
+
+✅ **Tool Recommendations:**
+   - Body doubling platforms (Focusmate, Flow Club, Caveday)
+   - Pomodoro apps that actually work for your brain
+   - Capture tools for idea management
+
+✅ **30-Day Implementation Plan:**
+   - Week 1: Build your Pomodoro practice
+   - Week 2: Find your body double system
+   - Week 3: Handle the "boring middle" of projects
+   - Week 4: Finish ONE thing (proof you can do it)
+
+✅ **Your Kryptonite: "Productivity Porn"**
+   - Why you love learning systems but never implement
+   - The ONE system rule (and how to stick to it)
+   - How to resist the next shiny productivity method
+
+✅ **Case Studies:** 2 Chaotic Creatives who learned to finish projects
+
+✅ **Bonus:** Anti-shame toolkit, project completion checklist, hyperfocus tracker
+
+**[CTA Button] Get My Full Report - $27 →**
+
+---
+
+## **🎭 ARCHETYPE 3: THE ANXIOUS PERFECTIONIST**
+
+### **Hero Section:**
+
+**Icon:** 🎯 Target with stressed emoji  
+**Tagline:** *"High standards drive your excellence—but perfectionism is sabotaging your progress."*
+
+**4 Axes Scores:**
+- Structure: HIGH (Rigid)
+- Motivation: MIXED (Intrinsic lean)
+- Focus: LOW (Detail-Oriented)
+- Task: HIGH (Avoidant)
+
+---
+
+### **Your Productivity Profile:**
+
+**Why You Struggle:**
+
+You care deeply about quality. You want to do things RIGHT. But here's the trap: **perfectionism and procrastination are twins.**
+
+You delay starting because you're terrified it won't be good enough. You ruminate over details others would ship in 5 minutes. You revise endlessly instead of moving forward. The irony? Your perfectionism doesn't produce better work—it produces LESS work, delivered late, while you burn out from anxiety.
+
+Research shows perfectionism is strongly correlated with procrastination, anxiety, and depression—not with higher quality output. Your brain conflates "good enough" with "failure," creating emotional avoidance that masquerades as high standards.
+
+**Your Superpowers:**
+
+✨ **Quality:** When you ship, it's excellent.  
+✨ **Conscientiousness:** You catch errors others miss.  
+✨ **Reliability:** People trust you with important work.  
+✨ **Growth mindset:** You genuinely want to improve.
+
+**Top 3 Productivity Blockers:**
+
+🚫 **Analysis paralysis** → Fear of imperfection prevents starting  
+🚫 **Revision loops** → You can't stop tweaking and ship the work  
+🚫 **Emotional avoidance** → Anxiety about the task makes you procrastinate
+
+---
+
+### **FREE TIER: Quick Wins**
+
+**Immediate Actions You Can Take Today:**
+
+**1. Version 0 Mindset**
+Rename your first draft "Version 0" and give yourself permission for it to suck. Separate creation (Version 0) from refinement (Version 1+). You can't edit a blank page.
+
+**2. Time-Box Revision**
+Set a timer for 15 minutes. Revise ONLY during that time. When it rings, you're done. Ship it. Most revision is anxiety management, not quality improvement.
+
+**3. The "Good Enough" Mantra**
+Before starting, define what "good enough" looks like. Write it down. When you hit that bar, you're done. Exceeding it is optional, not required.
+
+---
+
+**Your Top Matched Framework (Preview):**
+
+**📝 Implementation Intentions + Self-Compassion**  
+*Why it works for you:* Removes decision paralysis. Pre-commits to "good enough." Breaks the perfectionism-shame cycle with research-backed self-compassion practices.
+
+🔒 **Unlock full guide with anxiety management techniques →**
+
+---
+
+### **PREMIUM TIER PREVIEW:**
+
+**🔓 Unlock Your Complete Anxious Perfectionist Playbook**
+
+**What's included:**
+
+✅ **3 Full Framework Guides:**
+   - Implementation Intentions (decision automation)
+   - Time Blocking with "Good Enough" standards
+   - Self-Compassion Practices (break the shame cycle)
+
+✅ **Tool Recommendations:**
+   - Anxiety tracking apps
+   - "Good enough" templates for common tasks
+   - Deadline accountability tools
+
+✅ **30-Day Implementation Plan:**
+   - Week 1: Define "good enough" for your key tasks
+   - Week 2: Practice Version 0 mindset
+   - Week 3: Ship imperfect work (on purpose)
+   - Week 4: Celebrate progress over perfection
+
+✅ **The Perfectionism Trap:**
+   - Research on why perfectionism doesn't improve quality
+   - How to separate excellence from perfectionism
+   - When "good enough" is strategically better
+
+✅ **Case Studies:** 2 Anxious Perfectionists who learned to ship
+
+✅ **Bonus:** Anxiety journal template, "good enough" checklist, self-compassion scripts
+
+**[CTA Button] Get My Full Report - $27 →**
+
+---
+
+## **🎭 ARCHETYPE 4: THE NOVELTY SEEKER**
+
+### **Hero Section:**
+
+**Icon:** 🚀 Rocket with rainbow trail  
+**Tagline:** *"You're powered by excitement and new challenges. The routine? That's your kryptonite."*
+
+**4 Axes Scores:**
+- Structure: LOW (Flexible)
+- Motivation: HIGH (Extrinsic)
+- Focus: HIGH (Big Picture)
+- Task: VARIABLE (depends on interest)
+
+---
+
+### **Your Productivity Profile:**
+
+**Why You Struggle:**
+
+You're a dopamine-seeking missile. New projects? Hell yes. Routine maintenance? You'd rather watch paint dry. You start strong, riding the wave of excitement, then crash when the novelty fades and the boring middle work begins.
+
+The challenge: **most valuable work requires sustained attention on repetitive tasks.** You need external stakes (deadlines, competition, accountability) to push through the tedium. Without novelty or external pressure, your motivation evaporates.
+
+Research on ADHD and novelty-seeking shows that dopamine dysregulation makes routine tasks neurologically painful—you're not lazy, your brain literally experiences boredom differently.
+
+**Your Superpowers:**
+
+✨ **Adaptability:** You thrive in changing environments.  
+✨ **Enthusiasm:** Your energy is contagious.  
+✨ **Learning:** You absorb new skills quickly.  
+✨ **Crisis mode:** When stakes are high, you're unbeatable.
+
+**Top 3 Productivity Blockers:**
+
+🚫 **Boredom intolerance** → Routine tasks feel physically painful  
+🚫 **Need for external pressure** → Without stakes, you don't act  
+🚫 **Project abandonment** → You start strong but lose interest
+
+---
+
+### **FREE TIER: Quick Wins**
+
+**Immediate Actions You Can Take Today:**
+
+**1. Gamify Everything**
+Turn boring tasks into challenges. "How fast can I do this?" Use timers, streaks, leaderboards. Your brain needs the dopamine hit—give it one.
+
+**2. Rotate Tasks Frequently**
+Don't work on one thing for hours. Switch every 25-30 minutes. Match your task rotation to your attention span, not someone else's advice.
+
+**3. Create Artificial Stakes**
+Bet money on completing tasks (Beeminder). Tell someone when you'll finish. Make it hurt to not follow through.
+
+---
+
+**Your Top Matched Framework (Preview):**
+
+**🎮 Gamification + External Accountability**  
+*Why it works for you:* Adds novelty and competition to routine work. External stakes replace missing intrinsic motivation. Turns productivity into a game you can win.
+
+🔒 **Unlock full guide with tool recommendations and stake-setting strategies →**
+
+---
+
+### **PREMIUM TIER PREVIEW:**
+
+**🔓 Unlock Your Complete Novelty Seeker Playbook**
+
+**What's included:**
+
+✅ **3 Full Framework Guides:**
+   - Gamification strategies (with tool stack)
+   - Body Doubling + Accountability partners
+   - Task rotation systems (prevent boredom)
+
+✅ **Tool Recommendations:**
+   - Beeminder, Habitica, Forest (gamification)
+   - Focusmate, productivity Discord servers
+   - Task management apps that support variety
+
+✅ **30-Day Implementation Plan:**
+   - Week 1: Build your gamification system
+   - Week 2: Find accountability partners
+   - Week 3: Master task rotation without losing focus
+   - Week 4: Handle the "boring middle" of projects
+
+✅ **The Novelty Trap:**
+   - Why you abandon projects (and how to stop)
+   - Distinguishing between strategic pivots and shiny object syndrome
+   - Building sustainable systems that accommodate your need for variety
+
+✅ **Case Studies:** 2 Novelty Seekers who finished important projects
+
+✅ **Bonus:** Gamification template, accountability finder guide, task rotation planner
+
+**[CTA Button] Get My Full Report - $27 →**
+
+---
+
+## **🎭 ARCHETYPE 5: THE STRATEGIC PLANNER**
+
+### **Hero Section:**
+
+**Icon:** 🗺️ Map with compass  
+**Tagline:** *"You see the big picture and build the roadmap. Execution is your superpower—when the vision is clear."*
+
+**4 Axes Scores:**
+- Structure: HIGH (Rigid)
+- Motivation: LOW (Intrinsic)
+- Focus: HIGH (Big Picture)
+- Task: LOW (Action-Oriented)
+
+---
+
+### **Your Productivity Profile:**
+
+**Why You Struggle:**
+
+You're the architect. You love designing systems, planning strategies, and connecting long-term goals to daily actions. When you have clarity on the "why," you execute flawlessly.
+
+The problem? **You can over-plan and under-execute.** Strategic thinking is your comfort zone—taking messy, uncertain action feels risky. You might spend weeks perfecting a plan when you should be testing and iterating. And when priorities shift unexpectedly, you need time to reorient.
+
+You're intrinsically motivated (you do things because they matter to YOU), but you need structure to channel that drive into action.
+
+**Your Superpowers:**
+
+✨ **Vision:** You see possibilities years ahead.  
+✨ **Strategic thinking:** You connect dots others miss.  
+✨ **Self-direction:** You don't need external validation.  
+✨ **Systems design:** You build frameworks that scale.
+
+**Top 3 Productivity Blockers:**
+
+🚫 **Over-planning** → You optimize the strategy instead of testing it  
+🚫 **Ambiguous execution** → Without clear steps, you delay action  
+🚫 **Shifting priorities** → Changes require mental reorientation
+
+---
+
+### **FREE TIER: Quick Wins**
+
+**Immediate Actions You Can Take Today:**
+
+**1. The 80/20 Planning Rule**
+Spend 20% of your time planning, 80% executing. Set a timer. When planning time is up, act—even if the plan isn't perfect.
+
+**2. Build Backward from Your Vision**
+Start with the end state you want in 1 year. Work backward to define THIS quarter, THIS month, THIS week. Connect daily tasks to the big picture.
+
+**3. Create a "Done is Better Than Perfect" Trigger**
+When you catch yourself planning for more than 2 hours, ask: "What's the smallest version I can test TODAY?"
+
+---
+
+**Your Top Matched Framework (Preview):**
+
+**📊 Time Blocking + Strategic Reviews**  
+*Why it works for you:* Aligns daily execution with long-term vision. Weekly reviews keep you connected to the big picture while daily time blocks ensure follow-through.
+
+🔒 **Unlock full implementation guide with planning templates →**
+
+---
+
+### **PREMIUM TIER PREVIEW:**
+
+**🔓 Unlock Your Complete Strategic Planner Playbook**
+
+**What's included:**
+
+✅ **3 Full Framework Guides:**
+   - Time Blocking (with strategic alignment)
+   - Deep Work + Quarterly Planning
+   - Implementation Intentions (connect vision to action)
+
+✅ **Tool Recommendations:**
+   - Strategic planning tools (Notion, Obsidian)
+   - Time blocking calendars
+   - Quarterly goal-setting frameworks
+
+✅ **30-Day Implementation Plan:**
+   - Week 1: Define your 1-year vision
+   - Week 2: Build time blocking system aligned to goals
+   - Week 3: Test and iterate (action over planning)
+   - Week 4: Install quarterly review cadence
+
+✅ **The Over-Planning Trap:**
+   - How to know when planning becomes procrastination
+   - Building bias toward action
+   - Strategic pivots vs. distraction
+
+✅ **Case Studies:** 2 Strategic Planners who balanced vision with execution
+
+✅ **Bonus:** Quarterly planning template, time blocking spreadsheet, vision-to-action worksheet
+
+**[CTA Button] Get My Full Report - $27 →**
+
+---
+
+## **🎭 ARCHETYPE 6: THE FLEXIBLE IMPROVISER**
+
+### **Hero Section:**
+
+**Icon:** 🌊 Wave with surfer  
+**Tagline:** *"You ride the waves of change with ease. Planning is optional; action is your default."*
+
+**4 Axes Scores:**
+- Structure: LOW (Flexible)
+- Motivation: MIXED
+- Focus: MIXED
+- Task: LOW (Action-Oriented)
+
+---
+
+### **Your Productivity Profile:**
+
+**Why You Struggle:**
+
+You're the anti-planner. You wake up, assess the situation, and dive in. You adapt to changes without stress, pivot easily, and trust yourself to figure it out as you go. **This is a genuine superpower in chaotic environments.**
+
+The challenge? You might lack consistency on long-term goals. You can be reactive rather than proactive. Without external structure, you might drift toward whatever feels urgent or interesting instead of what's important.
+
+Your flexibility is an asset—until it's not. Strategic projects that require sustained focus over months can suffer because you're always responding to what's in front of you.
+
+**Your Superpowers:**
+
+✨ **Adaptability:** Change doesn't faze you.  
+✨ **Decisiveness:** You act while others are still planning.  
+✨ **Resourcefulness:** You solve problems in real-time.  
+✨ **Low anxiety:** You don't stress about uncertainty.
+
+**Top 3 Productivity Blockers:**
+
+🚫 **Lack of long-term direction** → You're reactive, not strategic  
+🚫 **Inconsistency** → Day-to-day priorities shift too much  
+🚫 **Difficulty with sustained focus** → Multi-month projects feel constraining
+
+---
+
+### **FREE TIER: Quick Wins**
+
+**Immediate Actions You Can Take Today:**
+
+**1. The "North Star" Check-In**
+Every Monday, write down your ONE most important goal for the quarter. Throughout the week, ask: "Does this task move me toward my North Star?" If no, deprioritize.
+
+**2. Theme Your Days**
+Instead of rigid schedules, assign themes. "Monday = strategy," "Tuesday = execution," "Wednesday = admin." You keep flexibility within structure.
+
+**3. Use "If-Then" Rules for Consistency**
+Since planning feels stifling, create simple rules: "If it's 9am, then I work on [priority project] for 90 minutes." Removes decision fatigue while preserving flexibility.
+
+---
+
+**Your Top Matched Framework (Preview):**
+
+**🎯 Flexible Structure (Theme Days + Implementation Intentions)**  
+*Why it works for you:* Provides just enough structure to maintain consistency without feeling constrained. You get to improvise within guardrails.
+
+🔒 **Unlock full guide with day-theming templates and flexible systems →**
+
+---
+
+### **PREMIUM TIER PREVIEW:**
+
+**🔓 Unlock Your Complete Flexible Improviser Playbook**
+
+**What's included:**
+
+✅ **3 Full Framework Guides:**
+   - Theme Days + Flexible Structure
+   - Implementation Intentions (consistency without rigidity)
+   - Energy Management (work with your natural rhythms)
+
+✅ **Tool Recommendations:**
+   - Flexible task managers (Todoist, Things)
+   - Habit tracking without streaks (no pressure)
+   - Quarterly goal-setting (light structure)
+
+✅ **30-Day Implementation Plan:**
+   - Week 1: Define your North Star
+   - Week 2: Install theme days
+   - Week 3: Build "if-then" rules for consistency
+   - Week 4: Balance flexibility with follow-through
+
+✅ **The Drift Risk:**
+   - How to maintain long-term focus while staying flexible
+   - Distinguishing between adaptation and distraction
+   - Building strategic direction without rigid plans
+
+✅ **Case Studies:** 2 Flexible Improvisers who achieved sustained goals
+
+✅ **Bonus:** Theme day planner, North Star worksheet, flexible goal tracker
+
+**[CTA Button] Get My Full Report - $27 →**
+
+---
+
+## **🎨 DESIGN & UX IMPLEMENTATION**
+
+### **Visual Design Recommendations:**
+
+**For Each Archetype Result Page:**
+
+1. **Color Coding:**
+   - Structured Achiever: Blue (trust, stability)
+   - Chaotic Creative: Purple/Orange (creativity, energy)
+   - Anxious Perfectionist: Teal (calm, focus)
+   - Novelty Seeker: Rainbow/Bright (excitement, variety)
+   - Strategic Planner: Dark Blue/Gold (wisdom, vision)
+   - Flexible Improviser: Green/Aqua (flow, adaptability)
+
+2. **Iconography:**
+   - Use consistent icon style throughout
+   - Make archetype icons memorable (users will share on social)
+   - Include small icons for superpowers, blockers, frameworks
+
+3. **Typography:**
+   - H1: Archetype name (bold, large, ~48px)
+   - H2: Section headers (~32px)
+   - Body: Readable, ~18px
+   - Callouts/quotes: Italics or colored background
+
+4. **Spacing:**
+   - White space is your friend (don't cram)
+   - Clear visual hierarchy
+   - Sticky CTA button for premium upgrade
+
+---
+
+## **💻 REPLIT IMPLEMENTATION**
+
+### **File Structure:**
+```
+/public
+  /images
+    - archetype-icons (6 images)
+    - axes-chart-template.svg
+/src
+  /components
+    - ResultPage.jsx (main component)
+    - ArchetypeHero.jsx
+    - ProfileSection.jsx
+    - QuickWins.jsx
+    - PremiumPreview.jsx
+    - EmailCapture.jsx
+  /data
+    - archetypes.json (all content for 6 archetypes)
+/pages
+  - result.jsx (dynamic route: /result/:archetype)

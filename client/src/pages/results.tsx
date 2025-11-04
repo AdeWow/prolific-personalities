@@ -4,10 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { ArchetypeCard } from "@/components/archetype-card";
+import { ScoreRadarChart } from "@/components/score-radar-chart";
 import { archetypes } from "@/data/archetypes";
 import { useToast } from "@/hooks/use-toast";
+import { Sparkles, Lock, CheckCircle2, ArrowRight } from "lucide-react";
 import type { QuizResult } from "@shared/schema";
 
 export default function Results() {
@@ -37,31 +37,12 @@ export default function Results() {
   const archetype = result ? archetypes.find(a => a.id === result.archetype) : null;
   const scores = result?.scores as any;
 
-  const handleShare = (platform: string) => {
-    if (!archetype || !shareUrl) return;
-
-    const text = `I just discovered I'm ${archetype.name}! Take the Prolific Personalities assessment to find your productivity archetype.`;
-    
-    let url = '';
-    switch (platform) {
-      case 'linkedin':
-        url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(text)}`;
-        break;
-      case 'twitter':
-        url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
-        break;
-      case 'copy':
-        navigator.clipboard.writeText(shareUrl);
-        toast({
-          title: "Link copied!",
-          description: "Share link has been copied to your clipboard.",
-        });
-        return;
-    }
-    
-    if (url) {
-      window.open(url, '_blank');
-    }
+  const handleShare = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast({
+      title: "Link copied!",
+      description: "Share link has been copied to your clipboard.",
+    });
   };
 
   if (isLoading) {
@@ -80,7 +61,7 @@ export default function Results() {
       <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50 flex items-center justify-center">
         <Card className="max-w-md mx-4">
           <CardContent className="pt-6 text-center space-y-4">
-            <i className="fas fa-exclamation-triangle text-red-500 text-4xl"></i>
+            <div className="text-red-500 text-4xl">⚠️</div>
             <h1 className="text-2xl font-bold text-neutral-800">Results Not Found</h1>
             <p className="text-neutral-600">
               We couldn't find your quiz results. Please take the assessment again.
@@ -104,144 +85,280 @@ export default function Results() {
           <div className="flex justify-between items-center py-4">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
-                <i className="fas fa-brain text-white text-lg"></i>
+                <span className="text-white text-xl">🧠</span>
               </div>
               <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
             </Link>
-            <Link href="/">
-              <Button variant="outline">
-                <i className="fas fa-home mr-2"></i>
-                Home
+            <div className="flex gap-3">
+              <Button onClick={handleShare} variant="outline" size="sm">
+                Share Results
               </Button>
-            </Link>
+              <Link href="/">
+                <Button variant="outline" size="sm">
+                  Home
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Results Content */}
-      <section className="py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <Badge className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-100 to-blue-100 text-green-700 font-semibold border-0">
-              <i className="fas fa-trophy mr-2"></i>
+      {/* Hero Section */}
+      <section className="py-12 bg-gradient-to-b from-white to-transparent">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4 mb-8">
+            <Badge className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-100 to-blue-100 text-green-700 font-semibold border-0">
+              <Sparkles className="w-4 h-4 mr-2" />
               Assessment Complete!
             </Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold text-neutral-800">
-              You're <span className="text-gradient">{archetype.name}</span>
-            </h2>
-            <p className="text-xl text-neutral-600 max-w-3xl mx-auto">
-              Your productivity archetype reveals unique insights about how you work best and achieve your goals.
-            </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Main Results */}
-            <div className="lg:col-span-2 space-y-8">
-              <ArchetypeCard archetype={archetype} detailed={true} />
-
-              {/* Dimensional Scores */}
-              <Card className="bg-white shadow-lg">
-                <CardContent className="p-8">
-                  <h3 className="text-xl font-bold text-neutral-800 mb-6">Your Productivity Dimensions</h3>
-                  
-                  <div className="space-y-6">
-                    {Object.entries(scores).map(([dimension, score]) => {
-                      const percentage = Math.max(0, Math.min(100, ((score as number) + 40) / 80 * 100));
-                      
-                      return (
-                        <div key={dimension}>
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="font-medium text-neutral-700 capitalize">
-                              {dimension.replace(/([A-Z])/g, ' $1').trim()}
-                            </span>
-                            <span className="text-sm text-neutral-600">
-                              {Math.round(percentage)}%
-                            </span>
-                          </div>
-                          <Progress value={percentage} className="h-3" />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Recommended Tools */}
-              <Card className="bg-white shadow-lg">
-                <CardContent className="p-6">
-                  <h4 className="font-bold text-neutral-800 mb-4">
-                    <i className="fas fa-tools text-primary mr-2"></i>
-                    Recommended Tools
-                  </h4>
-                  <img 
-                    src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=200" 
-                    alt="Productivity tools and planning materials" 
-                    className="w-full h-32 object-cover rounded-lg mb-4" 
-                  />
-                  <div className="space-y-3">
-                    {archetype.tools.map((tool, index) => (
-                      <div key={index} className="flex items-center justify-between">
-                        <span className="text-neutral-700">{tool.name}</span>
-                        <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700">
-                          Match: {tool.match}%
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Share Results */}
-              <Card className="bg-gradient-to-br from-neutral-50 to-indigo-50 border border-neutral-200 shadow-lg">
-                <CardContent className="p-6">
-                  <h4 className="font-bold text-neutral-800 mb-4">Share Your Results</h4>
-                  <div className="space-y-3">
-                    <Button 
-                      onClick={() => handleShare('linkedin')}
-                      className="w-full bg-blue-600 text-white hover:bg-blue-700"
-                    >
-                      <i className="fab fa-linkedin mr-2"></i>
-                      Share on LinkedIn
-                    </Button>
-                    <Button 
-                      onClick={() => handleShare('copy')}
-                      variant="outline" 
-                      className="w-full"
-                    >
-                      <i className="fas fa-link mr-2"></i>
-                      Copy Link
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => window.print()}
-                    >
-                      <i className="fas fa-download mr-2"></i>
-                      Download PDF
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Retake Quiz */}
-              <Card className="bg-white shadow-lg">
-                <CardContent className="p-6 text-center">
-                  <h4 className="font-bold text-neutral-800 mb-2">Want to try again?</h4>
-                  <p className="text-neutral-600 text-sm mb-4">
-                    Your results are saved, but you can retake the assessment anytime.
+          <Card className="bg-white shadow-xl border-0" data-testid="results-hero">
+            <CardContent className="p-8 lg:p-12">
+              <div className="text-center space-y-6">
+                {/* Archetype Icon & Name */}
+                <div>
+                  <div className="text-7xl mb-4">{archetype.icon}</div>
+                  <h1 className="text-4xl lg:text-5xl font-bold text-neutral-800 mb-2" data-testid="archetype-name">
+                    {archetype.name}
+                  </h1>
+                  <p className="text-xl lg:text-2xl text-neutral-600 font-medium" data-testid="archetype-tagline">
+                    {archetype.tagline}
                   </p>
-                  <Link href="/quiz">
-                    <Button className="w-full gradient-primary text-white hover:shadow-lg transition-shadow">
-                      Retake Assessment
-                    </Button>
-                  </Link>
+                </div>
+
+                {/* Radar Chart */}
+                <div className="max-w-md mx-auto pt-8">
+                  <h3 className="text-lg font-semibold text-neutral-700 mb-4">Your 4-Axis Profile</h3>
+                  <ScoreRadarChart scores={scores} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Your Productivity Profile */}
+      <section className="py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
+              Your Productivity Profile
+            </h2>
+          </div>
+
+          {/* Why You Struggle */}
+          <Card className="bg-white shadow-lg" data-testid="struggle-section">
+            <CardContent className="p-8">
+              <h3 className="text-2xl font-bold text-neutral-800 mb-6 flex items-center">
+                <span className="text-3xl mr-3">💡</span>
+                Why You Struggle
+              </h3>
+              <div className="space-y-4 text-neutral-700 leading-relaxed">
+                {archetype.struggle.map((paragraph, index) => (
+                  <p key={index} className="text-lg">{paragraph}</p>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Your Superpowers */}
+          <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 shadow-lg" data-testid="superpowers-section">
+            <CardContent className="p-8">
+              <h3 className="text-2xl font-bold text-neutral-800 mb-6 flex items-center">
+                <span className="text-3xl mr-3">✨</span>
+                Your Superpowers
+              </h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                {archetype.superpowers.map((power, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-bold text-neutral-800 mb-1">{power.title}</h4>
+                      <p className="text-neutral-700">{power.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Top 3 Productivity Blockers */}
+          <Card className="bg-white shadow-lg" data-testid="blockers-section">
+            <CardContent className="p-8">
+              <h3 className="text-2xl font-bold text-neutral-800 mb-6 flex items-center">
+                <span className="text-3xl mr-3">🚫</span>
+                Top 3 Productivity Blockers
+              </h3>
+              <div className="space-y-4">
+                {archetype.blockers.map((blocker, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold">
+                      {index + 1}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-neutral-800">{blocker.title}</h4>
+                      <p className="text-neutral-600 text-sm">→ {blocker.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Quick Wins Section - FREE TIER */}
+      <section className="py-12 bg-white/50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-2">
+              Your Quick Wins
+            </h2>
+            <p className="text-lg text-neutral-600">Immediate actions you can take today</p>
+          </div>
+
+          {/* Quick Win Cards */}
+          <div className="grid md:grid-cols-3 gap-6" data-testid="quick-wins">
+            {archetype.quickWins.map((win, index) => (
+              <Card key={index} className="bg-white shadow-lg hover:shadow-xl transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 text-xl font-bold mb-4">
+                    {index + 1}
+                  </div>
+                  <h4 className="font-bold text-neutral-800 text-lg mb-3">{win.title}</h4>
+                  <p className="text-neutral-600 text-sm leading-relaxed">{win.description}</p>
                 </CardContent>
               </Card>
-            </div>
+            ))}
           </div>
+
+          {/* Framework Preview */}
+          <Card className="bg-gradient-to-br from-teal-50 to-blue-50 shadow-lg border-2 border-teal-200" data-testid="framework-preview">
+            <CardContent className="p-8">
+              <h3 className="text-xl font-bold text-neutral-800 mb-3">
+                Your Top Matched Framework (Preview)
+              </h3>
+              <div className="bg-white rounded-lg p-6">
+                <h4 className="text-2xl font-bold text-neutral-800 mb-2">{archetype.framework.name}</h4>
+                <p className="text-neutral-700 mb-4">
+                  <strong>Why it works for you:</strong> {archetype.framework.why}
+                </p>
+                <div className="flex items-center text-indigo-600 font-semibold">
+                  <Lock className="w-5 h-5 mr-2" />
+                  Unlock full implementation guide, common pitfalls, and tools →
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Premium Preview Section */}
+      <section className="py-16 bg-gradient-to-br from-indigo-600 to-purple-600">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Card className="bg-white shadow-2xl" data-testid="premium-preview">
+            <CardContent className="p-8 lg:p-12">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 mb-4">
+                  <Lock className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-3">
+                  Unlock Your Complete {archetype.title} Playbook
+                </h2>
+                <p className="text-lg text-neutral-600">
+                  Transform insight into action with your personalized productivity system
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8 mb-8">
+                {/* Frameworks */}
+                <div>
+                  <h4 className="font-bold text-neutral-800 mb-3 flex items-center">
+                    <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
+                    3 Full Framework Guides
+                  </h4>
+                  <ul className="space-y-2 text-neutral-600 text-sm">
+                    {archetype.premiumIncludes.frameworks.map((item, index) => (
+                      <li key={index} className="pl-7">• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Tools */}
+                <div>
+                  <h4 className="font-bold text-neutral-800 mb-3 flex items-center">
+                    <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
+                    Tool Recommendations
+                  </h4>
+                  <ul className="space-y-2 text-neutral-600 text-sm">
+                    {archetype.premiumIncludes.tools.map((item, index) => (
+                      <li key={index} className="pl-7">• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Implementation Plan */}
+                <div>
+                  <h4 className="font-bold text-neutral-800 mb-3 flex items-center">
+                    <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
+                    30-Day Implementation Plan
+                  </h4>
+                  <ul className="space-y-2 text-neutral-600 text-sm">
+                    {archetype.premiumIncludes.plan.map((item, index) => (
+                      <li key={index} className="pl-7">• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Special Content */}
+                <div>
+                  <h4 className="font-bold text-neutral-800 mb-3 flex items-center">
+                    <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
+                    Common Failure Modes
+                  </h4>
+                  <ul className="space-y-2 text-neutral-600 text-sm">
+                    {archetype.premiumIncludes.special.map((item, index) => (
+                      <li key={index} className="pl-7">• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="border-t pt-8">
+                <Button 
+                  size="lg" 
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg py-6 hover:shadow-xl transition-all"
+                  data-testid="button-get-premium"
+                >
+                  Get My Full Report - $27
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <p className="text-center text-neutral-500 text-sm mt-4">
+                  One-time payment • Lifetime access • Updated as platform evolves
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Retake Section */}
+      <section className="py-12">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Card className="bg-white shadow-lg">
+            <CardContent className="p-8 text-center">
+              <h3 className="text-2xl font-bold text-neutral-800 mb-2">Want to try again?</h3>
+              <p className="text-neutral-600 mb-6">
+                Your results are saved, but you can retake the assessment anytime to see if your archetype has evolved.
+              </p>
+              <Link href="/quiz">
+                <Button className="gradient-primary text-white px-8 py-6 text-lg hover:shadow-lg transition-shadow">
+                  Retake Assessment
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
         </div>
       </section>
     </div>

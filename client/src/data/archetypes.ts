@@ -2,18 +2,35 @@ export interface Archetype {
   id: string;
   name: string;
   title: string;
-  description: string;
+  tagline: string;
   icon: string;
   color: string;
   gradientFrom: string;
   gradientTo: string;
   tags: string[];
-  strengths: string[];
-  growthAreas: string[];
-  tools: Array<{
-    name: string;
-    match: number;
+  struggle: string[];
+  superpowers: Array<{
+    title: string;
+    description: string;
   }>;
+  blockers: Array<{
+    title: string;
+    description: string;
+  }>;
+  quickWins: Array<{
+    title: string;
+    description: string;
+  }>;
+  framework: {
+    name: string;
+    why: string;
+  };
+  premiumIncludes: {
+    frameworks: string[];
+    tools: string[];
+    plan: string[];
+    special: string[];
+  };
   scoreRanges: {
     structure: { min: number; max: number };
     motivation: { min: number; max: number };
@@ -27,29 +44,52 @@ export const archetypes: Archetype[] = [
     id: 'structured-achiever',
     name: 'The Structured Achiever',
     title: 'Organized Goal-Crusher',
-    description: 'Highly organized, externally motivated achiever who thrives on clear goals, accountability, and detailed execution. You need structure and external validation to perform at your best.',
-    icon: 'fas fa-trophy',
+    tagline: 'You thrive on systems, accountability, and clear goals. Structure is your superpower.',
+    icon: '📊',
     color: 'blue',
     gradientFrom: 'from-blue-400',
     gradientTo: 'to-indigo-400',
     tags: ['Organized', 'Goal-oriented', 'Detail-focused'],
-    strengths: [
-      'Excellent at following through on commitments',
-      'Thrives with clear deadlines and accountability',
-      'Detail-oriented execution',
-      'Responds well to external rewards and recognition'
+    struggle: [
+      "You're the person who color-codes their calendar, batch-processes emails, and gets a dopamine hit from checking boxes. When systems are in place, you're unstoppable. But here's the problem: life doesn't always cooperate with your plans.",
+      "Unexpected changes derail you. Open-ended creative projects feel paralyzing without clear success metrics. You might over-optimize systems instead of doing the work (hello, productivity porn). And when external accountability disappears—remote work, self-directed projects—your motivation can crater.",
+      "Research shows that highly conscientious individuals excel in structured environments but struggle when ambiguity is high or when intrinsic motivation is required. You're not broken—you're just mismatched with environments that require constant improvisation."
     ],
-    growthAreas: [
-      'Self-motivation without external pressure',
-      'Flexibility when plans change',
-      'Big-picture strategic thinking',
-      'Working without clear structure'
+    superpowers: [
+      { title: 'Reliability', description: 'When you commit, you deliver. Deadlines are sacred.' },
+      { title: 'Efficiency', description: 'You optimize workflows others find tedious.' },
+      { title: 'Accountability', description: 'External deadlines and team expectations drive you to excellence.' },
+      { title: 'Execution', description: 'Once the plan is clear, you execute flawlessly.' }
     ],
-    tools: [
-      { name: 'Accountability Apps', match: 95 },
-      { name: 'Deadline Trackers', match: 92 },
-      { name: 'Detailed Task Lists', match: 90 }
+    blockers: [
+      { title: 'Ambiguous goals', description: 'You freeze without clear success criteria' },
+      { title: 'Lack of external accountability', description: 'Solo work feels unmotivating' },
+      { title: 'Over-planning', description: 'You spend more time optimizing systems than doing the work' }
     ],
+    quickWins: [
+      { 
+        title: 'Time-Box Your Planning', 
+        description: 'Set a 15-minute timer for planning each day. When it rings, stop planning and start executing. Over-planning is procrastination in disguise for your type.' 
+      },
+      { 
+        title: 'Create Fake Deadlines', 
+        description: 'Tell a friend, colleague, or online community when you will finish something. Public commitment = external accountability = your motivational fuel.' 
+      },
+      { 
+        title: 'Use Implementation Intentions', 
+        description: 'For any vague task, rewrite it as: "When [trigger], I will [specific action]." Example: "When I sit at my desk at 9am, I will write 500 words before checking email."' 
+      }
+    ],
+    framework: {
+      name: '📅 Time Blocking (Cal Newport Method)',
+      why: 'Transforms abstract time into concrete appointments. Gives you the structure and external commitment your brain craves.'
+    },
+    premiumIncludes: {
+      frameworks: ['Time Blocking (with templates)', 'Implementation Intentions', 'External Brain / GTD-Lite'],
+      tools: ['Best calendar apps for time blocking', 'Accountability apps (Focusmate, Beeminder)', 'Project management for solo work'],
+      plan: ['Week 1: Build your time blocking system', 'Week 2: Create accountability loops', 'Week 3: Handle unexpected changes without derailing', 'Week 4: Optimize and sustain'],
+      special: ['How to stop over-optimizing', 'Working without external deadlines', 'Handling creative, ambiguous projects']
+    },
     scoreRanges: {
       structure: { min: 22, max: 35 },
       motivation: { min: 22, max: 35 },
@@ -61,29 +101,52 @@ export const archetypes: Archetype[] = [
     id: 'chaotic-creative',
     name: 'The Chaotic Creative',
     title: 'Free-Spirited Innovator',
-    description: 'Flexible, intrinsically motivated creative who thrives on big-picture thinking but struggles with task initiation and structure. You need freedom to explore but may procrastinate on execution.',
-    icon: 'fas fa-palette',
+    tagline: 'Your mind is a fireworks show of ideas. The challenge? Turning sparks into finished projects.',
+    icon: '🎨',
     color: 'purple',
     gradientFrom: 'from-purple-400',
     gradientTo: 'to-violet-400',
     tags: ['Creative', 'Flexible', 'Visionary'],
-    strengths: [
-      'Innovative big-picture thinking',
-      'Adaptable to changing circumstances',
-      'Self-motivated by personal interest',
-      'Creative problem solving'
+    struggle: [
+      "You're brilliant at connecting dots, seeing possibilities, and generating ideas that make others go \"whoa.\" But here's what nobody tells you: your brain is wired for exploration, not execution.",
+      "Starting projects feels electric. Finishing them feels like death by a thousand paper cuts. You've got 47 tabs open, 12 unfinished projects, and a graveyard of abandoned plans. When something becomes routine, your brain screams \"BORING!\" and wanders off to the next shiny thing.",
+      "Research on executive function shows that task initiation and sustained attention are separate neural systems—you're strong on ideation but struggle with follow-through. The guilt about unfinished projects creates emotional avoidance, making the problem worse."
     ],
-    growthAreas: [
-      'Starting tasks without overthinking',
-      'Working within structured systems',
-      'Attention to execution details',
-      'Meeting external deadlines'
+    superpowers: [
+      { title: 'Creativity', description: 'You see solutions and connections others miss.' },
+      { title: 'Adaptability', description: 'When plans change, you pivot easily.' },
+      { title: 'Passion', description: 'When interested, you enter hyperfocus and produce magic.' },
+      { title: 'Innovation', description: 'Your refusal to do things "the normal way" leads to breakthroughs.' }
     ],
-    tools: [
-      { name: 'Creative Capture Tools', match: 95 },
-      { name: 'Gentle Accountability', match: 88 },
-      { name: 'Mind Mapping', match: 92 }
+    blockers: [
+      { title: 'Task initiation paralysis', description: 'Starting feels impossibly hard' },
+      { title: 'Novelty addiction', description: 'You abandon projects when the excitement fades' },
+      { title: 'Guilt spirals', description: 'Shame about procrastination creates more avoidance' }
     ],
+    quickWins: [
+      { 
+        title: 'The 2-Minute Start Rule', 
+        description: 'Don\'t commit to finishing anything. Just commit to 2 minutes. "I will write one sentence." "I will open the document." Your brain can\'t resist continuing once you start.' 
+      },
+      { 
+        title: 'Pair Boring Tasks with Stimulation', 
+        description: 'Body double (work alongside someone, even virtually). Listen to music or podcasts. Add novelty to override boredom.' 
+      },
+      { 
+        title: 'Externalize Your Brain', 
+        description: 'Capture every idea immediately in a notes app. Your working memory is terrible (not your fault—it\'s neurology). Get it out of your head so you can focus on ONE thing.' 
+      }
+    ],
+    framework: {
+      name: '⏱️ Pomodoro + Body Doubling',
+      why: 'Short sprints match your attention span. External presence (body double) reduces task initiation friction. Breaks prevent burnout.'
+    },
+    premiumIncludes: {
+      frameworks: ['Pomodoro + Body Doubling (ADHD-adapted)', 'Implementation Intentions (for task initiation)', 'Energy Management (work WITH your hyperfocus cycles)'],
+      tools: ['Body doubling platforms (Focusmate, Flow Club, Caveday)', 'Pomodoro apps that actually work for your brain', 'Capture tools for idea management'],
+      plan: ['Week 1: Build your Pomodoro practice', 'Week 2: Find your body double system', 'Week 3: Handle the "boring middle" of projects', 'Week 4: Finish ONE thing (proof you can do it)'],
+      special: ['Why you love learning systems but never implement', 'The ONE system rule (and how to stick to it)', 'How to resist the next shiny productivity method']
+    },
     scoreRanges: {
       structure: { min: 7, max: 21 },
       motivation: { min: 7, max: 21 },
@@ -95,29 +158,52 @@ export const archetypes: Archetype[] = [
     id: 'anxious-perfectionist',
     name: 'The Anxious Perfectionist',
     title: 'Detail-Obsessed Procrastinator',
-    description: 'Structured, detail-oriented perfectionist who excels at quality work but struggles with task avoidance due to high standards and anxiety about starting.',
-    icon: 'fas fa-microscope',
+    tagline: 'High standards drive your excellence—but perfectionism is sabotaging your progress.',
+    icon: '🎯',
     color: 'teal',
     gradientFrom: 'from-teal-400',
     gradientTo: 'to-cyan-400',
     tags: ['Perfectionist', 'Detail-oriented', 'Anxious'],
-    strengths: [
-      'Exceptional attention to detail',
-      'High-quality, thorough work',
-      'Systematic problem-solving',
-      'Strong analytical skills'
+    struggle: [
+      "You care deeply about quality. You want to do things RIGHT. But here's the trap: perfectionism and procrastination are twins.",
+      "You delay starting because you're terrified it won't be good enough. You ruminate over details others would ship in 5 minutes. You revise endlessly instead of moving forward. The irony? Your perfectionism doesn't produce better work—it produces LESS work, delivered late, while you burn out from anxiety.",
+      "Research shows perfectionism is strongly correlated with procrastination, anxiety, and depression—not with higher quality output. Your brain conflates \"good enough\" with \"failure,\" creating emotional avoidance that masquerades as high standards."
     ],
-    growthAreas: [
-      'Starting tasks without perfect conditions',
-      'Managing anxiety and overwhelm',
-      'Accepting "good enough"',
-      'Overcoming procrastination patterns'
+    superpowers: [
+      { title: 'Quality', description: 'When you ship, it\'s excellent.' },
+      { title: 'Conscientiousness', description: 'You catch errors others miss.' },
+      { title: 'Reliability', description: 'People trust you with important work.' },
+      { title: 'Growth mindset', description: 'You genuinely want to improve.' }
     ],
-    tools: [
-      { name: 'Pomodoro Technique', match: 92 },
-      { name: 'Task Breakdown Systems', match: 90 },
-      { name: 'Anxiety Management', match: 88 }
+    blockers: [
+      { title: 'Analysis paralysis', description: 'Fear of imperfection prevents starting' },
+      { title: 'Revision loops', description: 'You can\'t stop tweaking and ship the work' },
+      { title: 'Emotional avoidance', description: 'Anxiety about the task makes you procrastinate' }
     ],
+    quickWins: [
+      { 
+        title: 'Version 0 Mindset', 
+        description: 'Rename your first draft "Version 0" and give yourself permission for it to suck. Separate creation (Version 0) from refinement (Version 1+). You can\'t edit a blank page.' 
+      },
+      { 
+        title: 'Time-Box Revision', 
+        description: 'Set a timer for 15 minutes. Revise ONLY during that time. When it rings, you are done. Ship it. Most revision is anxiety management, not quality improvement.' 
+      },
+      { 
+        title: 'The "Good Enough" Mantra', 
+        description: 'Before starting, define what "good enough" looks like. Write it down. When you hit that bar, you are done. Exceeding it is optional, not required.' 
+      }
+    ],
+    framework: {
+      name: '📝 Implementation Intentions + Self-Compassion',
+      why: 'Removes decision paralysis. Pre-commits to "good enough." Breaks the perfectionism-shame cycle with research-backed self-compassion practices.'
+    },
+    premiumIncludes: {
+      frameworks: ['Implementation Intentions (decision automation)', 'Time Blocking with "Good Enough" standards', 'Self-Compassion Practices (break the shame cycle)'],
+      tools: ['Anxiety tracking apps', '"Good enough" templates for common tasks', 'Deadline accountability tools'],
+      plan: ['Week 1: Define "good enough" for your key tasks', 'Week 2: Practice Version 0 mindset', 'Week 3: Ship imperfect work (on purpose)', 'Week 4: Celebrate progress over perfection'],
+      special: ['Research on why perfectionism doesn\'t improve quality', 'How to separate excellence from perfectionism', 'When "good enough" is strategically better']
+    },
     scoreRanges: {
       structure: { min: 22, max: 35 },
       motivation: { min: 7, max: 28 },
@@ -129,29 +215,52 @@ export const archetypes: Archetype[] = [
     id: 'novelty-seeker',
     name: 'The Novelty Seeker',
     title: 'Stimulus-Driven Explorer',
-    description: 'Flexible, externally motivated innovator who craves novelty and needs external stimulation. You thrive on big-picture ideas and variety but require accountability to maintain focus.',
-    icon: 'fas fa-rocket',
+    tagline: 'You\'re powered by excitement and new challenges. The routine? That\'s your kryptonite.',
+    icon: '🚀',
     color: 'red',
     gradientFrom: 'from-red-400',
     gradientTo: 'to-pink-400',
     tags: ['Novelty-driven', 'Energetic', 'Visionary'],
-    strengths: [
-      'Thrives in dynamic, changing environments',
-      'Quick to spot new opportunities',
-      'High energy and enthusiasm',
-      'Creative big-picture thinking'
+    struggle: [
+      "You're a dopamine-seeking missile. New projects? Hell yes. Routine maintenance? You'd rather watch paint dry. You start strong, riding the wave of excitement, then crash when the novelty fades and the boring middle work begins.",
+      "The challenge: most valuable work requires sustained attention on repetitive tasks. You need external stakes (deadlines, competition, accountability) to push through the tedium. Without novelty or external pressure, your motivation evaporates.",
+      "Research on ADHD and novelty-seeking shows that dopamine dysregulation makes routine tasks neurologically painful—you're not lazy, your brain literally experiences boredom differently."
     ],
-    growthAreas: [
-      'Sustained focus on one project',
-      'Follow-through on routine tasks',
-      'Self-directed motivation',
-      'Working independently without external stimulation'
+    superpowers: [
+      { title: 'Adaptability', description: 'You thrive in changing environments.' },
+      { title: 'Enthusiasm', description: 'Your energy is contagious.' },
+      { title: 'Learning', description: 'You absorb new skills quickly.' },
+      { title: 'Crisis mode', description: 'When stakes are high, you\'re unbeatable.' }
     ],
-    tools: [
-      { name: 'Gamification Apps', match: 95 },
-      { name: 'Accountability Partners', match: 92 },
-      { name: 'Novelty-based Planning', match: 90 }
+    blockers: [
+      { title: 'Boredom intolerance', description: 'Routine tasks feel physically painful' },
+      { title: 'Need for external pressure', description: 'Without stakes, you don\'t act' },
+      { title: 'Project abandonment', description: 'You start strong but lose interest' }
     ],
+    quickWins: [
+      { 
+        title: 'Gamify Everything', 
+        description: 'Turn boring tasks into challenges. "How fast can I do this?" Use timers, streaks, leaderboards. Your brain needs the dopamine hit—give it one.' 
+      },
+      { 
+        title: 'Rotate Tasks Frequently', 
+        description: 'Don\'t work on one thing for hours. Switch every 25-30 minutes. Match your task rotation to your attention span, not someone else\'s advice.' 
+      },
+      { 
+        title: 'Create Artificial Stakes', 
+        description: 'Bet money on completing tasks (Beeminder). Tell someone when you will finish. Make it hurt to not follow through.' 
+      }
+    ],
+    framework: {
+      name: '🎮 Gamification + External Accountability',
+      why: 'Adds novelty and competition to routine work. External stakes replace missing intrinsic motivation. Turns productivity into a game you can win.'
+    },
+    premiumIncludes: {
+      frameworks: ['Gamification strategies (with tool stack)', 'Body Doubling + Accountability partners', 'Task rotation systems (prevent boredom)'],
+      tools: ['Beeminder, Habitica, Forest (gamification)', 'Focusmate, productivity Discord servers', 'Task management apps that support variety'],
+      plan: ['Week 1: Build your gamification system', 'Week 2: Find accountability partners', 'Week 3: Master task rotation without losing focus', 'Week 4: Handle the "boring middle" of projects'],
+      special: ['Why you abandon projects (and how to stop)', 'Distinguishing between strategic pivots and shiny object syndrome', 'Building sustainable systems that accommodate your need for variety']
+    },
     scoreRanges: {
       structure: { min: 7, max: 21 },
       motivation: { min: 22, max: 35 },
@@ -163,29 +272,52 @@ export const archetypes: Archetype[] = [
     id: 'strategic-planner',
     name: 'The Strategic Planner',
     title: 'Visionary Architect',
-    description: 'Structured, intrinsically motivated strategist who combines big-picture thinking with methodical execution. You excel at long-term planning and self-directed goal achievement.',
-    icon: 'fas fa-chess',
+    tagline: 'You see the big picture and build the roadmap. Execution is your superpower—when the vision is clear.',
+    icon: '🗺️',
     color: 'indigo',
     gradientFrom: 'from-indigo-400',
     gradientTo: 'to-blue-400',
     tags: ['Strategic', 'Self-motivated', 'Visionary'],
-    strengths: [
-      'Excellent long-term strategic planning',
-      'Self-motivated and disciplined',
-      'Balances vision with execution',
-      'Systematic approach to complex goals'
+    struggle: [
+      "You're the architect. You love designing systems, planning strategies, and connecting long-term goals to daily actions. When you have clarity on the \"why,\" you execute flawlessly.",
+      "The problem? You can over-plan and under-execute. Strategic thinking is your comfort zone—taking messy, uncertain action feels risky. You might spend weeks perfecting a plan when you should be testing and iterating. And when priorities shift unexpectedly, you need time to reorient.",
+      "You're intrinsically motivated (you do things because they matter to YOU), but you need structure to channel that drive into action."
     ],
-    growthAreas: [
-      'Flexibility when plans need adjustment',
-      'Delegating and trusting others',
-      'Quick tactical decisions',
-      'Attention to small details'
+    superpowers: [
+      { title: 'Vision', description: 'You see possibilities years ahead.' },
+      { title: 'Strategic thinking', description: 'You connect dots others miss.' },
+      { title: 'Self-direction', description: 'You don\'t need external validation.' },
+      { title: 'Systems design', description: 'You build frameworks that scale.' }
     ],
-    tools: [
-      { name: 'Strategic Planning Tools', match: 95 },
-      { name: 'Vision Boards', match: 90 },
-      { name: 'Long-term Goal Trackers', match: 92 }
+    blockers: [
+      { title: 'Over-planning', description: 'You optimize the strategy instead of testing it' },
+      { title: 'Ambiguous execution', description: 'Without clear steps, you delay action' },
+      { title: 'Shifting priorities', description: 'Changes require mental reorientation' }
     ],
+    quickWins: [
+      { 
+        title: 'The 80/20 Planning Rule', 
+        description: 'Spend 20% of your time planning, 80% executing. Set a timer. When planning time is up, act—even if the plan isn\'t perfect.' 
+      },
+      { 
+        title: 'Build Backward from Your Vision', 
+        description: 'Start with the end state you want in 1 year. Work backward to define THIS quarter, THIS month, THIS week. Connect daily tasks to the big picture.' 
+      },
+      { 
+        title: 'Create a "Done is Better Than Perfect" Trigger', 
+        description: 'When you catch yourself planning for more than 2 hours, ask: "What is the smallest version I can test TODAY?"' 
+      }
+    ],
+    framework: {
+      name: '📊 Time Blocking + Strategic Reviews',
+      why: 'Aligns daily execution with long-term vision. Weekly reviews keep you connected to the big picture while daily time blocks ensure follow-through.'
+    },
+    premiumIncludes: {
+      frameworks: ['Time Blocking (with strategic alignment)', 'Deep Work + Quarterly Planning', 'Implementation Intentions (connect vision to action)'],
+      tools: ['Strategic planning tools (Notion, Obsidian)', 'Time blocking calendars', 'Quarterly goal-setting frameworks'],
+      plan: ['Week 1: Define your 1-year vision', 'Week 2: Build time blocking system aligned to goals', 'Week 3: Test and iterate (action over planning)', 'Week 4: Install quarterly review cadence'],
+      special: ['How to know when planning becomes procrastination', 'Building bias toward action', 'Strategic pivots vs. distraction']
+    },
     scoreRanges: {
       structure: { min: 22, max: 35 },
       motivation: { min: 7, max: 21 },
@@ -197,29 +329,52 @@ export const archetypes: Archetype[] = [
     id: 'flexible-improviser',
     name: 'The Flexible Improviser',
     title: 'Adaptive Action-Taker',
-    description: 'Action-oriented, flexible executor who excels at starting tasks and adapting on the fly. You thrive with ambiguity and prefer momentum over planning.',
-    icon: 'fas fa-running',
+    tagline: 'You ride the waves of change with ease. Planning is optional; action is your default.',
+    icon: '🌊',
     color: 'green',
     gradientFrom: 'from-green-400',
     gradientTo: 'to-emerald-400',
     tags: ['Action-oriented', 'Flexible', 'Adaptive'],
-    strengths: [
-      'Quick to start and take action',
-      'Adapts easily to changing circumstances',
-      'Comfortable with ambiguity',
-      'Maintains momentum and energy'
+    struggle: [
+      "You're the anti-planner. You wake up, assess the situation, and dive in. You adapt to changes without stress, pivot easily, and trust yourself to figure it out as you go. This is a genuine superpower in chaotic environments.",
+      "The challenge? You might lack consistency on long-term goals. You can be reactive rather than proactive. Without external structure, you might drift toward whatever feels urgent or interesting instead of what's important.",
+      "Your spontaneity is powerful, but without some minimal scaffolding, you risk spinning your wheels on low-impact work or losing track of bigger objectives."
     ],
-    growthAreas: [
-      'Long-term strategic planning',
-      'Working within rigid structures',
-      'Detailed analysis before action',
-      'Consistency in routines'
+    superpowers: [
+      { title: 'Adaptability', description: 'You thrive in chaos and uncertainty.' },
+      { title: 'Action bias', description: 'You start before others finish planning.' },
+      { title: 'Resilience', description: 'Setbacks don\'t paralyze you.' },
+      { title: 'Resourcefulness', description: 'You make the most of what you have.' }
     ],
-    tools: [
-      { name: 'Quick Capture Apps', match: 95 },
-      { name: 'Flexible Planning Tools', match: 90 },
-      { name: 'Momentum Trackers', match: 88 }
+    blockers: [
+      { title: 'Lack of direction', description: 'Without goals, you drift aimlessly' },
+      { title: 'Reactive mode', description: 'You respond to urgency, not importance' },
+      { title: 'Inconsistent progress', description: 'Long-term goals stall without structure' }
     ],
+    quickWins: [
+      { 
+        title: 'The Daily Anchor', 
+        description: 'Pick ONE thing that matters most today and do it first. No plan required—just one priority before reacting to the world.' 
+      },
+      { 
+        title: 'Weekly Check-In (5 minutes)', 
+        description: 'Every Monday, ask: "What is the ONE goal I want to move forward this week?" Then improvise daily toward it.' 
+      },
+      { 
+        title: 'Capture Without Commitment', 
+        description: 'Keep a running list of ideas and tasks. Review weekly. This gives you options without forcing rigid plans.' 
+      }
+    ],
+    framework: {
+      name: '🎯 North Star + Daily Anchor',
+      why: 'Gives you just enough direction (one clear priority) without killing your spontaneity. Weekly reviews keep you aligned without daily rigidity.'
+    },
+    premiumIncludes: {
+      frameworks: ['North Star Goal Setting', 'Energy-Based Scheduling', 'Opportunistic Time Blocking'],
+      tools: ['Flexible planning apps (Trello, Notion)', 'Quick capture tools', 'Weekly review templates'],
+      plan: ['Week 1: Define your North Star goal', 'Week 2: Establish daily anchor habit', 'Week 3: Add weekly reviews', 'Week 4: Balance spontaneity with progress'],
+      special: ['How to maintain momentum without burnout', 'Distinguishing between flexibility and distraction', 'Building structure that doesn\'t feel restrictive']
+    },
     scoreRanges: {
       structure: { min: 7, max: 21 },
       motivation: { min: 7, max: 28 },
