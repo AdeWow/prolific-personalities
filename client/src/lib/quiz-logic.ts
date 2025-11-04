@@ -14,27 +14,14 @@ export function calculateScores(answers: QuizAnswers): QuizScores {
     const question = questions.find(q => q.id === questionId);
     if (!question) return;
 
-    if (question.type === 'multiple-choice') {
-      const optionIndex = typeof answer === 'string' ? parseInt(answer) : answer;
-      
-      // Apply dimension scores based on the selected option
-      Object.entries(question.dimensions).forEach(([dimension, values]) => {
-        if (dimension in scores && Array.isArray(values)) {
-          scores[dimension as keyof QuizScores] += values[optionIndex] || 0;
-        } else if (dimension in scores && typeof values === 'number') {
-          scores[dimension as keyof QuizScores] += values * (optionIndex + 1);
-        }
-      });
-    } else if (question.type === 'scale') {
-      const scaleValue = typeof answer === 'number' ? answer : parseInt(answer.toString());
-      const normalizedValue = (scaleValue - 4) * 2; // Convert 1-7 scale to -6 to +6
-      
-      Object.entries(question.dimensions).forEach(([dimension, multiplier]) => {
-        if (dimension in scores && typeof multiplier === 'number') {
-          scores[dimension as keyof QuizScores] += normalizedValue * multiplier;
-        }
-      });
-    }
+    // Get the answer key (for scoring lookup)
+    const answerKey = typeof answer === 'number' ? answer.toString() : answer;
+    
+    // Get the score for this answer
+    const score = question.scoring[answerKey] || 0;
+    
+    // Add score to the appropriate axis
+    scores[question.axis] += score;
   });
 
   return scores;
@@ -83,13 +70,6 @@ export function getProgressPercentage(currentQuestion: number, totalQuestions: n
 }
 
 export function validateAnswer(question: Question, answer: string | number): boolean {
-  if (question.type === 'multiple-choice') {
-    const optionIndex = typeof answer === 'string' ? parseInt(answer) : answer;
-    return optionIndex >= 0 && optionIndex < (question.options?.length || 0);
-  } else if (question.type === 'scale') {
-    const scaleValue = typeof answer === 'number' ? answer : parseInt(answer.toString());
-    const range = question.scaleRange;
-    return range ? scaleValue >= range.min && scaleValue <= range.max : false;
-  }
-  return false;
+  const answerKey = typeof answer === 'number' ? answer.toString() : answer;
+  return question.scoring.hasOwnProperty(answerKey);
 }

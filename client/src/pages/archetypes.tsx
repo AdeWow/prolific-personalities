@@ -24,87 +24,75 @@ export default function Archetypes() {
 
   const archetypeDetails = [
     {
-      id: "strategist",
-      name: "The Architect",
-      tagline: "You thrive in clarity.",
-      image: thoughtfulPersonImage,
-      description: "The Architect is a master planner—deliberate, detail-oriented, and structured. You like knowing where things are going and exactly how they'll get there. When the world feels messy, you respond by creating systems. Calendars, spreadsheets, routines—they aren't just tools, they're anchors.",
+      id: "structured-achiever",
+      name: "The Structured Achiever",
+      tagline: "You thrive on goals and accountability.",
+      image: cheerfulPersonImage,
+      description: "The Structured Achiever is highly organized and externally motivated. You excel when you have clear goals, deadlines, and accountability systems. External validation and recognition fuel your productivity.",
       fullDescription: [
-        "You tend to map out your time with intention, and there's a quiet pride in staying organized. Your focus isn't always flashy, but it's dependable. People often rely on you to \"figure it out,\" because they know you'll bring a plan and execute with precision.",
-        "Still, when things don't go according to plan, it can throw you off. You may feel stuck when the path forward isn't obvious—or when other people don't follow through. Spontaneity can feel disruptive rather than energizing. But in the right environment, your structured mindset turns chaos into clarity.",
-        "You feel most like yourself when your systems are running smoothly."
+        "You naturally gravitate toward structured environments where expectations are clear and progress is measurable. Deadlines don't stress you out—they motivate you. You thrive when others are counting on you, and you love the feeling of checking tasks off your list.",
+        "Your attention to detail and systematic approach make you reliable and efficient. You excel at following through on commitments and delivering high-quality work on time. You respond well to external rewards, whether that's recognition from colleagues or tangible achievements.",
+        "However, you may struggle when structure is absent or when you need to self-motivate without external accountability. Finding your own intrinsic drive can be challenging, and you might feel lost when working independently without clear guidelines."
       ]
     },
     {
-      id: "explorer",
-      name: "The Explorer",
+      id: "chaotic-creative",
+      name: "The Chaotic Creative",
       tagline: "You create your own path.",
       image: cheerfulPersonImage,
-      description: "The Explorer is naturally curious and thrives on variety. You prefer flexibility over rigid schedules, and you're energized by new experiences. Traditional productivity advice often feels restrictive because your mind works best when it has room to wander and discover.",
+      description: "The Chaotic Creative is naturally curious and thrives on variety. You prefer flexibility over rigid schedules, and you're energized by new experiences and big-picture thinking, though starting tasks can be challenging.",
       fullDescription: [
         "You might have a dozen interests at once, and that's not a problem—it's how you learn. You connect ideas across disciplines and find inspiration in unexpected places. Structure feels confining, but complete chaos doesn't work either.",
-        "Your challenge is finding systems that bend without breaking. You need frameworks that support your curiosity rather than limit it. When you find the right balance of freedom and focus, you can accomplish remarkable things.",
-        "You thrive when you have permission to explore and the tools to capture what you find."
+        "Your challenge is finding systems that bend without breaking. You need frameworks that support your curiosity rather than limit it. Procrastination is often your nemesis—not from lack of interest, but from overthinking or waiting for the perfect moment.",
+        "You thrive when you have permission to explore and the tools to capture what you find, along with gentle accountability to help you overcome initial resistance to starting tasks."
       ]
     },
     {
-      id: "accelerator", 
-      name: "The Firestarter",
-      tagline: "You are driven by spark.",
-      image: cheerfulPersonImage,
-      description: "The Firestarter is a creative ignition switch—bursting with energy when inspiration hits. You move fast, think in flashes, and often ride the wave of adrenaline as a project comes alive. When you're \"on,\" there's nothing quite like it.",
-      fullDescription: [
-        "Deadlines don't scare you—they activate you. In fact, without a sense of urgency, your attention can drift. Structure might feel stifling. You often resist rigid schedules and traditional routines because they dull your instincts.",
-        "You have a gift for getting things moving. Starting something new excites you in a way that's hard to describe. But the challenge is keeping that momentum once the initial rush fades. You may bounce between ideas or abandon projects too early—not from lack of talent, but from the need to feel lit up.",
-        "You are most alive in the spark between idea and action."
-      ]
-    },
-    {
-      id: "harmonizer",
-      name: "The Integrator", 
-      tagline: "You crave alignment.",
+      id: "anxious-perfectionist",
+      name: "The Anxious Perfectionist",
+      tagline: "You pursue excellence, sometimes at a cost.",
       image: thoughtfulPersonImage,
-      description: "The Integrator is introspective and values-driven. You don't just want to be productive—you want your actions to feel meaningful. If you're going to spend time on something, it needs to resonate.",
+      description: "The Anxious Perfectionist is detail-oriented and structured, with exceptionally high standards. You produce outstanding work but often struggle with task avoidance due to anxiety about starting or fear of imperfection.",
       fullDescription: [
-        "You're deeply thoughtful and emotionally intelligent. You think in connections, often linking ideas across fields, people, or systems. You might journal, reflect, or talk things through before you act. You're not easily influenced by trends—you have your own compass.",
-        "At your best, you create work that's nuanced and rich with purpose. But when misaligned, you can spiral into overthinking or inertia. You may struggle to get started if you don't feel emotionally connected to what you're doing.",
-        "You find power when your actions match your values."
+        "You have a gift for seeing details others miss and producing work of exceptional quality. Your systematic approach and thorough analysis ensure nothing falls through the cracks. When you do complete a task, it's done right.",
+        "However, your perfectionism can be paralyzing. You may delay starting tasks because you feel anxious or overwhelmed, or because conditions don't feel 'perfect' yet. The gap between your vision and reality can feel unbearable, leading to procrastination despite your desire for structure.",
+        "Your challenge is learning to start before you're ready and accepting 'good enough' rather than perfect. When you can manage your anxiety and lower the bar for initial action, your attention to detail becomes a true superpower."
       ]
     },
     {
-      id: "analyzer",
-      name: "The Executor",
-      tagline: "You are a finisher.",
+      id: "novelty-seeker",
+      name: "The Novelty Seeker",
+      tagline: "You are driven by what's new and exciting.",
       image: cheerfulPersonImage,
-      description: "The Executor is focused, efficient, and steady. You love getting things done—and you're great at it. While others may lose steam, you keep showing up. Your strength is in follow-through.",
+      description: "The Novelty Seeker is a creative ignition switch—bursting with energy when inspiration hits. You crave variety and external stimulation, thinking in big-picture terms while needing accountability to maintain focus.",
       fullDescription: [
-        "You naturally break tasks down and move through them with consistency. You might not need elaborate systems—you just need a clear goal and space to get it done. You like when expectations are defined and progress is measurable.",
-        "But too much ambiguity can frustrate you. You might avoid complex or creative projects that lack clear endpoints. Sometimes you forget to pause, reflect, or question whether the task still matters—you just keep going.",
-        "You feel strongest when you're in motion, ticking things off and making things real."
+        "You move fast, think in flashes, and often ride the wave of enthusiasm as a new idea comes alive. When you're 'on,' there's nothing quite like it. You thrive in dynamic environments with plenty of variety and external stimulation.",
+        "Deadlines and gamification don't scare you—they activate you. In fact, without a sense of urgency or novelty, your attention can drift. You need external accountability and variety to stay engaged, as routine tasks quickly become boring.",
+        "Your gift is getting things moving and spotting new opportunities. But the challenge is keeping that momentum once the initial rush fades. You may bounce between ideas or need constant external reinforcement to stay on track."
       ]
     },
     {
-      id: "innovator",
-      name: "The Visionary",
-      tagline: "You are a pattern-seer.",
+      id: "strategic-planner",
+      name: "The Strategic Planner",
+      tagline: "You are a visionary architect.",
       image: thoughtfulPersonImage,
-      description: "The Visionary operates in possibility. You're constantly scanning for big ideas, future trends, or new ways to see the world. You think abstractly and thrive when you have space to imagine without limits.",
+      description: "The Strategic Planner combines big-picture thinking with structured execution. You're intrinsically motivated and self-directed, excelling at long-term vision while maintaining the discipline to execute systematically.",
       fullDescription: [
-        "Your creativity is expansive. One idea leads to another, and before long, you've mapped out an entirely new system or concept. You don't just dream—you conceptualize. You might find yourself jumping between notebooks, whiteboards, or voice notes just to keep up.",
-        "Yet translating vision into execution can be tricky. You may struggle to stay grounded or narrow your focus. Too many options can become overwhelming. Still, your ability to imagine what's next is powerful and rare.",
-        "You are at your best when you have freedom to explore and permission to dream."
+        "You operate best when you can see the full landscape and chart a course toward a meaningful goal. Unlike others who need external accountability, you're driven by your own vision and values. Your strategic mindset allows you to plan years ahead while staying grounded in actionable steps.",
+        "You tend to map out your time with intention, and there's a quiet pride in staying organized. Your focus isn't always flashy, but it's dependable. You combine the best of visionary thinking with practical execution.",
+        "However, when things don't go according to plan, it can throw you off. You may struggle with flexibility when your carefully laid plans need adjustment. Learning to adapt while maintaining your strategic vision is your growth edge."
       ]
     },
     {
-      id: "collaborator",
-      name: "The Alchemist",
-      tagline: "You are a shapeshifter.",
-      image: "/assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png",
-      description: "The Alchemist works in cycles, not checklists. Your productivity isn't linear—it's rhythmic. You rely on intuition, energy, and emotional resonance to guide your focus. Some days you move mountains. Other days, you need to retreat and recharge.",
+      id: "flexible-improviser",
+      name: "The Flexible Improviser",
+      tagline: "You thrive in motion and ambiguity.",
+      image: cheerfulPersonImage,
+      description: "The Flexible Improviser is action-oriented and adaptable. You excel at starting tasks and adjusting on the fly, comfortable with ambiguity and preferring momentum over extensive planning.",
       fullDescription: [
-        "You may not always know how you get things done—but you do. You adapt, pivot, and find your way through by feeling it out. You don't just respond to structure; you remix it. Conventional systems often feel too rigid or artificial.",
-        "Your magic lies in flow and flexibility. When you're in sync with your environment or emotions, your creativity is magnetic. But that same sensitivity can lead to inconsistency. You may abandon tools, lose interest mid-stream, or become disoriented by pressure to conform.",
-        "You thrive when you give yourself permission to move your own way."
+        "You have a natural bias toward action. While others are still planning, you've already started and learned from real experience. You don't need perfect conditions or complete information—you figure things out as you go.",
+        "Your adaptability is your superpower. When circumstances change, you pivot easily without the stress others experience. You're comfortable with uncertainty and actually enjoy the challenge of improvising solutions in real-time.",
+        "Your challenge is strategic thinking and long-term planning. You may miss important details or find yourself needing to backtrack because you acted too quickly. Balancing your action orientation with occasional strategic reflection will help you achieve even more."
       ]
     }
   ];

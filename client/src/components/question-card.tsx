@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import type { Question } from "../data/questions";
 
@@ -27,26 +26,57 @@ export function QuestionCard({
   canGoPrevious,
   isLoading = false
 }: QuestionCardProps) {
-  const handleMultipleChoiceChange = (selectedValue: string) => {
+  const handleOptionChange = (selectedValue: string) => {
     onChange(parseInt(selectedValue));
   };
 
-  const handleScaleChange = (scaleValue: number[]) => {
-    onChange(scaleValue[0]);
-  };
-
   return (
-    <Card className="w-full max-w-4xl mx-auto shadow-lg">
+    <Card className="w-full max-w-4xl mx-auto shadow-lg" data-testid="question-card">
       <CardContent className="p-8">
         <div className="space-y-6">
-          <h3 className="text-2xl font-semibold text-neutral-800 leading-relaxed">
+          <h3 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-200 leading-relaxed" data-testid="question-text">
             {question.text}
           </h3>
           
-          {question.type === 'multiple-choice' && question.options && (
+          {/* Likert Scale (1-5) */}
+          {question.type === 'likert' && question.scaleLabels && (
+            <div className="space-y-6">
+              <div className="flex justify-between text-sm text-neutral-600 dark:text-neutral-400">
+                <span>{question.scaleLabels.min}</span>
+                <span>Neutral</span>
+                <span>{question.scaleLabels.max}</span>
+              </div>
+              
+              <RadioGroup
+                value={value?.toString() || ''}
+                onValueChange={(val) => onChange(parseInt(val))}
+                className="flex justify-between space-x-2"
+              >
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <div key={num} className="flex flex-col items-center flex-1 space-y-2">
+                    <RadioGroupItem
+                      value={num.toString()}
+                      id={`likert-${num}`}
+                      className="w-5 h-5"
+                      data-testid={`likert-option-${num}`}
+                    />
+                    <Label
+                      htmlFor={`likert-${num}`}
+                      className="text-sm font-medium cursor-pointer"
+                    >
+                      {num}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+          )}
+
+          {/* Scenario-based (Multiple Choice) */}
+          {question.type === 'scenario' && question.options && (
             <RadioGroup
               value={value?.toString()}
-              onValueChange={handleMultipleChoiceChange}
+              onValueChange={handleOptionChange}
               className="space-y-4"
             >
               {question.options.map((option, index) => (
@@ -55,10 +85,11 @@ export function QuestionCard({
                     value={index.toString()}
                     id={`option-${index}`}
                     className="mt-1"
+                    data-testid={`scenario-option-${index}`}
                   />
                   <Label
                     htmlFor={`option-${index}`}
-                    className="text-neutral-700 leading-relaxed cursor-pointer flex-1 p-4 border-2 border-neutral-200 rounded-xl hover:border-primary transition-colors"
+                    className="text-neutral-700 dark:text-neutral-300 leading-relaxed cursor-pointer flex-1 p-4 border-2 border-neutral-200 dark:border-neutral-700 rounded-xl hover:border-primary dark:hover:border-primary transition-colors"
                   >
                     {option}
                   </Label>
@@ -67,31 +98,30 @@ export function QuestionCard({
             </RadioGroup>
           )}
 
-          {question.type === 'scale' && question.scaleRange && question.scaleLabels && (
-            <div className="space-y-6">
-              <div className="flex justify-between text-sm text-neutral-600">
-                <span>{question.scaleLabels.min}</span>
-                <span>Neutral</span>
-                <span>{question.scaleLabels.max}</span>
-              </div>
-              
-              <div className="px-4">
-                <Slider
-                  value={[typeof value === 'number' ? value : question.scaleRange.min + Math.floor((question.scaleRange.max - question.scaleRange.min) / 2)]}
-                  onValueChange={handleScaleChange}
-                  min={question.scaleRange.min}
-                  max={question.scaleRange.max}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-              
-              <div className="flex justify-between text-xs text-neutral-500">
-                {Array.from({ length: question.scaleRange.max - question.scaleRange.min + 1 }, (_, i) => (
-                  <span key={i}>{question.scaleRange!.min + i}</span>
-                ))}
-              </div>
-            </div>
+          {/* Binary Choice */}
+          {question.type === 'binary' && question.options && (
+            <RadioGroup
+              value={value?.toString()}
+              onValueChange={handleOptionChange}
+              className="space-y-4"
+            >
+              {question.options.map((option, index) => (
+                <div key={index} className="flex items-start space-x-4">
+                  <RadioGroupItem
+                    value={index.toString()}
+                    id={`option-${index}`}
+                    className="mt-1"
+                    data-testid={`binary-option-${index}`}
+                  />
+                  <Label
+                    htmlFor={`option-${index}`}
+                    className="text-neutral-700 dark:text-neutral-300 leading-relaxed cursor-pointer flex-1 p-4 border-2 border-neutral-200 dark:border-neutral-700 rounded-xl hover:border-primary dark:hover:border-primary transition-colors"
+                  >
+                    {option}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
           )}
         </div>
 
@@ -101,6 +131,7 @@ export function QuestionCard({
             onClick={onPrevious}
             disabled={!canGoPrevious || isLoading}
             className="px-6 py-3"
+            data-testid="button-previous"
           >
             <i className="fas fa-arrow-left mr-2"></i>
             Previous
@@ -113,6 +144,7 @@ export function QuestionCard({
               "px-6 py-3 gradient-primary text-white font-medium",
               "hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
             )}
+            data-testid="button-next"
           >
             {isLoading ? (
               <>

@@ -1,329 +1,306 @@
 export interface Question {
   id: string;
   text: string;
-  type: 'multiple-choice' | 'scale';
+  type: 'likert' | 'scenario' | 'binary';
   options?: string[];
-  scaleRange?: { min: number; max: number };
   scaleLabels?: { min: string; max: string };
-  dimensions: {
-    structure?: number;
-    motivation?: number;
-    cognitive?: number;
-    task?: number;
+  axis: 'structure' | 'motivation' | 'cognitive' | 'task';
+  scoring: {
+    [key: string]: number;
   };
+  reverseScored?: boolean;
 }
 
 export const questions: Question[] = [
+  // AXIS 1: STRUCTURE ORIENTATION (Rigid ↔ Flexible) - Questions 1-7
   {
     id: 'q1',
-    text: 'When facing a complex project, I prefer to:',
-    type: 'multiple-choice',
-    options: [
-      'Break it down into smaller, manageable tasks with clear deadlines',
-      'Dive in immediately and figure it out as I go',
-      'Research thoroughly and create a detailed plan before starting',
-      'Collaborate with others to brainstorm approaches'
-    ],
-    dimensions: {
-      structure: 3,
-      motivation: 1,
-      cognitive: 2,
-      task: 0
-    }
+    text: 'I feel most productive when my day follows a predictable routine.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'structure',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
   },
   {
     id: 'q2',
-    text: 'Rate how much you agree: "I work best when I have complete control over my schedule and environment"',
-    type: 'scale',
-    scaleRange: { min: 1, max: 7 },
+    text: 'When plans change unexpectedly, I adapt easily and don\'t feel stressed.',
+    type: 'likert',
     scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
-    dimensions: {
-      structure: 1,
-      motivation: 0,
-      cognitive: 0,
-      task: -1
-    }
+    axis: 'structure',
+    scoring: { '1': 5, '2': 4, '3': 3, '4': 2, '5': 1 },
+    reverseScored: true
   },
   {
     id: 'q3',
-    text: 'My ideal workspace is:',
-    type: 'multiple-choice',
+    text: 'It\'s Monday morning. How do you typically start your work day?',
+    type: 'scenario',
     options: [
-      'A quiet, organized space with minimal distractions',
-      'A dynamic environment with people and activity around me',
-      'A flexible space that I can adapt based on the task',
-      'A home office where I have complete control'
+      'I have a detailed plan/to-do list prepared from last week',
+      'I check my calendar and figure out priorities as I go',
+      'I see what feels interesting/urgent and dive in'
     ],
-    dimensions: {
-      structure: 2,
-      motivation: -1,
-      cognitive: 1,
-      task: 0
-    }
+    axis: 'structure',
+    scoring: { '0': 5, '1': 3, '2': 1 }
   },
   {
     id: 'q4',
-    text: 'When learning something new, I typically:',
-    type: 'multiple-choice',
-    options: [
-      'Follow a structured course or guide step by step',
-      'Jump in and learn through trial and error',
-      'Research multiple sources and create my own learning path',
-      'Find others who can teach me or learn with me'
-    ],
-    dimensions: {
-      structure: 1,
-      motivation: 0,
-      cognitive: 2,
-      task: -1
-    }
+    text: 'I prefer clear step-by-step instructions over general guidelines.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'structure',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
   },
   {
     id: 'q5',
-    text: 'Rate your agreement: "I get energized by tight deadlines and pressure"',
-    type: 'scale',
-    scaleRange: { min: 1, max: 7 },
-    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
-    dimensions: {
-      structure: -1,
-      motivation: 2,
-      cognitive: 0,
-      task: 0
-    }
+    text: 'Which statement resonates more with you?',
+    type: 'binary',
+    options: [
+      'A good plan today is better than a perfect plan tomorrow',
+      'I\'ll figure it out as I go - overthinking kills momentum'
+    ],
+    axis: 'structure',
+    scoring: { '0': 5, '1': 1 }
   },
   {
     id: 'q6',
-    text: 'My approach to goal setting is:',
-    type: 'multiple-choice',
-    options: [
-      'Set specific, measurable goals with clear timelines',
-      'Set ambitious targets and adjust as needed',
-      'Focus on systems and processes rather than outcomes',
-      'Set collaborative goals that involve others'
-    ],
-    dimensions: {
-      structure: 2,
-      motivation: 1,
-      cognitive: 0,
-      task: -1
-    }
+    text: 'I thrive in environments with flexible deadlines and open-ended projects.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'structure',
+    scoring: { '1': 5, '2': 4, '3': 3, '4': 2, '5': 1 },
+    reverseScored: true
   },
   {
     id: 'q7',
-    text: 'When I encounter obstacles, I typically:',
-    type: 'multiple-choice',
-    options: [
-      'Methodically analyze the problem and develop solutions',
-      'Push through with determination and persistence',
-      'Step back and look for creative alternative approaches',
-      'Seek input and support from others'
-    ],
-    dimensions: {
-      structure: 1,
-      motivation: 0,
-      cognitive: 2,
-      task: -1
-    }
+    text: 'I prefer to work in the same physical location every day.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'structure',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
   },
+
+  // AXIS 2: MOTIVATION STYLE (Intrinsic ↔ Extrinsic) - Questions 8-14
   {
     id: 'q8',
-    text: 'Rate your preference: "I prefer to work on one task at a time rather than multitask"',
-    type: 'scale',
-    scaleRange: { min: 1, max: 7 },
+    text: 'I\'m most motivated to complete tasks when others are counting on me or watching my progress.',
+    type: 'likert',
     scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
-    dimensions: {
-      structure: 1,
-      motivation: 0,
-      cognitive: 2,
-      task: 0
-    }
+    axis: 'motivation',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
   },
   {
     id: 'q9',
-    text: 'My motivation comes primarily from:',
-    type: 'multiple-choice',
+    text: 'You just finished a challenging project. What feels most rewarding?',
+    type: 'scenario',
     options: [
-      'Achieving specific targets and completing tasks',
-      'The excitement of challenges and competition',
-      'Personal growth and learning new things',
-      'Making a positive impact on others'
+      'Public recognition or praise from others',
+      'The personal satisfaction of solving the problem',
+      'A tangible reward (bonus, promotion, etc.)',
+      'Learning something new in the process'
     ],
-    dimensions: {
-      structure: 0,
-      motivation: 2,
-      cognitive: 1,
-      task: -1
-    }
+    axis: 'motivation',
+    scoring: { '0': 5, '1': 1, '2': 5, '3': 1 }
   },
   {
     id: 'q10',
-    text: 'When planning my week, I:',
-    type: 'multiple-choice',
-    options: [
-      'Schedule every hour with specific activities',
-      'Block time for priorities but stay flexible',
-      'Plan key objectives and adapt day by day',
-      'Coordinate with others to align schedules'
-    ],
-    dimensions: {
-      structure: 3,
-      motivation: 0,
-      cognitive: 1,
-      task: -2
-    }
+    text: 'I need external deadlines to get things done - without them, I procrastinate.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'motivation',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
   },
   {
     id: 'q11',
-    text: 'Rate your agreement: "I enjoy experimenting with new productivity tools and methods"',
-    type: 'scale',
-    scaleRange: { min: 1, max: 7 },
-    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
-    dimensions: {
-      structure: -1,
-      motivation: 1,
-      cognitive: 2,
-      task: 0
-    }
+    text: 'Which motivates you more?',
+    type: 'binary',
+    options: [
+      'Beating a competitor or hitting a visible goal (leaderboard, streak, etc.)',
+      'Mastering a skill or creating something meaningful'
+    ],
+    axis: 'motivation',
+    scoring: { '0': 5, '1': 1 }
   },
   {
     id: 'q12',
-    text: 'My relationship with routine is:',
-    type: 'multiple-choice',
-    options: [
-      'I thrive on consistent daily routines and habits',
-      'I prefer variety and changing things up regularly',
-      'I like flexible routines that can adapt to circumstances',
-      'I prefer routines that include regular interaction with others'
-    ],
-    dimensions: {
-      structure: 2,
-      motivation: -1,
-      cognitive: 0,
-      task: 0
-    }
+    text: 'I enjoy working on projects even when no one will see or evaluate the results.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'motivation',
+    scoring: { '1': 5, '2': 4, '3': 3, '4': 2, '5': 1 },
+    reverseScored: true
   },
   {
     id: 'q13',
-    text: 'When making decisions, I typically:',
-    type: 'multiple-choice',
-    options: [
-      'Gather data and analyze options systematically',
-      'Trust my instincts and decide quickly',
-      'Consider multiple perspectives and think creatively',
-      'Consult with others and seek consensus'
-    ],
-    dimensions: {
-      structure: 1,
-      motivation: 0,
-      cognitive: 2,
-      task: -2
-    }
+    text: 'Accountability partners, coaches, or public commitments help me stay on track.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'motivation',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
   },
   {
     id: 'q14',
-    text: 'Rate your preference: "I work better with external accountability and check-ins"',
-    type: 'scale',
-    scaleRange: { min: 1, max: 7 },
-    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
-    dimensions: {
-      structure: 0,
-      motivation: 1,
-      cognitive: 0,
-      task: -2
-    }
+    text: 'Your current project feels boring. What would help you push through?',
+    type: 'scenario',
+    options: [
+      'Someone checking in on my progress regularly',
+      'Reminding myself why this matters to me personally',
+      'Gamifying it (rewards, streaks, challenges)',
+      'Finding a more interesting angle to explore'
+    ],
+    axis: 'motivation',
+    scoring: { '0': 5, '1': 1, '2': 5, '3': 1 }
   },
+
+  // AXIS 3: COGNITIVE FOCUS (Big Picture ↔ Detail-Oriented) - Questions 15-21
   {
     id: 'q15',
-    text: 'My energy levels throughout the day are:',
-    type: 'multiple-choice',
-    options: [
-      'Consistent and predictable',
-      'High-energy bursts followed by recovery periods',
-      'Variable depending on the type of work',
-      'Influenced by the people around me'
-    ],
-    dimensions: {
-      structure: 1,
-      motivation: 1,
-      cognitive: 0,
-      task: -1
-    }
+    text: 'I\'m energized by brainstorming possibilities and long-term strategy.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'cognitive',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
   },
   {
     id: 'q16',
-    text: 'When I have a big idea or insight, I:',
-    type: 'multiple-choice',
+    text: 'You\'re starting a new project. Where do you naturally begin?',
+    type: 'scenario',
     options: [
-      'Immediately create a plan to implement it',
-      'Get excited and want to act on it right away',
-      'Explore it from multiple angles before moving forward',
-      'Share it with others to get their thoughts and feedback'
+      'Outlining the vision and desired end state',
+      'Breaking down specific tasks and next steps',
+      'Researching how others have done similar projects',
+      'Sketching out different possibilities and approaches'
     ],
-    dimensions: {
-      structure: 1,
-      motivation: 2,
-      cognitive: 1,
-      task: -2
-    }
+    axis: 'cognitive',
+    scoring: { '0': 5, '1': 1, '2': 1, '3': 5 }
   },
   {
     id: 'q17',
-    text: 'Rate your agreement: "I prefer to finish projects completely before starting new ones"',
-    type: 'scale',
-    scaleRange: { min: 1, max: 7 },
+    text: 'I get frustrated when conversations stay too high-level without diving into specifics.',
+    type: 'likert',
     scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
-    dimensions: {
-      structure: 2,
-      motivation: 0,
-      cognitive: 1,
-      task: 0
-    }
+    axis: 'cognitive',
+    scoring: { '1': 5, '2': 4, '3': 3, '4': 2, '5': 1 },
+    reverseScored: true
   },
   {
     id: 'q18',
-    text: 'My approach to professional development is:',
-    type: 'multiple-choice',
+    text: 'In meetings, you\'re more likely to:',
+    type: 'binary',
     options: [
-      'Follow a structured learning plan with clear milestones',
-      'Seek out challenging opportunities and learn on the job',
-      'Pursue diverse interests and connect different fields',
-      'Learn through mentorship and collaborative relationships'
+      'Ask "What\'s the big goal here?" or "Why are we doing this?"',
+      'Ask "How exactly will this work?" or "What are the specific steps?"'
     ],
-    dimensions: {
-      structure: 2,
-      motivation: 1,
-      cognitive: 1,
-      task: -2
-    }
+    axis: 'cognitive',
+    scoring: { '0': 5, '1': 1 }
   },
   {
     id: 'q19',
-    text: 'When facing competing priorities, I:',
-    type: 'multiple-choice',
-    options: [
-      'Use a systematic method to rank and tackle them',
-      'Focus on the most urgent or exciting one first',
-      'Look for ways to combine or eliminate some priorities',
-      'Discuss with others to get perspective on what matters most'
-    ],
-    dimensions: {
-      structure: 2,
-      motivation: 1,
-      cognitive: 1,
-      task: -2
-    }
+    text: 'I prefer clear, concrete tasks over open-ended exploration.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'cognitive',
+    scoring: { '1': 5, '2': 4, '3': 3, '4': 2, '5': 1 },
+    reverseScored: true
   },
   {
     id: 'q20',
-    text: 'Rate your preference: "I value work-life balance over maximum productivity"',
-    type: 'scale',
-    scaleRange: { min: 1, max: 7 },
+    text: 'I often see connections between seemingly unrelated ideas or concepts.',
+    type: 'likert',
     scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
-    dimensions: {
-      structure: 0,
-      motivation: -1,
-      cognitive: 0,
-      task: 1
-    }
+    axis: 'cognitive',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
+  },
+  {
+    id: 'q21',
+    text: 'When reading a book or article, you tend to:',
+    type: 'scenario',
+    options: [
+      'Skim for main ideas and overall themes',
+      'Read carefully and take detailed notes'
+    ],
+    axis: 'cognitive',
+    scoring: { '0': 5, '1': 1 }
+  },
+
+  // AXIS 4: TASK RELATIONSHIP (Avoidant ↔ Action-Oriented) - Questions 22-28
+  {
+    id: 'q22',
+    text: 'I frequently delay starting tasks, even when I know they\'re important.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'task',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
+  },
+  {
+    id: 'q23',
+    text: 'You have a difficult task due next week. When do you typically start?',
+    type: 'scenario',
+    options: [
+      'Immediately - I like getting ahead',
+      'A few days before - enough time to do it well',
+      'The day before or day of - I work best under pressure'
+    ],
+    axis: 'task',
+    scoring: { '0': 1, '1': 3, '2': 5 }
+  },
+  {
+    id: 'q24',
+    text: 'When I think about starting a task, I often feel anxious or overwhelmed.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'task',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
+  },
+  {
+    id: 'q25',
+    text: 'Which statement describes you better?',
+    type: 'binary',
+    options: [
+      'I tend to overthink things before starting',
+      'I prefer to jump in and figure it out as I go'
+    ],
+    axis: 'task',
+    scoring: { '0': 5, '1': 1 }
+  },
+  {
+    id: 'q26',
+    text: 'I frequently have a long list of tasks I\'ve been meaning to do for weeks or months.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'task',
+    scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
+    reverseScored: false
+  },
+  {
+    id: 'q27',
+    text: 'Once I start a task, I usually maintain momentum until it\'s done.',
+    type: 'likert',
+    scaleLabels: { min: 'Strongly Disagree', max: 'Strongly Agree' },
+    axis: 'task',
+    scoring: { '1': 5, '2': 4, '3': 3, '4': 2, '5': 1 },
+    reverseScored: true
+  },
+  {
+    id: 'q28',
+    text: 'It\'s 2pm on a workday and you have a challenging task on your to-do list. What happens?',
+    type: 'scenario',
+    options: [
+      'I tackle it head-on while I have energy',
+      'I do easier tasks first to build momentum',
+      'I find myself distracted (email, social media, snacks)',
+      'I decide to do it tomorrow when I\'m "more ready"'
+    ],
+    axis: 'task',
+    scoring: { '0': 1, '1': 3, '2': 4, '3': 5 }
   }
 ];

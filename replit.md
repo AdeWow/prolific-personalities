@@ -1,0 +1,141 @@
+# Prolific Personalities - Productivity Assessment Platform
+
+## Overview
+
+Prolific Personalities is a research-backed web application that helps users discover their unique productivity archetype through a scientifically-designed assessment. The platform analyzes users across four cognitive and behavioral dimensions (Structure Orientation, Motivation Style, Cognitive Focus, and Task Relationship) to map them to one of six productivity archetypes, then provides personalized strategies, tools, and insights tailored to their working style.
+
+The application is built as a full-stack TypeScript web application with a React frontend and Express backend, designed to deliver an engaging, mobile-friendly assessment experience with immediate, shareable results.
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
+
+## System Architecture
+
+### Application Structure
+
+**Monorepo Organization**: The codebase uses a monorepo structure with three main directories:
+- `client/` - React-based frontend application
+- `server/` - Express.js backend API
+- `shared/` - TypeScript types and database schemas shared between frontend and backend
+
+This architecture enables type-safe communication between client and server while maintaining clear separation of concerns.
+
+### Frontend Architecture
+
+**Technology Stack**: React 18 with TypeScript, using Vite as the build tool and development server.
+
+**UI Framework**: The application uses shadcn/ui components (Radix UI primitives) styled with Tailwind CSS. This provides a comprehensive, accessible component library with a consistent "new-york" design style and a custom productivity-focused color palette (primary: indigo, accent: teal, neutral grays).
+
+**Routing**: Client-side routing is handled by Wouter, a lightweight React router that provides path-based navigation without requiring a full routing framework.
+
+**State Management**: 
+- TanStack Query (React Query) manages server state, data fetching, and caching
+- Local React state (useState) handles ephemeral UI state like quiz progress and current answers
+- No global state management library (Redux, Zustand) is used - the application relies on React Query's cache and local component state
+
+**Key Design Patterns**:
+- Component composition with reusable UI primitives (Button, Card, Badge, etc.)
+- Custom hooks for cross-cutting concerns (useToast, useIsMobile)
+- Separation of business logic into utility modules (quiz-logic.ts)
+- Type-safe API communication using shared schemas
+
+### Backend Architecture
+
+**Server Framework**: Express.js running on Node.js with ESM module format.
+
+**API Design**: RESTful API with two primary endpoints:
+- `POST /api/quiz/results` - Saves completed quiz results
+- `GET /api/quiz/results/:sessionId` - Retrieves results by session ID
+
+The API uses Zod schemas for runtime validation of incoming data, ensuring type safety at the API boundary.
+
+**Development vs Production**:
+- Development: Vite dev server integrated as Express middleware for HMR and fast refresh
+- Production: Static files served from `dist/public` after Vite build
+
+**Error Handling**: Centralized error handling middleware catches and formats errors consistently, returning JSON error responses with appropriate HTTP status codes.
+
+### Data Storage
+
+**Database**: PostgreSQL accessed via Neon serverless driver (WebSocket-based connection pooling).
+
+**ORM**: Drizzle ORM provides type-safe database queries and schema management. The schema is defined in TypeScript and migrations are generated using Drizzle Kit.
+
+**Schema Design**:
+- `users` table - Basic user authentication (username, password)
+- `quiz_results` table - Stores quiz completions with:
+  - Unique session IDs for retrieval
+  - JSONB columns for answers and calculated scores
+  - Archetype assignment
+  - Completion timestamp
+
+**Data Access Pattern**: Repository pattern implemented through the `DatabaseStorage` class, which provides an abstraction layer (`IStorage` interface) over direct database access. This enables easier testing and potential future storage backend changes.
+
+### Quiz Logic Architecture
+
+**Assessment Design**: The quiz implements a validated psychological assessment methodology with:
+- 24-28 questions across four axes (6-7 questions per axis)
+- Mixed question types: Likert scale (70%), scenario-based (15%), binary choice (15%)
+- Reverse-scored items to prevent response bias
+- Attention check questions for data quality
+
+**Four-Axis Framework**:
+1. **Structure Orientation** - Measures preference for routines vs. spontaneity, planning vs. improvisation
+2. **Motivation Style** - Assesses intrinsic vs. extrinsic motivation, response to deadlines and accountability
+3. **Cognitive Focus** - Evaluates attention scope (deep focus vs. task-switching), working memory patterns
+4. **Task Relationship** - Captures procrastination patterns, flow state tendency, emotional approach to tasks
+
+**Scoring Algorithm**: 
+- Each answer maps to a numeric score based on question-specific scoring rules
+- Scores are aggregated per axis to create a four-dimensional profile
+- Archetype determination uses range matching - the archetype whose defined score ranges best match the user's calculated scores is selected
+- When scores don't perfectly match ranges, distance-based penalties determine the closest match
+
+**Six Archetypes**: The Structured Achiever, The Chaotic Creative, The Integrator, The Executor, The Visionary, and The Alchemist - each represents a distinct combination of the four dimensions with tailored recommendations.
+
+### Scientific Foundation
+
+The assessment is grounded in:
+- Executive Function Theory (Barkley)
+- Cognitive Load Theory (Sweller)
+- Self-Determination Theory (Deci & Ryan)
+- Procrastination research (Pychyl, Ferrari)
+- Flow theory (Csikszentmihalyi)
+
+Content and archetype definitions are informed by behavioral psychology and motivational theory literature.
+
+## External Dependencies
+
+### Database & Infrastructure
+- **Neon Database** - Serverless PostgreSQL with WebSocket connections
+- **Drizzle ORM** - TypeScript ORM for database queries and schema management
+- **Drizzle Kit** - CLI tool for database migrations and schema pushing
+
+### Frontend Libraries
+- **React** - UI library
+- **Vite** - Build tool and dev server
+- **Wouter** - Client-side routing
+- **TanStack Query** - Server state management and data fetching
+- **shadcn/ui / Radix UI** - Component library (Accordion, Dialog, Dropdown, Popover, Toast, etc.)
+- **Tailwind CSS** - Utility-first CSS framework
+- **React Hook Form** - Form state management (via @hookform/resolvers)
+- **Zod** - Runtime type validation and schema validation
+- **date-fns** - Date formatting utilities
+- **class-variance-authority & clsx** - Conditional className utilities
+- **Lucide React** - Icon library
+
+### Backend Libraries
+- **Express** - Web server framework
+- **ws** - WebSocket support for Neon database connections
+- **connect-pg-simple** - PostgreSQL session store for Express (currently included but sessions not implemented)
+
+### Development Tools
+- **TypeScript** - Type safety across the stack
+- **esbuild** - Server-side bundling for production
+- **tsx** - TypeScript execution for development
+- **@replit/vite-plugin-runtime-error-modal** - Development error overlay
+- **@replit/vite-plugin-cartographer** - Replit integration (development only)
+
+### Asset Management
+The `attached_assets/` directory contains content documents that inform the quiz design, archetype descriptions, and educational content. These are referenced by the frontend pages but not directly imported as modules.

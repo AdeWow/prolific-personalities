@@ -24,207 +24,207 @@ export interface Archetype {
 
 export const archetypes: Archetype[] = [
   {
-    id: 'accelerator',
-    name: 'The Accelerator',
-    title: 'High-Energy Achiever',
-    description: 'High-energy, deadline-driven achiever who thrives under pressure and delivers results fast.',
-    icon: 'fas fa-rocket',
-    color: 'red',
-    gradientFrom: 'from-red-400',
-    gradientTo: 'to-pink-400',
-    tags: ['Fast-paced', 'Goal-oriented', 'Competitive'],
-    strengths: [
-      'Thrives under pressure',
-      'Quick decision making',
-      'High energy execution',
-      'Deadline focused'
-    ],
-    growthAreas: [
-      'Patience with details',
-      'Long-term planning',
-      'Work-life balance',
-      'Quality over speed'
-    ],
-    tools: [
-      { name: 'Sprint Planning', match: 95 },
-      { name: 'Deadline Tracking', match: 92 },
-      { name: 'Quick Wins', match: 88 }
-    ],
-    scoreRanges: {
-      structure: { min: -10, max: 10 },
-      motivation: { min: 20, max: 40 },
-      cognitive: { min: -10, max: 10 },
-      task: { min: -10, max: 10 }
-    }
-  },
-  {
-    id: 'strategist',
-    name: 'The Strategist',
-    title: 'Methodical Planner',
-    description: 'Methodical planner who excels at long-term thinking and systematic approach to complex projects.',
-    icon: 'fas fa-chess',
+    id: 'structured-achiever',
+    name: 'The Structured Achiever',
+    title: 'Organized Goal-Crusher',
+    description: 'Highly organized, externally motivated achiever who thrives on clear goals, accountability, and detailed execution. You need structure and external validation to perform at your best.',
+    icon: 'fas fa-trophy',
     color: 'blue',
     gradientFrom: 'from-blue-400',
     gradientTo: 'to-indigo-400',
-    tags: ['Strategic', 'Organized', 'Systematic'],
+    tags: ['Organized', 'Goal-oriented', 'Detail-focused'],
     strengths: [
-      'Strategic planning',
-      'Risk assessment',
-      'Long-term vision',
-      'Systematic execution'
+      'Excellent at following through on commitments',
+      'Thrives with clear deadlines and accountability',
+      'Detail-oriented execution',
+      'Responds well to external rewards and recognition'
     ],
     growthAreas: [
-      'Delegation skills',
-      'Adaptability',
-      'Quick decisions',
-      'Spontaneity'
+      'Self-motivation without external pressure',
+      'Flexibility when plans change',
+      'Big-picture strategic thinking',
+      'Working without clear structure'
     ],
     tools: [
-      { name: 'Project Planning', match: 95 },
-      { name: 'Time Blocking', match: 88 },
-      { name: 'Goal Tracking', match: 92 }
+      { name: 'Accountability Apps', match: 95 },
+      { name: 'Deadline Trackers', match: 92 },
+      { name: 'Detailed Task Lists', match: 90 }
     ],
     scoreRanges: {
-      structure: { min: 20, max: 40 },
-      motivation: { min: -10, max: 20 },
-      cognitive: { min: 10, max: 30 },
-      task: { min: -20, max: 10 }
+      structure: { min: 22, max: 35 },
+      motivation: { min: 22, max: 35 },
+      cognitive: { min: 7, max: 21 },
+      task: { min: 7, max: 21 }
     }
   },
   {
-    id: 'innovator',
-    name: 'The Innovator',
-    title: 'Creative Problem-Solver',
-    description: 'Creative problem-solver who generates breakthrough ideas and thrives on variety and experimentation.',
-    icon: 'fas fa-lightbulb',
-    color: 'green',
-    gradientFrom: 'from-green-400',
-    gradientTo: 'to-emerald-400',
-    tags: ['Creative', 'Flexible', 'Experimental'],
-    strengths: [
-      'Creative thinking',
-      'Problem solving',
-      'Adaptability',
-      'Innovation'
-    ],
-    growthAreas: [
-      'Follow-through',
-      'Routine tasks',
-      'Structure',
-      'Consistency'
-    ],
-    tools: [
-      { name: 'Brainstorming', match: 95 },
-      { name: 'Mind Mapping', match: 90 },
-      { name: 'Experimentation', match: 88 }
-    ],
-    scoreRanges: {
-      structure: { min: -20, max: 10 },
-      motivation: { min: 0, max: 30 },
-      cognitive: { min: 20, max: 40 },
-      task: { min: -10, max: 20 }
-    }
-  },
-  {
-    id: 'collaborator',
-    name: 'The Collaborator',
-    title: 'Team-Oriented Achiever',
-    description: 'Team-oriented achiever who maximizes productivity through relationships and shared goals.',
-    icon: 'fas fa-users',
+    id: 'chaotic-creative',
+    name: 'The Chaotic Creative',
+    title: 'Free-Spirited Innovator',
+    description: 'Flexible, intrinsically motivated creative who thrives on big-picture thinking but struggles with task initiation and structure. You need freedom to explore but may procrastinate on execution.',
+    icon: 'fas fa-palette',
     color: 'purple',
     gradientFrom: 'from-purple-400',
     gradientTo: 'to-violet-400',
-    tags: ['Social', 'Supportive', 'Inclusive'],
+    tags: ['Creative', 'Flexible', 'Visionary'],
     strengths: [
-      'Team building',
-      'Communication',
-      'Consensus building',
-      'Mentoring'
+      'Innovative big-picture thinking',
+      'Adaptable to changing circumstances',
+      'Self-motivated by personal interest',
+      'Creative problem solving'
     ],
     growthAreas: [
-      'Independent work',
-      'Difficult conversations',
-      'Solo decision making',
-      'Personal boundaries'
+      'Starting tasks without overthinking',
+      'Working within structured systems',
+      'Attention to execution details',
+      'Meeting external deadlines'
     ],
     tools: [
-      { name: 'Team Collaboration', match: 95 },
-      { name: 'Communication', match: 92 },
-      { name: 'Shared Goals', match: 88 }
+      { name: 'Creative Capture Tools', match: 95 },
+      { name: 'Gentle Accountability', match: 88 },
+      { name: 'Mind Mapping', match: 92 }
     ],
     scoreRanges: {
-      structure: { min: -10, max: 20 },
-      motivation: { min: 0, max: 25 },
-      cognitive: { min: -10, max: 20 },
-      task: { min: -40, max: -10 }
+      structure: { min: 7, max: 21 },
+      motivation: { min: 7, max: 21 },
+      cognitive: { min: 22, max: 35 },
+      task: { min: 22, max: 35 }
     }
   },
   {
-    id: 'harmonizer',
-    name: 'The Harmonizer',
-    title: 'Balanced Achiever',
-    description: 'Balanced achiever who integrates work and life seamlessly while maintaining steady progress.',
-    icon: 'fas fa-balance-scale',
-    color: 'amber',
-    gradientFrom: 'from-amber-400',
-    gradientTo: 'to-orange-400',
-    tags: ['Balanced', 'Steady', 'Sustainable'],
-    strengths: [
-      'Work-life balance',
-      'Sustainable pace',
-      'Stress management',
-      'Holistic thinking'
-    ],
-    growthAreas: [
-      'Urgency',
-      'Ambition',
-      'Risk taking',
-      'Speed'
-    ],
-    tools: [
-      { name: 'Balance Tracking', match: 95 },
-      { name: 'Wellness', match: 90 },
-      { name: 'Boundaries', match: 85 }
-    ],
-    scoreRanges: {
-      structure: { min: 0, max: 25 },
-      motivation: { min: -20, max: 10 },
-      cognitive: { min: -10, max: 15 },
-      task: { min: 10, max: 40 }
-    }
-  },
-  {
-    id: 'analyzer',
-    name: 'The Analyzer',
-    title: 'Detail-Oriented Perfectionist',
-    description: 'Detail-oriented perfectionist who excels at deep work and produces high-quality, thorough results.',
+    id: 'anxious-perfectionist',
+    name: 'The Anxious Perfectionist',
+    title: 'Detail-Obsessed Procrastinator',
+    description: 'Structured, detail-oriented perfectionist who excels at quality work but struggles with task avoidance due to high standards and anxiety about starting.',
     icon: 'fas fa-microscope',
     color: 'teal',
     gradientFrom: 'from-teal-400',
     gradientTo: 'to-cyan-400',
-    tags: ['Analytical', 'Thorough', 'Precise'],
+    tags: ['Perfectionist', 'Detail-oriented', 'Anxious'],
     strengths: [
-      'Deep analysis',
-      'Quality control',
-      'Attention to detail',
-      'Research skills'
+      'Exceptional attention to detail',
+      'High-quality, thorough work',
+      'Systematic problem-solving',
+      'Strong analytical skills'
     ],
     growthAreas: [
-      'Speed',
-      'Delegation',
-      'Big picture',
-      'Perfectionism'
+      'Starting tasks without perfect conditions',
+      'Managing anxiety and overwhelm',
+      'Accepting "good enough"',
+      'Overcoming procrastination patterns'
     ],
     tools: [
-      { name: 'Deep Work', match: 95 },
-      { name: 'Quality Control', match: 92 },
-      { name: 'Analysis Tools', match: 90 }
+      { name: 'Pomodoro Technique', match: 92 },
+      { name: 'Task Breakdown Systems', match: 90 },
+      { name: 'Anxiety Management', match: 88 }
     ],
     scoreRanges: {
-      structure: { min: 15, max: 35 },
-      motivation: { min: -15, max: 15 },
-      cognitive: { min: 15, max: 40 },
-      task: { min: 10, max: 35 }
+      structure: { min: 22, max: 35 },
+      motivation: { min: 7, max: 28 },
+      cognitive: { min: 7, max: 21 },
+      task: { min: 22, max: 35 }
+    }
+  },
+  {
+    id: 'novelty-seeker',
+    name: 'The Novelty Seeker',
+    title: 'Stimulus-Driven Explorer',
+    description: 'Flexible, externally motivated innovator who craves novelty and needs external stimulation. You thrive on big-picture ideas and variety but require accountability to maintain focus.',
+    icon: 'fas fa-rocket',
+    color: 'red',
+    gradientFrom: 'from-red-400',
+    gradientTo: 'to-pink-400',
+    tags: ['Novelty-driven', 'Energetic', 'Visionary'],
+    strengths: [
+      'Thrives in dynamic, changing environments',
+      'Quick to spot new opportunities',
+      'High energy and enthusiasm',
+      'Creative big-picture thinking'
+    ],
+    growthAreas: [
+      'Sustained focus on one project',
+      'Follow-through on routine tasks',
+      'Self-directed motivation',
+      'Working independently without external stimulation'
+    ],
+    tools: [
+      { name: 'Gamification Apps', match: 95 },
+      { name: 'Accountability Partners', match: 92 },
+      { name: 'Novelty-based Planning', match: 90 }
+    ],
+    scoreRanges: {
+      structure: { min: 7, max: 21 },
+      motivation: { min: 22, max: 35 },
+      cognitive: { min: 22, max: 35 },
+      task: { min: 7, max: 35 }
+    }
+  },
+  {
+    id: 'strategic-planner',
+    name: 'The Strategic Planner',
+    title: 'Visionary Architect',
+    description: 'Structured, intrinsically motivated strategist who combines big-picture thinking with methodical execution. You excel at long-term planning and self-directed goal achievement.',
+    icon: 'fas fa-chess',
+    color: 'indigo',
+    gradientFrom: 'from-indigo-400',
+    gradientTo: 'to-blue-400',
+    tags: ['Strategic', 'Self-motivated', 'Visionary'],
+    strengths: [
+      'Excellent long-term strategic planning',
+      'Self-motivated and disciplined',
+      'Balances vision with execution',
+      'Systematic approach to complex goals'
+    ],
+    growthAreas: [
+      'Flexibility when plans need adjustment',
+      'Delegating and trusting others',
+      'Quick tactical decisions',
+      'Attention to small details'
+    ],
+    tools: [
+      { name: 'Strategic Planning Tools', match: 95 },
+      { name: 'Vision Boards', match: 90 },
+      { name: 'Long-term Goal Trackers', match: 92 }
+    ],
+    scoreRanges: {
+      structure: { min: 22, max: 35 },
+      motivation: { min: 7, max: 21 },
+      cognitive: { min: 22, max: 35 },
+      task: { min: 7, max: 21 }
+    }
+  },
+  {
+    id: 'flexible-improviser',
+    name: 'The Flexible Improviser',
+    title: 'Adaptive Action-Taker',
+    description: 'Action-oriented, flexible executor who excels at starting tasks and adapting on the fly. You thrive with ambiguity and prefer momentum over planning.',
+    icon: 'fas fa-running',
+    color: 'green',
+    gradientFrom: 'from-green-400',
+    gradientTo: 'to-emerald-400',
+    tags: ['Action-oriented', 'Flexible', 'Adaptive'],
+    strengths: [
+      'Quick to start and take action',
+      'Adapts easily to changing circumstances',
+      'Comfortable with ambiguity',
+      'Maintains momentum and energy'
+    ],
+    growthAreas: [
+      'Long-term strategic planning',
+      'Working within rigid structures',
+      'Detailed analysis before action',
+      'Consistency in routines'
+    ],
+    tools: [
+      { name: 'Quick Capture Apps', match: 95 },
+      { name: 'Flexible Planning Tools', match: 90 },
+      { name: 'Momentum Trackers', match: 88 }
+    ],
+    scoreRanges: {
+      structure: { min: 7, max: 21 },
+      motivation: { min: 7, max: 28 },
+      cognitive: { min: 7, max: 28 },
+      task: { min: 7, max: 21 }
     }
   }
 ];
