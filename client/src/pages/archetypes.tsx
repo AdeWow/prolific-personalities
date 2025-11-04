@@ -13,14 +13,25 @@ export default function Archetypes() {
   const [location] = useLocation();
 
   useEffect(() => {
-    // Handle URL hash navigation
-    if (location.includes('#')) {
-      const hash = location.split('#')[1];
-      const element = document.getElementById(hash);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+    // Handle URL hash navigation with a slight delay to ensure DOM is ready
+    const handleHashNavigation = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        // Small delay to ensure the page has rendered
+        setTimeout(() => {
+          const element = document.getElementById(hash);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
       }
-    }
+    };
+
+    handleHashNavigation();
+    
+    // Also listen for hash changes
+    window.addEventListener('hashchange', handleHashNavigation);
+    return () => window.removeEventListener('hashchange', handleHashNavigation);
   }, [location]);
 
   const archetypeDetails = [
