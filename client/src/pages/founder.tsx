@@ -1,8 +1,13 @@
+import { useEffect } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
 export default function FounderPage() {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
       <div className="container mx-auto px-4 py-16 max-w-6xl">
