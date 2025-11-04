@@ -99,3 +99,6 @@ export type InsertTool = z.infer<typeof insertToolSchema>;
 export type Tool = typeof tools.$inferSelect;
 export type InsertEmailCapture = z.infer<typeof insertEmailCaptureSchema>;
 export type EmailCapture = typeof emailCaptures.$inferSelect;
+
+// Type for tools with archetype fit score
+export type ToolWithFitScore = Tool & { fitScore: number };

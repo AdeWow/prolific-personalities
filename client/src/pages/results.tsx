@@ -11,7 +11,7 @@ import { archetypes } from "@/data/archetypes";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
-import type { QuizResult, Tool } from "@shared/schema";
+import type { QuizResult, ToolWithFitScore } from "@shared/schema";
 
 export default function Results() {
   const params = useParams();
@@ -35,7 +35,7 @@ export default function Results() {
 
   const archetype = result ? archetypes.find(a => a.id === result.archetype) : null;
   
-  const { data: tools } = useQuery<(Tool & { fitScore: number })[]>({
+  const { data: tools } = useQuery<ToolWithFitScore[]>({
     queryKey: ['/api/tools/archetype', archetype?.id],
     queryFn: async () => {
       const response = await fetch(`/api/tools/archetype/${archetype?.id}?limit=10`);
@@ -49,10 +49,8 @@ export default function Results() {
 
   const emailCaptureMutation = useMutation({
     mutationFn: async (emailData: { email: string; sessionId: string }) => {
-      return await apiRequest('/api/email-capture', {
-        method: 'POST',
-        body: JSON.stringify(emailData),
-      });
+      const response = await apiRequest('POST', '/api/email-capture', emailData);
+      return response.json();
     },
     onSuccess: () => {
       setEmailSaved(true);
@@ -341,7 +339,7 @@ export default function Results() {
                   <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg py-6"
-                    disabled={emailCaptureMutation.isPending}
+                    disabled={emailCaptureMutation.isPending || emailSaved}
                     data-testid="button-submit-email"
                   >
                     {emailCaptureMutation.isPending ? "Sending..." : "Send My Results"}

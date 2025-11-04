@@ -1,4 +1,4 @@
-import { users, quizResults, tools, emailCaptures, type User, type InsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, type User, type InsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type ToolWithFitScore } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
@@ -9,7 +9,7 @@ export interface IStorage {
   saveQuizResult(result: InsertQuizResult): Promise<QuizResult>;
   getQuizResultBySessionId(sessionId: string): Promise<QuizResult | undefined>;
   getTools(): Promise<Tool[]>;
-  getToolsByArchetype(archetype: string, limit?: number): Promise<Tool[]>;
+  getToolsByArchetype(archetype: string, limit?: number): Promise<ToolWithFitScore[]>;
   createTool(tool: InsertTool): Promise<Tool>;
   saveEmailCapture(capture: InsertEmailCapture): Promise<EmailCapture>;
 }
@@ -51,7 +51,7 @@ export class DatabaseStorage implements IStorage {
     return allTools;
   }
 
-  async getToolsByArchetype(archetype: string, limit: number = 10): Promise<Tool[]> {
+  async getToolsByArchetype(archetype: string, limit: number = 10): Promise<ToolWithFitScore[]> {
     const allTools = await db.select().from(tools);
     
     // Sort tools by archetype fit score and return top N
