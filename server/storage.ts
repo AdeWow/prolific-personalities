@@ -60,6 +60,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async linkQuizResultToUser(sessionId: string, userId: string): Promise<QuizResult | undefined> {
+    // First check if the result exists and if it's already claimed by a different user
+    const existing = await this.getQuizResultBySessionId(sessionId);
+    
+    if (!existing) {
+      return undefined; // Result doesn't exist
+    }
+    
+    // Prevent hijacking: Only allow claiming if result is unclaimed (userId is null)
+    if (existing.userId !== null) {
+      return undefined; // Already claimed by someone (possibly different user)
+    }
+    
+    // Claim the result for this user
     const [result] = await db
       .update(quizResults)
       .set({ userId })

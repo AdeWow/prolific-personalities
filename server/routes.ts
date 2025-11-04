@@ -27,10 +27,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { sessionId } = req.params;
       const userId = req.user.claims.sub;
+      
+      // Check if result exists and is already claimed
+      const existing = await storage.getQuizResultBySessionId(sessionId);
+      if (!existing) {
+        res.status(404).json({ message: "Quiz result not found" });
+        return;
+      }
+      
+      if (existing.userId !== null && existing.userId !== userId) {
+        res.status(403).json({ message: "This quiz result is already claimed by another user" });
+        return;
+      }
+      
+      // If already claimed by this user, just return it
+      if (existing.userId === userId) {
+        res.json(existing);
+        return;
+      }
+      
+      // Otherwise, claim it
       const result = await storage.linkQuizResultToUser(sessionId, userId);
       
       if (!result) {
-        res.status(404).json({ message: "Quiz result not found" });
+        res.status(500).json({ message: "Failed to claim quiz result" });
         return;
       }
       
