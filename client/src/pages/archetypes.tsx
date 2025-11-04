@@ -293,10 +293,14 @@ export default function Archetypes() {
                 <a
                   key={archetype.id}
                   href={`#${archetype.id}`}
-                  className={`p-4 rounded-xl border-2 border-${archetypeData.color}-200 bg-${archetypeData.color}-50 hover:border-${archetypeData.color}-400 transition-colors text-center`}
+                  className={`p-4 rounded-xl border-2 border-${archetypeData.color}-200 bg-${archetypeData.color}-50 hover:border-${archetypeData.color}-400 hover:shadow-lg transition-all text-center group`}
                 >
-                  <div className={`w-12 h-12 bg-gradient-to-br ${archetypeData.gradientFrom} ${archetypeData.gradientTo} rounded-xl flex items-center justify-center mx-auto mb-2`}>
-                    <i className={`${archetypeData.icon} text-white text-lg`}></i>
+                  <div className="w-16 h-16 rounded-xl overflow-hidden mx-auto mb-3 ring-2 ring-neutral-200 group-hover:ring-4 group-hover:ring-primary/30 transition-all">
+                    <img 
+                      src={archetype.image} 
+                      alt={archetype.name}
+                      className="w-full h-full object-cover object-center scale-125"
+                    />
                   </div>
                   <div className="font-semibold text-neutral-800 text-sm">{archetype.name}</div>
                 </a>
