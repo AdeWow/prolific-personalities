@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ScoreRadarChart } from "@/components/score-radar-chart";
+import { FourAxisVisual } from "@/components/four-axis-visual";
 import { ToolCard } from "@/components/tool-card";
 import { archetypes } from "@/data/archetypes";
 import { useToast } from "@/hooks/use-toast";
@@ -181,10 +181,9 @@ export default function Results() {
                   </p>
                 </div>
 
-                {/* Radar Chart */}
-                <div className="max-w-md mx-auto pt-8">
-                  <h3 className="text-lg font-semibold text-neutral-700 mb-4">Your 4-Axis Profile</h3>
-                  <ScoreRadarChart scores={scores} />
+                {/* 4-Axis Visualization */}
+                <div className="max-w-3xl mx-auto pt-8">
+                  <FourAxisVisual scores={scores} />
                 </div>
               </div>
             </CardContent>
