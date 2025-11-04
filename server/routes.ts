@@ -100,6 +100,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Sitemap route
+  app.get("/sitemap.xml", async (req, res) => {
+    try {
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const currentDate = new Date().toISOString().split('T')[0];
+      
+      // Static pages with their priorities
+      const staticPages = [
+        { url: '', changefreq: 'daily', priority: '1.0' }, // Homepage
+        { url: '/quiz', changefreq: 'weekly', priority: '0.9' },
+        { url: '/archetypes', changefreq: 'monthly', priority: '0.8' },
+        { url: '/pricing', changefreq: 'weekly', priority: '0.8' },
+        { url: '/blog', changefreq: 'weekly', priority: '0.7' },
+        { url: '/about', changefreq: 'monthly', priority: '0.6' },
+        { url: '/science', changefreq: 'monthly', priority: '0.6' },
+        { url: '/faq', changefreq: 'monthly', priority: '0.5' },
+      ];
+
+      // Blog posts (we'll import the data here)
+      const blogPosts = [
+        { slug: '6-productivity-archetypes-explained' },
+      ];
+
+      let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+
+      // Add static pages
+      for (const page of staticPages) {
+        sitemap += `
+  <url>
+    <loc>${baseUrl}${page.url}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`;
+      }
+
+      // Add blog posts
+      for (const post of blogPosts) {
+        sitemap += `
+  <url>
+    <loc>${baseUrl}/blog/${post.slug}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+      }
+
+      sitemap += `
+</urlset>`;
+
+      res.header('Content-Type', 'application/xml');
+      res.send(sitemap);
+    } catch (error) {
+      console.error("Error generating sitemap:", error);
+      res.status(500).send('Error generating sitemap');
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
