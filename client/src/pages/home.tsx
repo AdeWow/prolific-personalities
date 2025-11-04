@@ -19,6 +19,7 @@ export default function Home() {
             </Link>
             <nav className="hidden md:flex items-center space-x-8">
               <Link href="/about" className="text-neutral-600 hover:text-primary transition-colors">About</Link>
+              <Link href="/blog" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-blog">Blog</Link>
               <Link href="/quiz" className="text-neutral-600 hover:text-primary transition-colors">Take Quiz</Link>
               <a href="#contact" className="text-neutral-600 hover:text-primary transition-colors">Contact</a>
             </nav>
@@ -279,7 +280,7 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">Resources</h4>
               <ul className="space-y-2 text-neutral-400">
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><Link href="/blog" className="hover:text-white transition-colors" data-testid="link-footer-blog">Blog</Link></li>
               </ul>
             </div>
             
