@@ -6,6 +6,12 @@ Prolific Personalities is a research-backed web application that helps users dis
 
 The application is built as a full-stack TypeScript web application with a React frontend and Express backend, designed to deliver an engaging, mobile-friendly assessment experience with immediate, shareable results.
 
+**Recent Features Added (November 2025)**:
+- **Email Capture**: Users can save their results via email for marketing campaigns and follow-up engagement
+- **Productivity Tools Database**: 15 popular productivity tools (Freedom, Notion, Todoist, etc.) with archetype-specific fit scores (0-100) to recommend the best tools for each user's working style
+- **PDF Export**: Users can export their results as PDF using browser's native print functionality
+- **Tool Recommendations**: Results page displays up to 9 tools filtered and sorted by archetype fit score, showing pricing, pros/cons, and platform information
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -44,9 +50,13 @@ This architecture enables type-safe communication between client and server whil
 
 **Server Framework**: Express.js running on Node.js with ESM module format.
 
-**API Design**: RESTful API with two primary endpoints:
+**API Design**: RESTful API with endpoints for:
 - `POST /api/quiz/results` - Saves completed quiz results
 - `GET /api/quiz/results/:sessionId` - Retrieves results by session ID
+- `POST /api/email-capture` - Saves email address for marketing campaigns
+- `GET /api/tools` - Retrieves all productivity tools
+- `GET /api/tools/archetype/:archetypeId` - Retrieves tools filtered and sorted by archetype fit score
+- `POST /api/tools/seed` - Seeds the database with initial productivity tools (one-time operation)
 
 The API uses Zod schemas for runtime validation of incoming data, ensuring type safety at the API boundary.
 
@@ -69,6 +79,15 @@ The API uses Zod schemas for runtime validation of incoming data, ensuring type 
   - JSONB columns for answers and calculated scores
   - Archetype assignment
   - Completion timestamp
+- `tools` table - Productivity tool database with:
+  - Tool name, description, category
+  - JSONB columns for pricing and archetype fit scores
+  - Array columns for pros, cons, platforms
+  - URL for external links
+- `email_captures` table - Email marketing captures with:
+  - Email address
+  - Session ID linking to quiz results
+  - Timestamp of capture
 
 **Data Access Pattern**: Repository pattern implemented through the `DatabaseStorage` class, which provides an abstraction layer (`IStorage` interface) over direct database access. This enables easier testing and potential future storage backend changes.
 
