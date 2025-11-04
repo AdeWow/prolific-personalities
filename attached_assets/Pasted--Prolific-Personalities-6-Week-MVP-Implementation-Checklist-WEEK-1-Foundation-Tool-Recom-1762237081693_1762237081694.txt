@@ -1,0 +1,534 @@
+# Prolific Personalities: 6-Week MVP Implementation Checklist
+
+## 📅 WEEK 1: Foundation & Tool Recommendations
+
+### Day 1-2: Site Content Polish
+- [ ] **Homepage**
+  - [ ] Refine hero copy (emphasize science-backed + personalized)
+  - [ ] Add trust badges (research icons, user count)
+  - [ ] Optimize CTA placement
+  - [ ] Add social proof section
+  
+- [ ] **About Page**
+  - [ ] Write founder story (why you built this)
+  - [ ] Add mission statement
+  - [ ] Include credentials/research approach
+  - [ ] Add contact form
+
+- [ ] **Science Page**
+  - [ ] Format all citations in APA
+  - [ ] Add inline research references
+  - [ ] Create visual diagram of 4-axis framework
+  - [ ] Write accessible explanations
+  - [ ] Add "Our Methodology" section
+
+### Day 3-4: Tool Database Setup
+- [ ] **Database Structure**
+  - [ ] Create tool database schema (use sample provided)
+  - [ ] Set up Supabase table: `productivity_tools`
+  - [ ] Define TypeScript interfaces
+  - [ ] Write helper functions (getToolsByArchetype, etc.)
+
+- [ ] **Initial Tool Collection (Start with 20)**
+  Focus Tools: Freedom, Forest, Brain.fm, Cold Turkey
+  Planning: Notion, Todoist, Sunsama, Asana
+  Time Tracking: Toggl, RescueTime, Clockify
+  Note-Taking: Obsidian, Roam, Evernote
+  Communication: Loom, Slack
+  Automation: Zapier, IFTTT
+  
+- [ ] **For Each Tool, Collect:**
+  - [ ] Name, tagline, description
+  - [ ] Logo (screenshot or download)
+  - [ ] Pricing info
+  - [ ] Archetype fit scores (estimate initially)
+  - [ ] Pros & cons (3-5 each)
+  - [ ] Affiliate link (or direct link if no program yet)
+
+### Day 5-6: Results Page Enhancement
+- [ ] **Tool Recommendations Section**
+  - [ ] Design tool card component
+  - [ ] Show fit score (0-100)
+  - [ ] Display pricing clearly
+  - [ ] Add pros/cons dropdown
+  - [ ] Implement affiliate link tracking
+  - [ ] Add "Why this fits your archetype" explanation
+
+- [ ] **Results Page Improvements**
+  - [ ] Add radar chart of 4-axis scores
+  - [ ] Show archetype percentile (e.g., "85% structure")
+  - [ ] Add quick wins section
+  - [ ] Create shareable results card (social)
+  - [ ] Implement PDF export
+
+### Day 7: Testing & Bug Fixes
+- [ ] Test quiz flow on mobile
+- [ ] Verify tool links work
+- [ ] Check responsive design
+- [ ] Fix any console errors
+- [ ] Test on 3+ browsers
+
+### 🎯 Week 1 Deliverables:
+- ✅ Polished homepage, about, science pages
+- ✅ 20+ tools in database with full metadata
+- ✅ Tool recommendations on results page
+- ✅ PDF export working
+
+---
+
+## 📅 WEEK 2: Analytics & Email Capture
+
+### Day 1-2: Analytics Setup
+- [ ] **PostHog or Amplitude**
+  - [ ] Create account
+  - [ ] Install tracking script
+  - [ ] Set up custom events:
+    - `quiz_started`
+    - `quiz_completed`
+    - `tool_clicked` (with tool_id property)
+    - `result_shared`
+    - `pdf_downloaded`
+  - [ ] Create dashboard for key metrics
+  
+- [ ] **Set Up Goals**
+  - [ ] Quiz completion rate (target: >50%)
+  - [ ] Time on results page (target: >2 min)
+  - [ ] Tool click-through (target: >10%)
+
+### Day 3-4: Email Capture (Optional but Recommended)
+- [ ] **Email Provider Setup**
+  - [ ] Sign up for Resend or SendGrid
+  - [ ] Create email templates:
+    1. "Your Results" (immediate send with PDF)
+    2. "Day 3: Implementation Tips" 
+    3. "Day 7: Tool Recommendations Deep Dive"
+    4. "Day 14: Check-In"
+  
+- [ ] **Form Integration**
+  - [ ] Add email opt-in on results page
+  - [ ] "Send my results" CTA
+  - [ ] Privacy note ("We never share your email")
+  - [ ] Store emails in Supabase
+  
+- [ ] **Automated Sequence**
+  - [ ] Day 0: Results email with PDF
+  - [ ] Day 3: Tips for your archetype
+  - [ ] Day 7: Recommended tools deep dive
+  - [ ] Day 14: Progress check-in
+
+### Day 5-6: Tool Database Expansion
+- [ ] **Add 30 More Tools (Total: 50)**
+  Categories to fill:
+  - [ ] Email: Superhuman, Spark, Hey
+  - [ ] Calendar: Reclaim.ai, Calendly, Cal.com
+  - [ ] Habits: Habitica, Streaks, Loop
+  - [ ] Writing: Grammarly, Hemingway, Scrivener
+  - [ ] Mind Mapping: MindMeister, Miro, Whimsical
+  - [ ] Password: 1Password, Bitwarden
+  - [ ] File Storage: Dropbox, Google Drive
+  - [ ] Other: see sample database
+
+- [ ] **Refine Fit Scores**
+  - [ ] Test with 5-10 people
+  - [ ] Ask "Does this tool actually fit you?"
+  - [ ] Adjust archetype scores based on feedback
+
+### Day 7: Content Creation
+- [ ] Write blog post: "6 Productivity Archetypes Explained"
+- [ ] Create social media graphics for each archetype
+- [ ] Draft launch announcement
+- [ ] Prepare ProductHunt submission
+
+### 🎯 Week 2 Deliverables:
+- ✅ Analytics tracking all key events
+- ✅ Email sequence set up (if doing this)
+- ✅ 50 tools in database
+- ✅ Content ready for launch
+
+---
+
+## 📅 WEEK 3: AI Agent MVP
+
+### Day 1-2: Backend Setup
+- [ ] **FastAPI Project**
+  - [ ] Create new repo or folder: `/api`
+  - [ ] Set up FastAPI boilerplate
+  - [ ] Create `/chat` endpoint
+  - [ ] Add CORS for frontend
+  - [ ] Deploy to Render or Railway
+
+- [ ] **Anthropic API Integration**
+  - [ ] Sign up for Claude API access
+  - [ ] Get API key (store in .env)
+  - [ ] Install anthropic SDK
+  - [ ] Test basic completion
+
+### Day 3-4: Agent Implementation
+- [ ] **System Prompt Engineering**
+  ```
+  You are a productivity coach specializing in the {archetype} archetype.
+  
+  User Profile:
+  - Archetype: {archetype}
+  - Structure Score: {structure}/100
+  - Motivation: {motivation} (intrinsic/extrinsic)
+  - Focus: {focus}/100
+  - Task Approach: {task}/100
+  
+  Based on research by [Barkley, Deci, Csikszentmihalyi], provide:
+  1. Personalized strategies
+  2. Specific tool recommendations
+  3. Implementation plans
+  
+  Always cite research when relevant.
+  Be encouraging but realistic.
+  ```
+
+- [ ] **Context Injection**
+  - [ ] Load user's archetype data
+  - [ ] Include relevant research snippets
+  - [ ] Add tool database for recommendations
+
+- [ ] **Conversation Memory**
+  - [ ] Store conversations in Supabase
+  - [ ] Pass conversation history to API
+  - [ ] Implement session management
+
+### Day 5-6: Frontend Integration
+- [ ] **Chat UI Component**
+  - [ ] Create chat interface on results page
+  - [ ] Message bubbles (user vs. agent)
+  - [ ] Loading state ("Agent is thinking...")
+  - [ ] Error handling
+  - [ ] Markdown rendering for agent responses
+
+- [ ] **UX Polish**
+  - [ ] Add suggested questions
+  - [ ] "Ask me anything about your results"
+  - [ ] Example prompts:
+    - "How do I stop procrastinating?"
+    - "Which tool should I start with?"
+    - "Create a daily routine for me"
+
+### Day 7: Testing
+- [ ] Test agent with different archetypes
+- [ ] Verify citations are accurate
+- [ ] Check for hallucinations
+- [ ] Test conversation memory
+- [ ] Load test (can it handle 100 concurrent users?)
+
+### 🎯 Week 3 Deliverables:
+- ✅ AI coaching agent live
+- ✅ Chat interface on results page
+- ✅ Conversation storage working
+- ✅ Agent tested with all 6 archetypes
+
+---
+
+## 📅 WEEK 4: Polish & Optimization
+
+### Day 1-2: Performance Optimization
+- [ ] **Speed Improvements**
+  - [ ] Optimize images (compress to <200kb)
+  - [ ] Lazy load below-the-fold content
+  - [ ] Minify CSS/JS
+  - [ ] Enable caching
+  - [ ] Test with Lighthouse (target: >90 score)
+
+- [ ] **Mobile Experience**
+  - [ ] Test quiz on mobile
+  - [ ] Verify tool cards are readable
+  - [ ] Check chat UI on small screens
+  - [ ] Test PDF download on mobile
+
+### Day 3-4: SEO Basics
+- [ ] **On-Page SEO**
+  - [ ] Meta titles & descriptions
+  - [ ] Open Graph tags (for social sharing)
+  - [ ] Schema.org markup (Quiz, Article)
+  - [ ] Alt text for all images
+  - [ ] Create sitemap.xml
+  - [ ] Submit to Google Search Console
+
+- [ ] **Content SEO**
+  - [ ] Write blog post: "Best Productivity Tools for [Archetype]" (do all 6)
+  - [ ] Optimize for keywords:
+    - "productivity assessment"
+    - "productivity personality test"
+    - "best tools for [archetype]"
+
+### Day 5-6: A/B Testing Setup
+- [ ] **Identify Tests**
+  Test #1: Homepage CTA
+  - A: "Take Assessment"
+  - B: "Discover Your Type"
+  
+  Test #2: Results Email Opt-In
+  - A: "Email my results"
+  - B: "Get personalized tips"
+  
+  Test #3: Tool Card Layout
+  - A: Vertical cards
+  - B: Horizontal cards
+
+- [ ] **Implement Experiments**
+  - [ ] Use PostHog experiments
+  - [ ] Set target sample size
+  - [ ] Define success metrics
+
+### Day 7: User Testing
+- [ ] Recruit 10 beta testers
+- [ ] Ask them to:
+  - [ ] Take quiz
+  - [ ] Review results
+  - [ ] Try recommended tools
+  - [ ] Chat with AI agent
+- [ ] Collect feedback via survey
+- [ ] Iterate based on findings
+
+### 🎯 Week 4 Deliverables:
+- ✅ Site speed optimized
+- ✅ SEO basics in place
+- ✅ A/B tests running
+- ✅ 10 beta tester feedback collected
+
+---
+
+## 📅 WEEK 5: Launch Preparation
+
+### Day 1-2: Launch Content
+- [ ] **Launch Announcement**
+  - [ ] Write blog post: "Introducing Prolific Personalities"
+  - [ ] Create launch video (2-3 min screen recording)
+  - [ ] Design social media graphics
+  - [ ] Prepare email to friends/network
+
+- [ ] **ProductHunt Prep**
+  - [ ] Write maker story
+  - [ ] Create tagline (140 chars)
+  - [ ] Upload screenshots (5-7)
+  - [ ] Record demo video
+  - [ ] Schedule launch date
+
+### Day 3-4: Outreach
+- [ ] **Influencer List**
+  - [ ] Identify 20 productivity bloggers/YouTubers
+  - [ ] Draft personalized outreach emails
+  - [ ] Offer early access or custom archetype guide
+
+- [ ] **Community Engagement**
+  - [ ] Reddit: Draft posts for r/productivity, r/ADHD
+  - [ ] Hacker News: Prepare Show HN post
+  - [ ] Twitter: Schedule launch thread
+  - [ ] LinkedIn: Write article
+
+### Day 5-6: Final Polish
+- [ ] **Quality Assurance**
+  - [ ] Test every link
+  - [ ] Verify analytics tracking
+  - [ ] Check mobile experience
+  - [ ] Test email sequences
+  - [ ] Review all copy for typos
+
+- [ ] **Documentation**
+  - [ ] Create FAQ page (10+ questions)
+  - [ ] Write help doc: "How to Use Your Results"
+  - [ ] Privacy policy & terms
+  - [ ] Contact form working
+
+### Day 7: Soft Launch
+- [ ] Share with 50-100 close contacts
+- [ ] Post in private communities (Slack groups, Discord)
+- [ ] Monitor analytics closely
+- [ ] Fix any critical bugs immediately
+
+### 🎯 Week 5 Deliverables:
+- ✅ Launch materials ready
+- ✅ Outreach list prepared
+- ✅ Soft launch to 50-100 people
+- ✅ No critical bugs
+
+---
+
+## 📅 WEEK 6: Public Launch & Growth
+
+### Day 1: ProductHunt Launch
+- [ ] Submit to ProductHunt (schedule for Tuesday)
+- [ ] Respond to every comment
+- [ ] Ask friends to upvote (ethically!)
+- [ ] Monitor featured products
+
+### Day 2: Reddit Launch
+- [ ] Post to r/productivity
+- [ ] Post to r/ADHD (if relevant)
+- [ ] Post to r/GetDisciplined
+- [ ] Engage authentically, don't just spam
+
+### Day 3: Hacker News
+- [ ] Post "Show HN: Science-based productivity assessment"
+- [ ] Respond to all comments
+- [ ] Be prepared for technical questions
+- [ ] Handle criticism gracefully
+
+### Day 4: Social Media Push
+- [ ] Twitter thread about building it
+- [ ] LinkedIn article: "Why I Built This"
+- [ ] Tag relevant accounts
+- [ ] Share results from early users
+
+### Day 5: Influencer Follow-Up
+- [ ] Send personalized demos to influencers
+- [ ] Offer guest post: "Tool Recommendations for [Their Audience]"
+- [ ] Ask for feedback, not promotion
+
+### Day 6-7: Analyze & Iterate
+- [ ] Review analytics:
+  - [ ] Total visitors
+  - [ ] Quiz completions
+  - [ ] Tool clicks
+  - [ ] Email signups
+  - [ ] Agent usage
+  
+- [ ] Identify bottlenecks
+- [ ] Plan improvements for next sprint
+
+### 🎯 Week 6 Deliverables:
+- ✅ Public launch on multiple channels
+- ✅ 500+ quiz completions
+- ✅ Initial traction established
+- ✅ Feedback loop for improvements
+
+---
+
+## 🎓 POST-LAUNCH: Continuous Improvement
+
+### Weekly Tasks
+- [ ] Monitor analytics dashboard
+- [ ] Read user feedback
+- [ ] Answer support emails
+- [ ] Publish 1 blog post
+- [ ] Test 1 new feature
+- [ ] Add 5-10 new tools to database
+
+### Monthly Tasks
+- [ ] Review A/B test results
+- [ ] Interview 5 users
+- [ ] Refine archetype descriptions
+- [ ] Update tool recommendations
+- [ ] Publish SEO content
+- [ ] Reach out to new partners
+
+### Quarterly Goals
+- [ ] 10,000 quiz completions
+- [ ] 50+ tool affiliates active
+- [ ] 1,000+ email subscribers
+- [ ] Blog traffic: 5,000+ monthly visits
+- [ ] Consider premium tier ($29-49 reports)
+
+---
+
+## 🚨 CRITICAL SUCCESS FACTORS
+
+### Must-Have Features
+1. ✅ Quiz completes without bugs
+2. ✅ Results are accurate and useful
+3. ✅ Tool recommendations are personalized
+4. ✅ Site loads fast (<3 seconds)
+5. ✅ Mobile experience is smooth
+6. ✅ Analytics track key metrics
+7. ✅ AI agent gives helpful advice
+
+### Nice-to-Have (But Not MVP)
+- User accounts
+- Progress tracking dashboard
+- Premium reports
+- Community forum
+- In-depth courses
+- 1-on-1 coaching marketplace
+
+### Don't Waste Time On
+- Perfect design (80% is good enough)
+- 100+ tools (50 is plenty for launch)
+- Advanced AI features (basic agent is fine)
+- Social media following (focus on product)
+- Complex monetization (start with affiliates)
+
+---
+
+## 📊 SUCCESS METRICS
+
+### Week 1-2 Benchmarks
+- 100+ quiz completions
+- 60%+ completion rate
+- 5%+ tool clicks
+
+### Month 1 Goals
+- 500+ quiz completions
+- 50%+ completion rate
+- 10%+ tool clicks
+- 100+ email signups (if doing this)
+
+### Month 3 Goals
+- 5,000+ quiz completions
+- Build momentum for organic growth
+- Affiliate revenue: $500+/month
+- Position for potential press
+
+---
+
+## ✅ PRE-FLIGHT CHECKLIST
+
+Before public launch, verify:
+
+**Technical**
+- [ ] Site loads on Chrome, Firefox, Safari
+- [ ] Mobile experience tested on iOS & Android
+- [ ] All links work (especially affiliate links)
+- [ ] Quiz scoring logic validated
+- [ ] Analytics capturing events
+- [ ] Email sequences tested (if using)
+- [ ] AI agent responding correctly
+- [ ] No console errors
+
+**Content**
+- [ ] All copy proofread (no typos!)
+- [ ] Research citations accurate
+- [ ] FAQ answers 10+ questions
+- [ ] Privacy policy published
+- [ ] About page complete
+
+**Marketing**
+- [ ] Launch announcement written
+- [ ] Social media posts prepared
+- [ ] ProductHunt submission ready
+- [ ] Email to network drafted
+- [ ] Press kit available (if reaching out to media)
+
+**Legal**
+- [ ] Privacy policy compliant with GDPR
+- [ ] Terms of service published
+- [ ] Affiliate disclosures clear
+- [ ] No medical/therapy claims (just productivity)
+
+---
+
+## 🎯 REMEMBER
+
+**Ship > Perfect**
+Done is better than perfect. Launch at 80%, iterate to 100%.
+
+**User Feedback > Your Opinion**
+Let real users tell you what to build next.
+
+**Data > Assumptions**
+Track everything, make decisions based on metrics.
+
+**Focus > Feature Creep**
+Do one thing really well before adding more.
+
+**Consistency > Intensity**
+Ship small improvements weekly, not big updates quarterly.
+
+---
+
+Good luck! You've got this. 🚀
