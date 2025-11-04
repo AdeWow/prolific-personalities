@@ -8,8 +8,12 @@ import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { EmailCaptureCard } from "@/components/email-capture-card";
 import { archetypes } from "@/data/archetypes";
-import thoughtfulPersonImage from "@assets/adeola2020_an_expressive_illustration_of_a_thoughtful_person_ga_a6681bc9-45e9-4c2c-b1fa-961885775c35_1750287981899.png";
-import cheerfulPersonImage from "@assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png";
+import anxiousPerfectionistImage from "@assets/7d8c5462-febe-45f3-b3bd-207fb697cc04_1762297180709.png";
+import chaoticCreativeImage from "@assets/763894fc-7172-473f-b45a-30417b2f157a_1762297193215.png";
+import strategicPlannerImage from "@assets/ae5e43be-19bd-4df2-b053-48732a922fc6_1762297362107.png";
+import structuredAchieverImage from "@assets/e3fac029-7f4f-4a16-a237-d141ea58b5d6_1762297404337.png";
+import flexibleImproviserImage from "@assets/84c5e71b-0e9d-4158-b8a2-ea2b5f1f0abd_1762297453206.png";
+import noveltySeekerImage from "@assets/56861868-15df-4eb4-a0ae-f1629437f82e_1762297512686.png";
 
 export default function Archetypes() {
   const [location] = useLocation();
@@ -44,7 +48,7 @@ export default function Archetypes() {
       id: "structured-achiever",
       name: "The Structured Achiever",
       tagline: "You thrive on goals and accountability.",
-      image: cheerfulPersonImage,
+      image: structuredAchieverImage,
       description: "The Structured Achiever is highly organized and externally motivated. You excel when you have clear goals, deadlines, and accountability systems. External validation and recognition fuel your productivity.",
       fullDescription: [
         "You naturally gravitate toward structured environments where expectations are clear and progress is measurable. Deadlines don't stress you out—they motivate you. You thrive when others are counting on you, and you love the feeling of checking tasks off your list.",
@@ -56,7 +60,7 @@ export default function Archetypes() {
       id: "chaotic-creative",
       name: "The Chaotic Creative",
       tagline: "You create your own path.",
-      image: cheerfulPersonImage,
+      image: chaoticCreativeImage,
       description: "The Chaotic Creative is naturally curious and thrives on variety. You prefer flexibility over rigid schedules, and you're energized by new experiences and big-picture thinking, though starting tasks can be challenging.",
       fullDescription: [
         "You might have a dozen interests at once, and that's not a problem—it's how you learn. You connect ideas across disciplines and find inspiration in unexpected places. Structure feels confining, but complete chaos doesn't work either.",
@@ -68,7 +72,7 @@ export default function Archetypes() {
       id: "anxious-perfectionist",
       name: "The Anxious Perfectionist",
       tagline: "You pursue excellence, sometimes at a cost.",
-      image: thoughtfulPersonImage,
+      image: anxiousPerfectionistImage,
       description: "The Anxious Perfectionist is detail-oriented and structured, with exceptionally high standards. You produce outstanding work but often struggle with task avoidance due to anxiety about starting or fear of imperfection.",
       fullDescription: [
         "You have a gift for seeing details others miss and producing work of exceptional quality. Your systematic approach and thorough analysis ensure nothing falls through the cracks. When you do complete a task, it's done right.",
@@ -80,7 +84,7 @@ export default function Archetypes() {
       id: "novelty-seeker",
       name: "The Novelty Seeker",
       tagline: "You are driven by what's new and exciting.",
-      image: cheerfulPersonImage,
+      image: noveltySeekerImage,
       description: "The Novelty Seeker is a creative ignition switch—bursting with energy when inspiration hits. You crave variety and external stimulation, thinking in big-picture terms while needing accountability to maintain focus.",
       fullDescription: [
         "You move fast, think in flashes, and often ride the wave of enthusiasm as a new idea comes alive. When you're 'on,' there's nothing quite like it. You thrive in dynamic environments with plenty of variety and external stimulation.",
@@ -92,7 +96,7 @@ export default function Archetypes() {
       id: "strategic-planner",
       name: "The Strategic Planner",
       tagline: "You are a visionary architect.",
-      image: thoughtfulPersonImage,
+      image: strategicPlannerImage,
       description: "The Strategic Planner combines big-picture thinking with structured execution. You're intrinsically motivated and self-directed, excelling at long-term vision while maintaining the discipline to execute systematically.",
       fullDescription: [
         "You operate best when you can see the full landscape and chart a course toward a meaningful goal. Unlike others who need external accountability, you're driven by your own vision and values. Your strategic mindset allows you to plan years ahead while staying grounded in actionable steps.",
@@ -104,7 +108,7 @@ export default function Archetypes() {
       id: "flexible-improviser",
       name: "The Flexible Improviser",
       tagline: "You thrive in motion and ambiguity.",
-      image: cheerfulPersonImage,
+      image: flexibleImproviserImage,
       description: "The Flexible Improviser is action-oriented and adaptable. You excel at starting tasks and adjusting on the fly, comfortable with ambiguity and preferring momentum over extensive planning.",
       fullDescription: [
         "You have a natural bias toward action. While others are still planning, you've already started and learned from real experience. You don't need perfect conditions or complete information—you figure things out as you go.",
