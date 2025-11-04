@@ -71,6 +71,10 @@ export class DatabaseStorage implements IStorage {
     const [tool] = await db
       .insert(tools)
       .values(insertTool)
+      .onConflictDoUpdate({
+        target: tools.toolId,
+        set: insertTool as any
+      })
       .returning();
     return tool;
   }

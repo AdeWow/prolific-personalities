@@ -626,5 +626,210 @@ export const toolsData: Omit<InsertTool, 'id'>[] = [
     tags: ['writing', 'grammar', 'ai', 'editing'],
     bestFor: ['Writers', 'Non-native speakers', 'Professional communication'],
     notIdealFor: ['Creative writing', 'Privacy-focused', 'Basic needs']
+  },
+  {
+    toolId: 'brain-fm',
+    name: 'Brain.fm',
+    tagline: 'Music engineered to improve focus',
+    description: 'Functional music designed to affect your brain and optimize your performance. Uses AI-generated music proven to increase focus, relaxation, or sleep quality.',
+    logo: '/tools/brain-fm.png',
+    website: 'https://www.brain.fm',
+    category: 'focus',
+    archetypeFit: {
+      'structured-achiever': 85,
+      'chaotic-creative': 90,
+      'anxious-perfectionist': 88,
+      'novelty-seeker': 92,
+      'strategic-planner': 80,
+      'flexible-improviser': 85
+    },
+    pricing: {
+      free: false,
+      freemium: true,
+      startingPrice: 6.99,
+      currency: 'USD',
+      billingPeriod: 'monthly'
+    },
+    learningCurve: 'easy',
+    platforms: ['web', 'ios', 'android'],
+    pros: [
+      'Scientifically-backed audio',
+      'Works in 15 minutes',
+      'Different modes (focus, relax, sleep)'
+    ],
+    cons: [
+      'Requires subscription',
+      'Music might not suit everyone',
+      'Limited customization'
+    ],
+    affiliateLink: 'https://www.brain.fm/?ref=prolific',
+    directLink: 'https://www.brain.fm',
+    tags: ['focus', 'music', 'neuroscience', 'deep-work'],
+    bestFor: ['Easily distracted', 'Background music lovers', 'Science enthusiasts'],
+    notIdealFor: ['Prefer silence', 'Tight budget', 'Need complete customization']
+  },
+  {
+    toolId: 'sunsama',
+    name: 'Sunsama',
+    tagline: 'Daily planner for busy professionals',
+    description: 'Thoughtful daily planning tool that helps you organize tasks, time-block your calendar, and reflect on your day. Integrates with all major task managers.',
+    logo: '/tools/sunsama.png',
+    website: 'https://www.sunsama.com',
+    category: 'planning',
+    archetypeFit: {
+      'structured-achiever': 98,
+      'chaotic-creative': 70,
+      'anxious-perfectionist': 95,
+      'novelty-seeker': 65,
+      'strategic-planner': 98,
+      'flexible-improviser': 75
+    },
+    pricing: {
+      free: false,
+      freemium: true,
+      startingPrice: 20,
+      currency: 'USD',
+      billingPeriod: 'monthly'
+    },
+    learningCurve: 'medium',
+    platforms: ['web', 'mac', 'windows'],
+    pros: [
+      'Beautiful, calm interface',
+      'Integrates with everything',
+      'Daily planning ritual'
+    ],
+    cons: [
+      'Expensive subscription',
+      'Can be overwhelming at first',
+      'Requires daily commitment'
+    ],
+    affiliateLink: 'https://www.sunsama.com/?ref=prolific',
+    directLink: 'https://www.sunsama.com',
+    tags: ['planning', 'calendar', 'time-blocking', 'reflection'],
+    bestFor: ['Overwhelmed professionals', 'Time-blockers', 'Intentional planners'],
+    notIdealFor: ['Simple needs', 'Budget-conscious', 'Spontaneous workers']
+  },
+  {
+    toolId: 'clockify',
+    name: 'Clockify',
+    tagline: 'Free time tracking software',
+    description: 'Simple time tracker and timesheet app for teams and freelancers. Track work hours across projects, generate reports, and analyze productivity patterns.',
+    logo: '/tools/clockify.png',
+    website: 'https://clockify.me',
+    category: 'time-tracking',
+    archetypeFit: {
+      'structured-achiever': 90,
+      'chaotic-creative': 75,
+      'anxious-perfectionist': 92,
+      'novelty-seeker': 70,
+      'strategic-planner': 95,
+      'flexible-improviser': 78
+    },
+    pricing: {
+      free: true,
+      freemium: true,
+      startingPrice: 9.99,
+      currency: 'USD',
+      billingPeriod: 'monthly'
+    },
+    learningCurve: 'easy',
+    platforms: ['web', 'mac', 'windows', 'ios', 'android'],
+    pros: [
+      'Completely free for unlimited users',
+      'Detailed reporting',
+      'Browser extension available'
+    ],
+    cons: [
+      'Can feel like surveillance',
+      'Advanced features require paid plan',
+      'UI could be more modern'
+    ],
+    affiliateLink: 'https://clockify.me/?ref=prolific',
+    directLink: 'https://clockify.me',
+    tags: ['time-tracking', 'productivity', 'analytics', 'reporting'],
+    bestFor: ['Freelancers', 'Billable hours', 'Data-driven optimizers'],
+    notIdealFor: ['Hate tracking time', 'Privacy concerns', 'Need advanced features free']
+  },
+  {
+    toolId: 'roam-research',
+    name: 'Roam Research',
+    tagline: 'A note-taking tool for networked thought',
+    description: 'Revolutionary note-taking app with bi-directional linking and graph visualization. Perfect for building a personal knowledge management system.',
+    logo: '/tools/roam.png',
+    website: 'https://roamresearch.com',
+    category: 'note-taking',
+    archetypeFit: {
+      'structured-achiever': 75,
+      'chaotic-creative': 95,
+      'anxious-perfectionist': 80,
+      'novelty-seeker': 98,
+      'strategic-planner': 88,
+      'flexible-improviser': 92
+    },
+    pricing: {
+      free: false,
+      freemium: false,
+      startingPrice: 15,
+      currency: 'USD',
+      billingPeriod: 'monthly'
+    },
+    learningCurve: 'steep',
+    platforms: ['web'],
+    pros: [
+      'Powerful bi-directional linking',
+      'Graph view shows connections',
+      'Highly customizable'
+    ],
+    cons: [
+      'Steep learning curve',
+      'Expensive with no free tier',
+      'Web-only (no mobile apps)'
+    ],
+    affiliateLink: 'https://roamresearch.com/?ref=prolific',
+    directLink: 'https://roamresearch.com',
+    tags: ['note-taking', 'knowledge-management', 'zettelkasten', 'networked-thinking'],
+    bestFor: ['Researchers', 'Writers', 'Knowledge workers'],
+    notIdealFor: ['Simple note needs', 'Need mobile apps', 'Budget-conscious']
+  },
+  {
+    toolId: 'loom',
+    name: 'Loom',
+    tagline: 'Async video messaging for work',
+    description: 'Record quick videos of your screen, camera, or both. Perfect for async communication, tutorials, bug reports, and feedback.',
+    logo: '/tools/loom.png',
+    website: 'https://www.loom.com',
+    category: 'communication',
+    archetypeFit: {
+      'structured-achiever': 85,
+      'chaotic-creative': 88,
+      'anxious-perfectionist': 75,
+      'novelty-seeker': 90,
+      'strategic-planner': 82,
+      'flexible-improviser': 92
+    },
+    pricing: {
+      free: true,
+      freemium: true,
+      startingPrice: 12.50,
+      currency: 'USD',
+      billingPeriod: 'monthly'
+    },
+    learningCurve: 'easy',
+    platforms: ['web', 'mac', 'windows', 'ios', 'android'],
+    pros: [
+      'Faster than typing',
+      'Generous free tier',
+      'Easy to share'
+    ],
+    cons: [
+      'Video limit on free plan',
+      'Can feel awkward at first',
+      'Requires comfort on camera'
+    ],
+    affiliateLink: 'https://www.loom.com/?ref=prolific',
+    directLink: 'https://www.loom.com',
+    tags: ['communication', 'video', 'async', 'screen-recording'],
+    bestFor: ['Remote teams', 'Bug reporting', 'Quick explanations'],
+    notIdealFor: ['Camera-shy', 'Prefer writing', 'Need privacy']
   }
 ];

@@ -372,7 +372,7 @@ export default function Results() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="tools-grid">
               {tools.slice(0, 9).map((tool) => (
-                <ToolCard key={tool.id} tool={tool} />
+                <ToolCard key={tool.id} tool={tool} archetypeName={archetype.name} />
               ))}
             </div>
           </div>

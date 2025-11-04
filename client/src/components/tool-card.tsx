@@ -1,19 +1,24 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Check, X } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ExternalLink, Check, X, ChevronDown, Lightbulb } from "lucide-react";
 import type { Tool } from "@shared/schema";
+import { useState } from "react";
 
 interface ToolCardProps {
   tool: Tool & { fitScore?: number };
+  archetypeName?: string;
 }
 
-export function ToolCard({ tool }: ToolCardProps) {
+export function ToolCard({ tool, archetypeName }: ToolCardProps) {
+  const [showDetails, setShowDetails] = useState(false);
   const pricing = tool.pricing as any;
   const platforms = tool.platforms as string[];
   const pros = tool.pros as string[];
   const cons = tool.cons as string[];
   const tags = tool.tags as string[];
+  const bestFor = tool.bestFor as string[];
 
   const getPriceDisplay = () => {
     if (pricing.free && !pricing.freemium) {
@@ -27,6 +32,19 @@ export function ToolCard({ tool }: ToolCardProps) {
     return pricing.startingPrice
       ? `$${pricing.startingPrice}/${pricing.billingPeriod}`
       : "Paid";
+  };
+
+  const getArchetypeExplanation = () => {
+    if (!tool.fitScore || !archetypeName) return null;
+
+    if (tool.fitScore >= 90) {
+      return `Perfect for ${archetypeName}s! This tool aligns exceptionally well with your natural working style and productivity patterns.`;
+    } else if (tool.fitScore >= 75) {
+      return `Great match for ${archetypeName}s. This tool complements your strengths and addresses common challenges you face.`;
+    } else if (tool.fitScore >= 60) {
+      return `Good option for ${archetypeName}s. While not a perfect fit, this tool can still support your productivity goals with some adaptation.`;
+    }
+    return null;
   };
 
   return (
@@ -62,6 +80,19 @@ export function ToolCard({ tool }: ToolCardProps) {
           {tool.description}
         </p>
 
+        {/* Why This Fits Your Archetype */}
+        {getArchetypeExplanation() && (
+          <div className="mb-4 p-3 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
+            <div className="flex items-start gap-2">
+              <Lightbulb className="w-4 h-4 text-indigo-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-semibold text-indigo-900 mb-1">Why this fits you:</p>
+                <p className="text-xs text-indigo-800">{getArchetypeExplanation()}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Tags */}
         <div className="flex gap-2 flex-wrap mb-4">
           {tags.slice(0, 4).map((tag, index) => (
@@ -74,29 +105,43 @@ export function ToolCard({ tool }: ToolCardProps) {
           ))}
         </div>
 
-        {/* Pros & Cons - Condensed */}
-        <div className="grid grid-cols-2 gap-3 mb-4 text-xs">
-          <div>
-            <div className="font-semibold text-green-700 mb-1 flex items-center gap-1">
-              <Check className="w-3 h-3" /> Pros
+        {/* Pros & Cons - Collapsible */}
+        <Collapsible open={showDetails} onOpenChange={setShowDetails}>
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full mb-2 text-xs font-semibold text-neutral-600 hover:text-neutral-800"
+            >
+              <span>{showDetails ? "Hide" : "Show"} pros & cons</span>
+              <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${showDetails ? "rotate-180" : ""}`} />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="grid grid-cols-2 gap-3 mb-4 text-xs">
+              <div>
+                <div className="font-semibold text-green-700 mb-1 flex items-center gap-1">
+                  <Check className="w-3 h-3" /> Pros
+                </div>
+                <ul className="space-y-1 text-neutral-600">
+                  {pros.map((pro, index) => (
+                    <li key={index}>• {pro}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="font-semibold text-red-700 mb-1 flex items-center gap-1">
+                  <X className="w-3 h-3" /> Cons
+                </div>
+                <ul className="space-y-1 text-neutral-600">
+                  {cons.map((con, index) => (
+                    <li key={index}>• {con}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <ul className="space-y-1 text-neutral-600">
-              {pros.slice(0, 2).map((pro, index) => (
-                <li key={index} className="line-clamp-1">• {pro}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <div className="font-semibold text-red-700 mb-1 flex items-center gap-1">
-              <X className="w-3 h-3" /> Cons
-            </div>
-            <ul className="space-y-1 text-neutral-600">
-              {cons.slice(0, 2).map((con, index) => (
-                <li key={index} className="line-clamp-1">• {con}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         {/* Platforms */}
         <div className="text-xs text-neutral-500 mb-4">
