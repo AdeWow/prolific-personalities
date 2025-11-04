@@ -4,12 +4,12 @@ import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { QuestionCard } from "@/components/question-card";
 import { ProgressBar } from "@/components/progress-bar";
+import { Header } from "@/components/header";
 import { questions } from "@/data/questions";
 import { calculateScores, determineArchetype, generateSessionId, getProgressPercentage, validateAnswer } from "@/lib/quiz-logic";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { QuizAnswers } from "@shared/schema";
-import logoImage from "@assets/logo2_1762241472426.png";
 
 export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -76,20 +76,7 @@ export default function Quiz() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
-              <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
-            </Link>
-            <div className="text-sm font-medium text-neutral-600">
-              Question {currentQuestionIndex + 1} of {questions.length}
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Quiz Content */}
       <section className="py-12">

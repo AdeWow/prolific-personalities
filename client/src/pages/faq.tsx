@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import logoImage from "@assets/logo2_1762241472426.png";
+import { Header } from "@/components/header";
 
 export default function FAQ() {
   const faqs = [
@@ -50,22 +50,7 @@ export default function FAQ() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
-              <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
-            </Link>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="text-neutral-600 hover:text-primary transition-colors">Home</Link>
-              <Link href="/about" className="text-neutral-600 hover:text-primary transition-colors">About</Link>
-              <Link href="/quiz" className="text-neutral-600 hover:text-primary transition-colors">Take Quiz</Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="py-20">

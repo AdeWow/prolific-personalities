@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArchetypeCard } from "@/components/archetype-card";
+import { Header } from "@/components/header";
 import { archetypes } from "@/data/archetypes";
 import { Link } from "wouter";
 import heroImage from "@assets/adeola2020_an_inclusive_group_of_people_engaged_in_focused_work_d26c58c2-1296-4274-ac46-c7a942411aed_1750379682084.png";
@@ -8,23 +9,7 @@ import logoImage from "@assets/logo2_1762241472426.png";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
-              <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
-            </Link>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/about" className="text-neutral-600 hover:text-primary transition-colors">About</Link>
-              <Link href="/blog" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-blog">Blog</Link>
-              <Link href="/quiz" className="text-neutral-600 hover:text-primary transition-colors">Take Quiz</Link>
-              <a href="#contact" className="text-neutral-600 hover:text-primary transition-colors">Contact</a>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="relative py-20 lg:py-32 overflow-hidden">

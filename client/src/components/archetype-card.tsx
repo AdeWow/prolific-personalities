@@ -30,7 +30,7 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
         </h3>
         
         <p className="text-neutral-600 mb-4 leading-relaxed">
-          {archetype.description}
+          {archetype.tagline}
         </p>
         
         <div className="flex flex-wrap gap-2">
@@ -50,10 +50,10 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
             <div>
               <h4 className="font-semibold text-neutral-800 mb-3">Your Strengths:</h4>
               <ul className="space-y-2 text-neutral-700">
-                {archetype.strengths.map((strength, index) => (
+                {archetype.superpowers.map((power, index) => (
                   <li key={index} className="flex items-center">
                     <i className="fas fa-check-circle text-green-500 mr-2"></i>
-                    {strength}
+                    {power.title}
                   </li>
                 ))}
               </ul>
@@ -62,10 +62,10 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
             <div>
               <h4 className="font-semibold text-neutral-800 mb-3">Growth Areas:</h4>
               <ul className="space-y-2 text-neutral-700">
-                {archetype.growthAreas.map((area, index) => (
+                {archetype.blockers.map((blocker, index) => (
                   <li key={index} className="flex items-center">
                     <i className={`fas fa-arrow-up text-${archetype.color}-500 mr-2`}></i>
-                    {area}
+                    {blocker.title}
                   </li>
                 ))}
               </ul>
