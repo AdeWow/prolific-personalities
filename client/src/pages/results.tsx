@@ -9,7 +9,14 @@ import { FourAxisVisual } from "@/components/four-axis-visual";
 import { ToolCard } from "@/components/tool-card";
 import { archetypes } from "@/data/archetypes";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download } from "lucide-react";
+import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle } from "lucide-react";
+import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { apiRequest } from "@/lib/queryClient";
 import type { QuizResult, ToolWithFitScore } from "@shared/schema";
 
@@ -76,12 +83,34 @@ export default function Results() {
 
   const scores = result?.scores as any;
 
-  const handleShare = () => {
+  const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
     toast({
       title: "Link copied!",
       description: "Share link has been copied to your clipboard.",
     });
+  };
+
+  const handleShareTwitter = () => {
+    const text = `I just discovered I'm ${archetype?.name}! 🎯 Take the Prolific Personalities assessment to find your productivity archetype.`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+    window.open(url, '_blank', 'width=550,height=420');
+  };
+
+  const handleShareFacebook = () => {
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    window.open(url, '_blank', 'width=550,height=420');
+  };
+
+  const handleShareLinkedIn = () => {
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+    window.open(url, '_blank', 'width=550,height=420');
+  };
+
+  const handleShareWhatsApp = () => {
+    const text = `I just discovered I'm ${archetype?.name}! Take the Prolific Personalities assessment: ${shareUrl}`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
   };
 
   const handleEmailSubmit = (e: React.FormEvent) => {
@@ -158,9 +187,36 @@ export default function Results() {
                 <Download className="w-4 h-4 mr-2" />
                 Export PDF
               </Button>
-              <Button onClick={handleShare} variant="outline" size="sm">
-                Share Results
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" data-testid="button-share">
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Share Results
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem onClick={handleCopyLink} data-testid="share-copy-link">
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy Link
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleShareTwitter} data-testid="share-twitter">
+                    <FaTwitter className="w-4 h-4 mr-2" />
+                    Share on Twitter
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleShareFacebook} data-testid="share-facebook">
+                    <FaFacebook className="w-4 h-4 mr-2" />
+                    Share on Facebook
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleShareLinkedIn} data-testid="share-linkedin">
+                    <FaLinkedin className="w-4 h-4 mr-2" />
+                    Share on LinkedIn
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleShareWhatsApp} data-testid="share-whatsapp">
+                    <FaWhatsapp className="w-4 h-4 mr-2" />
+                    Share on WhatsApp
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Link href="/">
                 <Button variant="outline" size="sm">
                   Home

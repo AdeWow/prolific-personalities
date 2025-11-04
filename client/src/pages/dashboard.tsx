@@ -10,8 +10,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { archetypes } from "@/data/archetypes";
-import { Clock, TrendingUp } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { Clock, TrendingUp, BarChart3, ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import { formatDistanceToNow, format } from "date-fns";
 import type { QuizResult } from "@shared/schema";
 
 export default function Dashboard() {
@@ -128,6 +128,136 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
             </div>
+          )}
+
+          {/* Progress Tracking */}
+          {results && results.length > 1 && (
+            <Card className="mb-8">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <BarChart3 className="w-6 h-6 text-indigo-600" />
+                  <h2 className="text-2xl font-bold text-neutral-900">
+                    Your Progress Over Time
+                  </h2>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Score Comparison */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-neutral-800 mb-4">
+                      Score Changes (Latest vs First Assessment)
+                    </h3>
+                    {(() => {
+                      const latest = results[0];
+                      const first = results[results.length - 1];
+                      const latestScores = latest.scores as any;
+                      const firstScores = first.scores as any;
+
+                      const dimensions = [
+                        { key: 'structureOrientation', label: 'Structure Orientation' },
+                        { key: 'motivationStyle', label: 'Motivation Style' },
+                        { key: 'cognitiveFocus', label: 'Cognitive Focus' },
+                        { key: 'taskRelationship', label: 'Task Relationship' }
+                      ];
+
+                      return (
+                        <div className="grid md:grid-cols-2 gap-4">
+                          {dimensions.map((dim) => {
+                            const latestScore = latestScores[dim.key] || 0;
+                            const firstScore = firstScores[dim.key] || 0;
+                            const change = latestScore - firstScore;
+                            const changePercent = firstScore > 0 ? ((change / firstScore) * 100).toFixed(1) : null;
+
+                            return (
+                              <div key={dim.key} className="bg-neutral-50 rounded-lg p-4 border border-neutral-200">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="font-medium text-neutral-700 text-sm">{dim.label}</span>
+                                  <div className="flex items-center gap-2">
+                                    {change > 0 && (
+                                      <div className="flex items-center text-green-600 text-sm font-semibold">
+                                        <ArrowUpRight className="w-4 h-4" />
+                                        +{change}
+                                      </div>
+                                    )}
+                                    {change < 0 && (
+                                      <div className="flex items-center text-red-600 text-sm font-semibold">
+                                        <ArrowDownRight className="w-4 h-4" />
+                                        {change}
+                                      </div>
+                                    )}
+                                    {change === 0 && (
+                                      <div className="flex items-center text-neutral-500 text-sm font-semibold">
+                                        <Minus className="w-4 h-4" />
+                                        No change
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-4 text-sm text-neutral-600">
+                                  <span>First: <strong>{firstScore}</strong></span>
+                                  <span>•</span>
+                                  <span>Latest: <strong>{latestScore}</strong></span>
+                                  {change !== 0 && changePercent !== null && (
+                                    <>
+                                      <span>•</span>
+                                      <span className={change > 0 ? 'text-green-600' : 'text-red-600'}>
+                                        {changePercent}%
+                                      </span>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Archetype Evolution */}
+                  {(() => {
+                    const archetypeChanges = results.map((result, index) => ({
+                      archetype: archetypes.find(a => a.id === result.archetype)?.name || result.archetype,
+                      date: new Date(result.completedAt),
+                      isLatest: index === 0
+                    }));
+
+                    const uniqueArchetypes = new Set(archetypeChanges.map(c => c.archetype));
+                    
+                    if (uniqueArchetypes.size > 1) {
+                      return (
+                        <div>
+                          <h3 className="text-lg font-semibold text-neutral-800 mb-4">
+                            Archetype Evolution
+                          </h3>
+                          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-6 border border-indigo-200">
+                            <p className="text-neutral-700 mb-4">
+                              Your productivity archetype has evolved over {results.length} assessments:
+                            </p>
+                            <div className="flex flex-wrap gap-3">
+                              {archetypeChanges.reverse().map((change, index) => (
+                                <div key={index} className="flex items-center gap-2">
+                                  <Badge variant={change.isLatest ? "default" : "secondary"} className="text-sm">
+                                    {change.archetype}
+                                  </Badge>
+                                  {index < archetypeChanges.length - 1 && (
+                                    <span className="text-neutral-400">→</span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                            <p className="text-sm text-neutral-600 mt-4">
+                              This shows how your working style adapts over time. Explore your latest archetype to understand your current strengths.
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
+              </CardContent>
+            </Card>
           )}
 
           {/* Results List */}
