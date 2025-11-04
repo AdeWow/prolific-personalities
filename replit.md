@@ -32,6 +32,13 @@ The application is built as a full-stack TypeScript web application with a React
 - **Testimonials on Homepage**: Social proof section displaying three customer testimonials with archetype badges
 - **Navigation Updates**: Added Pricing link to both desktop and mobile navigation menus
 - **Print CSS**: Enhanced PDF export with professional print styles (hidden headers, optimized page breaks, readable text)
+- **Sitemap.xml**: Dynamic XML sitemap with all public pages and blog posts for improved search engine indexing
+- **Optional User Authentication**: Integrated Replit Auth with Google/GitHub/email login
+  - Users can take the quiz anonymously without creating an account
+  - Optional: Users can log in after taking quiz to save results to their account
+  - Dashboard page shows all past quiz results for logged-in users
+  - Security: Quiz results can only be claimed once to prevent session hijacking
+  - Header shows login/logout buttons and dashboard access when authenticated
 
 ## User Preferences
 
@@ -58,8 +65,10 @@ This architecture enables type-safe communication between client and server whil
 - `/` - Homepage
 - `/quiz` - Assessment quiz
 - `/results/:sessionId` - Results page with personalized insights
+- `/dashboard` - User dashboard (requires login) showing all past quiz results
 - `/blog` - Blog listing page
 - `/blog/:slug` - Individual blog post pages
+- `/pricing` - Pricing page with free vs premium comparison
 - `/about`, `/science`, `/archetypes`, `/faq` - Informational pages
 
 **State Management**: 
@@ -78,12 +87,18 @@ This architecture enables type-safe communication between client and server whil
 **Server Framework**: Express.js running on Node.js with ESM module format.
 
 **API Design**: RESTful API with endpoints for:
-- `POST /api/quiz/results` - Saves completed quiz results
+- `POST /api/quiz/results` - Saves completed quiz results (anonymous or authenticated)
 - `GET /api/quiz/results/:sessionId` - Retrieves results by session ID
+- `POST /api/quiz/claim/:sessionId` - Links an anonymous quiz result to logged-in user (requires auth)
+- `GET /api/dashboard/results` - Retrieves all quiz results for logged-in user (requires auth)
+- `GET /api/auth/user` - Returns current authenticated user info (requires auth)
+- `GET /api/login` - Initiates Replit Auth login flow (redirects to OIDC provider)
+- `GET /api/logout` - Logs out current user and redirects to homepage
 - `POST /api/email-capture` - Saves email address for marketing campaigns
 - `GET /api/tools` - Retrieves all productivity tools
 - `GET /api/tools/archetype/:archetypeId` - Retrieves tools filtered and sorted by archetype fit score
 - `POST /api/tools/seed` - Seeds the database with initial productivity tools (one-time operation)
+- `GET /sitemap.xml` - Generates dynamic XML sitemap for search engine indexing
 
 The API uses Zod schemas for runtime validation of incoming data, ensuring type safety at the API boundary.
 
@@ -100,9 +115,13 @@ The API uses Zod schemas for runtime validation of incoming data, ensuring type 
 **ORM**: Drizzle ORM provides type-safe database queries and schema management. The schema is defined in TypeScript and migrations are generated using Drizzle Kit.
 
 **Schema Design**:
-- `users` table - Basic user authentication (username, password)
+- `users` table - User accounts for Replit Auth OIDC integration:
+  - id (UUID from auth provider), email, first name, last name, profile picture
+  - createdAt and updatedAt timestamps
+- `sessions` table - Session storage for Express sessions (used by Replit Auth)
 - `quiz_results` table - Stores quiz completions with:
   - Unique session IDs for retrieval
+  - Optional userId foreign key linking to users table (null for anonymous quizzes)
   - JSONB columns for answers and calculated scores
   - Archetype assignment
   - Completion timestamp

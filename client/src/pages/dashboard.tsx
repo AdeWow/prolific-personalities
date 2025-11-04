@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
+import { useClaimPendingQuiz } from "@/hooks/useClaimPendingQuiz";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
@@ -16,6 +17,7 @@ import type { QuizResult } from "@shared/schema";
 export default function Dashboard() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading: authLoading, user } = useAuth();
+  const { isClaimingQuiz } = useClaimPendingQuiz();
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -37,12 +39,14 @@ export default function Dashboard() {
     enabled: isAuthenticated,
   });
 
-  if (authLoading || resultsLoading) {
+  if (authLoading || resultsLoading || isClaimingQuiz) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto" />
-          <p className="mt-4 text-neutral-600">Loading your dashboard...</p>
+          <p className="mt-4 text-neutral-600">
+            {isClaimingQuiz ? "Linking your quiz results..." : "Loading your dashboard..."}
+          </p>
         </div>
       </div>
     );

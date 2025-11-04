@@ -24,6 +24,8 @@ export default function Quiz() {
       return response.json();
     },
     onSuccess: () => {
+      // Store sessionId in localStorage so we can claim it after login
+      localStorage.setItem('pendingQuizSessionId', sessionId);
       setLocation(`/results/${sessionId}`);
     },
     onError: (error) => {
