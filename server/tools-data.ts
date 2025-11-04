@@ -628,86 +628,86 @@ export const toolsData: Omit<InsertTool, 'id'>[] = [
     notIdealFor: ['Creative writing', 'Privacy-focused', 'Basic needs']
   },
   {
-    toolId: 'brain-fm',
-    name: 'Brain.fm',
-    tagline: 'Music engineered to improve focus',
-    description: 'Functional music designed to affect your brain and optimize your performance. Uses AI-generated music proven to increase focus, relaxation, or sleep quality.',
-    logo: '/tools/brain-fm.png',
-    website: 'https://www.brain.fm',
-    category: 'focus',
+    toolId: 'asana',
+    name: 'Asana',
+    tagline: 'Work management platform for teams',
+    description: 'Comprehensive work management tool for teams and individuals. Organize projects, assign tasks, set deadlines, and track progress with multiple views (list, board, timeline, calendar).',
+    logo: '/tools/asana.png',
+    website: 'https://asana.com',
+    category: 'task-management',
     archetypeFit: {
-      'structured-achiever': 85,
-      'chaotic-creative': 90,
-      'anxious-perfectionist': 88,
-      'novelty-seeker': 92,
-      'strategic-planner': 80,
-      'flexible-improviser': 85
+      'structured-achiever': 95,
+      'chaotic-creative': 75,
+      'anxious-perfectionist': 92,
+      'novelty-seeker': 70,
+      'strategic-planner': 98,
+      'flexible-improviser': 78
     },
     pricing: {
-      free: false,
+      free: true,
       freemium: true,
-      startingPrice: 6.99,
+      startingPrice: 10.99,
+      currency: 'USD',
+      billingPeriod: 'monthly'
+    },
+    learningCurve: 'medium',
+    platforms: ['web', 'mac', 'windows', 'ios', 'android'],
+    pros: [
+      'Powerful free tier',
+      'Multiple project views',
+      'Strong team collaboration features'
+    ],
+    cons: [
+      'Can be overwhelming for individuals',
+      'Advanced features require paid plan',
+      'Notifications can be excessive'
+    ],
+    affiliateLink: 'https://asana.com/?ref=prolific',
+    directLink: 'https://asana.com',
+    tags: ['task-management', 'project-management', 'collaboration', 'teams'],
+    bestFor: ['Teams', 'Complex projects', 'Visual organizers'],
+    notIdealFor: ['Solo workers', 'Simple task lists', 'Minimalists']
+  },
+  {
+    toolId: 'ifttt',
+    name: 'IFTTT',
+    tagline: 'Automate your digital life',
+    description: 'Connect apps and devices with simple "if this, then that" logic. Create automated workflows between 700+ services without coding.',
+    logo: '/tools/ifttt.png',
+    website: 'https://ifttt.com',
+    category: 'automation',
+    archetypeFit: {
+      'structured-achiever': 90,
+      'chaotic-creative': 85,
+      'anxious-perfectionist': 88,
+      'novelty-seeker': 95,
+      'strategic-planner': 92,
+      'flexible-improviser': 82
+    },
+    pricing: {
+      free: true,
+      freemium: true,
+      startingPrice: 2.92,
       currency: 'USD',
       billingPeriod: 'monthly'
     },
     learningCurve: 'easy',
     platforms: ['web', 'ios', 'android'],
     pros: [
-      'Scientifically-backed audio',
-      'Works in 15 minutes',
-      'Different modes (focus, relax, sleep)'
+      'Huge app ecosystem',
+      'Simple to set up',
+      'Great for smart home integration'
     ],
     cons: [
-      'Requires subscription',
-      'Music might not suit everyone',
-      'Limited customization'
+      'Free tier very limited (2 applets)',
+      'Less powerful than Zapier',
+      'Some applets unreliable'
     ],
-    affiliateLink: 'https://www.brain.fm/?ref=prolific',
-    directLink: 'https://www.brain.fm',
-    tags: ['focus', 'music', 'neuroscience', 'deep-work'],
-    bestFor: ['Easily distracted', 'Background music lovers', 'Science enthusiasts'],
-    notIdealFor: ['Prefer silence', 'Tight budget', 'Need complete customization']
-  },
-  {
-    toolId: 'sunsama',
-    name: 'Sunsama',
-    tagline: 'Daily planner for busy professionals',
-    description: 'Thoughtful daily planning tool that helps you organize tasks, time-block your calendar, and reflect on your day. Integrates with all major task managers.',
-    logo: '/tools/sunsama.png',
-    website: 'https://www.sunsama.com',
-    category: 'planning',
-    archetypeFit: {
-      'structured-achiever': 98,
-      'chaotic-creative': 70,
-      'anxious-perfectionist': 95,
-      'novelty-seeker': 65,
-      'strategic-planner': 98,
-      'flexible-improviser': 75
-    },
-    pricing: {
-      free: false,
-      freemium: true,
-      startingPrice: 20,
-      currency: 'USD',
-      billingPeriod: 'monthly'
-    },
-    learningCurve: 'medium',
-    platforms: ['web', 'mac', 'windows'],
-    pros: [
-      'Beautiful, calm interface',
-      'Integrates with everything',
-      'Daily planning ritual'
-    ],
-    cons: [
-      'Expensive subscription',
-      'Can be overwhelming at first',
-      'Requires daily commitment'
-    ],
-    affiliateLink: 'https://www.sunsama.com/?ref=prolific',
-    directLink: 'https://www.sunsama.com',
-    tags: ['planning', 'calendar', 'time-blocking', 'reflection'],
-    bestFor: ['Overwhelmed professionals', 'Time-blockers', 'Intentional planners'],
-    notIdealFor: ['Simple needs', 'Budget-conscious', 'Spontaneous workers']
+    affiliateLink: 'https://ifttt.com/?ref=prolific',
+    directLink: 'https://ifttt.com',
+    tags: ['automation', 'workflows', 'integration', 'smart-home'],
+    bestFor: ['Automation beginners', 'Smart home users', 'Personal automation'],
+    notIdealFor: ['Complex workflows', 'Business automation', 'Need many applets']
   },
   {
     toolId: 'clockify',
@@ -792,44 +792,44 @@ export const toolsData: Omit<InsertTool, 'id'>[] = [
     notIdealFor: ['Simple note needs', 'Need mobile apps', 'Budget-conscious']
   },
   {
-    toolId: 'loom',
-    name: 'Loom',
-    tagline: 'Async video messaging for work',
-    description: 'Record quick videos of your screen, camera, or both. Perfect for async communication, tutorials, bug reports, and feedback.',
-    logo: '/tools/loom.png',
-    website: 'https://www.loom.com',
-    category: 'communication',
+    toolId: 'airtable',
+    name: 'Airtable',
+    tagline: 'Spreadsheet-database hybrid',
+    description: 'Part spreadsheet, part database - organize anything with custom views, forms, and automations. Perfect for project tracking, content calendars, and CRM.',
+    logo: '/tools/airtable.png',
+    website: 'https://airtable.com',
+    category: 'planning',
     archetypeFit: {
-      'structured-achiever': 85,
+      'structured-achiever': 92,
       'chaotic-creative': 88,
-      'anxious-perfectionist': 75,
+      'anxious-perfectionist': 85,
       'novelty-seeker': 90,
-      'strategic-planner': 82,
-      'flexible-improviser': 92
+      'strategic-planner': 95,
+      'flexible-improviser': 85
     },
     pricing: {
       free: true,
       freemium: true,
-      startingPrice: 12.50,
+      startingPrice: 20,
       currency: 'USD',
       billingPeriod: 'monthly'
     },
-    learningCurve: 'easy',
+    learningCurve: 'medium',
     platforms: ['web', 'mac', 'windows', 'ios', 'android'],
     pros: [
-      'Faster than typing',
-      'Generous free tier',
-      'Easy to share'
+      'Incredibly flexible',
+      'Beautiful interface',
+      'Strong free tier'
     ],
     cons: [
-      'Video limit on free plan',
-      'Can feel awkward at first',
-      'Requires comfort on camera'
+      'Can get complex quickly',
+      'Expensive for teams',
+      'Learning curve for advanced features'
     ],
-    affiliateLink: 'https://www.loom.com/?ref=prolific',
-    directLink: 'https://www.loom.com',
-    tags: ['communication', 'video', 'async', 'screen-recording'],
-    bestFor: ['Remote teams', 'Bug reporting', 'Quick explanations'],
-    notIdealFor: ['Camera-shy', 'Prefer writing', 'Need privacy']
+    affiliateLink: 'https://airtable.com/?ref=prolific',
+    directLink: 'https://airtable.com',
+    tags: ['database', 'spreadsheet', 'project-management', 'collaboration'],
+    bestFor: ['Visual thinkers', 'Complex organization', 'Custom workflows'],
+    notIdealFor: ['Simple needs', 'Budget teams', 'Need offline access']
   }
 ];
