@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { archetypes } from "@/data/archetypes";
 import thoughtfulPersonImage from "@assets/adeola2020_an_expressive_illustration_of_a_thoughtful_person_ga_a6681bc9-45e9-4c2c-b1fa-961885775c35_1750287981899.png";
 import cheerfulPersonImage from "@assets/adeola2020_a_cheerful_and_imaginative_person_surrounded_by_scat_bd79f25b-94eb-40cb-8565-beb87e4f0704_1750288019564.png";
-import logoImage from "@assets/Logo_1762241139576.png";
+import logoImage from "@assets/logo2_1762241472426.png";
 
 export default function Archetypes() {
   const [location] = useLocation();

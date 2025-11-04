@@ -9,7 +9,7 @@ import { calculateScores, determineArchetype, generateSessionId, getProgressPerc
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { QuizAnswers } from "@shared/schema";
-import logoImage from "@assets/Logo_1762241139576.png";
+import logoImage from "@assets/logo2_1762241472426.png";
 
 export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);

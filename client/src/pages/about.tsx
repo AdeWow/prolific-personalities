@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import logoImage from "@assets/Logo_1762241139576.png";
+import logoImage from "@assets/logo2_1762241472426.png";
 
 export default function About() {
   return (
