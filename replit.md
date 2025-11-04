@@ -7,10 +7,16 @@ Prolific Personalities is a research-backed web application that helps users dis
 The application is built as a full-stack TypeScript web application with a React frontend and Express backend, designed to deliver an engaging, mobile-friendly assessment experience with immediate, shareable results.
 
 **Recent Features Added (November 2025)**:
+- **Modern 4-Axis Visualization**: Replaced radar chart with dynamic, animated horizontal bar visualization showing Structure Orientation, Motivation Style, Cognitive Focus, and Task Relationship with real-time score indicators and interpretation guidance
 - **Email Capture**: Users can save their results via email for marketing campaigns and follow-up engagement
 - **Productivity Tools Database**: 15 popular productivity tools (Freedom, Notion, Todoist, etc.) with archetype-specific fit scores (0-100) to recommend the best tools for each user's working style
 - **PDF Export**: Users can export their results as PDF using browser's native print functionality
 - **Tool Recommendations**: Results page displays up to 9 tools filtered and sorted by archetype fit score, showing pricing, pros/cons, and platform information
+- **Enhanced Homepage**:
+  - Research-backed hero messaging emphasizing peer-reviewed science
+  - Trust badges section (Research-Backed, 2,000+ Users, GDPR Compliant, Actionable Advice)
+  - Founder story section explaining the personal journey behind the platform
+  - Social proof with user testimonials and validated statistics
 
 ## User Preferences
 
