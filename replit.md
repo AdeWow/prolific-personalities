@@ -56,6 +56,9 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **Productivity Tools Database**: A database of 20 tools with archetype-specific fit scores, providing personalized recommendations.
 -   **PDF Export**: Professional, print-optimized PDF export of quiz results with detailed analysis and scientific foundation.
 -   **SEO Optimization**: Unique meta tags, Open Graph tags, canonical URLs, and a dynamic XML sitemap.
+-   **Progress Tracking**: Dashboard displays score evolution over time, comparing latest vs. first assessment across all four dimensions with visual indicators for changes. Shows archetype evolution when users' productivity styles change between assessments.
+-   **Social Sharing**: Multi-platform sharing dropdown on results page with pre-filled content for Twitter, Facebook, LinkedIn, WhatsApp, and one-click copy link functionality.
+-   **Analytics Integration**: Google Analytics 4 integration with automatic page view tracking and event tracking utilities (requires VITE_GA_MEASUREMENT_ID secret).
 
 ## External Dependencies
 
