@@ -12,6 +12,56 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: '3',
+    title: 'Digital Minimalism Challenge: Can You Survive Without Notifications?',
+    slug: 'digital-minimalism-challenge',
+    excerpt: 'I used to think notifications were just a minor annoyance—a ping here, a badge there. But one week, I decided to turn them all off. What happened next was both painful and eye-opening.',
+    publishDate: '2025-11-05',
+    author: 'Prolific Personalities Team',
+    readTime: '5 min read',
+    tags: ['Digital Minimalism', 'Focus', 'Productivity'],
+    content: `I used to think notifications were just a minor annoyance—a ping here, a badge there. But one week, I decided to turn them all off. Not just silent mode, but a full digital detox: no phone buzzes, no desktop banners, no "New message!" pop-ups. What happened next was both painful and eye-opening.
+
+## The Noise We Don't Notice
+
+Within the first hour, I caught myself reaching for my phone again and again, trying to "check" something that wasn't there. Every muscle in my body expected a red dot, a chime, something to confirm I mattered in a digital world. It felt strangely lonely, as if I'd unplugged from the network that tethered me to the pulse of work and life.
+
+But slowly, the silence got comfortable. The absence of interruption became its own kind of alert: **"You're free to focus. What do you want to do?"**
+
+It turns out, the average person is interrupted every 11 minutes, and it takes over 20 minutes to regain deep focus after each distraction. The endless stream of app badges and pop-ups fragments our day into micro-moments, shattering the concentration we need for truly meaningful work.
+
+## What I Learned—And What You Will Too
+
+For the first time in months, I got through a whole article without skimming. I finished a complex project that I'd been putting off for weeks. In moments of boredom, instead of scrolling, I found myself reaching for a pen, jotting ideas—and feeling creative again.
+
+But it wasn't all easy. I felt anxious—what if I missed something urgent? What if my team needed me? What if (my secret fear) nobody noticed I was gone? The emotional attachment to notifications is real, fueled by brain chemicals that reward novelty and social validation.
+
+## Surviving (and Thriving) Without Notifications
+
+A digital minimalism challenge isn't about never going online. It's about reclaiming your attention and seeing what you're capable of without the constant digital tap on the shoulder. Here's how to try it:
+
+**Turn off every non-essential notification for 7 days.** Yes, even email badges!
+
+**Replace checking with intentionality:** set 2-3 specific times to check messages and stick to them.
+
+**Keep a journal:** jot down every time you reach for your phone or expect a notification—notice the patterns.
+
+**On day 7, review:** How did you feel? What did you accomplish? Would you ever go back?
+
+## The Takeaway
+
+Living without notifications for a week forced me to confront just how conditioned I'd become. It was awkward, a little scary, and absolutely transformative. Not only did my focus improve, but I also found room for creativity and genuine rest.
+
+So—are you ready to try it? Can you survive without notifications? The results may surprise you, too.
+
+---
+
+## References
+
+- Mark, G., Gudith, D., & Klocke, U. (2008). *The cost of interrupted work: More speed and stress*. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems.
+- Ophir, E., Nass, C., Wagner, A. D. (2009). *Cognitive control in media multitaskers*. Proceedings of the National Academy of Sciences, 106(37), 15583-15587.`
+  },
+  {
     id: '2',
     title: 'When Productivity Hurts: The Real Weight of Guilt',
     slug: 'when-productivity-hurts',
