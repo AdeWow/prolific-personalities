@@ -23,16 +23,6 @@ export default function BlogPage() {
           </p>
         </div>
 
-        {/* Email Capture */}
-        <div className="mb-12 max-w-3xl mx-auto">
-          <EmailCaptureCard 
-            title="Get productivity insights in your inbox"
-            description="Subscribe for research-backed strategies, archetype deep-dives, and exclusive tips delivered weekly."
-            buttonText="Subscribe Free"
-            context="blog-listing"
-          />
-        </div>
-
         {/* Blog Posts Grid */}
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {blogPosts.map((post) => (
@@ -81,6 +71,16 @@ export default function BlogPage() {
               </CardFooter>
             </Card>
           ))}
+        </div>
+
+        {/* Email Capture */}
+        <div className="mt-16 mb-12 max-w-3xl mx-auto">
+          <EmailCaptureCard 
+            title="Get productivity insights in your inbox"
+            description="Subscribe for research-backed strategies, archetype deep-dives, and exclusive tips delivered weekly."
+            buttonText="Subscribe Free"
+            context="blog-listing"
+          />
         </div>
 
         {/* Back to Home */}
