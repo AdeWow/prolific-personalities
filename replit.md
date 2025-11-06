@@ -6,6 +6,14 @@ Prolific Personalities is a web application designed to help users identify thei
 
 ## Recent Changes (November 6, 2025)
 
+-   **Enhanced Assessment Algorithm**: Comprehensive edge case handling system for quiz scoring:
+    - Score categorization (LOW/MEDIUM/HIGH) for each axis based on 7-35 score range
+    - Confidence levels (Exact 90-100%, Strong 70-89%, Moderate 50-69%, Weak <50%)
+    - Multiple archetype matching for balanced profiles
+    - Personalized notes explaining balanced tendencies and adaptability
+    - Secondary archetypes displayed for moderate/weak matches
+    - Results page shows confidence badge, profile notes, and alternative archetypes
+    - Handles mid-range scores, weak matches, and ties gracefully
 -   **Resources Page Launch**: New comprehensive tools and resources page (`/resources`) featuring:
     - Curated productivity tools organized by archetype
     - Tabbed interface: "By Archetype" and "All Tools" views
