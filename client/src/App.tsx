@@ -13,6 +13,7 @@ import Results from "@/pages/results";
 import About from "@/pages/about";
 import Science from "@/pages/science";
 import Archetypes from "@/pages/archetypes";
+import Resources from "@/pages/resources";
 import FAQ from "@/pages/faq";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
@@ -33,6 +34,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/science" component={Science} />
       <Route path="/archetypes" component={Archetypes} />
+      <Route path="/resources" component={Resources} />
       <Route path="/faq" component={FAQ} />
       <Route path="/founder" component={Founder} />
       <Route path="/blog/:slug" component={BlogPost} />

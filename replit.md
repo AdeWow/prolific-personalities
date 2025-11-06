@@ -4,16 +4,37 @@
 
 Prolific Personalities is a web application designed to help users identify their unique productivity archetype through a research-backed assessment. The platform analyzes user responses across four cognitive and behavioral dimensions to assign one of six distinct productivity archetypes. It then provides personalized strategies, tool recommendations, and insights tailored to their specific working style. The project aims to offer a user-friendly, mobile-responsive experience with immediate, shareable results, fostering improved personal productivity and understanding.
 
-## Recent Changes (November 2025)
+## Recent Changes (November 6, 2025)
 
--   **Science Page Redesign**: Comprehensive update to the `/science` page with detailed research-backed content including:
-    - The Productivity Paradox section with market context ($60-85B industry, declining attention spans)
-    - Evidence for personalization effectiveness (40% education improvement, 30-50% healthcare outcomes)
-    - Detailed Big Five personality research with specific effect sizes and correlations
-    - Evidence-based productivity frameworks (Implementation Intentions d=0.65, Deep Work attention residue, Pomodoro, Habit Formation, Energy Management, Body Doubling)
-    - Executive function and ADHD research with meta-analytic findings
-    - Comprehensive validation methodology and outcome results
-    - Updated research citations from leading journals
+-   **Resources Page Launch**: New comprehensive tools and resources page (`/resources`) featuring:
+    - Curated productivity tools organized by archetype
+    - Tabbed interface: "By Archetype" and "All Tools" views
+    - Essential Stack recommendations for each of the 6 archetypes
+    - Tool comparison table with 8+ universal productivity tools
+    - Guidance on choosing the right tool stack
+    - Fully responsive with dark mode support
+    - Added to main navigation (desktop and mobile)
+-   **Science Page Simplification**: Redesigned `/science` page for better accessibility while maintaining credibility:
+    - Condensed research content into scannable, digestible sections
+    - Simplified language while preserving key statistics and findings
+    - Full 30+ page research paper available as downloadable PDF
+    - Two prominent download buttons (top and bottom of page)
+    - Visual hierarchy with colored section cards
+    - Evidence badges (Strong Evidence vs. Mixed Results) for productivity frameworks
+-   **About Page Enhancements**: Three major additions to `/about` page:
+    - Research link button in "Research Behind It" section linking to `/science`
+    - Waitlist form in "What's Next" section with compelling incentive messaging:
+      - Early access to new features
+      - Exclusive beta access
+      - Special discounts on premium features
+    - Comprehensive feedback form in "Stay Connected" section:
+      - Name (optional), Email (optional), Type selector, Message (required)
+      - Proper validation using shadcn Form + react-hook-form
+      - Email format validation, 10-character minimum for messages
+      - Success toasts and form reset on submission
+-   **Database Additions**: Two new tables for user engagement:
+    - `waitlist`: Captures early access signups with email and session tracking
+    - `feedback`: Stores user feedback with type categorization (feedback/recommendation/feature_request)
 -   **Blog Content Expansion**: Added two new blog posts:
     - "When Productivity Hurts: The Real Weight of Guilt" - addresses productivity guilt and self-compassion
     - "Digital Minimalism Challenge: Can You Survive Without Notifications?" - 7-day challenge with research on attention and distraction

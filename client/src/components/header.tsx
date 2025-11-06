@@ -29,6 +29,9 @@ export function Header() {
             <Link href="/science" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-research">
               The Research
             </Link>
+            <Link href="/resources" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-resources">
+              Resources
+            </Link>
             <Link href="/blog" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-blog">
               Blog
             </Link>
@@ -88,6 +91,9 @@ export function Header() {
             </Link>
             <Link href="/science" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-research-mobile">
               The Research
+            </Link>
+            <Link href="/resources" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-resources-mobile">
+              Resources
             </Link>
             <Link href="/blog" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-blog-mobile">
               Blog

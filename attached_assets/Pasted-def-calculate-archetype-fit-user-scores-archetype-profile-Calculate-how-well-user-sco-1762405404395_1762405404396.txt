@@ -1,0 +1,189 @@
+def calculate_archetype_fit(user_scores, archetype_profile):
+    """
+    Calculate how well user scores match an archetype
+    Returns percentage match (0-100)
+    """
+    
+    # Archetype profile defines ideal scores
+    # Example for Strategic Planner:
+    # {structure: 80, motivation: 75, focus: 80, task: 85}
+    
+    total_distance = 0
+    for axis in ['structure', 'motivation', 'focus', 'task']:
+        distance = abs(user_scores[axis] - archetype_profile[axis])
+        total_distance += distance
+    
+    # Max possible distance = 400 (100 per axis × 4)
+    # Convert to similarity percentage
+    similarity = 100 - (total_distance / 4)
+    
+    return similarity
+```
+
+**Rank All 6 Archetypes:**
+
+1. Archetype A: 85% match (PRIMARY)
+2. Archetype B: 72% match (SECONDARY)
+3. Archetype C: 58% match
+4. Archetype D: 45% match
+5. Archetype E: 38% match
+6. Archetype F: 22% match
+
+**Show Primary + Secondary if:**
+- Primary match < 80% (not perfectly clear)
+- Secondary match > 60% (reasonably strong fit)
+- Gap between primary/secondary < 20% (close call)
+
+---
+
+## **TIE-BREAKING LOGIC**
+
+### **Scenario 1: Two Archetypes Within 10% of Each Other**
+
+**Example:**
+- Chaotic Creative: 75% match
+- Novelty Seeker: 72% match
+- Difference: 3%
+
+**Solution:**
+
+**Present as Co-Primary Archetypes:**
+```
+YOUR ARCHETYPE: CHAOTIC CREATIVE + NOVELTY SEEKER BLEND
+
+Primary: Chaotic Creative (75% match)
+Secondary: Novelty Seeker (72% match)
+
+You blend characteristics of both:
+- From Chaotic: Burst energy, idea generation, struggle with structure
+- From Novelty: Variety-seeking, quickly bored, multi-project juggling
+
+RECOMMENDED FRAMEWORKS:
+1. Start with Chaotic Creative frameworks (slightly better fit)
+2. Add Novelty Seeker variety management strategies
+3. Use hybrid approach drawing from both playbooks
+```
+
+---
+
+### **Scenario 2: Three or More Archetypes Within 15%**
+
+**Example:**
+- Strategic Planner: 68%
+- Structured Achiever: 65%
+- Anxious Perfectionist: 62%
+
+**Solution:**
+
+**Present as "Transitional" or "Exploring" Phase:**
+```
+YOUR RESULTS: MULTIPLE MODERATE MATCHES
+
+You don't strongly fit one archetype. This suggests:
+- You're in transition between productivity styles
+- You're highly adaptive (context-dependent approach)
+- You're still discovering your optimal workflow
+
+TOP 3 MATCHES:
+1. Strategic Planner (68%) - Try this first
+2. Structured Achiever (65%) - Backup option
+3. Anxious Perfectionist (62%) - If #1-2 don't resonate
+
+RECOMMENDATION:
+Try Strategic Planner frameworks for 2 weeks.
+If they don't resonate, switch to Structured Achiever.
+Track which frameworks feel natural vs. forced.
+```
+
+---
+
+### **Scenario 3: All Scores in BALANCED Range (Mid-Range on Everything)**
+
+**Example:**
+- Structure: 50 (BALANCED)
+- Motivation: 52 (BALANCED)
+- Focus: 48 (BALANCED)
+- Task: 51 (BALANCED)
+
+**All archetype matches: 45-55% (no clear winner)**
+
+**Solution:**
+
+**Create "ADAPTIVE GENERALIST" Result:**
+```
+YOUR ARCHETYPE: ADAPTIVE GENERALIST
+
+Confidence: Medium (No strong archetype match)
+
+WHAT THIS MEANS:
+You scored in the middle range on all axes. This suggests:
+
+1. High Adaptability
+   - You can work in multiple styles depending on context
+   - No strong preferences lock you into one approach
+   - Flexibility is your strength
+
+2. Context-Dependent Productivity
+   - Different projects may need different approaches
+   - You can match your style to the task
+   - Not one-size-fits-all
+
+3. Still Discovering Optimal Style
+   - You may not have found your natural rhythm yet
+   - OR you genuinely are a blend of multiple styles
+
+RECOMMENDED PATH:
+
+WEEK 1-2: Try Flexible Improviser frameworks
+(Most adaptable, works for generalists)
+
+WEEK 3-4: Try Structured Achiever frameworks
+(Opposite style - see what resonates)
+
+WEEK 5: Review both experiments
+- Which felt more natural?
+- Which produced better results?
+- Which was more sustainable?
+
+Based on results, choose primary approach or create hybrid.
+
+ALTERNATIVE:
+Take the assessment again in 1 month after trying different workflows.
+Your preferences may become clearer through experimentation.
+```
+
+---
+
+## **CONFIDENCE SCORE DISPLAY**
+
+### **Assessment Results Page:**
+```
+═══════════════════════════════════════════════════════
+        YOUR PRODUCTIVITY ARCHETYPE
+═══════════════════════════════════════════════════════
+
+PRIMARY ARCHETYPE: CHAOTIC CREATIVE
+
+Confidence: 85% (Strong Match)
+
+ARCHETYPE BREAKDOWN:
+1. Chaotic Creative: 85% ████████░░
+2. Novelty Seeker: 68%   ██████░░░░
+3. Flexible Improviser: 52% █████░░░░░
+4. Anxious Perfectionist: 45% ████░░░░░░
+5. Strategic Planner: 32% ███░░░░░░░
+6. Structured Achiever: 28% ██░░░░░░░░
+
+YOUR SCORES:
+→ Structure: LOW (25/100) - Prefers flexibility
+→ Motivation: INTRINSIC (28/100) - Internal drive
+→ Focus: BIG PICTURE (78/100) - Future-oriented
+→ Task: PLANNING (72/100) - Idea generation
+
+INTERPRETATION:
+Strong match! You clearly identify with Chaotic Creative patterns.
+Your frameworks are highly customized for your profile.
+
+SECONDARY INFLUENCE:
+You also show some Novelty Seeker traits (68% match).
+Consider exploring variety management strategies if boredom is an issue.
