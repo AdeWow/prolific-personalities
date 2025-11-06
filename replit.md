@@ -4,6 +4,21 @@
 
 Prolific Personalities is a web application designed to help users identify their unique productivity archetype through a research-backed assessment. The platform analyzes user responses across four cognitive and behavioral dimensions to assign one of six distinct productivity archetypes. It then provides personalized strategies, tool recommendations, and insights tailored to their specific working style. The project aims to offer a user-friendly, mobile-responsive experience with immediate, shareable results, fostering improved personal productivity and understanding.
 
+## Recent Changes (November 2025)
+
+-   **Science Page Redesign**: Comprehensive update to the `/science` page with detailed research-backed content including:
+    - The Productivity Paradox section with market context ($60-85B industry, declining attention spans)
+    - Evidence for personalization effectiveness (40% education improvement, 30-50% healthcare outcomes)
+    - Detailed Big Five personality research with specific effect sizes and correlations
+    - Evidence-based productivity frameworks (Implementation Intentions d=0.65, Deep Work attention residue, Pomodoro, Habit Formation, Energy Management, Body Doubling)
+    - Executive function and ADHD research with meta-analytic findings
+    - Comprehensive validation methodology and outcome results
+    - Updated research citations from leading journals
+-   **Blog Content Expansion**: Added two new blog posts:
+    - "When Productivity Hurts: The Real Weight of Guilt" - addresses productivity guilt and self-compassion
+    - "Digital Minimalism Challenge: Can You Survive Without Notifications?" - 7-day challenge with research on attention and distraction
+    - Reorganized blog page layout with email capture moved to bottom after posts grid
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
