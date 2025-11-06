@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { FourAxisVisual } from "@/components/four-axis-visual";
 import { ToolCard } from "@/components/tool-card";
 import { archetypes } from "@/data/archetypes";
+import { determineArchetypeEnhanced } from "@/lib/quiz-logic";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle } from "lucide-react";
+import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle, Info } from "lucide-react";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
   DropdownMenu,
@@ -18,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { apiRequest } from "@/lib/queryClient";
-import type { QuizResult, ToolWithFitScore } from "@shared/schema";
+import type { QuizResult, ToolWithFitScore, QuizScores } from "@shared/schema";
 
 export default function Results() {
   const params = useParams();
@@ -41,6 +42,15 @@ export default function Results() {
   });
 
   const archetype = result ? archetypes.find(a => a.id === result.archetype) : null;
+  
+  const enhancedResult = result?.scores && 
+    typeof result.scores === 'object' && 
+    'structure' in result.scores &&
+    'motivation' in result.scores &&
+    'cognitive' in result.scores &&
+    'task' in result.scores
+      ? determineArchetypeEnhanced(result.scores as QuizScores) 
+      : null;
   
   const { data: tools } = useQuery<ToolWithFitScore[]>({
     queryKey: ['/api/tools/archetype', archetype?.id],
@@ -249,7 +259,68 @@ export default function Results() {
                   <p className="text-xl lg:text-2xl text-neutral-600 font-medium" data-testid="archetype-tagline">
                     {archetype.tagline}
                   </p>
+                  
+                  {/* Confidence Badge */}
+                  {enhancedResult && (
+                    <div className="flex items-center justify-center gap-2 mt-4">
+                      <Badge 
+                        className={`px-4 py-2 text-sm font-semibold ${
+                          enhancedResult.confidenceLevel === 'exact' 
+                            ? 'bg-green-100 text-green-700 border-green-300' 
+                            : enhancedResult.confidenceLevel === 'strong'
+                            ? 'bg-blue-100 text-blue-700 border-blue-300'
+                            : enhancedResult.confidenceLevel === 'moderate'
+                            ? 'bg-yellow-100 text-yellow-700 border-yellow-300'
+                            : 'bg-purple-100 text-purple-700 border-purple-300'
+                        }`}
+                        data-testid="confidence-badge"
+                      >
+                        {enhancedResult.confidence}% Match Confidence
+                      </Badge>
+                    </div>
+                  )}
                 </div>
+
+                {/* Profile Notes */}
+                {enhancedResult && enhancedResult.notes.length > 0 && (
+                  <Card className="bg-indigo-50 border-indigo-200 text-left max-w-2xl mx-auto" data-testid="profile-notes">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-3">
+                        <Info className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-neutral-800">Your Unique Profile</h4>
+                          {enhancedResult.notes.map((note, idx) => (
+                            <p key={idx} className="text-sm text-neutral-700">{note}</p>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Secondary Archetypes */}
+                {enhancedResult && enhancedResult.secondary && enhancedResult.secondary.length > 0 && (
+                  <Card className="bg-purple-50 border-purple-200 text-left max-w-2xl mx-auto" data-testid="secondary-archetypes">
+                    <CardContent className="p-6">
+                      <h4 className="font-semibold text-neutral-800 mb-3">You also share traits with:</h4>
+                      <div className="flex flex-wrap gap-3">
+                        {enhancedResult.secondary.map((secondaryArchetype) => (
+                          <Link key={secondaryArchetype.id} href={`/archetypes#${secondaryArchetype.id}`}>
+                            <Badge 
+                              className="px-3 py-2 bg-white border-purple-300 text-purple-700 hover:bg-purple-100 cursor-pointer transition-colors"
+                              data-testid={`secondary-archetype-${secondaryArchetype.id}`}
+                            >
+                              {secondaryArchetype.icon} {secondaryArchetype.name}
+                            </Badge>
+                          </Link>
+                        ))}
+                      </div>
+                      <p className="text-sm text-neutral-600 mt-3">
+                        Your balanced profile means you can adapt your working style based on the situation.
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* 4-Axis Visualization */}
                 <div className="max-w-3xl mx-auto pt-8">
