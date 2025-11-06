@@ -197,7 +197,7 @@ export default function Pricing() {
               <CardContent className="p-6">
                 <h3 className="font-bold text-neutral-800 mb-2">What's included in the Premium report?</h3>
                 <p className="text-neutral-600">
-                  A comprehensive 10+ page PDF with your complete archetype analysis, 90-day action plan, 
+                  A comprehensive 100+ page PDF with your complete archetype analysis, 90-day action plan, 
                   personalized productivity framework, habit templates, and detailed tool recommendations with setup guides.
                 </p>
               </CardContent>
