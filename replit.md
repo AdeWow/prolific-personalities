@@ -6,9 +6,21 @@ Prolific Personalities is a web application designed to help users identify thei
 
 ## Recent Changes (November 6, 2025)
 
+-   **Distance-Based Fit Scoring System**: Advanced archetype matching using Manhattan distance calculation:
+    - Score normalization: Raw scores (7-35) mapped to 0-100 scale using formula ((score-7)/28)*100
+    - Ideal archetype profiles: Each of 6 archetypes defined with target scores across 4 dimensions
+    - Distance-based fit calculation: Manhattan distance across all axes, converted to similarity percentage
+    - Archetype breakdown: Results page shows all 6 archetypes ranked by fit percentage (0-100%)
+    - Visual progress bars: Each archetype displayed with color-coded bar (indigo for primary, gray for others)
+    - Enhanced edge case handling:
+      * Co-primary blends (≤10% difference between top 2)
+      * Multiple moderate matches (≤15% spread across 3 archetypes)
+      * Adaptive generalists (3+ balanced axes)
+    - Confidence levels: Exact (≥80%), Strong (65-79%), Moderate (50-64%), Weak (<50%)
+    - Contextual notes: Dynamic explanations based on fit patterns and score distributions
+    - Algorithm: 100% client-side calculation, no backend changes required
 -   **Enhanced Assessment Algorithm**: Comprehensive edge case handling system for quiz scoring:
     - Score categorization (LOW/MEDIUM/HIGH) for each axis based on 7-35 score range
-    - Confidence levels (Exact 90-100%, Strong 70-89%, Moderate 50-69%, Weak <50%)
     - Multiple archetype matching for balanced profiles
     - Personalized notes explaining balanced tendencies and adaptability
     - Secondary archetypes displayed for moderate/weak matches
