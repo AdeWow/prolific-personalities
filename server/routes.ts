@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { insertQuizResultSchema, insertEmailCaptureSchema } from "@shared/schema";
+import { insertQuizResultSchema, insertEmailCaptureSchema, insertWaitlistSchema, insertFeedbackSchema } from "@shared/schema";
 import { toolsData } from "./tools-data";
 import { z } from "zod";
 import rateLimit from "express-rate-limit";
@@ -196,6 +196,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         console.error("Error saving email capture:", error);
         res.status(500).json({ message: "Failed to save email" });
+      }
+    }
+  });
+
+  // Save waitlist entry
+  app.post("/api/waitlist", emailLimiter, async (req, res) => {
+    try {
+      const validatedData = insertWaitlistSchema.parse(req.body);
+      const entry = await storage.saveWaitlistEntry(validatedData);
+      res.json(entry);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid waitlist data", errors: error.errors });
+      } else {
+        console.error("Error saving waitlist entry:", error);
+        res.status(500).json({ message: "Failed to join waitlist" });
+      }
+    }
+  });
+
+  // Save feedback
+  app.post("/api/feedback", writeLimiter, async (req, res) => {
+    try {
+      const validatedData = insertFeedbackSchema.parse(req.body);
+      const feedbackEntry = await storage.saveFeedback(validatedData);
+      res.json(feedbackEntry);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid feedback data", errors: error.errors });
+      } else {
+        console.error("Error saving feedback:", error);
+        res.status(500).json({ message: "Failed to submit feedback" });
       }
     }
   });

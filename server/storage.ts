@@ -1,4 +1,4 @@
-import { users, quizResults, tools, emailCaptures, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type ToolWithFitScore } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, waitlist, feedback, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type ToolWithFitScore } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
@@ -17,6 +17,10 @@ export interface IStorage {
   createTool(tool: InsertTool): Promise<Tool>;
   // Email captures
   saveEmailCapture(capture: InsertEmailCapture): Promise<EmailCapture>;
+  // Waitlist
+  saveWaitlistEntry(entry: InsertWaitlist): Promise<Waitlist>;
+  // Feedback
+  saveFeedback(entry: InsertFeedback): Promise<Feedback>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -138,6 +142,22 @@ export class DatabaseStorage implements IStorage {
       .values(insertCapture)
       .returning();
     return capture;
+  }
+
+  async saveWaitlistEntry(insertEntry: InsertWaitlist): Promise<Waitlist> {
+    const [entry] = await db
+      .insert(waitlist)
+      .values(insertEntry)
+      .returning();
+    return entry;
+  }
+
+  async saveFeedback(insertFeedback: InsertFeedback): Promise<Feedback> {
+    const [feedbackEntry] = await db
+      .insert(feedback)
+      .values(insertFeedback)
+      .returning();
+    return feedbackEntry;
   }
 }
 

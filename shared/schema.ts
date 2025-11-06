@@ -99,6 +99,23 @@ export const emailCaptures = pgTable("email_captures", {
   capturedAt: timestamp("captured_at").defaultNow().notNull(),
 });
 
+export const waitlist = pgTable("waitlist", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull(),
+  sessionId: text("session_id").notNull(),
+  capturedAt: timestamp("captured_at").defaultNow().notNull(),
+});
+
+export const feedback = pgTable("feedback", {
+  id: serial("id").primaryKey(),
+  name: text("name"),
+  email: text("email"),
+  message: text("message").notNull(),
+  type: text("type").notNull(), // 'feedback', 'recommendation', 'feature_request'
+  sessionId: text("session_id").notNull(),
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+});
+
 export const insertToolSchema = createInsertSchema(tools).omit({
   id: true,
 });
@@ -108,10 +125,24 @@ export const insertEmailCaptureSchema = createInsertSchema(emailCaptures).omit({
   capturedAt: true,
 });
 
+export const insertWaitlistSchema = createInsertSchema(waitlist).omit({
+  id: true,
+  capturedAt: true,
+});
+
+export const insertFeedbackSchema = createInsertSchema(feedback).omit({
+  id: true,
+  submittedAt: true,
+});
+
 export type InsertTool = z.infer<typeof insertToolSchema>;
 export type Tool = typeof tools.$inferSelect;
 export type InsertEmailCapture = z.infer<typeof insertEmailCaptureSchema>;
 export type EmailCapture = typeof emailCaptures.$inferSelect;
+export type InsertWaitlist = z.infer<typeof insertWaitlistSchema>;
+export type Waitlist = typeof waitlist.$inferSelect;
+export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
+export type Feedback = typeof feedback.$inferSelect;
 
 // Type for tools with archetype fit score
 export type ToolWithFitScore = Tool & { fitScore: number };

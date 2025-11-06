@@ -1,0 +1,65 @@
+COMPREHENSIVE TOOLS & RESOURCES GUIDE
+ALL TOOLS ACROSS ALL ARCHETYPES
+MASTER TOOLS TABLE
+Tool NameCategoryArchetypesPrimary UseCostWhy RecommendedBest ForNotionProject ManagementAll (customizable)Knowledge base, databases, docsFree-$10/moFlexible, powerful, customizable to any archetype styleBuilding comprehensive systemsTodoistTask ManagementStructured Achiever, Strategic PlannerClean task lists with prioritiesFree-$4/moSimple, reliable, recurring tasksPeople who like clear listsTrelloVisual OrganizationChaotic Creative, Novelty SeekerKanban boards for visual workflowFree-$5/moVisual, flexible, drag-and-drop satisfactionVisual thinkers who like moving cardsAsanaProject ManagementStrategic Planner, Structured AchieverTeam projects, timelines, dependenciesFree-$11/moRobust for complex projectsProfessional project managementClickUpAll-in-One PMStrategic Planner, Structured AchieverComprehensive productivity suiteFree-$9/moEverything in one placePeople who want single tool for allForest AppFocus TimerFlexible Improviser, Novelty SeekerGamified Pomodoro with tree growing$2 one-timeVisual reward, phone blocking, flexible durationPeople who need focus help + visual motivationBrain.fmFocus MusicAll archetypesScience-backed focus music$10/moProven to improve concentrationAnyone who works better with audioFreedomDistraction BlockingAnxious Perfectionist, Chaotic CreativeBlock websites/apps across devices$9/moComprehensive blocking, scheduled sessionsPeople who struggle with digital distractionsRescueTimeTime TrackingStrategic Planner, Structured AchieverAutomatic time tracking and analysisFree-$12/moUnderstand where time actually goesData-driven people who want metricsTogglTime TrackingStructured Achiever, Strategic PlannerManual time tracking with reportsFree-$10/moSimple, clear reports, project trackingFreelancers who bill by hourHabiticaGamificationNovelty Seeker (only)RPG-style habit trackerFreeGamifies tasks into game rewardsGamers who need external motivationFocusmateAccountabilityFlexible Improviser, Chaotic Creative50-min video coworking sessionsFree-$5/moSocial accountability without pressurePeople who work better with others presentSunsamaDaily PlanningStrategic Planner, Anxious PerfectionistIntentional daily planning ritual$20/moCalm, mindful approach to planningPeople who like thoughtful daily reviewsAkiflowTask ConsolidationStrategic Planner, Structured AchieverAggregates tasks from all tools$19/moSingle view of everythingPeople using multiple toolsMotionAI SchedulingStrategic Planner, Structured AchieverAI automatically schedules your tasks$34/moIntelligent auto-schedulingPeople with complex calendarsObsidianNote-TakingAll archetypesMarkdown notes with linkingFreeLocal storage, infinite customizationKnowledge workers building second brainRoam ResearchNote-TakingChaotic Creative, Strategic PlannerNetworked thought, bidirectional links$15/moNon-linear thinking supportPeople who think in networks not hierarchiesEvernoteNote CaptureChaotic Creative, Novelty SeekerQuick capture, web clipper, searchFree-$10/moFast capture from anywherePeople who capture ideas constantlyGoogle KeepQuick NotesFlexible Improviser, Chaotic CreativeSimple sticky notes, remindersFreeFast, simple, minimalPeople who need frictionless captureVoice MemosIdea CaptureFlexible Improviser, Chaotic CreativeVoice recording on phoneFree (built-in)Zero friction, fastest capturePeople who think while movingCalendlySchedulingStrategic Planner, Structured AchieverAutomated meeting schedulingFree-$10/moEliminates scheduling back-and-forthPeople with many external meetingsClockifyTime TrackingStructured AchieverFree time tracking for teamsFreeUnlimited users and projectsBudget-conscious time trackingPomodonePomodoro TimerStructured Achiever, Anxious PerfectionistIntegrates with task managersFree-$3/moConnects to your existing toolsPeople using Pomodoro techniqueBe FocusedPomodoro TimerStructured AchieverMac/iOS Pomodoro timer$5 one-timeClean, native Mac/iOS designApple users who like simplicityCold TurkeyWebsite BlockerAnxious Perfectionist, Chaotic CreativeExtreme website blockingFree-$39Cannot be bypassed (even by you!)People who need forced blockingSelf ControlWebsite BlockerAnxious PerfectionistMac blocking toolFreeOpen source, simpleMac users who need basic blockingSereneFocus SessionsStrategic Planner, Anxious PerfectionistBlocks distractions + tracks focus$5/moAll-in-one focus solutionMac users wanting comprehensive focusNoisliAmbient SoundsAll archetypesBackground noise for focusFree-$2/moCustomizable sound mixingPeople who like ambient noiseMyNoiseAmbient SoundsAll archetypesAdvanced sound generatorFree-$5Highly customizable soundscapesPeople who want specific sound profilesFantasticalCalendarStrategic Planner, Structured AchieverSmart natural language calendarFree-$5/moBeautiful, powerful calendarApple users who live by calendarCronCalendarStrategic PlannerModern calendar with speed focusFreeFast, keyboard-drivenPower users who schedule constantlyAmazing MarvinTask ManagementAnxious Perfectionist, Strategic PlannerHighly customizable task manager$12/moCustomize every aspectPeople who want perfect personal systemThings 3Task ManagementStructured AchieverBeautiful Mac/iOS task manager$50 one-timeElegant, Apple-native designApple users who value designOmniFocusTask ManagementStrategic Planner, Structured AchieverPowerful GTD implementation$50-$100Most powerful task managementGTD practitionersTickTickTask ManagementStructured Achiever, Strategic PlannerFull-featured task managerFree-$3/moGreat free tier, Pomodoro built-inBudget-conscious but want featuresRemember The MilkTask ManagementStructured AchieverSimple, reliable tasksFree-$40/yearLong-standing, reliablePeople who want no-frills tasksMicrosoft To DoTask ManagementStructured AchieverSimple tasks with My Day featureFreeFree, Microsoft ecosystemOffice 365 usersGoogle TasksTask ManagementFlexible Improviser, Structured AchieverMinimal task listsFreeIntegrates with Gmail/CalendarGoogle ecosystem usersHabitifyHabit TrackingStructured AchieverClean habit trackerFree-$5/moSimple, beautiful habit trackingPeople building specific habitsStreaksHabit TrackingStructured AchieveriOS habit tracker$5 one-timeNative iOS, widget supportiPhone users tracking habitsLoop Habit TrackerHabit TrackingStructured AchieverOpen-source Android trackerFreeFree, no ads, privacy-focusedAndroid users who want free optionProductiveHabit TrackingStructured Achiever, Strategic PlannerHabit tracking with statsFree-$7/moDetailed statistics and analysisData-driven habit buildersStandard NotesSecure NotesAll archetypesEncrypted note-takingFree-$10/moPrivacy-first, encryptedPeople who value privacyBearNote-TakingChaotic Creative, Flexible ImproviserBeautiful markdown notesFree-$2/moClean design, tags, fastApple users who love writingCraftDocumentsStrategic Planner, Structured AchieverBeautiful document creationFree-$5/moStunning documents, sharingPeople creating polished documentsUlyssesWritingChaotic Creative, Flexible ImproviserDistraction-free writing app$6/moFocus on writing, clean interfaceLong-form writersScrivenerWritingStrategic Planner, Chaotic CreativeNovel/long-form writing tool$50 one-timeComprehensive writing project managementAuthors writing booksMilanoteVisual OrganizationChaotic Creative, Novelty SeekerVisual workspace for creativesFree-$10/moMoodboards, visual brainstormingCreative professionalsMiroWhiteboardingChaotic Creative, Strategic PlannerInfinite canvas collaborationFree-$10/moVisual collaboration, templatesVisual thinkers and teamsFigJamWhiteboardingChaotic Creative, Novelty SeekerSimple online whiteboardFreeFun, simple, great for brainstormingTeams who want easy visual collab
+
+TOOLS BY ARCHETYPE
+CHAOTIC CREATIVE
+Essential Stack:
+
+Voice Memos (Free) - Fastest idea capture
+Evernote or Google Keep (Free-$10) - Organize chaos
+Trello (Free) - Visual project boards
+Freedom ($9/mo) - Block distractions during bursts
+
+Why These: Low friction, visual, capture-first-organize-later, respect bursts
+
+ANXIOUS PERFECTIONIST
+Essential Stack:
+
+Todoist (Free-$4) - Clean, reliable task lists
+Freedom ($9/mo) - Eliminate perfectionism rabbit holes
+Brain.fm ($10/mo) - Focus music to reduce anxiety
+Notion (Free-$10) - Reference materials organized
+
+Why These: Reduce overwhelm, limit options, clear structure, focus support
+
+STRUCTURED ACHIEVER
+Essential Stack:
+
+Things 3 or Todoist ($50 or Free-$4) - Reliable task management
+Toggl (Free-$10) - Track actual time spent
+Habitify (Free-$5) - Build consistent habits
+Fantastical or Google Calendar (Free-$5) - Schedule everything
+
+Why These: Structure, consistency, measurement, proven systems
+
+NOVELTY SEEKER
+Essential Stack:
+
+Trello (Free) - Visual variety
+Forest App ($2) - Gamified focus
+Notion (Free-$10) - Rotate project views
+Evernote (Free-$10) - Capture new ideas
+
+Why These: Visual stimulation, variety, gamification, multiple project juggling
+
+STRATEGIC PLANNER
+Essential Stack:
+
+Notion or Asana (Free-$11) - Comprehensive planning
+RescueTime (Free-$12) - Data on time use
+Sunsama ($20/mo) - Thoughtful daily planning
+Obsidian or Roam (Free-$15) - Strategic thinking notes
+
+Why These: Big-picture planning, data-driven, comprehensive systems, strategic thinking
+
+FLEXIBLE IMPROVISER
+Essential Stack:
+
+Voice Memos (Free) - Zero-friction capture
+Google Keep (Free) - Simple, optional organization
+Forest App ($2) - Flexible focus durations
+Notion (Free) - Momentum maps (optional structure)
+
+Why These: Minimal maintenance, respect energy cycles, optional usage, flexibility
