@@ -12,12 +12,26 @@ export interface AxisCategorization {
   task: ScoreCategory;
 }
 
+export interface NormalizedScores {
+  structure: number;
+  motivation: number;
+  cognitive: number;
+  task: number;
+}
+
+export interface ArchetypeFitScore {
+  archetype: Archetype;
+  fitPercentage: number;
+  distance: number;
+}
+
 export interface ArchetypeMatch {
   archetype: Archetype;
   confidence: number;
   matchScore: number;
   clearAxes: number;
   balancedAxes: number;
+  fitPercentage?: number;
 }
 
 export interface ArchetypeResult {
@@ -27,6 +41,116 @@ export interface ArchetypeResult {
   secondary?: Archetype[];
   categorization: AxisCategorization;
   notes: string[];
+  allFitScores: ArchetypeFitScore[];
+  normalizedScores: NormalizedScores;
+}
+
+// Ideal archetype profiles (0-100 scale for each dimension)
+export const archetypeProfiles: Record<string, NormalizedScores> = {
+  'structured-achiever': {
+    structure: 85,    // HIGH structure
+    motivation: 85,   // HIGH extrinsic (external accountability)
+    cognitive: 25,    // LOW (detail-focused, present)
+    task: 25,         // LOW (execution-focused, action)
+  },
+  'chaotic-creative': {
+    structure: 15,    // LOW structure (flexible)
+    motivation: 15,   // LOW (intrinsic)
+    cognitive: 85,    // HIGH (big picture)
+    task: 75,         // HIGH (planning, ideation)
+  },
+  'anxious-perfectionist': {
+    structure: 80,    // HIGH structure
+    motivation: 75,   // HIGH extrinsic (fear-driven)
+    cognitive: 20,    // LOW (detail-focused)
+    task: 80,         // HIGH (over-planning, procrastination)
+  },
+  'strategic-planner': {
+    structure: 80,    // HIGH structure
+    motivation: 75,   // HIGH extrinsic
+    cognitive: 85,    // HIGH (big picture)
+    task: 85,         // HIGH (planning)
+  },
+  'novelty-seeker': {
+    structure: 20,    // LOW structure
+    motivation: 20,   // LOW (intrinsic)
+    cognitive: 75,    // HIGH (big picture)
+    task: 30,         // LOW (execution)
+  },
+  'flexible-improviser': {
+    structure: 15,    // LOW structure
+    motivation: 30,   // LOW-MEDIUM (mostly intrinsic)
+    cognitive: 30,    // LOW-MEDIUM (detail to action)
+    task: 20,         // LOW (execution)
+  },
+};
+
+// Normalize scores from 7-35 range to 0-100 range
+export function normalizeScores(scores: QuizScores): NormalizedScores {
+  const normalize = (score: number) => {
+    // Map 7-35 to 0-100
+    // Formula: ((score - min) / (max - min)) * 100
+    const min = 7;
+    const max = 35;
+    return Math.round(((score - min) / (max - min)) * 100);
+  };
+
+  return {
+    structure: normalize(scores.structure),
+    motivation: normalize(scores.motivation),
+    cognitive: normalize(scores.cognitive),
+    task: normalize(scores.task),
+  };
+}
+
+// Calculate how well user scores match an archetype profile
+// Returns percentage match (0-100)
+export function calculateArchetypeFit(
+  normalizedScores: NormalizedScores,
+  archetypeProfile: NormalizedScores
+): number {
+  let totalDistance = 0;
+  
+  // Calculate Manhattan distance across all 4 axes
+  (Object.keys(normalizedScores) as Array<keyof NormalizedScores>).forEach(axis => {
+    const distance = Math.abs(normalizedScores[axis] - archetypeProfile[axis]);
+    totalDistance += distance;
+  });
+  
+  // Max possible distance = 400 (100 per axis × 4)
+  // Convert to similarity percentage
+  const similarity = Math.max(0, 100 - (totalDistance / 4));
+  
+  return Math.round(similarity);
+}
+
+// Calculate fit scores for all archetypes
+export function calculateAllArchetypeFits(normalizedScores: NormalizedScores): ArchetypeFitScore[] {
+  const fitScores: ArchetypeFitScore[] = [];
+  
+  archetypes.forEach(archetype => {
+    const profile = archetypeProfiles[archetype.id];
+    if (!profile) return; // Skip if profile not defined
+    
+    const fitPercentage = calculateArchetypeFit(normalizedScores, profile);
+    
+    // Calculate total distance for sorting
+    let distance = 0;
+    (Object.keys(normalizedScores) as Array<keyof NormalizedScores>).forEach(axis => {
+      distance += Math.abs(normalizedScores[axis] - profile[axis]);
+    });
+    
+    fitScores.push({
+      archetype,
+      fitPercentage,
+      distance,
+    });
+  });
+  
+  // Sort by fit percentage (highest first)
+  fitScores.sort((a, b) => b.fitPercentage - a.fitPercentage);
+  
+  return fitScores;
 }
 
 // Categorize a score into LOW/MEDIUM/HIGH based on defined ranges
@@ -134,41 +258,93 @@ function calculateArchetypeMatch(archetype: Archetype, scores: QuizScores, categ
   };
 }
 
-// Enhanced archetype determination with confidence levels
+// Enhanced archetype determination with fit-based confidence levels
 export function determineArchetypeEnhanced(scores: QuizScores): ArchetypeResult {
   const categorization = categorizeScores(scores);
+  const normalizedScores = normalizeScores(scores);
+  const allFitScores = calculateAllArchetypeFits(normalizedScores);
   
-  // Calculate matches for all archetypes
-  const matches: ArchetypeMatch[] = archetypes.map(archetype => 
-    calculateArchetypeMatch(archetype, scores, categorization)
-  );
-
-  // Sort by confidence then match score
-  matches.sort((a, b) => {
-    if (b.confidence !== a.confidence) return b.confidence - a.confidence;
-    return b.matchScore - a.matchScore;
-  });
-
-  const topMatch = matches[0];
+  const topFit = allFitScores[0];
+  const secondFit = allFitScores[1];
+  const thirdFit = allFitScores[2];
+  
   const notes: string[] = [];
-
-  // Determine confidence level
   let confidenceLevel: 'exact' | 'strong' | 'moderate' | 'weak';
-  if (topMatch.confidence >= 90) {
-    confidenceLevel = 'exact';
-  } else if (topMatch.confidence >= 70) {
-    confidenceLevel = 'strong';
-    if (topMatch.balancedAxes > 0) {
-      notes.push(`You showed balanced tendencies in ${topMatch.balancedAxes} area${topMatch.balancedAxes > 1 ? 's' : ''}, making you adaptable.`);
-    }
-  } else if (topMatch.confidence >= 50) {
+  let confidence = topFit.fitPercentage;
+  const secondary: Archetype[] = [];
+  
+  // Determine confidence level and handle edge cases
+  
+  // Scenario 1: Two archetypes within 10% of each other (co-primary blend)
+  if (secondFit && Math.abs(topFit.fitPercentage - secondFit.fitPercentage) <= 10) {
     confidenceLevel = 'moderate';
-    notes.push(`Your results show flexibility across multiple dimensions, suggesting you adapt your approach based on context.`);
-  } else {
+    confidence = topFit.fitPercentage;
+    secondary.push(secondFit.archetype);
+    notes.push(`You blend characteristics of both ${topFit.archetype.name} and ${secondFit.archetype.name} (${topFit.fitPercentage}% vs ${secondFit.fitPercentage}% match).`);
+    notes.push(`This close match suggests you can draw from both productivity styles depending on the context.`);
+    
+  // Scenario 2: Three or more archetypes within 15% (multiple moderate matches)
+  } else if (thirdFit && Math.abs(topFit.fitPercentage - thirdFit.fitPercentage) <= 15) {
     confidenceLevel = 'weak';
-    notes.push(`You have a very balanced profile across multiple areas. This means you're highly adaptive and can switch between different working styles.`);
+    confidence = topFit.fitPercentage;
+    secondary.push(secondFit.archetype, thirdFit.archetype);
+    notes.push(`You show moderate matches across multiple archetypes. This suggests you're in transition or highly adaptive.`);
+    notes.push(`Try ${topFit.archetype.name} frameworks first (${topFit.fitPercentage}% match), then explore ${secondFit.archetype.name} if needed.`);
+    
+  // Scenario 3: All axes in balanced range (adaptive generalist)
+  } else if (Object.values(categorization).filter(cat => cat === 'MEDIUM').length >= 3) {
+    confidenceLevel = 'weak';
+    confidence = topFit.fitPercentage;
+    if (secondFit) secondary.push(secondFit.archetype);
+    if (thirdFit) secondary.push(thirdFit.archetype);
+    notes.push(`You scored in the balanced range on multiple axes. This indicates high adaptability.`);
+    notes.push(`You can match your productivity style to different contexts rather than following one rigid approach.`);
+    notes.push(`Consider experimenting with ${topFit.archetype.name} and ${secondFit?.archetype.name || 'Flexible Improviser'} frameworks to see what resonates.`);
+    
+  // Standard scenarios based on top fit percentage
+  } else if (topFit.fitPercentage >= 80) {
+    // Strong exact match
+    confidenceLevel = 'exact';
+    confidence = topFit.fitPercentage;
+    notes.push(`Strong match! You clearly identify with ${topFit.archetype.name} patterns.`);
+    
+    // Show secondary influence if > 60%
+    if (secondFit && secondFit.fitPercentage > 60) {
+      secondary.push(secondFit.archetype);
+      notes.push(`You also show some ${secondFit.archetype.name} traits (${secondFit.fitPercentage}% match).`);
+    }
+    
+  } else if (topFit.fitPercentage >= 65) {
+    // Good match with some variance
+    confidenceLevel = 'strong';
+    confidence = topFit.fitPercentage;
+    
+    if (secondFit && secondFit.fitPercentage > 60) {
+      secondary.push(secondFit.archetype);
+      notes.push(`You primarily align with ${topFit.archetype.name}, with influences from ${secondFit.archetype.name}.`);
+    }
+    
+  } else if (topFit.fitPercentage >= 50) {
+    // Moderate match
+    confidenceLevel = 'moderate';
+    confidence = topFit.fitPercentage;
+    
+    if (secondFit) secondary.push(secondFit.archetype);
+    if (thirdFit && thirdFit.fitPercentage > 45) secondary.push(thirdFit.archetype);
+    
+    notes.push(`You show moderate alignment with ${topFit.archetype.name}. Your productivity style may be still developing or context-dependent.`);
+    
+  } else {
+    // Weak match
+    confidenceLevel = 'weak';
+    confidence = topFit.fitPercentage;
+    
+    if (secondFit) secondary.push(secondFit.archetype);
+    if (thirdFit) secondary.push(thirdFit.archetype);
+    
+    notes.push(`No strong archetype match found. You may be highly adaptive or exploring different productivity approaches.`);
   }
-
+  
   // Add specific notes based on balanced axes
   if (categorization.structure === 'MEDIUM') {
     notes.push('You balance structure and flexibility depending on the situation.');
@@ -183,25 +359,15 @@ export function determineArchetypeEnhanced(scores: QuizScores): ArchetypeResult 
     notes.push('You blend planning and execution effectively.');
   }
 
-  // For weak matches, include top 2-3 archetypes
-  const secondary: Archetype[] = [];
-  if (confidenceLevel === 'weak' || confidenceLevel === 'moderate') {
-    // Include top 2-3 matches (excluding the primary)
-    const secondaryMatches = matches.slice(1, 3).filter(m => m.confidence >= 40);
-    secondary.push(...secondaryMatches.map(m => m.archetype));
-    
-    if (secondaryMatches.length > 0) {
-      notes.push(`You also share characteristics with ${secondaryMatches.map(m => m.archetype.name).join(' and ')}.`);
-    }
-  }
-
   return {
-    primary: topMatch.archetype,
-    confidence: topMatch.confidence,
+    primary: topFit.archetype,
+    confidence,
     confidenceLevel,
     secondary: secondary.length > 0 ? secondary : undefined,
     categorization,
     notes,
+    allFitScores,
+    normalizedScores,
   };
 }
 

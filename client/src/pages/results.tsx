@@ -322,6 +322,39 @@ export default function Results() {
                   </Card>
                 )}
 
+                {/* Archetype Breakdown */}
+                {enhancedResult && enhancedResult.allFitScores && enhancedResult.allFitScores.length > 0 && (
+                  <Card className="bg-neutral-50 border-neutral-200 text-left max-w-3xl mx-auto" data-testid="archetype-breakdown">
+                    <CardContent className="p-6">
+                      <h4 className="font-semibold text-neutral-800 mb-4">Archetype Fit Breakdown</h4>
+                      <div className="space-y-3">
+                        {enhancedResult.allFitScores.map((fitScore, index) => (
+                          <div key={fitScore.archetype.id} className="space-y-1">
+                            <div className="flex justify-between items-center text-sm">
+                              <span className={`font-medium ${index === 0 ? 'text-neutral-900' : 'text-neutral-700'}`}>
+                                {index + 1}. {fitScore.archetype.name}
+                              </span>
+                              <span className={`font-bold ${index === 0 ? 'text-indigo-600' : 'text-neutral-600'}`}>
+                                {fitScore.fitPercentage}%
+                              </span>
+                            </div>
+                            <div className="relative h-2 bg-neutral-200 rounded-full overflow-hidden">
+                              <div 
+                                className={`absolute top-0 left-0 h-full ${index === 0 ? 'bg-indigo-600' : 'bg-neutral-400'} transition-all`}
+                                style={{ width: `${fitScore.fitPercentage}%` }}
+                                data-testid={`fit-bar-${fitScore.archetype.id}`}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-neutral-500 mt-4">
+                        Fit percentage shows how closely your scores match each archetype's ideal profile.
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+
                 {/* 4-Axis Visualization */}
                 <div className="max-w-3xl mx-auto pt-8">
                   <FourAxisVisual scores={scores} />
