@@ -26,6 +26,9 @@ export function Header() {
             <Link href="/archetypes" className="text-neutral-600 hover:text-primary transition-colors">
               Archetypes
             </Link>
+            <Link href="/science" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-research">
+              The Research
+            </Link>
             <Link href="/blog" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-blog">
               Blog
             </Link>
@@ -82,6 +85,9 @@ export function Header() {
             </Link>
             <Link href="/archetypes" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
               Archetypes
+            </Link>
+            <Link href="/science" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-research-mobile">
+              The Research
             </Link>
             <Link href="/blog" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-blog-mobile">
               Blog
