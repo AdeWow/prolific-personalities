@@ -7,7 +7,7 @@ import { SEOHead } from "@/components/seo-head";
 import { archetypes } from "@/data/archetypes";
 import { Link } from "wouter";
 import heroImage from "@assets/adeola2020_an_inclusive_group_of_people_engaged_in_focused_work_d26c58c2-1296-4274-ac46-c7a942411aed_1750379682084.png";
-import logoImage from "@assets/logo2_1762241472426.png";
+import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
 export default function Home() {
   return (
