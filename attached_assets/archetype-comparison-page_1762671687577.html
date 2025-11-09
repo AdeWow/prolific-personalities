@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Productivity Archetypes | Prolific Personalities</title>
+    <meta name="description" content="Compare all 6 productivity archetypes side-by-side. Understand why you're a Chaotic Creative vs. Novelty Seeker, find your archetype, and get personalized productivity strategies.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        h2 {
+            font-size: 2em;
+            margin: 40px 0 20px;
+            color: #2c3e50;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            font-size: 1.5em;
+            margin: 30px 0 15px;
+            color: #34495e;
+        }
+        
+        .comparison-tool {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .archetype-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .archetype-label {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .compare-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+        
+        .compare-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .overview-table {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+        
+        .overview-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .overview-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .overview-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .overview-table tr:hover {
+            background-color: #f8f9ff;
+        }
+        
+        .archetype-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        
+        .archetype-chaotic { border-left-color: #ff6b6b; }
+        .archetype-anxious { border-left-color: #4ecdc4; }
+        .archetype-structured { border-left-color: #95e1d3; }
+        .archetype-novelty { border-left-color: #a29bfe; }
+        .archetype-strategic { border-left-color: #0984e3; }
+        .archetype-flexible { border-left-color: #00b894; }
+        
+        .archetype-header {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .archetype-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+        }
+        
+        .pattern-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .axis-scores {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .axis-scores ul {
+            list-style: none;
+        }
+        
+        .axis-scores li {
+            padding: 8px 0;
+            font-size: 1.05em;
+        }
+        
+        .strength-weakness {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .strength-box, .weakness-box {
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .strength-box {
+            background: #d1f2eb;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .weakness-box {
+            background: #fadbd8;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .confusion-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .quick-test {
+            background: #fff9e6;
+            border: 2px solid #ffd93d;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px 0;
+        }
+        
+        .cta-btn {
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .tool-table {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+        
+        .tool-table table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .tool-table th {
+            background: #34495e;
+            color: white;
+            padding: 12px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        
+        .tool-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .recommended { color: #27ae60; font-size: 1.2em; }
+        .caution { color: #f39c12; font-size: 1.2em; }
+        .avoid { color: #e74c3c; font-size: 1.2em; }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .strength-weakness { grid-template-columns: 1fr; }
+            .overview-table { overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🧠 Understand Your Productivity Archetype</h1>
+        <p class="subtitle">Complete Guide to All 6 Productivity Types</p>
+    </header>
+
+    <div class="container">
+        <!-- SECTION 1: INTERACTIVE COMPARISON TOOL -->
+        <section class="comparison-tool">
+            <h2>🔍 Compare Archetypes Side-by-Side</h2>
+            <p>Select 2-3 archetypes to compare:</p>
+            
+            <div class="archetype-checkboxes">
+                <label class="checkbox-item">
+                    <input type="checkbox" id="chaotic" value="chaotic">
+                    <span class="archetype-label">⚡ Chaotic Creative</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="anxious" value="anxious">
+                    <span class="archetype-label">🎯 Anxious Perfectionist</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="structured" value="structured">
+                    <span class="archetype-label">✓ Structured Achiever</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="novelty" value="novelty">
+                    <span class="archetype-label">🎨 Novelty Seeker</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="strategic" value="strategic">
+                    <span class="archetype-label">🗺️ Strategic Planner</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="flexible" value="flexible">
+                    <span class="archetype-label">🌊 Flexible Improviser</span>
+                </label>
+            </div>
+            
+            <button class="compare-btn" onclick="alert('Dynamic comparison feature - in production, this would show a filtered table of only selected archetypes')">Compare Selected</button>
+        </section>
+
+        <!-- SECTION 2: QUICK OVERVIEW TABLE -->
+        <section class="overview-table">
+            <h2>📊 At-a-Glance Comparison</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Characteristic</th>
+                        <th>Chaotic Creative</th>
+                        <th>Anxious Perfectionist</th>
+                        <th>Structured Achiever</th>
+                        <th>Novelty Seeker</th>
+                        <th>Strategic Planner</th>
+                        <th>Flexible Improviser</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Structure Preference</strong></td>
+                        <td>LOW<br>(Hates rigid systems)</td>
+                        <td>HIGH<br>(Loves organization)</td>
+                        <td>HIGH<br>(Thrives on systems)</td>
+                        <td>MEDIUM-LOW<br>(Needs variety)</td>
+                        <td>HIGH<br>(Plans everything)</td>
+                        <td>LOW<br>(Prefers flexibility)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Motivation Type</strong></td>
+                        <td>INTRINSIC<br>(Internal drive)</td>
+                        <td>EXTRINSIC<br>(Fear/standards)</td>
+                        <td>BALANCED<br>(Both)</td>
+                        <td>INTRINSIC<br>(Curiosity)</td>
+                        <td>EXTRINSIC<br>(Goals/results)</td>
+                        <td>INTRINSIC<br>(Interest)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Energy Pattern</strong></td>
+                        <td>BURST<br>(Intense → Crash)</td>
+                        <td>STEADY<br>(Consistent)</td>
+                        <td>STEADY<br>(Reliable)</td>
+                        <td>HIGH<br>(When stimulated)</td>
+                        <td>STEADY<br>(Planned)</td>
+                        <td>VARIABLE<br>(Daily cycles)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Core Strength</strong></td>
+                        <td>Rapid ideation, creativity</td>
+                        <td>High quality output</td>
+                        <td>Consistent execution</td>
+                        <td>Adaptability, variety</td>
+                        <td>Strategic thinking</td>
+                        <td>Energy management</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Core Challenge</strong></td>
+                        <td>Can't sustain momentum</td>
+                        <td>Analysis paralysis</td>
+                        <td>Over-systematizing</td>
+                        <td>Starting too many things</td>
+                        <td>Over-planning, under-doing</td>
+                        <td>Inconsistent output</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Work Style</strong></td>
+                        <td>Bursts when inspired</td>
+                        <td>Systematic perfection</td>
+                        <td>Daily checklists</td>
+                        <td>Multi-project rotation</td>
+                        <td>Plan → Execute</td>
+                        <td>Energy-aligned sprints</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best For</strong></td>
+                        <td>Creative projects, startups</td>
+                        <td>Quality-critical work</td>
+                        <td>Long-term goals</td>
+                        <td>Exploratory roles</td>
+                        <td>Strategic initiatives</td>
+                        <td>Freelancing, autonomy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Struggles With</strong></td>
+                        <td>Structure, consistency</td>
+                        <td>Shipping imperfect work</td>
+                        <td>Flexibility</td>
+                        <td>Completion</td>
+                        <td>Execution</td>
+                        <td>Traditional schedules</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- SECTION 3: DETAILED ARCHETYPE PROFILES -->
+        <h2>📚 Detailed Archetype Profiles</h2>
+
+        <!-- CHAOTIC CREATIVE -->
+        <article class="archetype-card archetype-chaotic">
+            <div class="archetype-header">
+                <span class="archetype-icon">⚡</span>
+                <span>CHAOTIC CREATIVE</span>
+            </div>
+
+            <div class="pattern-box">
+                <h3>THE PATTERN:</h3>
+                <p><strong>Brilliant bursts of energy → Massive progress in hours → Complete crash → Guilt about inconsistency → Repeat</strong></p>
+            </div>
+
+            <div class="axis-scores">
+                <h3>YOUR 4-AXIS SCORES:</h3>
+                <ul>
+                    <li>→ <strong>Structure:</strong> LOW (0-35%) - Prefers spontaneity</li>
+                    <li>→ <strong>Motivation:</strong> INTRINSIC (0-35%) - Internal drive</li>
+                    <li>→ <strong>Focus:</strong> BIG PICTURE (65-100%) - Ideas over details</li>
+                    <li>→ <strong>Task:</strong> PLANNING (65-100%) - Loves ideation</li>
+                </ul>
+            </div>
+
+            <h3>WHO YOU ARE:</h3>
+            <p>You're the person who gets a brilliant idea at 11pm and works until 4am creating something amazing. Then crashes for 3 days. Your problem isn't lack of productivity—it's that your productivity comes in explosive bursts that aren't sustainable.</p>
+
+            <h3>FAMOUS EXAMPLES:</h3>
+            <ul>
+                <li>Startup founders (intense sprints)</li>
+                <li>Writers during NaNoWriMo</li>
+                <li>Artists before deadline exhibitions</li>
+                <li>Anyone who says "I work best under pressure"</li>
+            </ul>
+
+            <div class="strength-weakness">
+                <div class="strength-box">
+                    <h3>✅ YOUR SUPERPOWER:</h3>
+                    <p>When energy hits, you can accomplish in 4 hours what takes others 2 days. Your burst productivity is genuinely impressive.</p>
+                </div>
+                <div class="weakness-box">
+                    <h3>❌ YOUR KRYPTONITE:</h3>
+                    <p>You can't sustain this. The crash is inevitable. Projects die at 70% complete when burst energy runs out.</p>
+                </div>
+            </div>
+
+            <h3>COMMON MISDIAGNOSES:</h3>
+            <ul>
+                <li>❌ "You're undisciplined" - No, you're burst-wired</li>
+                <li>❌ "You need better habits" - No, you need burst containers</li>
+                <li>❌ "Just be more consistent" - No, you need burst → complete pipeline</li>
+            </ul>
+
+            <h3>WHAT YOU ACTUALLY NEED:</h3>
+            <ul>
+                <li>Burst containers (90-min max sprints)</li>
+                <li>Energy management (prevent tomorrow's crash)</li>
+                <li>Momentum maps (complete projects via accumulated bursts)</li>
+                <li>Permission to rest between bursts</li>
+            </ul>
+
+            <h3>SUCCESS LOOKS LIKE:</h3>
+            <p>Multiple 90-min bursts per week (not one 12-hour burnout) → Projects completed through accumulated micro-bursts → Sustainable creative output (not crash cycles)</p>
+        </article>
+
+        <!-- ANXIOUS PERFECTIONIST -->
+        <article class="archetype-card archetype-anxious">
+            <div class="archetype-header">
+                <span class="archetype-icon">🎯</span>
+                <span>ANXIOUS PERFECTIONIST</span>
+            </div>
+
+            <div class="pattern-box">
+                <h3>THE PATTERN:</h3>
+                <p><strong>High standards → Fear it's not good enough → Overthinking → Perfectionism loops → Analysis paralysis → Nothing ships</strong></p>
+            </div>
+
+            <div class="axis-scores">
+                <h3>YOUR 4-AXIS SCORES:</h3>
+                <ul>
+                    <li>→ <strong>Structure:</strong> HIGH (65-100%) - Loves organization</li>
+                    <li>→ <strong>Motivation:</strong> EXTRINSIC (65-100%) - External standards/fear</li>
+                    <li>→ <strong>Focus:</strong> DETAIL (0-35%) - Present, concrete</li>
+                    <li>→ <strong>Task:</strong> PLANNING (65-100%) - Preparation to avoid mistakes</li>
+                </ul>
+            </div>
+
+            <h3>WHO YOU ARE:</h3>
+            <p>You have incredibly high standards and genuinely care about quality. But your perfectionism keeps work trapped in "almost ready" forever. You spend hours planning, preparing, refining—but shipping feels terrifying because it might not be perfect.</p>
+
+            <h3>FAMOUS EXAMPLES:</h3>
+            <ul>
+                <li>Designers who endlessly tweak designs</li>
+                <li>Writers with 10 unpublished novels in drafts</li>
+                <li>Developers who never launch because "it's not ready"</li>
+                <li>Anyone who says "Just one more round of edits"</li>
+            </ul>
+
+            <div class="strength-weakness">
+                <div class="strength-box">
+                    <h3>✅ YOUR SUPERPOWER:</h3>
+                    <p>When you DO ship, the quality is genuinely excellent. Your attention to detail catches errors others miss. Your work stands out.</p>
+                </div>
+                <div class="weakness-box">
+                    <h3>❌ YOUR KRYPTONITE:</h3>
+                    <p>Perfect work that never ships = Zero impact. You abandon projects at 90% complete. Fear of judgment paralyzes you.</p>
+                </div>
+            </div>
+
+            <h3>COMMON MISDIAGNOSES:</h3>
+            <ul>
+                <li>❌ "You're lazy" - No, you're afraid</li>
+                <li>❌ "Just lower your standards" - No, you need time-boxing</li>
+                <li>❌ "Stop caring so much" - No, you need "good enough" criteria</li>
+            </ul>
+
+            <h3>WHAT YOU ACTUALLY NEED:</h3>
+            <ul>
+                <li>Time-box protocol (hard limits prevent loops)</li>
+                <li>Pre-decision rules (define "done" before starting)</li>
+                <li>Shipping imperfect (practice releasing B+ work)</li>
+                <li>Self-compassion (you're worthy regardless of output quality)</li>
+            </ul>
+
+            <h3>SUCCESS LOOKS LIKE:</h3>
+            <p>Shipping regularly (5+ items/week) → B+ work published beats A+ work in drafts → Time boxes respected → Reduced anxiety about judgment</p>
+        </article>
+
+        <!-- STRUCTURED ACHIEVER -->
+        <article class="archetype-card archetype-structured">
+            <div class="archetype-header">
+                <span class="archetype-icon">✓</span>
+                <span>STRUCTURED ACHIEVER</span>
+            </div>
+
+            <div class="pattern-box">
+                <h3>THE PATTERN:</h3>
+                <p><strong>Love systems → Build elaborate workflows → Add more tools → System maintenance becomes work → Overwhelmed by own systems</strong></p>
+            </div>
+
+            <div class="axis-scores">
+                <h3>YOUR 4-AXIS SCORES:</h3>
+                <ul>
+                    <li>→ <strong>Structure:</strong> HIGH (65-100%) - Thrives on systems</li>
+                    <li>→ <strong>Motivation:</strong> BALANCED (36-64%) - Mix of internal/external</li>
+                    <li>→ <strong>Focus:</strong> DETAIL (0-35%) - Present, concrete tasks</li>
+                    <li>→ <strong>Task:</strong> EXECUTION (0-35%) - Loves doing</li>
+                </ul>
+            </div>
+
+            <h3>WHO YOU ARE:</h3>
+            <p>You LOVE a good system. Checklists, routines, workflows—this is your happy place. You're the person who color-codes their calendar, has weekly reviews, and genuinely enjoys organizing. Your challenge: Sometimes you over-systematize to the point where maintaining the system becomes more work than the actual work.</p>
+
+            <h3>FAMOUS EXAMPLES:</h3>
+            <ul>
+                <li>Project managers with immaculate systems</li>
+                <li>People with perfect Notion dashboards</li>
+                <li>Those who genuinely enjoy weekly reviews</li>
+                <li>Anyone who says "Let me add that to my system"</li>
+            </ul>
+
+            <div class="strength-weakness">
+                <div class="strength-box">
+                    <h3>✅ YOUR SUPERPOWER:</h3>
+                    <p>Consistent execution. Reliable output. You ship regularly because your systems support you. Others marvel at your organization.</p>
+                </div>
+                <div class="weakness-box">
+                    <h3>❌ YOUR KRYPTONITE:</h3>
+                    <p>Can't resist adding "just one more tool." System complexity grows until maintenance takes hours. Flexibility feels uncomfortable.</p>
+                </div>
+            </div>
+
+            <h3>COMMON MISDIAGNOSES:</h3>
+            <ul>
+                <li>❌ "You need more tools" - No, you need FEWER</li>
+                <li>❌ "Build the perfect system" - No, you need minimal effective system</li>
+                <li>❌ "Structure everything" - No, you need strategic simplicity</li>
+            </ul>
+
+            <h3>WHAT YOU ACTUALLY NEED:</h3>
+            <ul>
+                <li>Minimal system architecture (3 tools maximum)</li>
+                <li>Strategic time blocking (protect deep work)</li>
+                <li>Weekly review (not daily system maintenance)</li>
+                <li>Permission to keep systems simple</li>
+            </ul>
+
+            <h3>SUCCESS LOOKS LIKE:</h3>
+            <p>Using 3 core tools (not 10+) → System maintenance <30 min/week → Deep work blocks protected → Sustainable, not overwhelming structure</p>
+        </article>
+
+        <!-- NOVELTY SEEKER -->
+        <article class="archetype-card archetype-novelty">
+            <div class="archetype-header">
+                <span class="archetype-icon">🎨</span>
+                <span>NOVELTY SEEKER</span>
+            </div>
+
+            <div class="pattern-box">
+                <h3>THE PATTERN:</h3>
+                <p><strong>Exciting new project → Start with enthusiasm → Gets boring → Abandon at 80% → Find new exciting project → Repeat</strong></p>
+            </div>
+
+            <div class="axis-scores">
+                <h3>YOUR 4-AXIS SCORES:</h3>
+                <ul>
+                    <li>→ <strong>Structure:</strong> MEDIUM-LOW (36-50%) - Some structure, needs variety</li>
+                    <li>→ <strong>Motivation:</strong> INTRINSIC (0-35%) - Curiosity-driven</li>
+                    <li>→ <strong>Focus:</strong> BIG PICTURE (65-100%) - Exploring possibilities</li>
+                    <li>→ <strong>Task:</strong> BALANCED (36-64%) - Both planning and doing</li>
+                </ul>
+            </div>
+
+            <h3>WHO YOU ARE:</h3>
+            <p>You're energized by new, shiny, exciting things. Starting projects feels amazing—the novelty, the possibilities, the learning. But once you've figured something out, boredom sets in. You'd rather start something new than finish the "boring" last 20% of current projects.</p>
+
+            <h3>FAMOUS EXAMPLES:</h3>
+            <ul>
+                <li>Serial entrepreneurs with 10 business ideas</li>
+                <li>People with 47 hobbies (all started, few mastered)</li>
+                <li>Those constantly trying new productivity systems</li>
+                <li>Anyone who says "I just had the coolest idea!"</li>
+            </ul>
+
+            <div class="strength-weakness">
+                <div class="strength-box">
+                    <h3>✅ YOUR SUPERPOWER:</h3>
+                    <p>Adaptability and breadth. You learn quickly, connect diverse ideas, and bring fresh perspectives. Starting is effortless for you.</p>
+                </div>
+                <div class="weakness-box">
+                    <h3>❌ YOUR KRYPTONITE:</h3>
+                    <p>A graveyard of 80%-complete projects. You've started 50 things, completed 3. The "boring" finishing phase kills momentum.</p>
+                </div>
+            </div>
+
+            <h3>COMMON MISDIAGNOSES:</h3>
+            <ul>
+                <li>❌ "You lack commitment" - No, you lack stimulation management</li>
+                <li>❌ "Just focus on one thing" - No, you need controlled variety</li>
+                <li>❌ "You're distracted" - No, you're variety-seeking (valid need)</li>
+            </ul>
+
+            <h3>WHAT YOU ACTUALLY NEED:</h3>
+            <ul>
+                <li>2-project rotation (variety without chaos)</li>
+                <li>Visual progress system (Trello boards, momentum maps)</li>
+                <li>30-day hold rule for new ideas (filter excitement vs. lasting interest)</li>
+                <li>Gamification (make finishing rewarding)</li>
+            </ul>
+
+            <h3>SUCCESS LOOKS LIKE:</h3>
+            <p>2 active projects rotating (not 10) → Completions happening (finally!) → Variety satisfied without scattered energy → First project 100% done</p>
+        </article>
+
+        <!-- STRATEGIC PLANNER -->
+        <article class="archetype-card archetype-strategic">
+            <div class="archetype-header">
+                <span class="archetype-icon">🗺️</span>
+                <span>STRATEGIC PLANNER</span>
+            </div>
+
+            <div class="pattern-box">
+                <h3>THE PATTERN:</h3>
+                <p><strong>Love planning → Create detailed strategies → Keep planning "just to be sure" → Execution delayed → More planning → Repeat</strong></p>
+            </div>
+
+            <div class="axis-scores">
+                <h3>YOUR 4-AXIS SCORES:</h3>
+                <ul>
+                    <li>→ <strong>Structure:</strong> HIGH (65-100%) - Plans everything</li>
+                    <li>→ <strong>Motivation:</strong> EXTRINSIC (65-100%) - Goals and results</li>
+                    <li>→ <strong>Focus:</strong> BIG PICTURE (65-100%) - Strategic thinking</li>
+                    <li>→ <strong>Task:</strong> PLANNING (65-100%) - Preparation phase</li>
+                </ul>
+            </div>
+
+            <h3>WHO YOU ARE:</h3>
+            <p>You're a strategic thinker who excels at seeing the big picture and creating optimal plans. You LOVE the planning phase—mapping out approaches, considering scenarios, optimizing strategies. But execution feels less intellectually stimulating, so you keep planning instead of doing.</p>
+
+            <h3>FAMOUS EXAMPLES:</h3>
+            <ul>
+                <li>Consultants who love strategy work</li>
+                <li>People with beautiful roadmaps that never start</li>
+                <li>Those with 10-page project plans and 0 progress</li>
+                <li>Anyone who says "Let me think through this more"</li>
+            </ul>
+
+            <div class="strength-weakness">
+                <div class="strength-box">
+                    <h3>✅ YOUR SUPERPOWER:</h3>
+                    <p>When you DO execute on your plans, they're thoughtful and effective. Your strategic thinking prevents costly mistakes.</p>
+                </div>
+                <div class="weakness-box">
+                    <h3>❌ YOUR KRYPTONITE:</h3>
+                    <p>Over-planning. Analysis paralysis. Planning feels productive (dopamine!) but plans without execution = zero results.</p>
+                </div>
+            </div>
+
+            <h3>COMMON MISDIAGNOSES:</h3>
+            <ul>
+                <li>❌ "You need to plan more" - No, you need to EXECUTE</li>
+                <li>❌ "Planning is productive" - No, execution is productive</li>
+                <li>❌ "Just think it through more" - No, you need time-boxed planning</li>
+            </ul>
+
+            <h3>WHAT YOU ACTUALLY NEED:</h3>
+            <ul>
+                <li>Time-boxed planning (1-3 hours max per project)</li>
+                <li>80/20 clarity rule (plan to 80%, execute and adjust)</li>
+                <li>Forced execution dates (start same day as planning)</li>
+                <li>Weekly planning sprints (60 min Sunday, then EXECUTE Mon-Fri)</li>
+            </ul>
+
+            <h3>SUCCESS LOOKS LIKE:</h3>
+            <p>Planning time <20% of work time → Execution time >80% → Projects started same day as planned → Completions happening</p>
+        </article>
+
+        <!-- FLEXIBLE IMPROVISER -->
+        <article class="archetype-card archetype-flexible">
+            <div class="archetype-header">
+                <span class="archetype-icon">🌊</span>
+                <span>FLEXIBLE IMPROVISER</span>
+            </div>
+
+            <div class="pattern-box">
+                <h3>THE PATTERN:</h3>
+                <p><strong>High energy window → Productive sprint → Energy drops → Force work anyway → Burnout → Guilt → Repeat</strong></p>
+            </div>
+
+            <div class="axis-scores">
+                <h3>YOUR 4-AXIS SCORES:</h3>
+                <ul>
+                    <li>→ <strong>Structure:</strong> LOW (0-35%) - Prefers flexibility</li>
+                    <li>→ <strong>Motivation:</strong> INTRINSIC (0-35%) - Interest-driven</li>
+                    <li>→ <strong>Focus:</strong> DETAIL (0-35%) - Present moment</li>
+                    <li>→ <strong>Task:</strong> EXECUTION (0-35%) - Doing over planning</li>
+                </ul>
+            </div>
+
+            <h3>WHO YOU ARE:</h3>
+            <p>You have natural energy cycles—windows when you're highly productive and windows when you're drained. You CAN work consistently when you honor these rhythms, but traditional 9-5 schedules feel like torture. Your energy doesn't fit society's expectations.</p>
+
+            <h3>FAMOUS EXAMPLES:</h3>
+            <ul>
+                <li>Night owls forced to work mornings</li>
+                <li>Freelancers who work 10am-2pm & 8pm-11pm</li>
+                <li>People who say "I can't focus before noon"</li>
+                <li>Anyone who says "I work better at night"</li>
+            </ul>
+
+            <div class="strength-weakness">
+                <div class="strength-box">
+                    <h3>✅ YOUR SUPERPOWER:</h3>
+                    <p>When working during YOUR high-energy windows, you're incredibly productive. Energy-aligned work feels effortless.</p>
+                </div>
+                <div class="weakness-box">
+                    <h3>❌ YOUR KRYPTONITE:</h3>
+                    <p>Forcing work during low-energy windows destroys you. Traditional schedules feel impossible. Guilt about "inconsistency."</p>
+                </div>
+            </div>
+
+            <h3>COMMON MISDIAGNOSES:</h3>
+            <ul>
+                <li>❌ "You're lazy" - No, you're energy-misaligned</li>
+                <li>❌ "Just work 9-5 like everyone else" - No, you need YOUR windows</li>
+                <li>❌ "You lack discipline" - No, you need energy alignment</li>
+            </ul>
+
+            <h3>WHAT YOU ACTUALLY NEED:</h3>
+            <ul>
+                <li>Energy pattern discovery (track for 7 days)</li>
+                <li>Energy-aligned schedule (work during YOUR high windows)</li>
+                <li>Motivation menu (choice-based work selection)</li>
+                <li>Permission to rest during low energy (strategic, not lazy)</li>
+            </ul>
+
+            <h3>SUCCESS LOOKS LIKE:</h3>
+            <p>Working during high-energy windows (not forced 9-5) → 2-3 productive sprints per day → No forced work during low energy → Sustainable output without burnout</p>
+        </article>
+
+        <!-- SECTION 4: COMMON CONFUSIONS -->
+        <h2>🤔 "Why Am I X Instead of Y?" - Common Confusions</h2>
+
+        <div class="confusion-section">
+            <h3>1. "Why Am I CHAOTIC CREATIVE Instead of NOVELTY SEEKER?"</h3>
+            
+            <p><strong>The Confusion:</strong> Both start many projects. Both struggle with completion. Both get bored easily.</p>
+            
+            <p><strong>The Key Difference:</strong></p>
+            
+            <p><strong>Chaotic Creative:</strong></p>
+            <ul>
+                <li><strong>Energy pattern:</strong> Burst → Crash (unpredictable timing)</li>
+                <li><strong>Project pattern:</strong> Start in burst, abandon when energy crashes</li>
+                <li><strong>Core issue:</strong> Energy management (can't sustain bursts)</li>
+                <li><strong>Solution:</strong> Contain bursts, prevent crashes</li>
+            </ul>
+            
+            <p><strong>Novelty Seeker:</strong></p>
+            <ul>
+                <li><strong>Energy pattern:</strong> Consistent (but bored easily)</li>
+                <li><strong>Project pattern:</strong> Start when excited, abandon when bored (regardless of energy)</li>
+                <li><strong>Core issue:</strong> Stimulation management (need variety)</li>
+                <li><strong>Solution:</strong> Controlled variety (2-3 project rotation)</li>
+            </ul>
+            
+            <div class="quick-test">
+                <h4>⚡ Quick Test:</h4>
+                <ul>
+                    <li>Do you abandon projects when <strong>energy crashes</strong>? → Chaotic Creative</li>
+                    <li>Do you abandon projects when <strong>they become boring</strong>? → Novelty Seeker</li>
+                    <li><strong>Both?</strong> → You might be a blend</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="confusion-section">
+            <h3>2. "Why Am I ANXIOUS PERFECTIONIST Instead of STRATEGIC PLANNER?"</h3>
+            
+            <p><strong>The Confusion:</strong> Both spend lots of time planning/preparing. Both delay execution. Both think deeply before acting.</p>
+            
+            <p><strong>The Key Difference:</strong></p>
+            
+            <p><strong>Anxious Perfectionist:</strong></p>
+            <ul>
+                <li><strong>Driver:</strong> Fear (not good enough, will be judged)</li>
+                <li><strong>Planning goal:</strong> Achieve perfection, avoid criticism</li>
+                <li><strong>Pattern:</strong> Plan → Overthink → Perfectionism loop → Paralysis</li>
+                <li><strong>Emotion:</strong> Anxiety, worry, fear of judgment</li>
+                <li><strong>Solution:</strong> Time-boxing, "good enough" criteria, shipping imperfect</li>
+            </ul>
+            
+            <p><strong>Strategic Planner:</strong></p>
+            <ul>
+                <li><strong>Driver:</strong> Vision (want optimal outcome)</li>
+                <li><strong>Planning goal:</strong> Find best strategic approach</li>
+                <li><strong>Pattern:</strong> Plan → Over-plan → Analysis → More planning → Delayed execution</li>
+                <li><strong>Emotion:</strong> Excitement about strategy, confidence in approach</li>
+                <li><strong>Solution:</strong> Time-boxed planning, bias toward action, 80/20 rule</li>
+            </ul>
+            
+            <div class="quick-test">
+                <h4>⚡ Quick Test:</h4>
+                <ul>
+                    <li>Does planning reduce <strong>anxiety</strong> (makes you feel safer)? → Anxious Perfectionist</li>
+                    <li>Do you <strong>enjoy</strong> planning (intellectually stimulating)? → Strategic Planner</li>
+                    <li><strong>Both?</strong> → You might be a blend (this is common!)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="confusion-section">
+            <h3>3. "Why Am I STRUCTURED ACHIEVER Instead of STRATEGIC PLANNER?"</h3>
+            
+            <p><strong>The Confusion:</strong> Both love systems. Both are organized. Both score high on structure.</p>
+            
+            <p><strong>The Key Difference:</strong></p>
+            
+            <p><strong>Structured Achiever:</strong></p>
+            <ul>
+                <li><strong>Focus:</strong> Execution (getting things done)</li>
+                <li><strong>Systems purpose:</strong> Support daily doing</li>
+                <li><strong>Strength:</strong> Consistent action, reliable output</li>
+                <li><strong>Weakness:</strong> Can over-systematize (process becomes burden)</li>
+                <li><strong>Daily question:</strong> "What tasks do I need to complete today?"</li>
+            </ul>
+            
+            <p><strong>Strategic Planner:</strong></p>
+            <ul>
+                <li><strong>Focus:</strong> Planning (figuring out optimal approach)</li>
+                <li><strong>Systems purpose:</strong> Organize thinking and strategy</li>
+                <li><strong>Strength:</strong> Strategic thinking, optimal approaches</li>
+                <li><strong>Weakness:</strong> Over-planning, under-executing</li>
+                <li><strong>Daily question:</strong> "What's the best strategy for this?"</li>
+            </ul>
+            
+            <div class="quick-test">
+                <h4>⚡ Quick Test:</h4>
+                <ul>
+                    <li>Do you prefer <strong>doing</strong> tasks to <strong>planning</strong> them? → Structured Achiever</li>
+                    <li>Do you prefer <strong>planning</strong> to <strong>executing</strong>? → Strategic Planner</li>
+                    <li><strong>Need both?</strong> → This is common! Many people score similarly on both</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="confusion-section">
+            <h3>4. "Why Am I FLEXIBLE IMPROVISER Instead of CHAOTIC CREATIVE?"</h3>
+            
+            <p><strong>The Confusion:</strong> Both dislike rigid schedules. Both work in spurts. Both hate structure.</p>
+            
+            <p><strong>The Key Difference:</strong></p>
+            
+            <p><strong>Flexible Improviser:</strong></p>
+            <ul>
+                <li><strong>Energy pattern:</strong> Multiple windows per day (morning + evening)</li>
+                <li><strong>Work pattern:</strong> 2-3 sprints daily when energy high</li>
+                <li><strong>Consistency:</strong> Can work most days (if honoring energy windows)</li>
+                <li><strong>Issue:</strong> Fighting natural energy rhythm (forcing 9-5)</li>
+            </ul>
+            
+            <p><strong>Chaotic Creative:</strong></p>
+            <ul>
+                <li><strong>Energy pattern:</strong> Unpredictable bursts (could be any day/time)</li>
+                <li><strong>Work pattern:</strong> One massive burst, then multi-day recovery</li>
+                <li><strong>Consistency:</strong> Sporadic (days between productive sessions)</li>
+                <li><strong>Issue:</strong> Burst-crash cycles (unsustainable intensity)</li>
+            </ul>
+            
+            <div class="quick-test">
+                <h4>⚡ Quick Test:</h4>
+                <ul>
+                    <li>Can you work <strong>most days</strong> (just not 9-5)? → Flexible Improviser</li>
+                    <li>Do you go <strong>days between</strong> productive sessions? → Chaotic Creative</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SECTION 5: TOOL RECOMMENDATIONS BY ARCHETYPE -->
+        <h2>🛠️ Tool Recommendations by Archetype</h2>
+        
+        <div class="tool-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tool</th>
+                        <th>Chaotic Creative</th>
+                        <th>Anxious Perfectionist</th>
+                        <th>Structured Achiever</th>
+                        <th>Novelty Seeker</th>
+                        <th>Strategic Planner</th>
+                        <th>Flexible Improviser</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Todoist</strong></td>
+                        <td class="caution">⚠️<br>Can feel rigid</td>
+                        <td class="recommended">✅<br>Love clear lists</td>
+                        <td class="recommended">✅<br>Daily execution</td>
+                        <td class="caution">⚠️<br>Can be boring</td>
+                        <td class="recommended">✅<br>Planned tasks</td>
+                        <td class="caution">⚠️<br>Feels like obligation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trello</strong></td>
+                        <td class="recommended">✅<br>Visual, flexible</td>
+                        <td class="caution">⚠️<br>Too unstructured</td>
+                        <td class="caution">⚠️<br>Prefer lists</td>
+                        <td class="recommended">✅<br>Visual variety!</td>
+                        <td class="caution">⚠️<br>Not strategic enough</td>
+                        <td class="recommended">✅<br>Simple, visual</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Notion</strong></td>
+                        <td class="caution">⚠️<br>Can over-build</td>
+                        <td class="recommended">✅<br>Love organization</td>
+                        <td class="recommended">✅<br>Perfect for systems</td>
+                        <td class="recommended">✅<br>Variety of views</td>
+                        <td class="recommended">✅<br>Strategic planning</td>
+                        <td class="caution">⚠️<br>Too complex</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Voice Memos</strong></td>
+                        <td class="recommended">✅<br>Zero friction!</td>
+                        <td class="avoid">❌<br>Too unstructured</td>
+                        <td class="avoid">❌<br>Need real system</td>
+                        <td class="recommended">✅<br>Quick capture</td>
+                        <td class="avoid">❌<br>Not systematic</td>
+                        <td class="recommended">✅<br>Perfect capture</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Forest App</strong></td>
+                        <td class="recommended">✅<br>Variable duration</td>
+                        <td class="recommended">✅<br>Prevents loops</td>
+                        <td class="recommended">✅<br>Time blocking</td>
+                        <td class="recommended">✅<br>Gamified!</td>
+                        <td class="caution">⚠️<br>Not strategic</td>
+                        <td class="recommended">✅<br>Flexible sprints</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Freedom</strong></td>
+                        <td class="recommended">✅<br>Block during bursts</td>
+                        <td class="recommended">✅<br>Prevent research loops</td>
+                        <td class="caution">⚠️<br>Rarely needed</td>
+                        <td class="caution">⚠️<br>Rarely needed</td>
+                        <td class="caution">⚠️<br>Rarely needed</td>
+                        <td class="caution">⚠️<br>Rarely needed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <p style="margin-top: 20px;"><strong>Legend:</strong></p>
+        <ul>
+            <li><span class="recommended">✅</span> Highly recommended for this archetype</li>
+            <li><span class="caution">⚠️</span> Works but with modifications</li>
+            <li><span class="avoid">❌</span> Generally avoid (conflicts with archetype)</li>
+        </ul>
+
+        <!-- CALL TO ACTION -->
+        <section class="cta-section">
+            <h2 style="color: white; border: none;">Ready to Discover Your Archetype?</h2>
+            
+            <p style="font-size: 1.2em; margin: 20px 0;">If you HAVEN'T taken the assessment yet:</p>
+            <button class="cta-btn" onclick="window.location.href='#assessment'">Take the Free Assessment →</button>
+            <p style="margin-top: 10px; opacity: 0.9;">(10 minutes to discover your productivity archetype)</p>
+            
+            <hr style="margin: 40px 0; opacity: 0.3;">
+            
+            <p style="font-size: 1.2em; margin: 20px 0;">If you HAVE taken the assessment:</p>
+            <button class="cta-btn" onclick="window.location.href='#results'">View Your Results →</button>
+            <button class="cta-btn" onclick="window.location.href='#playbook'">Get Your Personalized Playbook →</button>
+            
+            <hr style="margin: 40px 0; opacity: 0.3;">
+            
+            <p style="font-size: 1.2em; margin: 20px 0;">Still not sure which archetype you are?</p>
+            <button class="cta-btn" onclick="window.location.href='#clarification'">Schedule Free 15-Min Clarification Call →</button>
+            <p style="margin-top: 10px; opacity: 0.9;">We'll help you identify your primary archetype and recommend the right approach.</p>
+        </section>
+
+    </div>
+
+    <footer style="background: #2c3e50; color: white; padding: 40px 20px; text-align: center; margin-top: 60px;">
+        <p>&copy; 2025 Prolific Personalities. All rights reserved.</p>
+        <p style="margin-top: 10px; opacity: 0.8;">Backed by research. Built for real people.</p>
+    </footer>
+
+</body>
+</html>
