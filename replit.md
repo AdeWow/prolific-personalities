@@ -4,7 +4,31 @@
 
 Prolific Personalities is a web application designed to help users identify their unique productivity archetype through a research-backed assessment. The platform analyzes user responses across four cognitive and behavioral dimensions to assign one of six distinct productivity archetypes. It then provides personalized strategies, tool recommendations, and insights tailored to their specific working style. The project aims to offer a user-friendly, mobile-responsive experience with immediate, shareable results, fostering improved personal productivity and understanding.
 
-## Recent Changes (November 6, 2025)
+## Recent Changes (November 11, 2025)
+
+-   **Stripe Premium Payment Integration**: Complete e-commerce system for selling premium archetype playbooks ($27 each):
+    - **Payment Processing**: Integrated Stripe Checkout with test mode keys (pk_test_, sk_test_) ready for production
+    - **Database Schema**: Added `orders` table tracking userId/sessionId, archetype, amount, payment status, and PDF URLs
+    - **API Endpoints**:
+      * POST /api/create-checkout-session: Creates Stripe checkout session with orderId in metadata
+      * POST /api/webhook/stripe: Handles payment confirmations with raw body parsing and signature verification
+      * GET /api/orders: Fetches user's completed orders
+      * GET /api/download/:orderId: Serves premium PDF downloads with authorization check
+    - **Webhook Security**: 
+      * Registered webhook route BEFORE express.json() middleware to preserve raw body for signature verification
+      * STRIPE_WEBHOOK_SECRET optional in development (with warning), required for production
+      * Proper signature verification using Stripe SDK
+    - **Guest Purchase Flow**: 
+      * Guests can purchase premium reports without logging in (order linked to sessionId)
+      * When guest later logs in and claims quiz session, orders are automatically claimed via `claimOrdersBySession()`
+      * Claimed orders appear in user's dashboard for download
+    - **Frontend UI**:
+      * Results page: Premium upgrade card with benefits list and "Get My Full Report - $27" button
+      * Dashboard: Premium downloads section showing purchased reports with download buttons
+      * Payment success/cancelled pages with clear next steps
+      * Routes: /payment-success and /payment-cancelled
+    - **Storage Layer**: Added methods (createOrder, getOrdersByUserId, updateOrderStatus, claimOrdersBySession)
+    - **Premium PDFs**: 6 archetype-specific playbooks ready to upload to attached_assets directory
 
 -   **Distance-Based Fit Scoring System**: Advanced archetype matching using Manhattan distance calculation:
     - Score normalization: Raw scores (7-35) mapped to 0-100 scale using formula ((score-7)/28)*100

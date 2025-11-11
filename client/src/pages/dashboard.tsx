@@ -10,9 +10,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { archetypes } from "@/data/archetypes";
-import { Clock, TrendingUp, BarChart3, ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import { Clock, TrendingUp, BarChart3, ArrowUpRight, ArrowDownRight, Minus, Download, Lock } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
-import type { QuizResult } from "@shared/schema";
+import type { QuizResult, Order } from "@shared/schema";
 
 export default function Dashboard() {
   const { toast } = useToast();
@@ -36,6 +36,12 @@ export default function Dashboard() {
   // Fetch user's quiz results
   const { data: results, isLoading: resultsLoading } = useQuery<QuizResult[]>({
     queryKey: ["/api/dashboard/results"],
+    enabled: isAuthenticated,
+  });
+
+  // Fetch user's orders
+  const { data: orders } = useQuery<Order[]>({
+    queryKey: ["/api/orders"],
     enabled: isAuthenticated,
   });
 
@@ -255,6 +261,49 @@ export default function Dashboard() {
                     }
                     return null;
                   })()}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Premium Downloads */}
+          {orders && orders.filter(o => o.status === 'completed').length > 0 && (
+            <Card className="mb-8 border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-3 bg-indigo-600 rounded-lg">
+                    <Download className="w-6 h-6 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-neutral-900">
+                    Your Premium Reports
+                  </h2>
+                </div>
+
+                <div className="space-y-3">
+                  {orders.filter(o => o.status === 'completed').map((order) => {
+                    const archetype = archetypes.find(a => a.id === order.archetype);
+                    return (
+                      <div key={order.id} className="bg-white rounded-lg p-4 flex items-center justify-between shadow-sm">
+                        <div className="flex items-center gap-4">
+                          <div className="text-3xl">{archetype?.icon || '🎯'}</div>
+                          <div>
+                            <h3 className="font-bold text-neutral-900">
+                              {archetype?.name || order.archetype} Premium Playbook
+                            </h3>
+                            <p className="text-sm text-neutral-600">
+                              Purchased {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
+                            </p>
+                          </div>
+                        </div>
+                        <a href={`/api/download/${order.id}`} download>
+                          <Button className="gradient-primary text-white" data-testid={`button-download-${order.id}`}>
+                            <Download className="w-4 h-4 mr-2" />
+                            Download PDF
+                          </Button>
+                        </a>
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>

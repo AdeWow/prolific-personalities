@@ -6,6 +6,67 @@ import { insertQuizResultSchema, insertEmailCaptureSchema, insertWaitlistSchema,
 import { toolsData } from "./tools-data";
 import { z } from "zod";
 import rateLimit from "express-rate-limit";
+import Stripe from "stripe";
+import express from "express";
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+}
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2024-11-20.acacia",
+});
+
+// Register Stripe webhook handler with raw body parser (must be called before express.json())
+export function registerWebhookRoute(app: Express) {
+  app.post(
+    "/api/webhook/stripe",
+    express.raw({ type: 'application/json' }),
+    async (req, res) => {
+      const sig = req.headers['stripe-signature'];
+
+      if (!sig) {
+        res.status(400).send('Missing stripe-signature header');
+        return;
+      }
+
+      try {
+        // Verify webhook signature if STRIPE_WEBHOOK_SECRET is set
+        let event;
+        if (process.env.STRIPE_WEBHOOK_SECRET) {
+          event = stripe.webhooks.constructEvent(
+            req.body,
+            sig,
+            process.env.STRIPE_WEBHOOK_SECRET
+          );
+        } else {
+          // Development mode - parse the event without verification
+          console.warn('⚠️ STRIPE_WEBHOOK_SECRET not set - webhook signature verification disabled (development only)');
+          event = JSON.parse(req.body.toString());
+        }
+
+        if (event.type === 'checkout.session.completed') {
+          const session = event.data.object as Stripe.Checkout.Session;
+          const orderId = session.metadata?.orderId;
+
+          if (orderId) {
+            await storage.updateOrderStatus(
+              parseInt(orderId),
+              'completed',
+              session.payment_intent as string
+            );
+            console.log(`✅ Order ${orderId} marked as completed via webhook`);
+          }
+        }
+
+        res.json({ received: true });
+      } catch (err: any) {
+        console.error('❌ Webhook error:', err.message);
+        res.status(400).send(`Webhook Error: ${err.message}`);
+      }
+    }
+  );
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Rate limiters for different types of endpoints
@@ -86,6 +147,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.status(500).json({ message: "Failed to claim quiz result" });
         return;
       }
+
+      // Also claim any orders associated with this session
+      await storage.claimOrdersBySession(sessionId, userId);
+      console.log(`✅ Claimed quiz session ${sessionId} and associated orders for user ${userId}`);
       
       res.json(result);
     } catch (error) {
@@ -288,6 +353,131 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error generating sitemap:", error);
       res.status(500).send('Error generating sitemap');
+    }
+  });
+
+  // Stripe Checkout Session - Create payment for premium report
+  app.post("/api/create-checkout-session", writeLimiter, async (req, res) => {
+    try {
+      const { archetype, sessionId } = req.body;
+      
+      if (!archetype || !sessionId) {
+        res.status(400).json({ message: "Missing archetype or sessionId" });
+        return;
+      }
+
+      // Verify quiz result exists
+      const quizResult = await storage.getQuizResultBySessionId(sessionId);
+      if (!quizResult) {
+        res.status(404).json({ message: "Quiz result not found" });
+        return;
+      }
+
+      const baseUrl = process.env.NODE_ENV === 'production'
+        ? 'https://prolificpersonalities.com'
+        : `${req.protocol}://${req.get('host')}`;
+
+      // Create order record
+      const order = await storage.createOrder({
+        userId: quizResult.userId || null,
+        sessionId,
+        archetype,
+        amount: 2700,
+        status: 'pending',
+      });
+
+      // Create Stripe Checkout Session
+      const checkoutSession = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: `Premium ${archetype.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Playbook`,
+                description: '100+ page personalized productivity playbook with 30-day action plan, tool setup guides, and templates',
+              },
+              unit_amount: 2700,
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: `${baseUrl}/results/${sessionId}?payment=success`,
+        cancel_url: `${baseUrl}/results/${sessionId}?payment=cancelled`,
+        metadata: {
+          orderId: order.id.toString(),
+          archetype,
+          sessionId,
+        },
+      });
+
+      res.json({ sessionId: checkoutSession.id, url: checkoutSession.url });
+    } catch (error: any) {
+      console.error("Error creating checkout session:", error);
+      res.status(500).json({ message: "Error creating checkout session: " + error.message });
+    }
+  });
+
+  // Stripe webhook is registered separately in registerWebhookRoute() before JSON middleware
+
+  // Get user's orders
+  app.get("/api/orders", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const orders = await storage.getOrdersByUserId(userId);
+      res.json(orders);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      res.status(500).json({ message: "Failed to fetch orders" });
+    }
+  });
+
+  // Download premium PDF
+  app.get("/api/download/:orderId", isAuthenticated, async (req: any, res) => {
+    try {
+      const { orderId } = req.params;
+      const userId = req.user.claims.sub;
+
+      const order = await storage.getOrderById(parseInt(orderId));
+
+      if (!order) {
+        res.status(404).json({ message: "Order not found" });
+        return;
+      }
+
+      if (order.userId !== userId) {
+        res.status(403).json({ message: "Unauthorized" });
+        return;
+      }
+
+      if (order.status !== 'completed') {
+        res.status(402).json({ message: "Payment not completed" });
+        return;
+      }
+
+      // Map archetype to PDF filename
+      const pdfMap: Record<string, string> = {
+        'chaotic-creative': 'Chaotic Creative Premium_1762835559469.pdf',
+        'anxious-perfectionist': 'Anxious Perfectionist Premium_1762835559468.pdf',
+        'structured-achiever': 'Structured Acheiver Premium_1762835559469.pdf',
+        'novelty-seeker': 'Novelty Seeker Premium_1762835559469.pdf',
+        'strategic-planner': 'Strategic Planner Premium_1762835559469.pdf',
+        'flexible-improviser': 'Flexible Improviser Premium_1762835559469.pdf',
+        'adaptive-generalist': 'Adaptive Generalist Premium_1762835559465.pdf',
+      };
+
+      const pdfFilename = pdfMap[order.archetype];
+      if (!pdfFilename) {
+        res.status(404).json({ message: "PDF not found for this archetype" });
+        return;
+      }
+
+      const pdfPath = `./attached_assets/${pdfFilename}`;
+      res.download(pdfPath, pdfFilename);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      res.status(500).json({ message: "Failed to download PDF" });
     }
   });
 

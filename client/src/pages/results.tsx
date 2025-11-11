@@ -85,6 +85,31 @@ export default function Results() {
     },
   });
 
+  const checkoutMutation = useMutation({
+    mutationFn: async (data: { archetype: string; sessionId: string }) => {
+      const response = await apiRequest('POST', '/api/create-checkout-session', data);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to start checkout. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleUpgradeToPremium = () => {
+    if (sessionId && archetype) {
+      checkoutMutation.mutate({ archetype: archetype.id, sessionId });
+    }
+  };
+
   useEffect(() => {
     if (sessionId) {
       setShareUrl(`${window.location.origin}/results/${sessionId}`);
@@ -706,12 +731,14 @@ export default function Results() {
                   size="lg" 
                   className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg py-6 hover:shadow-xl transition-all"
                   data-testid="button-get-premium"
+                  onClick={handleUpgradeToPremium}
+                  disabled={checkoutMutation.isPending}
                 >
-                  Get My Full Report - $27
+                  {checkoutMutation.isPending ? 'Processing...' : 'Get My Full Report - $27'}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <p className="text-center text-neutral-500 text-sm mt-4">
-                  One-time payment • Lifetime access • Updated as platform evolves
+                  One-time payment • Instant download • 100+ page personalized playbook
                 </p>
               </div>
             </CardContent>

@@ -1,4 +1,4 @@
-import { users, quizResults, tools, emailCaptures, waitlist, feedback, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type ToolWithFitScore } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, waitlist, feedback, orders, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
@@ -21,6 +21,13 @@ export interface IStorage {
   saveWaitlistEntry(entry: InsertWaitlist): Promise<Waitlist>;
   // Feedback
   saveFeedback(entry: InsertFeedback): Promise<Feedback>;
+  // Orders
+  createOrder(order: InsertOrder): Promise<Order>;
+  getOrderById(id: number): Promise<Order | undefined>;
+  getOrdersByUserId(userId: string): Promise<Order[]>;
+  getOrderBySessionId(sessionId: string): Promise<Order | undefined>;
+  updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string): Promise<Order | undefined>;
+  claimOrdersBySession(sessionId: string, userId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -158,6 +165,55 @@ export class DatabaseStorage implements IStorage {
       .values(insertFeedback)
       .returning();
     return feedbackEntry;
+  }
+
+  async createOrder(insertOrder: InsertOrder): Promise<Order> {
+    const [order] = await db
+      .insert(orders)
+      .values(insertOrder)
+      .returning();
+    return order;
+  }
+
+  async getOrderById(id: number): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(eq(orders.id, id));
+    return order || undefined;
+  }
+
+  async getOrdersByUserId(userId: string): Promise<Order[]> {
+    const userOrders = await db.select().from(orders).where(eq(orders.userId, userId));
+    return userOrders;
+  }
+
+  async getOrderBySessionId(sessionId: string): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(eq(orders.sessionId, sessionId));
+    return order || undefined;
+  }
+
+  async updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string): Promise<Order | undefined> {
+    const updateData: any = { 
+      status,
+      completedAt: status === 'completed' ? new Date() : undefined
+    };
+    
+    if (stripePaymentIntentId) {
+      updateData.stripePaymentIntentId = stripePaymentIntentId;
+    }
+    
+    const [order] = await db
+      .update(orders)
+      .set(updateData)
+      .where(eq(orders.id, id))
+      .returning();
+    return order || undefined;
+  }
+
+  async claimOrdersBySession(sessionId: string, userId: string): Promise<void> {
+    // Update all orders for this session to be owned by the user
+    await db
+      .update(orders)
+      .set({ userId })
+      .where(eq(orders.sessionId, sessionId));
   }
 }
 

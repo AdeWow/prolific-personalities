@@ -20,6 +20,8 @@ import BlogPost from "@/pages/blog-post";
 import Founder from "@/pages/founder";
 import Pricing from "@/pages/pricing";
 import Dashboard from "@/pages/dashboard";
+import PaymentSuccess from "@/pages/payment-success";
+import PaymentCancelled from "@/pages/payment-cancelled";
 
 function Router() {
   const [location] = useLocation();
@@ -38,6 +40,8 @@ function Router() {
       <Route path="/quiz" component={Quiz} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/payment-success" component={PaymentSuccess} />
+      <Route path="/payment-cancelled" component={PaymentCancelled} />
       <Route path="/about" component={About} />
       <Route path="/science" component={Science} />
       <Route path="/archetypes" component={Archetypes} />

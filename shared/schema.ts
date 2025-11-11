@@ -116,6 +116,19 @@ export const feedback = pgTable("feedback", {
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),
 });
 
+export const orders = pgTable("orders", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id),
+  sessionId: text("session_id").notNull(),
+  archetype: text("archetype").notNull(),
+  amount: integer("amount").notNull(), // amount in cents
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  stripeSessionId: text("stripe_session_id"),
+  status: text("status").notNull().default("pending"), // pending, completed, failed
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+});
+
 export const insertToolSchema = createInsertSchema(tools).omit({
   id: true,
 });
@@ -135,6 +148,12 @@ export const insertFeedbackSchema = createInsertSchema(feedback).omit({
   submittedAt: true,
 });
 
+export const insertOrderSchema = createInsertSchema(orders).omit({
+  id: true,
+  createdAt: true,
+  completedAt: true,
+});
+
 export type InsertTool = z.infer<typeof insertToolSchema>;
 export type Tool = typeof tools.$inferSelect;
 export type InsertEmailCapture = z.infer<typeof insertEmailCaptureSchema>;
@@ -143,6 +162,8 @@ export type InsertWaitlist = z.infer<typeof insertWaitlistSchema>;
 export type Waitlist = typeof waitlist.$inferSelect;
 export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
 export type Feedback = typeof feedback.$inferSelect;
+export type InsertOrder = z.infer<typeof insertOrderSchema>;
+export type Order = typeof orders.$inferSelect;
 
 // Type for tools with archetype fit score
 export type ToolWithFitScore = Tool & { fitScore: number };
