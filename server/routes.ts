@@ -8,13 +8,16 @@ import { z } from "zod";
 import rateLimit from "express-rate-limit";
 import Stripe from "stripe";
 import express from "express";
+import path from "path";
+import fs from "fs";
+import { getPremiumAssetForArchetype } from "./premiumAssets";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2024-11-20.acacia",
+  apiVersion: "2025-10-29.clover",
 });
 
 // Register Stripe webhook handler with raw body parser (must be called before express.json())
@@ -456,25 +459,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return;
       }
 
-      // Map archetype to PDF filename
-      const pdfMap: Record<string, string> = {
-        'chaotic-creative': 'Chaotic Creative Premium_1762835559469.pdf',
-        'anxious-perfectionist': 'Anxious Perfectionist Premium_1762835559468.pdf',
-        'structured-achiever': 'Structured Acheiver Premium_1762835559469.pdf',
-        'novelty-seeker': 'Novelty Seeker Premium_1762835559469.pdf',
-        'strategic-planner': 'Strategic Planner Premium_1762835559469.pdf',
-        'flexible-improviser': 'Flexible Improviser Premium_1762835559469.pdf',
-        'adaptive-generalist': 'Adaptive Generalist Premium_1762835559465.pdf',
-      };
-
-      const pdfFilename = pdfMap[order.archetype];
-      if (!pdfFilename) {
+      // Get PDF asset for archetype
+      const asset = getPremiumAssetForArchetype(order.archetype);
+      
+      if (!asset) {
         res.status(404).json({ message: "PDF not found for this archetype" });
         return;
       }
 
-      const pdfPath = `./attached_assets/${pdfFilename}`;
-      res.download(pdfPath, pdfFilename);
+      // Safely resolve PDF path
+      const pdfPath = path.join(process.cwd(), 'attached_assets', asset.pdfFilename);
+
+      // Check if file exists
+      if (!fs.existsSync(pdfPath)) {
+        console.error(`PDF file not found: ${pdfPath}`);
+        res.status(404).json({ message: "PDF file not available" });
+        return;
+      }
+
+      // Serve the PDF file with download headers
+      res.download(pdfPath, asset.pdfFilename, (err) => {
+        if (err) {
+          console.error("Error sending PDF file:", err);
+          if (!res.headersSent) {
+            res.status(500).json({ message: "Error downloading file" });
+          }
+        }
+      });
     } catch (error) {
       console.error("Error downloading PDF:", error);
       res.status(500).json({ message: "Failed to download PDF" });

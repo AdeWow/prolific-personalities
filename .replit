@@ -34,6 +34,10 @@ externalPort = 3003
 localPort = 41485
 externalPort = 3000
 
+[[ports]]
+localPort = 43561
+externalPort = 3002
+
 [workflows]
 runButton = "Project"
 
@@ -56,4 +60,4 @@ args = "npm run dev"
 waitForPort = 5000
 
 [agent]
-integrations = ["javascript_log_in_with_replit:1.0.0", "javascript_google_analytics:1.0.0"]
+integrations = ["javascript_log_in_with_replit:1.0.0", "javascript_google_analytics:1.0.0", "javascript_stripe:1.0.0"]
