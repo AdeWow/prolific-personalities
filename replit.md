@@ -4,7 +4,25 @@
 
 Prolific Personalities is a web application designed to help users identify their unique productivity archetype through a research-backed assessment. The platform analyzes user responses across four cognitive and behavioral dimensions to assign one of six distinct productivity archetypes. It then provides personalized strategies, tool recommendations, and insights tailored to their specific working style. The project aims to offer a user-friendly, mobile-responsive experience with immediate, shareable results, fostering improved personal productivity and understanding.
 
-## Recent Changes (November 11, 2025)
+## Recent Changes (November 12, 2025)
+
+-   **Email Results Feature**: Users can now email their complete assessment results to themselves:
+    - **Backend Integration**: Resend email service integration with support@prolificpersonalities.com as sender
+    - **API Endpoint**: POST /api/email-results accepts { email, sessionId } and sends formatted HTML email
+    - **Email Template**: Professional HTML email (server/emailTemplates.ts) includes:
+      * Archetype name, tagline, and description
+      * 4-axis productivity scores with visual progress bars
+      * Link to view full results online
+      * Branded header and footer
+    - **Frontend UI**: Dialog modal on results page with:
+      * "Email Results" button in header toolbar with Mail icon
+      * Email input with validation
+      * Three-state button: Default → Sending (loading) → Sent (success)
+      * Success/error toast notifications
+    - **Server Files**: Created server/archetypeData.ts for lightweight archetype data (no frontend asset dependencies)
+    - **Domain Verification**: Requires prolificpersonalities.com to be verified in Resend dashboard for production email delivery
+    - **Rate Limiting**: Uses existing emailLimiter to prevent abuse
+    - **Testing**: End-to-end tested successfully; UI flows work correctly
 
 -   **Stripe Premium Payment Integration**: Complete e-commerce system for selling premium archetype playbooks ($27 each):
     - **Payment Processing**: Integrated Stripe Checkout with test mode keys (pk_test_, sk_test_) ready for production
@@ -164,6 +182,8 @@ The application employs a monorepo structure, separating the React-based fronten
 
 -   **Express**: Web server framework.
 -   **ws**: WebSocket support for Neon.
+-   **Resend**: Transactional email service for sending assessment results.
+-   **Stripe**: Payment processing for premium playbook purchases.
 
 ### Development Tools
 
