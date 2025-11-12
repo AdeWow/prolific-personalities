@@ -11,6 +11,9 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { getPremiumAssetForArchetype } from "./premiumAssets";
+import { Resend } from "resend";
+import { generateResultsEmail } from "./emailTemplates";
+import { archetypes } from "../client/src/data/archetypes";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -19,6 +22,13 @@ if (!process.env.STRIPE_SECRET_KEY) {
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-10-29.clover",
 });
+
+// Initialize Resend client for email sending
+if (!process.env.RESEND_API_KEY) {
+  console.warn('⚠️ RESEND_API_KEY not set - email sending will be disabled');
+}
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 // Register Stripe webhook handler with raw body parser (must be called before express.json())
 export function registerWebhookRoute(app: Express) {
@@ -296,6 +306,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         console.error("Error saving feedback:", error);
         res.status(500).json({ message: "Failed to submit feedback" });
+      }
+    }
+  });
+
+  // Email quiz results
+  app.post("/api/email-results", emailLimiter, async (req, res) => {
+    try {
+      if (!resend) {
+        res.status(503).json({ message: "Email service not configured" });
+        return;
+      }
+
+      const { email, sessionId } = z.object({
+        email: z.string().email(),
+        sessionId: z.string(),
+      }).parse(req.body);
+
+      // Fetch quiz results
+      const result = await storage.getQuizResultBySessionId(sessionId);
+      
+      if (!result) {
+        res.status(404).json({ message: "Quiz results not found" });
+        return;
+      }
+
+      // Find archetype data
+      const archetypeData = archetypes.find(a => a.id === result.archetype);
+      
+      if (!archetypeData) {
+        res.status(404).json({ message: "Archetype data not found" });
+        return;
+      }
+
+      // Generate results URL
+      const baseUrl = process.env.NODE_ENV === 'production'
+        ? 'https://prolificpersonalities.com'
+        : `${req.protocol}://${req.get('host')}`;
+      const resultsUrl = `${baseUrl}/results/${sessionId}`;
+
+      // Generate email content
+      const { subject, html } = generateResultsEmail({
+        recipientEmail: email,
+        archetype: {
+          id: archetypeData.id,
+          title: archetypeData.title,
+          tagline: archetypeData.tagline,
+          description: archetypeData.struggle[0] || archetypeData.tagline,
+        },
+        scores: result.scores as any,
+        resultsUrl,
+      });
+
+      // Send email using Resend
+      const emailResponse = await resend.emails.send({
+        from: 'Prolific Personalities <support@prolificpersonalities.com>',
+        to: email,
+        subject,
+        html,
+      });
+
+      if (emailResponse.error) {
+        console.error('Error sending email:', emailResponse.error);
+        res.status(500).json({ message: "Failed to send email" });
+        return;
+      }
+
+      console.log(`✅ Quiz results emailed to ${email}`);
+      res.json({ success: true });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid request data", errors: error.errors });
+      } else {
+        console.error("Error sending email:", error);
+        res.status(500).json({ message: "Failed to send email" });
       }
     }
   });
