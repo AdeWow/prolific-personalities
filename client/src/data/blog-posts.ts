@@ -1,4 +1,8 @@
 import productivitySystemsImage from "@assets/cc7face0-86f1-4879-8c55-8d887bb1e2ac_1762984694177.png";
+import fluidProductivityImage from "@assets/generated_images/Fluid_productivity_style_transitions_39efa6b2.png";
+import digitalMinimalismImage from "@assets/generated_images/Digital_minimalism_and_notification_freedom_159eb6a9.png";
+import productivityGuiltImage from "@assets/generated_images/Productivity_guilt_and_self-compassion_d607f244.png";
+import archetypesExplainedImage from "@assets/generated_images/Six_diverse_productivity_archetypes_9cfe0fb2.png";
 
 export interface BlogPost {
   id: string;
@@ -167,6 +171,7 @@ Because the problem was never you. It was the one-size-fits-all lie.
     author: 'Prolific Personalities Team',
     readTime: '5 min read',
     tags: ['Productivity', 'Psychology', 'Archetypes'],
+    image: fluidProductivityImage,
     content: `Have you ever taken a productivity quiz, identified your "type," and then realized a week later you're approaching work completely differently? Maybe you recognize patterns from every archetype—Structured Achiever, Momentum Chaser, Flow Seeker, or Chaotic Innovator—depending on your mood, the season, or even your monthly cycle. If so, you're not alone.
 
 Some weeks, structure and detailed plans feel essential; other days, improvisation and chasing bursts of creativity work best. Shifts in stress, sleep, hormones, or environment often change not just how productive you can be, but what kind of productivity feels possible.
@@ -226,6 +231,7 @@ The goal isn't to find your one true archetype and stick to it forever. The goal
     author: 'Prolific Personalities Team',
     readTime: '5 min read',
     tags: ['Digital Minimalism', 'Focus', 'Productivity'],
+    image: digitalMinimalismImage,
     content: `I used to think notifications were just a minor annoyance—a ping here, a badge there. But one week, I decided to turn them all off. Not just silent mode, but a full digital detox: no phone buzzes, no desktop banners, no "New message!" pop-ups. What happened next was both painful and eye-opening.
 
 ## The Noise We Don't Notice
@@ -276,6 +282,7 @@ So—are you ready to try it? Can you survive without notifications? The results
     author: 'Prolific Personalities Team',
     readTime: '6 min read',
     tags: ['Mental Health', 'Productivity', 'Self-Compassion'],
+    image: productivityGuiltImage,
     content: `I'll be honest: sometimes, the hardest part of building a productivity platform isn't the code or the research citations—it's facing my own productivity guilt.
 
 Like so many others, I sit down at my desk with a full list and high hopes. I even promise myself: "Today I'll get through it all." Yet, hours pass as I ping-pong from one browser tab to another, scrolling, updating, busy but not moving forward. In the background, there's a familiar heaviness—not just frustration, but a deeper pain, the gnawing sense of not measuring up.
@@ -319,6 +326,7 @@ To everyone who knows that pain: **you're not alone**. Guilt may be part of the 
     author: 'Prolific Personalities Team',
     readTime: '8 min read',
     tags: ['Productivity', 'Archetypes', 'Psychology'],
+    image: archetypesExplainedImage,
     content: `If you've ever wondered why productivity hacks that seem life-changing for others completely fall flat for you, you're not alone. The truth is: productivity isn't just about discipline or organization — it's about fit.
 
 Each of us operates with a unique blend of structure, motivation, cognitive focus, and relationship to tasks. These psychological differences explain why one person thrives with time-blocking while another shuts down from it.
