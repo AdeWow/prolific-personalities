@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
+import logoImage from "@assets/Logo5Nobackground1_1762920314202.png";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -14,7 +14,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-            <img src={logoImage} alt="Prolific Personalities Logo" className="w-14 h-14" />
+            <img src={logoImage} alt="Prolific Personalities Logo" className="w-20 h-20" />
             <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
           </Link>
 
