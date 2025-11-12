@@ -13,7 +13,7 @@ import fs from "fs";
 import { getPremiumAssetForArchetype } from "./premiumAssets";
 import { Resend } from "resend";
 import { generateResultsEmail } from "./emailTemplates";
-import { archetypes } from "../client/src/data/archetypes";
+import { getArchetypeInfo } from "./archetypeData";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -332,9 +332,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Find archetype data
-      const archetypeData = archetypes.find(a => a.id === result.archetype);
+      const archetypeInfo = getArchetypeInfo(result.archetype);
       
-      if (!archetypeData) {
+      if (!archetypeInfo) {
         res.status(404).json({ message: "Archetype data not found" });
         return;
       }
@@ -348,12 +348,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate email content
       const { subject, html } = generateResultsEmail({
         recipientEmail: email,
-        archetype: {
-          id: archetypeData.id,
-          title: archetypeData.title,
-          tagline: archetypeData.tagline,
-          description: archetypeData.struggle[0] || archetypeData.tagline,
-        },
+        archetype: archetypeInfo,
         scores: result.scores as any,
         resultsUrl,
       });

@@ -18,6 +18,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { apiRequest } from "@/lib/queryClient";
 import type { QuizResult, ToolWithFitScore, QuizScores } from "@shared/schema";
 
@@ -27,6 +35,8 @@ export default function Results() {
   const [shareUrl, setShareUrl] = useState("");
   const [email, setEmail] = useState("");
   const [emailSaved, setEmailSaved] = useState(false);
+  const [emailResultsInput, setEmailResultsInput] = useState("");
+  const [emailResultsSent, setEmailResultsSent] = useState(false);
   const { toast } = useToast();
 
   const { data: result, isLoading, error } = useQuery<QuizResult>({
@@ -80,6 +90,27 @@ export default function Results() {
       toast({
         title: "Error",
         description: "Failed to save email. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const emailResultsMutation = useMutation({
+    mutationFn: async (emailData: { email: string; sessionId: string }) => {
+      const response = await apiRequest('POST', '/api/email-results', emailData);
+      return response.json();
+    },
+    onSuccess: () => {
+      setEmailResultsSent(true);
+      toast({
+        title: "Results sent!",
+        description: "Check your inbox for your complete assessment results.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to send email. Please try again.",
         variant: "destructive",
       });
     },
@@ -155,6 +186,13 @@ export default function Results() {
     }
   };
 
+  const handleEmailResults = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (emailResultsInput && sessionId) {
+      emailResultsMutation.mutate({ email: emailResultsInput, sessionId });
+    }
+  };
+
   const handlePDFExport = () => {
     window.print();
   };
@@ -222,6 +260,59 @@ export default function Results() {
                 <Download className="w-4 h-4 mr-2" />
                 Export PDF
               </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" data-testid="button-email-results">
+                    <Mail className="w-4 h-4 mr-2" />
+                    Email Results
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Email Your Results</DialogTitle>
+                    <DialogDescription>
+                      Get your complete assessment results sent to your inbox, including your archetype breakdown and personalized insights.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleEmailResults} className="space-y-4">
+                    <div className="space-y-2">
+                      <Input
+                        type="email"
+                        placeholder="your.email@example.com"
+                        value={emailResultsInput}
+                        onChange={(e) => setEmailResultsInput(e.target.value)}
+                        required
+                        disabled={emailResultsSent || emailResultsMutation.isPending}
+                        data-testid="input-email-results"
+                        className="w-full"
+                      />
+                    </div>
+                    <Button
+                      type="submit"
+                      className="w-full gradient-primary text-white"
+                      disabled={emailResultsSent || emailResultsMutation.isPending}
+                      data-testid="button-send-email"
+                    >
+                      {emailResultsMutation.isPending ? (
+                        <>
+                          <Mail className="w-4 h-4 mr-2 animate-pulse" />
+                          Sending...
+                        </>
+                      ) : emailResultsSent ? (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 mr-2" />
+                          Sent!
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="w-4 h-4 mr-2" />
+                          Send Results
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" data-testid="button-share">
