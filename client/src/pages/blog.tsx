@@ -3,6 +3,7 @@ import { blogPosts } from '@/data/blog-posts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Header } from '@/components/header';
 import { EmailCaptureCard } from '@/components/email-capture-card';
 import { Calendar, Clock } from 'lucide-react';
@@ -27,6 +28,17 @@ export default function BlogPage() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {blogPosts.map((post) => (
             <Card key={post.id} className="flex flex-col hover:shadow-lg transition-shadow" data-testid={`card-blog-${post.slug}`}>
+              {post.image && (
+                <AspectRatio ratio={16 / 9} className="bg-gray-100 dark:bg-gray-800">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover rounded-t-lg"
+                    data-testid={`img-blog-${post.slug}`}
+                  />
+                </AspectRatio>
+              )}
               <CardHeader>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {post.tags.map((tag) => (

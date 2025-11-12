@@ -2,6 +2,7 @@ import { useRoute, Link } from 'wouter';
 import { blogPosts } from '@/data/blog-posts';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Calendar, Clock, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
@@ -65,6 +66,20 @@ export default function BlogPostPage() {
             </div>
           </div>
         </header>
+
+        {/* Featured Image */}
+        {post.image && (
+          <div className="mb-12 -mx-4 sm:mx-0">
+            <AspectRatio ratio={16 / 9} className="bg-gray-100 dark:bg-gray-800">
+              <img
+                src={post.image}
+                alt={post.title}
+                className="w-full h-full object-cover rounded-lg"
+                data-testid="img-featured"
+              />
+            </AspectRatio>
+          </div>
+        )}
 
         {/* Article Content */}
         <div className="prose prose-lg dark:prose-invert max-w-none mb-16">
