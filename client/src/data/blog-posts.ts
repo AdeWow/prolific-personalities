@@ -2,7 +2,7 @@ import productivitySystemsImage from "@assets/cc7face0-86f1-4879-8c55-8d887bb1e2
 import fluidProductivityImage from "@assets/generated_images/Fluid_productivity_style_transitions_39efa6b2.png";
 import digitalMinimalismImage from "@assets/generated_images/Digital_minimalism_and_notification_freedom_159eb6a9.png";
 import productivityGuiltImage from "@assets/generated_images/Productivity_guilt_and_self-compassion_d607f244.png";
-import archetypesExplainedImage from "@assets/generated_images/Six_diverse_productivity_archetypes_9cfe0fb2.png";
+import archetypesExplainedImage from "@assets/generated_images/Six_productivity_archetypes_with_labels_9eee6cf7.png";
 
 export interface BlogPost {
   id: string;
