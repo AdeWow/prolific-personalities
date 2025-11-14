@@ -8,6 +8,7 @@ interface SEOHeadProps {
   ogImage?: string;
   canonicalUrl?: string;
   keywords?: string;
+  structuredData?: Record<string, any>;
 }
 
 export function SEOHead({
@@ -18,6 +19,7 @@ export function SEOHead({
   ogImage = '/og-image.png',
   canonicalUrl,
   keywords,
+  structuredData,
 }: SEOHeadProps) {
   useEffect(() => {
     // Update title
@@ -67,7 +69,18 @@ export function SEOHead({
       document.head.appendChild(linkTag);
     }
     linkTag.setAttribute('href', finalCanonicalUrl);
-  }, [title, description, ogTitle, ogDescription, ogImage, canonicalUrl, keywords]);
+
+    // Structured Data (JSON-LD)
+    if (structuredData) {
+      let scriptTag = document.querySelector('script[type="application/ld+json"]');
+      if (!scriptTag) {
+        scriptTag = document.createElement('script');
+        scriptTag.setAttribute('type', 'application/ld+json');
+        document.head.appendChild(scriptTag);
+      }
+      scriptTag.textContent = JSON.stringify(structuredData);
+    }
+  }, [title, description, ogTitle, ogDescription, ogImage, canonicalUrl, keywords, structuredData]);
 
   return null;
 }

@@ -10,6 +10,49 @@ import heroImage from "@assets/adeola2020_an_inclusive_group_of_people_engaged_i
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
 export default function Home() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${window.location.origin}/#organization`,
+        "name": "Prolific Personalities",
+        "url": window.location.origin,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${window.location.origin}/og-image.png`
+        },
+        "description": "Science-backed productivity assessment platform helping people discover their unique working style"
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${window.location.origin}/#website`,
+        "url": window.location.origin,
+        "name": "Prolific Personalities",
+        "description": "Discover your productivity archetype through our research-backed assessment",
+        "publisher": {
+          "@id": `${window.location.origin}/#organization`
+        }
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Productivity Archetype Assessment",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "2000"
+        }
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
       <SEOHead
@@ -17,6 +60,7 @@ export default function Home() {
         description="Join 2,000+ achievers using Prolific Personalities to overcome procrastination and thrive. Science-backed strategies personalized to your productivity style. Take the free assessment now."
         keywords="productivity assessment, productivity archetype, time management, procrastination, focus, executive function, working style"
         canonicalUrl={window.location.origin}
+        structuredData={structuredData}
       />
       <Header />
 

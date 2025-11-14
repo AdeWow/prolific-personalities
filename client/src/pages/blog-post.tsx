@@ -7,6 +7,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Calendar, Clock, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { trackEvent } from '@/lib/analytics';
+import { SEOHead } from '@/components/seo-head';
 
 export default function BlogPostPage() {
   const [, params] = useRoute('/blog/:slug');
@@ -43,8 +44,43 @@ export default function BlogPostPage() {
     );
   }
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.excerpt,
+    "image": post.image || `${window.location.origin}/og-image.png`,
+    "author": {
+      "@type": "Person",
+      "name": post.author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Prolific Personalities",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${window.location.origin}/og-image.png`
+      }
+    },
+    "datePublished": post.publishDate,
+    "dateModified": post.publishDate,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${window.location.origin}/blog/${post.slug}`
+    },
+    "keywords": post.tags.join(", ")
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <SEOHead
+        title={post.title}
+        description={post.excerpt}
+        ogImage={post.image}
+        canonicalUrl={`${window.location.origin}/blog/${post.slug}`}
+        keywords={post.tags.join(", ")}
+        structuredData={structuredData}
+      />
       <article className="container mx-auto px-4 py-16 max-w-4xl">
         {/* Back Button */}
         <Link href="/blog">
