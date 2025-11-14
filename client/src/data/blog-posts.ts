@@ -2,7 +2,7 @@ import productivitySystemsImage from "@assets/cc7face0-86f1-4879-8c55-8d887bb1e2
 import fluidProductivityImage from "@assets/generated_images/Fluid_productivity_style_transitions_39efa6b2.png";
 import digitalMinimalismImage from "@assets/generated_images/Digital_minimalism_and_notification_freedom_159eb6a9.png";
 import productivityGuiltImage from "@assets/generated_images/Productivity_guilt_and_self-compassion_d607f244.png";
-import archetypesExplainedImage from "@assets/generated_images/Six_updated_productivity_archetypes_269e6a90.png";
+import archetypesExplainedImage from "@assets/generated_images/Six_productivity_archetypes_illustration_4184a68e.png";
 
 export interface BlogPost {
   id: string;
@@ -329,134 +329,115 @@ To everyone who knows that pain: **you're not alone**. Guilt may be part of the 
     image: archetypesExplainedImage,
     content: `If you've ever wondered why productivity hacks that seem life-changing for others completely fall flat for you, you're not alone. The truth is: productivity isn't just about discipline or organization — it's about fit.
 
-Each of us operates with a unique blend of executive function, motivation style, cognitive focus, and work preferences. These psychological differences explain why one person thrives with time-blocking while another shuts down from it.
+Each of us operates with a unique blend of structure preference, motivation style, cognitive focus, and relationship to tasks. These psychological differences explain why one person thrives with time-blocking while another shuts down from it.
 
-At Prolific Personalities, we've identified six distinct Productivity Archetypes, each rooted in cognitive science, executive function theory (Barkley, 2012), and self-determination theory (Deci & Ryan, 1985). Here's what makes each one tick — and how to actually thrive in your natural rhythm.
+At Prolific Personalities, we've identified six distinct Productivity Archetypes, each rooted in cognitive science and motivational psychology. Here's what makes each one tick — and how to actually thrive in your natural rhythm.
 
-## 🎨 1. The Chaotic Creative
+## 🌪️ 1. The Chaotic Creative
 
-**Core Traits:** Spontaneous • Idea-driven • Struggles with executive function • Thrives on novelty
+**Core Traits:** Burst-driven • Spontaneous • Idea-rich • Struggles with executive function
 
-**Profile:** Low Structure Orientation • High Intrinsic Motivation • Broad Cognitive Focus • Interest-based Task Relationship
+**High in:** Big Picture Focus & Intrinsic Motivation
+**Low in:** Structure Orientation
 
-You're bursting with brilliant ideas, but starting tasks feels impossible. You have 47 browser tabs open and ten unfinished projects—not because you're lazy, but because your brain craves novelty and struggles with executive function tasks like initiation, planning, and sustained attention.
+You work in explosive bursts of creativity—4 hours of brilliant productivity followed by 3 days of complete crash. Your browser has 47 tabs open, you start ten projects with genuine enthusiasm, and you finish... some of them... eventually. Rigid systems don't just fail you—they actively kill your creative flow.
 
-**Your Superpower:** Creative connections and innovative thinking.
+**Your Superpower:** When burst energy hits, you can accomplish in 4 hours what takes others 2 days.
 
-**Your Trap:** Analysis paralysis at task initiation, forgotten details, abandoned projects.
+**Your Trap:** Unsustainable energy patterns. The crash is inevitable, and projects die at 70% completion when burst energy runs out.
 
-**Try This:** You don't need more discipline—you need external scaffolding. Use body doubling (Focusmate), voice capture for fleeting ideas, and visual task breakdowns (Goblin Tools). Set implementation intentions: "When X happens, I do Y" to remove decision-making friction.
+**Try This:** Use burst containment strategies—the 4-hour maximum rule to prevent crashes, momentum maps to pick up where you left off, and voice capture for fleeting ideas. Ship projects at 70% instead of waiting for "done." Use tools like Forest (burst timers), Sunsama (gentle daily planning), and Notion with minimal friction.
 
-**Tools for Your Brain:** Focusmate, Sunsama, voice memos, Notion templates with minimal friction.
+## 🎯 2. The Anxious Perfectionist
 
-## 😰 2. The Anxious Perfectionist
+**Core Traits:** Detail-obsessed • Self-critical • Procrastinates through research • Fear-driven
 
-**Core Traits:** High standards • Self-critical • Procrastinates through research • Fear of judgment
+**High in:** Structure Orientation (used for avoidance) & Narrow Focus
+**Driven by:** Extrinsic Motivation (avoiding judgment)
 
-**Profile:** Medium-High Structure Orientation • Mixed Motivation (avoidance-driven) • Narrow Focus • Performance-anxious Task Relationship
+You know exactly what needs to be done, but nothing feels good enough. You've rewritten that email four times. You've spent hours researching the "perfect" productivity system instead of working. Starting feels terrifying because what if it's not perfect? Finishing feels impossible because it could always be better.
 
-You know exactly what needs to be done, but nothing feels good enough. You've rewritten that email four times. You've spent hours researching the "perfect" productivity system instead of working. Starting feels terrifying, and finishing feels impossible because it could always be better.
+**Your Superpower:** Exceptional attention to quality and thorough preparation when you do ship.
 
-**Your Superpower:** Attention to quality and thorough preparation.
+**Your Trap:** Perfectionism masquerading as high standards—it's actually anxiety preventing any work at all. You mistake endless planning and refinement for productivity.
 
-**Your Trap:** Perfectionism masquerading as high standards—it's actually anxiety preventing any work at all.
+**Try This:** Implement the Shipwright System—define "80% done" criteria BEFORE starting, limit yourself to 3 revisions maximum, and use Pomodoro timers to create artificial endings. Share work-in-progress publicly to break the perfection spell. Use "done lists" to celebrate shipped work, not endless to-do lists.
 
-**Try This:** Practice "version control thinking"—this is v0.1, not the final product. Use Pomodoro timers to create artificial endings. Define "good enough" criteria BEFORE you start. Share work-in-progress publicly to break the perfection spell.
+## ✓ 3. The Structured Achiever
 
-**Tools for Your Brain:** Pomodoro timers, Complice (progress-focused), "done lists" instead of to-do lists, forced publish deadlines.
+**Core Traits:** Systems-oriented • Optimization-focused • Goal-driven • Reliable
 
-## 📊 3. The Structured Achiever
+**High in:** Structure Orientation & Organized Focus
+**Balanced:** Both Intrinsic & Extrinsic Motivation
 
-**Core Traits:** Systems-oriented • Optimization-focused • Loves frameworks • Goal-driven
+You LOVE a good system. Your calendar is color-coded, your Notion workspace is a masterpiece, and you can explain your GTD implementation in extensive detail. Clear goals and measurable progress energize you. Give you a framework and deadlines, and you consistently deliver.
 
-**Profile:** High Structure Orientation • Balanced Extrinsic/Intrinsic Motivation • Organized Cognitive Focus • Systematic Task Relationship
+**Your Superpower:** Consistency and systematic execution. You show up and deliver reliably.
 
-You LOVE a good system. Your calendar is color-coded, your Notion is a masterpiece, and you can explain your GTD implementation in detail. Clear goals and metrics energize you. Give you a framework, and you're unstoppable.
+**Your Trap:** Over-systematizing—you spend more time building and optimizing systems than doing actual work. System maintenance becomes the work itself.
 
-**Your Superpower:** Consistency, optimization, and systematic execution.
+**Try This:** Use the Daily Top 3 rule—only three tasks actually matter today, and systems serve those three. Implement the 2-minute rule for system tweaks (if it takes longer, you're procrastinating). Schedule weekly reviews ONLY—no daily tinkering. Build in chaos protocols to practice flexibility when systems break.
 
-**Your Trap:** System-building becomes procrastination. You spend more time organizing than doing, and rigidity prevents adaptation.
+## 🎨 4. The Novelty Seeker
 
-**Try This:** Institute the 2-minute rule for system tweaks—if it takes longer, you're procrastinating. Do weekly reviews, not daily tinkering. Set a "good enough" threshold where optimization must stop. Introduce deliberate flexibility breaks.
+**Core Traits:** Curious • Fast learner • Gets bored easily • Juggler of interests
 
-**Tools for Your Brain:** Todoist, Akiflow (time-blocking + tasks), RescueTime (actual work metrics), analog notebooks for creative breaks.
+**High in:** Intrinsic Motivation & Broad/Scattered Focus
+**Low in:** Structure Orientation (needs variety, hates routine)
 
-## 👥 4. The Social Energizer
+You learn fast and get bored faster. New projects are thrilling! Old projects become torture once the exciting phase ends. You can juggle 10 different interests simultaneously, but finishing any single thing feels impossible. Routine maintenance work makes you want to escape.
 
-**Core Traits:** Externally motivated • Thrives with accountability • Performs better with witnesses
+**Your Superpower:** Rapid learning, innovative thinking, and the ability to connect disparate ideas.
 
-**Profile:** Medium Structure Orientation • High Extrinsic Motivation • Broad Social Focus • Collaborative Task Relationship
+**Your Trap:** Project graveyards full of abandoned work. Boredom kills projects at the 70% mark when excitement fades.
 
-You get more done in a coffee shop than alone at home. When you tell someone you'll do something, it happens—but solo projects languish. You're not "too dependent"—you're wired for social motivation, and your brain literally performs better with accountability.
+**Try This:** Implement the Rotation Protocol—limit yourself to 2 active projects maximum, rotate between them weekly (not on whim), and use visual progress tracking to see how close you are to finishing. Gamify routine tasks with Habitica. Create "someday/maybe" lists for the other 8 ideas calling to you.
 
-**Your Superpower:** High energy and follow-through with external accountability.
+## 🗺️ 5. The Strategic Planner
 
-**Your Trap:** Solo deep work feels impossible; tasks without audiences never get done.
+**Core Traits:** Big picture thinker • Analytical • Visionary • Execution-avoidant
 
-**Try This:** Manufacture accountability through body doubling sessions, public progress sharing, and structured accountability partners. Use gamification and visible streaks. The hermit productivity advice isn't for you—stop forcing it.
+**High in:** Structure Orientation & Big Picture Focus
+**Challenge:** Planning replaces doing
 
-**Tools for Your Brain:** Focusmate, Complice, Beeminder (commitment contracts), Habitica (gamification + parties), co-working spaces.
+You excel at strategic thinking and can see patterns others miss. You love creating detailed roadmaps and frameworks. Your plans are brilliant and comprehensive. But when it comes to actually executing those plans? That's where things get... stuck. You spend 10 hours planning and 0 hours doing.
 
-## 🧘 5. The Deep Work Monk
+**Your Superpower:** Strategic vision and the ability to create comprehensive frameworks.
 
-**Core Traits:** Requires long uninterrupted blocks • Distraction-sensitive • Batch processor
+**Your Trap:** Analysis paralysis. Planning becomes procrastination—a way to feel productive while avoiding the vulnerable act of actually doing the work.
 
-**Profile:** High Structure Orientation • High Intrinsic Motivation • Deep Narrow Focus • Immersive Task Relationship
+**Try This:** Use the Strategy Sprint method—time-box planning to 20% of total time (the 80/20 rule), then MUST start execution. Create if-then bridges: "If I finish planning X, then I immediately start Y." Use planning poker to estimate planning time, and when the timer ends, you execute. Track your planning-vs-doing ratio with RescueTime.
 
-You need silence and 4-hour uninterrupted blocks to produce your best work. Quick meetings, Slack notifications, and "got a minute?" questions destroy your productivity. Context switching isn't just annoying—it genuinely impairs your cognitive performance.
+## 🌊 6. The Flexible Improviser
 
-**Your Superpower:** Deep focus and complex problem-solving.
+**Core Traits:** Energy-sensitive • Spontaneous • Present-focused • Rhythm-dependent
 
-**Your Trap:** "Always available" culture sabotages your natural work rhythm.
+**Low in:** Structure Orientation (flexibility essential)
+**High in:** Intrinsic Motivation & Detail Focus (when energized)
 
-**Try This:** Defend your depth ruthlessly. Set communication office hours ("Available 2-4 PM, async otherwise"). Use Do Not Disturb on everything during deep work blocks. Batch process email/Slack twice daily, not continuously. Your 4-hour block is sacred.
+Your energy and motivation fluctuate daily in predictable but variable rhythms. Some days you're unstoppable—10/10 energy, flow state for hours. Other days you can barely respond to emails. Rigid schedules feel oppressive and deplete you further. You work best when you honor your natural energy cycles.
 
-**Tools for Your Brain:** Freedom or Cold Turkey (nuclear blocking), Clockwise (meeting optimization), Notion/Obsidian (deep thinking), analog mode when needed.
+**Your Superpower:** High output when you work during natural energy peaks and align tasks with current capacity.
 
-## 🦋 6. The Restless Dabbler
+**Your Trap:** Fighting your ultradian rhythms. Forcing work during low energy creates burnout and guilt about "unproductive" days.
 
-**Core Traits:** Novelty-seeking • Fast learner, faster bored • Needs meaningful "why"
-
-**Profile:** Low Structure Orientation • High Intrinsic Motivation • Scattered Broad Focus • Interest-driven Task Relationship
-
-You learn fast and get bored faster. New projects are thrilling; maintenance work is torture. You need variety and connection to larger purpose. When productivity advice says "build habits" and "embrace routine," it's describing your personal hell.
-
-**Your Superpower:** Rapid learning, innovation, and adaptive thinking.
-
-**Your Trap:** Unfinished projects, inability to sustain focus when interest fades.
-
-**Try This:** Build rotation systems, not routine systems. Use project rotation with time-boxed switches. Connect tedious tasks to meaningful outcomes with clear "why" statements. Gamify routine tasks. Sprint through boring work in high-energy bursts.
-
-**Tools for Your Brain:** Habitica (RPG gamification), Todoist with rotating contexts, "random" task pickers, continuous learning platforms.
+**Try This:** Implement the Energy Sprint System—map your energy patterns for 2 weeks to find your windows, create task tiers that match difficulty to energy levels (deep work = high energy, admin = low energy), and build guilt-free rest into valleys. Create motivation menus listing what you can do at each energy level.
 
 ## 🧩 Why This Matters
 
-Productivity isn't about becoming a different person—it's about working with who you already are. Each archetype reflects real cognitive and motivational patterns validated by research in:
+Productivity isn't about becoming a different person—it's about working with who you already are. Each archetype reflects real cognitive and motivational patterns validated by research in executive function theory (Barkley, 2012), self-determination theory (Deci & Ryan, 1985), and cognitive psychology.
 
-**Executive Function Theory (Barkley, 2012)** - How your brain manages planning, attention, and task initiation
+When your tools, habits, and goals align with your natural rhythm, motivation feels sustainable instead of forced. You stop self-blaming and start designing systems that fit.
 
-**Self-Determination Theory (Deci & Ryan, 1985)** - What actually motivates you
+Most people aren't pure archetypes—you might be primarily a Chaotic Creative with some Anxious Perfectionist tendencies, or a Structured Achiever who needs more energy alignment than typical. That's normal. That's the point.
 
-**Big Five Personality Research (Judge & Ilies, 2002)** - How traits predict performance
+Ready to discover your archetype and get personalized strategies that actually work for your brain?
 
-**Cognitive Load Theory** - Your brain's processing capacity and preferences
-
-When your tools, habits, and goals align with your natural cognitive architecture, motivation feels sustainable instead of forced. You stop self-blaming and start designing systems that actually fit.
-
-Most people aren't pure archetypes—you might be primarily a Chaotic Creative with some Anxious Perfectionist tendencies, or a Structured Achiever who needs more social accountability than typical. That's normal. That's the point.
-
-The goal isn't to box yourself in. It's to understand your patterns so you stop fighting your brain and start working with it.
-
----
-
-Ready to discover your archetype and get personalized strategies? Take our free research-backed assessment and stop trying to fit into someone else's productivity blueprint.
-
-Not another personality quiz. Actual psychological frameworks. Real solutions.
+Take our free research-backed assessment and stop trying to force yourself into productivity systems designed for someone else.
 
 ## References
 
 - Barkley, R. A. (2012). *Executive Functions: What They Are, How They Work, and Why They Evolved*
-- Deci, E. L., & Ryan, R. M. (1985). *Intrinsic Motivation and Self-Determination in Human Behavior*
-- Judge, T. A., & Ilies, R. (2002). Relationship of personality to performance motivation: A meta-analytic review`
+- Deci, E. L., & Ryan, R. M. (1985). *Intrinsic Motivation and Self-Determination in Human Behavior*`
   }
 ];
