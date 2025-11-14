@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,14 +9,24 @@ import { questions } from "@/data/questions";
 import { calculateScores, determineArchetype, generateSessionId, getProgressPercentage, validateAnswer } from "@/lib/quiz-logic";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { trackEvent } from "@/lib/analytics";
 import type { QuizAnswers } from "@shared/schema";
 
 export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswers>({});
   const [sessionId] = useState(() => generateSessionId());
+  const [quizStarted, setQuizStarted] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+
+  // Track quiz start on mount
+  useEffect(() => {
+    if (!quizStarted) {
+      trackEvent('quiz_started', 'Quiz', 'Quiz Started', currentQuestionIndex + 1);
+      setQuizStarted(true);
+    }
+  }, [quizStarted, currentQuestionIndex]);
 
   const saveResultsMutation = useMutation({
     mutationFn: async (data: { sessionId: string; answers: QuizAnswers; scores: any; archetype: string }) => {
@@ -50,6 +60,9 @@ export default function Quiz() {
         ...prev,
         [currentQuestion.id]: value
       }));
+      
+      // Track question answered
+      trackEvent('question_answered', 'Quiz', `Question ${currentQuestionIndex + 1}`, currentQuestionIndex + 1);
     }
   };
 
@@ -59,6 +72,9 @@ export default function Quiz() {
       const scores = calculateScores(answers);
       const archetype = determineArchetype(scores);
       
+      // Track quiz completion
+      trackEvent('quiz_completed', 'Quiz', `Archetype: ${archetype.name}`, questions.length);
+      
       saveResultsMutation.mutate({
         sessionId,
         answers,
@@ -66,6 +82,9 @@ export default function Quiz() {
         archetype: archetype.id
       });
     } else {
+      // Track quiz progress
+      const nextQuestion = currentQuestionIndex + 1;
+      trackEvent('quiz_progress', 'Quiz', `Reached Question ${nextQuestion + 1}`, nextQuestion + 1);
       setCurrentQuestionIndex(prev => prev + 1);
     }
   };

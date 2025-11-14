@@ -10,6 +10,7 @@ import { ToolCard } from "@/components/tool-card";
 import { archetypes } from "@/data/archetypes";
 import { determineArchetypeEnhanced } from "@/lib/quiz-logic";
 import { useToast } from "@/hooks/use-toast";
+import { trackEvent } from "@/lib/analytics";
 import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle, Info } from "lucide-react";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
@@ -62,6 +63,13 @@ export default function Results() {
       ? determineArchetypeEnhanced(result.scores as QuizScores) 
       : null;
   
+  // Track result page view
+  useEffect(() => {
+    if (archetype) {
+      trackEvent('result_viewed', 'Results', archetype.name);
+    }
+  }, [archetype]);
+  
   const { data: tools } = useQuery<ToolWithFitScore[]>({
     queryKey: ['/api/tools/archetype', archetype?.id],
     queryFn: async () => {
@@ -81,6 +89,7 @@ export default function Results() {
     },
     onSuccess: () => {
       setEmailSaved(true);
+      trackEvent('email_captured', 'Conversion', archetype?.name || 'Unknown');
       toast({
         title: "Email saved!",
         description: "We'll send your results to your inbox shortly.",
@@ -102,6 +111,7 @@ export default function Results() {
     },
     onSuccess: () => {
       setEmailResultsSent(true);
+      trackEvent('email_results_sent', 'Engagement', archetype?.name || 'Unknown');
       toast({
         title: "Results sent!",
         description: "Check your inbox for your complete assessment results.",
@@ -123,6 +133,7 @@ export default function Results() {
     },
     onSuccess: (data) => {
       if (data.url) {
+        trackEvent('premium_purchase_initiated', 'Conversion', archetype?.name || 'Unknown', 27);
         window.location.href = data.url;
       }
     },
@@ -151,6 +162,7 @@ export default function Results() {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
+    trackEvent('share_link_copied', 'Social', archetype?.name || 'Unknown');
     toast({
       title: "Link copied!",
       description: "Share link has been copied to your clipboard.",
@@ -160,16 +172,19 @@ export default function Results() {
   const handleShareTwitter = () => {
     const text = `I just discovered I'm ${archetype?.name}! 🎯 Take the Prolific Personalities assessment to find your productivity archetype.`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+    trackEvent('share_twitter', 'Social', archetype?.name || 'Unknown');
     window.open(url, '_blank', 'width=550,height=420');
   };
 
   const handleShareFacebook = () => {
     const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    trackEvent('share_facebook', 'Social', archetype?.name || 'Unknown');
     window.open(url, '_blank', 'width=550,height=420');
   };
 
   const handleShareLinkedIn = () => {
     const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+    trackEvent('share_linkedin', 'Social', archetype?.name || 'Unknown');
     window.open(url, '_blank', 'width=550,height=420');
   };
 
