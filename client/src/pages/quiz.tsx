@@ -17,6 +17,7 @@ export default function Quiz() {
   const [answers, setAnswers] = useState<QuizAnswers>({});
   const [sessionId] = useState(() => generateSessionId());
   const [quizStarted, setQuizStarted] = useState(false);
+  const [milestonesTracked, setMilestonesTracked] = useState<Set<number>>(new Set());
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
@@ -60,9 +61,6 @@ export default function Quiz() {
         ...prev,
         [currentQuestion.id]: value
       }));
-      
-      // Track question answered
-      trackEvent('question_answered', 'Quiz', `Question ${currentQuestionIndex + 1}`, currentQuestionIndex + 1);
     }
   };
 
@@ -82,10 +80,27 @@ export default function Quiz() {
         archetype: archetype.id
       });
     } else {
-      // Track quiz progress
-      const nextQuestion = currentQuestionIndex + 1;
-      trackEvent('quiz_progress', 'Quiz', `Reached Question ${nextQuestion + 1}`, nextQuestion + 1);
-      setCurrentQuestionIndex(prev => prev + 1);
+      // Calculate progress BEFORE moving to next question
+      // The user has just answered currentQuestionIndex, so questions answered = currentQuestionIndex + 1
+      const questionsAnswered = currentQuestionIndex + 1;
+      const progress = getProgressPercentage(questionsAnswered, questions.length);
+      
+      // Fire milestone events when crossing thresholds
+      if (progress >= 25 && !milestonesTracked.has(25)) {
+        trackEvent('quiz_progress', 'Quiz', '25% Complete', 25);
+        setMilestonesTracked(prev => new Set(prev).add(25));
+      }
+      if (progress >= 50 && !milestonesTracked.has(50)) {
+        trackEvent('quiz_progress', 'Quiz', '50% Complete', 50);
+        setMilestonesTracked(prev => new Set(prev).add(50));
+      }
+      if (progress >= 75 && !milestonesTracked.has(75)) {
+        trackEvent('quiz_progress', 'Quiz', '75% Complete', 75);
+        setMilestonesTracked(prev => new Set(prev).add(75));
+      }
+      
+      // Now move to next question
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
 
