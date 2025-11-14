@@ -5,6 +5,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ExternalLink, Check, X, ChevronDown, Lightbulb } from "lucide-react";
 import type { Tool } from "@shared/schema";
 import { useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 interface ToolCardProps {
   tool: Tool & { fitScore?: number };
@@ -155,6 +156,7 @@ export function ToolCard({ tool, archetypeName }: ToolCardProps) {
             target="_blank"
             rel="noopener noreferrer"
             className="block"
+            onClick={() => trackEvent('tool_clicked', 'Engagement', tool.name, tool.fitScore)}
           >
             <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white" data-testid="button-try-tool">
               Try {tool.name}

@@ -191,6 +191,7 @@ export default function Results() {
   const handleShareWhatsApp = () => {
     const text = `I just discovered I'm ${archetype?.name}! Take the Prolific Personalities assessment: ${shareUrl}`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    trackEvent('share_whatsapp', 'Social', archetype?.name || 'Unknown');
     window.open(url, '_blank');
   };
 
@@ -209,6 +210,7 @@ export default function Results() {
   };
 
   const handlePDFExport = () => {
+    trackEvent('pdf_exported', 'Engagement', archetype?.name || 'Unknown');
     window.print();
   };
 

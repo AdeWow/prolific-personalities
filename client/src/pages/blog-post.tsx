@@ -1,14 +1,34 @@
 import { useRoute, Link } from 'wouter';
+import { useEffect, useRef } from 'react';
 import { blogPosts } from '@/data/blog-posts';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Calendar, Clock, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { trackEvent } from '@/lib/analytics';
 
 export default function BlogPostPage() {
   const [, params] = useRoute('/blog/:slug');
   const post = blogPosts.find(p => p.slug === params?.slug);
+  const startTimeRef = useRef<number | null>(null);
+
+  // Track blog post view and time spent
+  useEffect(() => {
+    if (post) {
+      trackEvent('blog_post_viewed', 'Blog', post.title);
+      startTimeRef.current = Date.now();
+      
+      return () => {
+        if (startTimeRef.current) {
+          const timeSpent = Math.floor((Date.now() - startTimeRef.current) / 1000); // in seconds
+          if (timeSpent > 5) { // Only track if spent more than 5 seconds
+            trackEvent('blog_post_time_spent', 'Blog', post.title, timeSpent);
+          }
+        }
+      };
+    }
+  }, [post]);
 
   if (!post) {
     return (
