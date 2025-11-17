@@ -58,10 +58,10 @@ export function QuestionCard({
                       value={num.toString()}
                       id={`likert-${num}`}
                       className="peer sr-only"
-                      data-testid={`likert-option-${num}`}
                     />
                     <Label
                       htmlFor={`likert-${num}`}
+                      data-testid={`likert-option-${num}`}
                       className={cn(
                         "flex items-center justify-center cursor-pointer py-4 sm:py-6 px-2 sm:px-4 rounded-xl border-2 text-lg sm:text-xl font-semibold transition-all touch-manipulation",
                         "peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-600 peer-focus-visible:ring-offset-2",
@@ -81,7 +81,7 @@ export function QuestionCard({
           {/* Scenario-based (Multiple Choice) */}
           {question.type === 'scenario' && question.options && (
             <RadioGroup
-              value={value?.toString()}
+              value={value !== undefined ? value.toString() : ''}
               onValueChange={handleOptionChange}
               className="space-y-3 sm:space-y-4"
             >
@@ -91,14 +91,14 @@ export function QuestionCard({
                     value={index.toString()}
                     id={`option-${index}`}
                     className="peer sr-only"
-                    data-testid={`scenario-option-${index}`}
                   />
                   <Label
                     htmlFor={`option-${index}`}
+                    data-testid={`scenario-option-${index}`}
                     className={cn(
                       "block cursor-pointer w-full text-left p-4 sm:p-6 border-2 rounded-xl transition-all text-base sm:text-lg leading-relaxed touch-manipulation",
                       "peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-600 peer-focus-visible:ring-offset-2",
-                      value === index
+                      value !== undefined && value.toString() === index.toString()
                         ? "border-indigo-600 bg-indigo-50 text-indigo-700"
                         : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300"
                     )}
@@ -113,7 +113,7 @@ export function QuestionCard({
           {/* Binary Choice */}
           {question.type === 'binary' && question.options && (
             <RadioGroup
-              value={value?.toString()}
+              value={value !== undefined ? value.toString() : ''}
               onValueChange={handleOptionChange}
               className="space-y-3 sm:space-y-4"
             >
@@ -123,14 +123,14 @@ export function QuestionCard({
                     value={index.toString()}
                     id={`option-${index}`}
                     className="peer sr-only"
-                    data-testid={`binary-option-${index}`}
                   />
                   <Label
                     htmlFor={`option-${index}`}
+                    data-testid={`binary-option-${index}`}
                     className={cn(
                       "block cursor-pointer w-full text-left p-4 sm:p-6 border-2 rounded-xl transition-all text-base sm:text-lg leading-relaxed touch-manipulation",
                       "peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-600 peer-focus-visible:ring-offset-2",
-                      value === index
+                      value !== undefined && value.toString() === index.toString()
                         ? "border-indigo-600 bg-indigo-50 text-indigo-700"
                         : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300"
                     )}
