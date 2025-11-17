@@ -32,105 +32,93 @@ export function QuestionCard({
 
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-lg" data-testid="question-card">
-      <CardContent className="p-8">
-        <div className="space-y-6">
-          <h3 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-200 leading-relaxed" data-testid="question-text">
+      <CardContent className="p-6 sm:p-8 lg:p-12">
+        <div className="space-y-8">
+          <h3 className="text-2xl sm:text-3xl font-semibold text-neutral-800 dark:text-neutral-200 leading-relaxed" data-testid="question-text">
             {question.text}
           </h3>
           
           {/* Likert Scale (1-5) */}
           {question.type === 'likert' && question.scaleLabels && (
             <div className="space-y-6">
-              <div className="flex justify-between text-sm text-neutral-600 dark:text-neutral-400">
-                <span>{question.scaleLabels.min}</span>
-                <span>Neutral</span>
-                <span>{question.scaleLabels.max}</span>
+              <div className="flex justify-between text-sm sm:text-base text-neutral-600 dark:text-neutral-400">
+                <span className="text-left max-w-[120px] sm:max-w-none">{question.scaleLabels.min}</span>
+                <span className="hidden sm:inline">Neutral</span>
+                <span className="text-right max-w-[120px] sm:max-w-none">{question.scaleLabels.max}</span>
               </div>
               
-              <RadioGroup
-                value={value?.toString() || ''}
-                onValueChange={(val) => onChange(parseInt(val))}
-                className="flex justify-between space-x-2"
-              >
+              <div className="grid grid-cols-5 gap-2 sm:gap-4">
                 {[1, 2, 3, 4, 5].map((num) => (
-                  <div key={num} className="flex flex-col items-center flex-1 space-y-2">
-                    <RadioGroupItem
-                      value={num.toString()}
-                      id={`likert-${num}`}
-                      className="w-5 h-5"
-                      data-testid={`likert-option-${num}`}
-                    />
-                    <Label
-                      htmlFor={`likert-${num}`}
-                      className="text-sm font-medium cursor-pointer"
-                    >
-                      {num}
-                    </Label>
-                  </div>
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => onChange(num)}
+                    className={cn(
+                      "py-4 sm:py-6 px-2 sm:px-4 rounded-xl border-2 text-lg sm:text-xl font-semibold transition-all touch-manipulation",
+                      value === num
+                        ? "border-indigo-600 bg-indigo-50 text-indigo-700 scale-105"
+                        : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300 active:scale-95"
+                    )}
+                    data-testid={`likert-option-${num}`}
+                  >
+                    {num}
+                  </button>
                 ))}
-              </RadioGroup>
+              </div>
             </div>
           )}
 
           {/* Scenario-based (Multiple Choice) */}
           {question.type === 'scenario' && question.options && (
-            <RadioGroup
-              value={value?.toString()}
-              onValueChange={handleOptionChange}
-              className="space-y-4"
-            >
+            <div className="space-y-3 sm:space-y-4">
               {question.options.map((option, index) => (
-                <div key={index} className="flex items-start space-x-4">
-                  <RadioGroupItem
-                    value={index.toString()}
-                    id={`option-${index}`}
-                    className="mt-1"
-                    data-testid={`scenario-option-${index}`}
-                  />
-                  <Label
-                    htmlFor={`option-${index}`}
-                    className="text-neutral-700 dark:text-neutral-300 leading-relaxed cursor-pointer flex-1 p-4 border-2 border-neutral-200 dark:border-neutral-700 rounded-xl hover:border-primary dark:hover:border-primary transition-colors"
-                  >
-                    {option}
-                  </Label>
-                </div>
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => onChange(index)}
+                  className={cn(
+                    "w-full text-left p-4 sm:p-6 border-2 rounded-xl transition-all text-base sm:text-lg leading-relaxed touch-manipulation",
+                    value === index
+                      ? "border-indigo-600 bg-indigo-50 text-indigo-700"
+                      : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300 active:scale-[0.99]"
+                  )}
+                  data-testid={`scenario-option-${index}`}
+                >
+                  {option}
+                </button>
               ))}
-            </RadioGroup>
+            </div>
           )}
 
           {/* Binary Choice */}
           {question.type === 'binary' && question.options && (
-            <RadioGroup
-              value={value?.toString()}
-              onValueChange={handleOptionChange}
-              className="space-y-4"
-            >
+            <div className="space-y-3 sm:space-y-4">
               {question.options.map((option, index) => (
-                <div key={index} className="flex items-start space-x-4">
-                  <RadioGroupItem
-                    value={index.toString()}
-                    id={`option-${index}`}
-                    className="mt-1"
-                    data-testid={`binary-option-${index}`}
-                  />
-                  <Label
-                    htmlFor={`option-${index}`}
-                    className="text-neutral-700 dark:text-neutral-300 leading-relaxed cursor-pointer flex-1 p-4 border-2 border-neutral-200 dark:border-neutral-700 rounded-xl hover:border-primary dark:hover:border-primary transition-colors"
-                  >
-                    {option}
-                  </Label>
-                </div>
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => onChange(index)}
+                  className={cn(
+                    "w-full text-left p-4 sm:p-6 border-2 rounded-xl transition-all text-base sm:text-lg leading-relaxed touch-manipulation",
+                    value === index
+                      ? "border-indigo-600 bg-indigo-50 text-indigo-700"
+                      : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300 active:scale-[0.99]"
+                  )}
+                  data-testid={`binary-option-${index}`}
+                >
+                  {option}
+                </button>
               ))}
-            </RadioGroup>
+            </div>
           )}
         </div>
 
-        <div className="flex justify-between pt-8">
+        <div className="flex flex-col sm:flex-row justify-between gap-3 pt-8">
           <Button
             variant="outline"
             onClick={onPrevious}
             disabled={!canGoPrevious || isLoading}
-            className="px-6 py-3"
+            className="px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold touch-manipulation order-2 sm:order-1"
             data-testid="button-previous"
           >
             <i className="fas fa-arrow-left mr-2"></i>
@@ -141,7 +129,7 @@ export function QuestionCard({
             onClick={onNext}
             disabled={!canGoNext || value === undefined || isLoading}
             className={cn(
-              "px-6 py-3 gradient-primary text-white font-medium",
+              "px-8 py-5 sm:py-6 text-base sm:text-lg gradient-primary text-white font-semibold touch-manipulation order-1 sm:order-2",
               "hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
             )}
             data-testid="button-next"

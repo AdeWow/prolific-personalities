@@ -39,7 +39,7 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
           {archetype.name}
         </h3>
         
-        <p className="text-neutral-600 mb-4 leading-relaxed">
+        <p className="text-neutral-600 mb-4 leading-relaxed min-h-[3.5rem]">
           {archetype.tagline}
         </p>
         
