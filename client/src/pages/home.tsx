@@ -12,28 +12,30 @@ import humanImage from "@assets/stock_images/person_smiling_while_2501deb3.jpg";
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
 export default function Home() {
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "Organization",
-        "@id": `${window.location.origin}/#organization`,
+        "@id": `${origin}/#organization`,
         "name": "Prolific Personalities",
-        "url": window.location.origin,
+        "url": origin,
         "logo": {
           "@type": "ImageObject",
-          "url": `${window.location.origin}/og-image.png`
+          "url": `${origin}/og-image.png`
         },
         "description": "Science-backed productivity assessment platform helping people discover their unique working style"
       },
       {
         "@type": "WebSite",
-        "@id": `${window.location.origin}/#website`,
-        "url": window.location.origin,
+        "@id": `${origin}/#website`,
+        "url": origin,
         "name": "Prolific Personalities",
         "description": "Discover your productivity archetype through our research-backed assessment",
         "publisher": {
-          "@id": `${window.location.origin}/#organization`
+          "@id": `${origin}/#organization`
         }
       },
       {
@@ -61,7 +63,7 @@ export default function Home() {
         title="Discover Your Productivity Archetype"
         description="Join 2,000+ achievers using Prolific Personalities to overcome procrastination and thrive. Science-backed strategies personalized to your productivity style. Take the free assessment now."
         keywords="productivity assessment, productivity archetype, time management, procrastination, focus, executive function, working style"
-        canonicalUrl={window.location.origin}
+        canonicalUrl={origin}
         structuredData={structuredData}
       />
       <Header />

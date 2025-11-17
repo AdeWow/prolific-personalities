@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
@@ -6,16 +5,9 @@ import { questions } from "@/data/questions";
 import { ChevronRight } from "lucide-react";
 
 export function InlineQuiz() {
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [, setLocation] = useLocation();
   
   const firstQuestion = questions[0];
-
-  const handleStart = () => {
-    if (selectedAnswer !== null) {
-      setLocation('/quiz');
-    }
-  };
 
   return (
     <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -25,7 +17,7 @@ export function InlineQuiz() {
             Ready to discover your archetype?
           </h2>
           <p className="text-xl text-neutral-600">
-            Start with question 1 of 28
+            Here's a preview - 28 questions total
           </p>
         </div>
 
@@ -35,7 +27,7 @@ export function InlineQuiz() {
               <div>
                 <div className="flex items-center justify-between mb-6">
                   <span className="text-sm font-semibold text-indigo-600 uppercase tracking-wide">
-                    Question 1
+                    Sample Question
                   </span>
                   <span className="text-sm text-neutral-500">
                     28 questions • 5 min
@@ -55,20 +47,12 @@ export function InlineQuiz() {
                     </div>
                     <div className="grid grid-cols-5 gap-3">
                       {['1', '2', '3', '4', '5'].map((value) => (
-                        <button
+                        <div
                           key={value}
-                          onClick={() => setSelectedAnswer(value)}
-                          className={`
-                            py-6 px-4 rounded-xl border-2 text-lg font-semibold transition-all
-                            ${selectedAnswer === value
-                              ? 'border-indigo-600 bg-indigo-50 text-indigo-700 scale-105'
-                              : 'border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300'
-                            }
-                          `}
-                          data-testid={`inline-quiz-option-${value}`}
+                          className="py-6 px-4 rounded-xl border-2 text-lg font-semibold border-neutral-200 bg-white text-neutral-700"
                         >
                           {value}
-                        </button>
+                        </div>
                       ))}
                     </div>
                   </>
@@ -77,9 +61,8 @@ export function InlineQuiz() {
 
               <div className="pt-6">
                 <Button
-                  onClick={handleStart}
-                  disabled={selectedAnswer === null}
-                  className="w-full gradient-primary text-white py-6 rounded-xl font-semibold text-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => setLocation('/quiz')}
+                  className="w-full gradient-primary text-white py-6 rounded-xl font-semibold text-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                   data-testid="button-start-inline-quiz"
                 >
                   Start Full Assessment

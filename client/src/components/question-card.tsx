@@ -47,69 +47,99 @@ export function QuestionCard({
                 <span className="text-right max-w-[120px] sm:max-w-none">{question.scaleLabels.max}</span>
               </div>
               
-              <div className="grid grid-cols-5 gap-2 sm:gap-4">
+              <RadioGroup
+                value={value?.toString() || ''}
+                onValueChange={(val) => onChange(parseInt(val))}
+                className="grid grid-cols-5 gap-2 sm:gap-4"
+              >
                 {[1, 2, 3, 4, 5].map((num) => (
-                  <button
-                    key={num}
-                    type="button"
-                    onClick={() => onChange(num)}
-                    className={cn(
-                      "py-4 sm:py-6 px-2 sm:px-4 rounded-xl border-2 text-lg sm:text-xl font-semibold transition-all touch-manipulation",
-                      value === num
-                        ? "border-indigo-600 bg-indigo-50 text-indigo-700 scale-105"
-                        : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300 active:scale-95"
-                    )}
-                    data-testid={`likert-option-${num}`}
-                  >
-                    {num}
-                  </button>
+                  <div key={num} className="relative">
+                    <RadioGroupItem
+                      value={num.toString()}
+                      id={`likert-${num}`}
+                      className="peer sr-only"
+                      data-testid={`likert-option-${num}`}
+                    />
+                    <Label
+                      htmlFor={`likert-${num}`}
+                      className={cn(
+                        "flex items-center justify-center cursor-pointer py-4 sm:py-6 px-2 sm:px-4 rounded-xl border-2 text-lg sm:text-xl font-semibold transition-all touch-manipulation",
+                        "peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-600 peer-focus-visible:ring-offset-2",
+                        value === num
+                          ? "border-indigo-600 bg-indigo-50 text-indigo-700"
+                          : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300 peer-hover:border-indigo-300"
+                      )}
+                    >
+                      {num}
+                    </Label>
+                  </div>
                 ))}
-              </div>
+              </RadioGroup>
             </div>
           )}
 
           {/* Scenario-based (Multiple Choice) */}
           {question.type === 'scenario' && question.options && (
-            <div className="space-y-3 sm:space-y-4">
+            <RadioGroup
+              value={value?.toString()}
+              onValueChange={handleOptionChange}
+              className="space-y-3 sm:space-y-4"
+            >
               {question.options.map((option, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => onChange(index)}
-                  className={cn(
-                    "w-full text-left p-4 sm:p-6 border-2 rounded-xl transition-all text-base sm:text-lg leading-relaxed touch-manipulation",
-                    value === index
-                      ? "border-indigo-600 bg-indigo-50 text-indigo-700"
-                      : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300 active:scale-[0.99]"
-                  )}
-                  data-testid={`scenario-option-${index}`}
-                >
-                  {option}
-                </button>
+                <div key={index} className="relative">
+                  <RadioGroupItem
+                    value={index.toString()}
+                    id={`option-${index}`}
+                    className="peer sr-only"
+                    data-testid={`scenario-option-${index}`}
+                  />
+                  <Label
+                    htmlFor={`option-${index}`}
+                    className={cn(
+                      "block cursor-pointer w-full text-left p-4 sm:p-6 border-2 rounded-xl transition-all text-base sm:text-lg leading-relaxed touch-manipulation",
+                      "peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-600 peer-focus-visible:ring-offset-2",
+                      value === index
+                        ? "border-indigo-600 bg-indigo-50 text-indigo-700"
+                        : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300"
+                    )}
+                  >
+                    {option}
+                  </Label>
+                </div>
               ))}
-            </div>
+            </RadioGroup>
           )}
 
           {/* Binary Choice */}
           {question.type === 'binary' && question.options && (
-            <div className="space-y-3 sm:space-y-4">
+            <RadioGroup
+              value={value?.toString()}
+              onValueChange={handleOptionChange}
+              className="space-y-3 sm:space-y-4"
+            >
               {question.options.map((option, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => onChange(index)}
-                  className={cn(
-                    "w-full text-left p-4 sm:p-6 border-2 rounded-xl transition-all text-base sm:text-lg leading-relaxed touch-manipulation",
-                    value === index
-                      ? "border-indigo-600 bg-indigo-50 text-indigo-700"
-                      : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300 active:scale-[0.99]"
-                  )}
-                  data-testid={`binary-option-${index}`}
-                >
-                  {option}
-                </button>
+                <div key={index} className="relative">
+                  <RadioGroupItem
+                    value={index.toString()}
+                    id={`option-${index}`}
+                    className="peer sr-only"
+                    data-testid={`binary-option-${index}`}
+                  />
+                  <Label
+                    htmlFor={`option-${index}`}
+                    className={cn(
+                      "block cursor-pointer w-full text-left p-4 sm:p-6 border-2 rounded-xl transition-all text-base sm:text-lg leading-relaxed touch-manipulation",
+                      "peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-600 peer-focus-visible:ring-offset-2",
+                      value === index
+                        ? "border-indigo-600 bg-indigo-50 text-indigo-700"
+                        : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300"
+                    )}
+                  >
+                    {option}
+                  </Label>
+                </div>
               ))}
-            </div>
+            </RadioGroup>
           )}
         </div>
 
