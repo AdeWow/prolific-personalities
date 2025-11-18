@@ -12,14 +12,22 @@ export const initGA = () => {
   const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
   if (!measurementId) {
-    console.warn('Missing required Google Analytics key: VITE_GA_MEASUREMENT_ID');
+    console.warn('❌ Google Analytics: Missing VITE_GA_MEASUREMENT_ID');
     return;
   }
+
+  console.log('✅ Google Analytics: Initializing with ID:', measurementId);
 
   // Add Google Analytics script to the head
   const script1 = document.createElement('script');
   script1.async = true;
   script1.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+  script1.onload = () => {
+    console.log('✅ Google Analytics: gtag.js script loaded successfully');
+  };
+  script1.onerror = () => {
+    console.error('❌ Google Analytics: Failed to load gtag.js script');
+  };
   document.head.appendChild(script1);
 
   // Initialize gtag
@@ -29,6 +37,7 @@ export const initGA = () => {
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', '${measurementId}');
+    console.log('✅ Google Analytics: gtag configured');
   `;
   document.head.appendChild(script2);
 };
@@ -66,7 +75,12 @@ export const trackEvent = (
   label?: string, 
   value?: number
 ) => {
-  if (typeof window === 'undefined' || !window.gtag) return;
+  if (typeof window === 'undefined' || !window.gtag) {
+    console.warn('⚠️ Google Analytics: gtag not available for event:', action);
+    return;
+  }
+  
+  console.log('📊 GA Event:', action, { category, label, value });
   
   window.gtag('event', action, {
     event_category: category,
