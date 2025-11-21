@@ -44,10 +44,6 @@ localPort = 39557
 externalPort = 3002
 
 [[ports]]
-localPort = 40261
-externalPort = 8081
-
-[[ports]]
 localPort = 40889
 externalPort = 4200
 
@@ -94,3 +90,9 @@ waitForPort = 5000
 
 [agent]
 integrations = ["javascript_log_in_with_replit:1.0.0", "javascript_google_analytics:1.0.0", "javascript_stripe:1.0.0"]
+
+[userenv]
+
+[userenv.shared]
+TESTING_VITE_STRIPE_PUBLIC_KEY = "pk_live_51SSL5XRjOgiiWfUsICUAnF5dCdZgusgSd2CCeMzQftJRRz9wNyNUtgjbxH7huxwXcXQypKlIAC0nLhZe0GpFDBlO000UiypI1L"
+TESTING_STRIPE_SECRET_KEY = "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"
