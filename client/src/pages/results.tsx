@@ -38,7 +38,30 @@ export default function Results() {
   const [emailSaved, setEmailSaved] = useState(false);
   const [emailResultsInput, setEmailResultsInput] = useState("");
   const [emailResultsSent, setEmailResultsSent] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Check for payment status in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const payment = urlParams.get('payment');
+    if (payment) {
+      setPaymentStatus(payment);
+      if (payment === 'success') {
+        setShowSuccessModal(true);
+        trackEvent('premium_purchase_completed', 'Conversion', 'Payment Success', 27);
+      } else if (payment === 'cancelled') {
+        toast({
+          title: "Payment Cancelled",
+          description: "Your payment was not completed. You can try again anytime.",
+          variant: "destructive",
+        });
+      }
+      // Clean URL
+      window.history.replaceState({}, '', `/results/${sessionId}`);
+    }
+  }, [sessionId, toast]);
 
   const { data: result, isLoading, error } = useQuery<QuizResult>({
     queryKey: ['/api/quiz/results', sessionId],
@@ -81,6 +104,9 @@ export default function Results() {
     },
     enabled: !!archetype,
   });
+
+  // Note: We don't need to poll for order status since the webhook handles everything
+  // The success modal shows immediately after payment redirect
 
   const emailCaptureMutation = useMutation({
     mutationFn: async (emailData: { email: string; sessionId: string }) => {
@@ -273,6 +299,53 @@ export default function Results() {
           </p>
         </div>
       </div>
+
+      {/* Payment Success Modal */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <div className="flex justify-center mb-4">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-500">
+                <CheckCircle2 className="w-12 h-12 text-white" />
+              </div>
+            </div>
+            <DialogTitle className="text-center text-2xl">Payment Successful! 🎉</DialogTitle>
+            <DialogDescription className="text-center text-base">
+              Your premium productivity playbook has been purchased successfully.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 bg-neutral-50 rounded-lg p-6 text-left">
+            <h3 className="font-bold text-neutral-800 text-lg">What's Next?</h3>
+            <ul className="space-y-3 text-neutral-700">
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Your payment has been processed successfully</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>You'll receive your 100+ page premium playbook via email within 10 minutes</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Check your inbox (and spam/promotions folder) for an email from support@prolificpersonalities.com</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>The email includes your playbook PDF with implementation guides, tool setup, and a 30-day action plan</span>
+              </li>
+            </ul>
+          </div>
+          <div className="flex gap-4">
+            <Button
+              onClick={() => setShowSuccessModal(false)}
+              className="flex-1 gradient-primary text-white"
+              data-testid="button-close-success"
+            >
+              Got it!
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">

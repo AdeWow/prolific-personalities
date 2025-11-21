@@ -12,7 +12,7 @@ import path from "path";
 import fs from "fs";
 import { getPremiumAssetForArchetype } from "./premiumAssets";
 import { Resend } from "resend";
-import { generateResultsEmail } from "./emailTemplates";
+import { generateResultsEmail, generatePremiumPlaybookEmail } from "./emailTemplates";
 import { getArchetypeInfo } from "./archetypeData";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -61,14 +61,90 @@ export function registerWebhookRoute(app: Express) {
         if (event.type === 'checkout.session.completed') {
           const session = event.data.object as Stripe.Checkout.Session;
           const orderId = session.metadata?.orderId;
+          const archetype = session.metadata?.archetype;
+          const sessionId = session.metadata?.sessionId;
+          const customerEmail = session.customer_details?.email;
 
           if (orderId) {
+            // Update order status
             await storage.updateOrderStatus(
               parseInt(orderId),
               'completed',
               session.payment_intent as string
             );
             console.log(`✅ Order ${orderId} marked as completed via webhook`);
+
+            // Send premium PDF email if we have customer email
+            if (resend && customerEmail && archetype && sessionId) {
+              try {
+                // Get archetype info
+                const archetypeInfo = getArchetypeInfo(archetype);
+                if (!archetypeInfo) {
+                  console.error('❌ Archetype info not found:', archetype);
+                  return;
+                }
+
+                // Get PDF for archetype
+                const pdfAsset = getPremiumAssetForArchetype(archetype);
+                if (!pdfAsset) {
+                  console.error('❌ PDF not found for archetype:', archetype);
+                  return;
+                }
+
+                const pdfPath = path.join(process.cwd(), 'attached_assets', pdfAsset.pdfFilename);
+                
+                // Check if PDF exists
+                if (!fs.existsSync(pdfPath)) {
+                  console.error('❌ PDF file does not exist:', pdfPath);
+                  return;
+                }
+
+                // Read PDF file
+                const pdfBuffer = fs.readFileSync(pdfPath);
+                const pdfBase64 = pdfBuffer.toString('base64');
+
+                // Generate results URL - use environment variable or default
+                const baseUrl = process.env.APP_URL || 
+                  (process.env.NODE_ENV === 'production'
+                    ? 'https://prolificpersonalities.com'
+                    : 'http://localhost:5000');
+                const resultsUrl = `${baseUrl}/results/${sessionId}`;
+
+                // Generate email content
+                const { subject, html } = generatePremiumPlaybookEmail({
+                  recipientEmail: customerEmail,
+                  archetype: archetypeInfo,
+                  resultsUrl,
+                });
+
+                // Send email with PDF attachment
+                const emailResponse = await resend.emails.send({
+                  from: 'Prolific Personalities <support@prolificpersonalities.com>',
+                  to: customerEmail,
+                  subject,
+                  html,
+                  attachments: [
+                    {
+                      filename: pdfAsset.pdfFilename,
+                      content: pdfBase64,
+                    },
+                  ],
+                });
+
+                if (emailResponse.error) {
+                  console.error('❌ Error sending premium PDF email:', emailResponse.error);
+                } else {
+                  console.log(`✅ Premium PDF emailed to ${customerEmail}`);
+                }
+              } catch (emailError) {
+                console.error('❌ Error in premium PDF email flow:', emailError);
+              }
+            } else {
+              if (!resend) console.warn('⚠️ Resend not configured - skipping email');
+              if (!customerEmail) console.warn('⚠️ No customer email - skipping email');
+              if (!archetype) console.warn('⚠️ No archetype metadata - skipping email');
+              if (!sessionId) console.warn('⚠️ No sessionId metadata - skipping email');
+            }
           }
         }
 
@@ -441,6 +517,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Stripe Checkout Session - Create payment for premium report
   app.post("/api/create-checkout-session", writeLimiter, async (req, res) => {
     try {
+      // Block checkout if email delivery is not configured
+      if (!resend) {
+        res.status(503).json({ 
+          message: "Premium purchases are temporarily unavailable. Email delivery service is not configured." 
+        });
+        return;
+      }
+
       const { archetype, sessionId } = req.body;
       
       if (!archetype || !sessionId) {
@@ -514,6 +598,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch orders" });
     }
   });
+
+  // Removed unauthenticated order check endpoint - security risk
 
   // Download premium PDF
   app.get("/api/download/:orderId", isAuthenticated, async (req: any, res) => {
