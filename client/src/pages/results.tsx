@@ -158,7 +158,19 @@ export default function Results() {
     }
   }, [sessionId]);
 
+  // Transform database scores to match FourAxisVisual component expectations
   const scores = result?.scores as any;
+  const transformedScores = scores ? {
+    structureOrientation: scores.structure ?? 50,
+    motivationStyle: scores.motivation ?? 50,
+    cognitiveFocus: scores.cognitive ?? 50,
+    taskRelationship: scores.task ?? 50,
+  } : {
+    structureOrientation: 50,
+    motivationStyle: 50,
+    cognitiveFocus: 50,
+    taskRelationship: 50,
+  };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -490,7 +502,7 @@ export default function Results() {
 
                 {/* 4-Axis Visualization */}
                 <div className="max-w-3xl mx-auto pt-8">
-                  <FourAxisVisual scores={scores} />
+                  <FourAxisVisual scores={transformedScores} />
                 </div>
               </div>
             </CardContent>
