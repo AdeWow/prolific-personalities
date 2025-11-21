@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArchetypeCard } from "@/components/archetype-card";
-import { InlineQuiz } from "@/components/inline-quiz";
+import { QuizContainer } from "@/components/quiz-container";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { archetypes } from "@/data/archetypes";
@@ -203,8 +203,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Inline Quiz */}
-      <InlineQuiz />
+      {/* Full Quiz Embedded */}
+      <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
+              Ready to discover your archetype?
+            </h2>
+            <p className="text-xl text-neutral-600">
+              Take the full assessment now • 28 questions • 5 minutes
+            </p>
+          </div>
+          <QuizContainer showHeader={false} showFocusIndicator={true} />
+        </div>
+      </section>
 
       {/* Archetype Preview */}
       <section className="py-20 bg-gradient-to-br from-neutral-50 to-indigo-50">
