@@ -616,10 +616,15 @@ export default function Results() {
                 <p className="text-neutral-700 mb-4">
                   <strong>Why it works for you:</strong> {archetype.framework.why}
                 </p>
-                <div className="flex items-center text-indigo-600 font-semibold">
+                <button 
+                  onClick={handleUpgradeToPremium}
+                  disabled={checkoutMutation.isPending}
+                  className="flex items-center text-indigo-600 font-semibold hover:text-indigo-700 transition-colors cursor-pointer disabled:opacity-50"
+                  data-testid="link-unlock-framework"
+                >
                   <Lock className="w-5 h-5 mr-2" />
-                  Unlock full implementation guide, common pitfalls, and tools →
-                </div>
+                  {checkoutMutation.isPending ? 'Processing...' : 'Unlock full implementation guide, common pitfalls, and tools →'}
+                </button>
               </div>
             </CardContent>
           </Card>
