@@ -562,7 +562,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               currency: 'usd',
               product_data: {
                 name: `Premium ${archetype.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Playbook`,
-                description: '100+ page personalized productivity playbook with 30-day action plan, tool setup guides, and templates',
+                description: 'Interactive web playbook with progress tracking, 30-day action plan, tool guides, and downloadable PDF',
               },
               unit_amount: 2700,
             },
@@ -570,7 +570,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           },
         ],
         mode: 'payment',
-        success_url: `${baseUrl}/results/${sessionId}?payment=success`,
+        success_url: `${baseUrl}/purchase-success?session_id=${sessionId}&archetype=${archetype}`,
         cancel_url: `${baseUrl}/results/${sessionId}?payment=cancelled`,
         metadata: {
           orderId: order.id.toString(),

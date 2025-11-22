@@ -22,6 +22,7 @@ import Pricing from "@/pages/pricing";
 import Dashboard from "@/pages/dashboard";
 import PaymentSuccess from "@/pages/payment-success";
 import PaymentCancelled from "@/pages/payment-cancelled";
+import PurchaseSuccess from "@/pages/purchase-success";
 
 function Router() {
   const [location] = useLocation();
@@ -40,6 +41,7 @@ function Router() {
       <Route path="/quiz" component={Quiz} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/purchase-success" component={PurchaseSuccess} />
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-cancelled" component={PaymentCancelled} />
       <Route path="/about" component={About} />
