@@ -30,7 +30,7 @@ The application employs a monorepo structure, separating the React-based fronten
 
 **Database**: PostgreSQL, accessed via Neon serverless driver.
 **ORM**: Drizzle ORM provides type-safe database interactions and schema management.
-**Schema Design**: Key tables include `users`, `sessions`, `quiz_results`, `tools`, `email_captures`, `waitlist`, and `feedback`.
+**Schema Design**: Key tables include `users`, `sessions`, `quiz_results`, `tools`, `email_captures`, `waitlist`, `feedback`, `orders`, `playbook_progress`, `action_plan_progress`, `tool_tracking`, and `playbook_notes`.
 **Data Access**: A repository pattern via the `DatabaseStorage` class abstracts database operations.
 
 ### Quiz Logic Architecture
@@ -54,7 +54,20 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **Social Sharing**: Multi-platform sharing dropdown on results page.
 -   **Analytics Integration**: Google Analytics 4 integration with automatic page view and event tracking. VITE_GA_MEASUREMENT_ID configured and actively tracking user behavior.
 -   **Email Results Feature**: Users can email their complete assessment results to themselves.
--   **Stripe Premium Payment Integration**: E-commerce system for selling premium archetype playbooks, including guest purchase flow and secure webhook handling.
+-   **Stripe Premium Payment Integration**: E-commerce system for selling premium archetype playbooks ($27), including guest purchase flow and secure webhook handling. Stores customer email for post-purchase communication.
+-   **Premium Playbook System**: Interactive web-based playbooks with comprehensive progress tracking:
+    -   **Purchase Success Page**: Post-payment confirmation with email notification and clear CTA to access the playbook.
+    -   **Chapter Progress Tracking**: Users can mark chapters as complete, with completion percentage displayed.
+    -   **30-Day Action Plan Progress**: Interactive daily task tracking with completion checkboxes and streak monitoring.
+    -   **Tool Implementation Tracker**: Monitor recommended productivity tool adoption with status tracking (Not Started/Testing/Using Daily) and personal notes.
+    -   **Personal Notes System**: Users can save reflections and insights for each playbook section, with CRUD operations.
+    -   **Premium Access Middleware**: Server-side verification ensures only paying users can access playbook content for their archetype.
+    -   **PDF Download**: Users can download the PDF version of their playbook for offline access.
+-   **Progress Tracking Database Schema**: Four new tables track user engagement:
+    -   `playbook_progress`: Chapter completion tracking with timestamps
+    -   `action_plan_progress`: 30-day plan task completion with day number and task IDs
+    -   `tool_tracking`: Tool adoption status and user notes per tool
+    -   `playbook_notes`: User reflections and notes per section with CRUD support
 -   **Resources Page**: Curated productivity tools organized by archetype and universal tools.
 -   **Science Page Simplification**: Redesigned for accessibility with downloadable research paper.
 -   **About Page Enhancements**: Research link, waitlist form, and comprehensive feedback form.
