@@ -145,6 +145,21 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Full Quiz Embedded */}
+      <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
+              Ready to discover your archetype?
+            </h2>
+            <p className="text-xl text-neutral-600">
+              Take the full assessment now • 28 questions • 5 minutes
+            </p>
+          </div>
+          <QuizContainer showHeader={false} showFocusIndicator={true} />
+        </div>
+      </section>
+
       {/* Testimonials */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -200,21 +215,6 @@ export default function Home() {
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
-
-      {/* Full Quiz Embedded */}
-      <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
-              Ready to discover your archetype?
-            </h2>
-            <p className="text-xl text-neutral-600">
-              Take the full assessment now • 28 questions • 5 minutes
-            </p>
-          </div>
-          <QuizContainer showHeader={false} showFocusIndicator={true} />
         </div>
       </section>
 
