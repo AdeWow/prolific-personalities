@@ -124,9 +124,52 @@ export const orders = pgTable("orders", {
   amount: integer("amount").notNull(), // amount in cents
   stripePaymentIntentId: text("stripe_payment_intent_id"),
   stripeSessionId: text("stripe_session_id"),
+  customerEmail: text("customer_email"),
   status: text("status").notNull().default("pending"), // pending, completed, failed
   createdAt: timestamp("created_at").defaultNow().notNull(),
   completedAt: timestamp("completed_at"),
+});
+
+export const playbookProgress = pgTable("playbook_progress", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  archetype: text("archetype").notNull(),
+  chapterId: text("chapter_id").notNull(),
+  completed: integer("completed").notNull().default(0), // 0 = not started, 1 = completed
+  completedAt: timestamp("completed_at"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const actionPlanProgress = pgTable("action_plan_progress", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  archetype: text("archetype").notNull(),
+  dayNumber: integer("day_number").notNull(), // 1-30
+  taskId: text("task_id").notNull(),
+  completed: integer("completed").notNull().default(0), // 0 = not done, 1 = done
+  completedAt: timestamp("completed_at"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const toolTracking = pgTable("tool_tracking", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  archetype: text("archetype").notNull(),
+  toolId: text("tool_id").notNull(),
+  status: text("status").notNull().default("not_started"), // not_started, testing, using_daily
+  notes: text("notes"),
+  startedAt: timestamp("started_at"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const playbookNotes = pgTable("playbook_notes", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  archetype: text("archetype").notNull(),
+  sectionId: text("section_id").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const insertToolSchema = createInsertSchema(tools).omit({
@@ -154,6 +197,30 @@ export const insertOrderSchema = createInsertSchema(orders).omit({
   completedAt: true,
 });
 
+export const insertPlaybookProgressSchema = createInsertSchema(playbookProgress).omit({
+  id: true,
+  completedAt: true,
+  updatedAt: true,
+});
+
+export const insertActionPlanProgressSchema = createInsertSchema(actionPlanProgress).omit({
+  id: true,
+  completedAt: true,
+  updatedAt: true,
+});
+
+export const insertToolTrackingSchema = createInsertSchema(toolTracking).omit({
+  id: true,
+  startedAt: true,
+  updatedAt: true,
+});
+
+export const insertPlaybookNotesSchema = createInsertSchema(playbookNotes).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertTool = z.infer<typeof insertToolSchema>;
 export type Tool = typeof tools.$inferSelect;
 export type InsertEmailCapture = z.infer<typeof insertEmailCaptureSchema>;
@@ -164,6 +231,14 @@ export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
 export type Feedback = typeof feedback.$inferSelect;
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type Order = typeof orders.$inferSelect;
+export type InsertPlaybookProgress = z.infer<typeof insertPlaybookProgressSchema>;
+export type PlaybookProgress = typeof playbookProgress.$inferSelect;
+export type InsertActionPlanProgress = z.infer<typeof insertActionPlanProgressSchema>;
+export type ActionPlanProgress = typeof actionPlanProgress.$inferSelect;
+export type InsertToolTracking = z.infer<typeof insertToolTrackingSchema>;
+export type ToolTracking = typeof toolTracking.$inferSelect;
+export type InsertPlaybookNotes = z.infer<typeof insertPlaybookNotesSchema>;
+export type PlaybookNotes = typeof playbookNotes.$inferSelect;
 
 // Type for tools with archetype fit score
 export type ToolWithFitScore = Tool & { fitScore: number };

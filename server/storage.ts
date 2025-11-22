@@ -1,6 +1,6 @@
-import { users, quizResults, tools, emailCaptures, waitlist, feedback, orders, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations for Replit Auth
@@ -26,8 +26,23 @@ export interface IStorage {
   getOrderById(id: number): Promise<Order | undefined>;
   getOrdersByUserId(userId: string): Promise<Order[]>;
   getOrderBySessionId(sessionId: string): Promise<Order | undefined>;
-  updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string): Promise<Order | undefined>;
+  updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string, customerEmail?: string): Promise<Order | undefined>;
   claimOrdersBySession(sessionId: string, userId: string): Promise<void>;
+  hasUserPurchasedPlaybook(userId: string, archetype: string): Promise<boolean>;
+  // Playbook Progress
+  getPlaybookProgress(userId: string, archetype: string): Promise<PlaybookProgress[]>;
+  updateChapterProgress(userId: string, archetype: string, chapterId: string, completed: boolean): Promise<PlaybookProgress>;
+  // Action Plan Progress
+  getActionPlanProgress(userId: string, archetype: string): Promise<ActionPlanProgress[]>;
+  updateActionPlanTask(userId: string, archetype: string, dayNumber: number, taskId: string, completed: boolean): Promise<ActionPlanProgress>;
+  // Tool Tracking
+  getToolTracking(userId: string, archetype: string): Promise<ToolTracking[]>;
+  updateToolTracking(userId: string, archetype: string, toolId: string, status: string, notes?: string): Promise<ToolTracking>;
+  // Playbook Notes
+  getPlaybookNotes(userId: string, archetype: string, sectionId?: string): Promise<PlaybookNotes[]>;
+  savePlaybookNote(userId: string, archetype: string, sectionId: string, content: string): Promise<PlaybookNotes>;
+  updatePlaybookNote(id: number, content: string): Promise<PlaybookNotes | undefined>;
+  deletePlaybookNote(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -190,7 +205,7 @@ export class DatabaseStorage implements IStorage {
     return order || undefined;
   }
 
-  async updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string): Promise<Order | undefined> {
+  async updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string, customerEmail?: string): Promise<Order | undefined> {
     const updateData: any = { 
       status,
       completedAt: status === 'completed' ? new Date() : undefined
@@ -198,6 +213,10 @@ export class DatabaseStorage implements IStorage {
     
     if (stripePaymentIntentId) {
       updateData.stripePaymentIntentId = stripePaymentIntentId;
+    }
+    
+    if (customerEmail) {
+      updateData.customerEmail = customerEmail;
     }
     
     const [order] = await db
@@ -214,6 +233,177 @@ export class DatabaseStorage implements IStorage {
       .update(orders)
       .set({ userId })
       .where(eq(orders.sessionId, sessionId));
+  }
+
+  async hasUserPurchasedPlaybook(userId: string, archetype: string): Promise<boolean> {
+    const [order] = await db
+      .select()
+      .from(orders)
+      .where(
+        and(
+          eq(orders.userId, userId),
+          eq(orders.archetype, archetype),
+          eq(orders.status, 'completed')
+        )
+      );
+    return !!order;
+  }
+
+  // Playbook Progress Methods
+  async getPlaybookProgress(userId: string, archetype: string): Promise<PlaybookProgress[]> {
+    const progress = await db
+      .select()
+      .from(playbookProgress)
+      .where(
+        and(
+          eq(playbookProgress.userId, userId),
+          eq(playbookProgress.archetype, archetype)
+        )
+      );
+    return progress;
+  }
+
+  async updateChapterProgress(userId: string, archetype: string, chapterId: string, completed: boolean): Promise<PlaybookProgress> {
+    const [progress] = await db
+      .insert(playbookProgress)
+      .values({
+        userId,
+        archetype,
+        chapterId,
+        completed: completed ? 1 : 0,
+        completedAt: completed ? new Date() : null,
+      })
+      .onConflictDoUpdate({
+        target: [playbookProgress.userId, playbookProgress.archetype, playbookProgress.chapterId],
+        set: {
+          completed: completed ? 1 : 0,
+          completedAt: completed ? new Date() : null,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return progress;
+  }
+
+  // Action Plan Progress Methods
+  async getActionPlanProgress(userId: string, archetype: string): Promise<ActionPlanProgress[]> {
+    const progress = await db
+      .select()
+      .from(actionPlanProgress)
+      .where(
+        and(
+          eq(actionPlanProgress.userId, userId),
+          eq(actionPlanProgress.archetype, archetype)
+        )
+      );
+    return progress;
+  }
+
+  async updateActionPlanTask(userId: string, archetype: string, dayNumber: number, taskId: string, completed: boolean): Promise<ActionPlanProgress> {
+    const [progress] = await db
+      .insert(actionPlanProgress)
+      .values({
+        userId,
+        archetype,
+        dayNumber,
+        taskId,
+        completed: completed ? 1 : 0,
+        completedAt: completed ? new Date() : null,
+      })
+      .onConflictDoUpdate({
+        target: [actionPlanProgress.userId, actionPlanProgress.archetype, actionPlanProgress.dayNumber, actionPlanProgress.taskId],
+        set: {
+          completed: completed ? 1 : 0,
+          completedAt: completed ? new Date() : null,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return progress;
+  }
+
+  // Tool Tracking Methods
+  async getToolTracking(userId: string, archetype: string): Promise<ToolTracking[]> {
+    const tracking = await db
+      .select()
+      .from(toolTracking)
+      .where(
+        and(
+          eq(toolTracking.userId, userId),
+          eq(toolTracking.archetype, archetype)
+        )
+      );
+    return tracking;
+  }
+
+  async updateToolTracking(userId: string, archetype: string, toolId: string, status: string, notes?: string): Promise<ToolTracking> {
+    const [tracking] = await db
+      .insert(toolTracking)
+      .values({
+        userId,
+        archetype,
+        toolId,
+        status,
+        notes: notes || null,
+        startedAt: status !== 'not_started' ? new Date() : null,
+      })
+      .onConflictDoUpdate({
+        target: [toolTracking.userId, toolTracking.archetype, toolTracking.toolId],
+        set: {
+          status,
+          notes: notes || null,
+          startedAt: status !== 'not_started' ? new Date() : null,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return tracking;
+  }
+
+  // Playbook Notes Methods
+  async getPlaybookNotes(userId: string, archetype: string, sectionId?: string): Promise<PlaybookNotes[]> {
+    const conditions = [
+      eq(playbookNotes.userId, userId),
+      eq(playbookNotes.archetype, archetype),
+    ];
+    
+    if (sectionId) {
+      conditions.push(eq(playbookNotes.sectionId, sectionId));
+    }
+    
+    const notes = await db
+      .select()
+      .from(playbookNotes)
+      .where(and(...conditions));
+    return notes;
+  }
+
+  async savePlaybookNote(userId: string, archetype: string, sectionId: string, content: string): Promise<PlaybookNotes> {
+    const [note] = await db
+      .insert(playbookNotes)
+      .values({
+        userId,
+        archetype,
+        sectionId,
+        content,
+      })
+      .returning();
+    return note;
+  }
+
+  async updatePlaybookNote(id: number, content: string): Promise<PlaybookNotes | undefined> {
+    const [note] = await db
+      .update(playbookNotes)
+      .set({ content, updatedAt: new Date() })
+      .where(eq(playbookNotes.id, id))
+      .returning();
+    return note || undefined;
+  }
+
+  async deletePlaybookNote(id: number): Promise<void> {
+    await db
+      .delete(playbookNotes)
+      .where(eq(playbookNotes.id, id));
   }
 }
 
