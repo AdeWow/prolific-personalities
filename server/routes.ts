@@ -66,11 +66,12 @@ export function registerWebhookRoute(app: Express) {
           const customerEmail = session.customer_details?.email;
 
           if (orderId) {
-            // Update order status
+            // Update order status and customer email
             await storage.updateOrderStatus(
               parseInt(orderId),
               'completed',
-              session.payment_intent as string
+              session.payment_intent as string,
+              customerEmail || undefined
             );
             console.log(`✅ Order ${orderId} marked as completed via webhook`);
 
@@ -654,6 +655,216 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error downloading PDF:", error);
       res.status(500).json({ message: "Failed to download PDF" });
+    }
+  });
+
+  // Middleware to check premium access for a specific archetype
+  const hasPremiumAccess = async (req: any, res: any, next: any) => {
+    try {
+      const userId = req.user.claims.sub;
+      const archetype = req.params.archetype || req.body.archetype;
+
+      if (!archetype) {
+        res.status(400).json({ message: "Archetype is required" });
+        return;
+      }
+
+      const hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype);
+      if (!hasAccess) {
+        res.status(403).json({ message: "Premium access required. Please purchase the playbook for this archetype." });
+        return;
+      }
+
+      next();
+    } catch (error) {
+      console.error("Error checking premium access:", error);
+      res.status(500).json({ message: "Failed to verify access" });
+    }
+  };
+
+  // ====================
+  // PROGRESS TRACKING API ROUTES
+  // ====================
+
+  // Get playbook progress for user and archetype
+  app.get("/api/playbook/:archetype/progress", isAuthenticated, hasPremiumAccess, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { archetype } = req.params;
+      const progress = await storage.getPlaybookProgress(userId, archetype);
+      res.json(progress);
+    } catch (error) {
+      console.error("Error fetching playbook progress:", error);
+      res.status(500).json({ message: "Failed to fetch progress" });
+    }
+  });
+
+  // Update chapter completion
+  app.post("/api/playbook/:archetype/progress/chapter", writeLimiter, isAuthenticated, hasPremiumAccess, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { archetype } = req.params;
+      const { chapterId, completed } = req.body;
+
+      if (typeof completed !== 'boolean') {
+        res.status(400).json({ message: "completed must be a boolean" });
+        return;
+      }
+
+      const progress = await storage.updateChapterProgress(userId, archetype, chapterId, completed);
+      res.json(progress);
+    } catch (error) {
+      console.error("Error updating chapter progress:", error);
+      res.status(500).json({ message: "Failed to update progress" });
+    }
+  });
+
+  // Get action plan progress
+  app.get("/api/playbook/:archetype/action-plan", isAuthenticated, hasPremiumAccess, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { archetype } = req.params;
+      const progress = await storage.getActionPlanProgress(userId, archetype);
+      res.json(progress);
+    } catch (error) {
+      console.error("Error fetching action plan progress:", error);
+      res.status(500).json({ message: "Failed to fetch action plan" });
+    }
+  });
+
+  // Update action plan task
+  app.post("/api/playbook/:archetype/action-plan/task", writeLimiter, isAuthenticated, hasPremiumAccess, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { archetype } = req.params;
+      const { dayNumber, taskId, completed } = req.body;
+
+      if (typeof completed !== 'boolean' || typeof dayNumber !== 'number') {
+        res.status(400).json({ message: "Invalid request data" });
+        return;
+      }
+
+      const progress = await storage.updateActionPlanTask(userId, archetype, dayNumber, taskId, completed);
+      res.json(progress);
+    } catch (error) {
+      console.error("Error updating action plan task:", error);
+      res.status(500).json({ message: "Failed to update task" });
+    }
+  });
+
+  // Get tool tracking
+  app.get("/api/playbook/:archetype/tools", isAuthenticated, hasPremiumAccess, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { archetype } = req.params;
+      const tracking = await storage.getToolTracking(userId, archetype);
+      res.json(tracking);
+    } catch (error) {
+      console.error("Error fetching tool tracking:", error);
+      res.status(500).json({ message: "Failed to fetch tool tracking" });
+    }
+  });
+
+  // Update tool tracking status
+  app.post("/api/playbook/:archetype/tools/update", writeLimiter, isAuthenticated, hasPremiumAccess, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { archetype } = req.params;
+      const { toolId, status, notes } = req.body;
+
+      if (!['not_started', 'testing', 'using_daily'].includes(status)) {
+        res.status(400).json({ message: "Invalid tool status" });
+        return;
+      }
+
+      const tracking = await storage.updateToolTracking(userId, archetype, toolId, status, notes);
+      res.json(tracking);
+    } catch (error) {
+      console.error("Error updating tool tracking:", error);
+      res.status(500).json({ message: "Failed to update tool tracking" });
+    }
+  });
+
+  // Get playbook notes
+  app.get("/api/playbook/:archetype/notes", isAuthenticated, hasPremiumAccess, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { archetype } = req.params;
+      const { sectionId } = req.query;
+      const notes = await storage.getPlaybookNotes(userId, archetype, sectionId as string | undefined);
+      res.json(notes);
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+      res.status(500).json({ message: "Failed to fetch notes" });
+    }
+  });
+
+  // Create playbook note
+  app.post("/api/playbook/:archetype/notes", writeLimiter, isAuthenticated, hasPremiumAccess, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { archetype } = req.params;
+      const { sectionId, content } = req.body;
+
+      if (!sectionId || !content) {
+        res.status(400).json({ message: "sectionId and content are required" });
+        return;
+      }
+
+      const note = await storage.savePlaybookNote(userId, archetype, sectionId, content);
+      res.json(note);
+    } catch (error) {
+      console.error("Error creating note:", error);
+      res.status(500).json({ message: "Failed to create note" });
+    }
+  });
+
+  // Update playbook note
+  app.put("/api/playbook/notes/:noteId", writeLimiter, isAuthenticated, async (req: any, res) => {
+    try {
+      const { noteId } = req.params;
+      const { content } = req.body;
+
+      if (!content) {
+        res.status(400).json({ message: "content is required" });
+        return;
+      }
+
+      const note = await storage.updatePlaybookNote(parseInt(noteId), content);
+      if (!note) {
+        res.status(404).json({ message: "Note not found" });
+        return;
+      }
+
+      res.json(note);
+    } catch (error) {
+      console.error("Error updating note:", error);
+      res.status(500).json({ message: "Failed to update note" });
+    }
+  });
+
+  // Delete playbook note
+  app.delete("/api/playbook/notes/:noteId", writeLimiter, isAuthenticated, async (req: any, res) => {
+    try {
+      const { noteId } = req.params;
+      await storage.deletePlaybookNote(parseInt(noteId));
+      res.json({ message: "Note deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      res.status(500).json({ message: "Failed to delete note" });
+    }
+  });
+
+  // Check if user has premium access to an archetype
+  app.get("/api/playbook/:archetype/access", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { archetype } = req.params;
+      const hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype);
+      res.json({ hasAccess });
+    } catch (error) {
+      console.error("Error checking access:", error);
+      res.status(500).json({ message: "Failed to check access" });
     }
   });
 
