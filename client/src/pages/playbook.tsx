@@ -1,11 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation, useRoute, Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, Lock, LogIn, AlertCircle } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { playbookContentMap } from "@shared/playbookContent";
+import { 
+  Loader2, 
+  Lock, 
+  LogIn, 
+  AlertCircle, 
+  BookOpen, 
+  CheckCircle2, 
+  Circle, 
+  Download, 
+  ChevronRight,
+  Calendar,
+  Wrench,
+  FileText,
+  Menu,
+  X
+} from "lucide-react";
 
 export default function Playbook() {
   const [, params] = useRoute("/playbook/:archetype");
@@ -178,22 +203,464 @@ export default function Playbook() {
   }
 
   // User has access - render the actual playbook
+  const playbook = playbookContentMap[archetype!];
+  const [selectedChapterId, setSelectedChapterId] = useState(playbook?.chapters[0]?.id || "");
+  const [selectedSectionId, setSelectedSectionId] = useState(playbook?.chapters[0]?.sections[0]?.id || "");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { toast } = useToast();
+
+  const selectedChapter = playbook?.chapters.find(c => c.id === selectedChapterId);
+  const selectedSection = selectedChapter?.sections.find(s => s.id === selectedSectionId);
+
+  // Fetch progress data
+  const { data: progressData } = useQuery<{ chapterId: string; completedAt: string }[]>({
+    queryKey: [`/api/playbook/${archetype}/progress`],
+  });
+
+  const { data: actionPlanData } = useQuery<{ dayNumber: number; taskId: string; completedAt: string }[]>({
+    queryKey: [`/api/playbook/${archetype}/action-plan`],
+  });
+
+  const { data: toolsData } = useQuery<{ toolId: string; status: string; notes: string }[]>({
+    queryKey: [`/api/playbook/${archetype}/tools`],
+  });
+
+  const { data: notesData } = useQuery<{ id: number; sectionId: string; content: string }[]>({
+    queryKey: [`/api/playbook/${archetype}/notes`],
+  });
+
+  const [noteSaveStatus, setNoteSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+
+  // Calculate progress percentage
+  const completedChapters = progressData?.length || 0;
+  const totalChapters = playbook?.chapters.length || 1;
+  const progressPercentage = Math.round((completedChapters / totalChapters) * 100);
+
+  // Mutations
+  const toggleChapterMutation = useMutation({
+    mutationFn: ({ chapterId, completed }: { chapterId: string; completed: boolean }) => 
+      apiRequest(`/api/playbook/${archetype}/progress/chapter`, {
+        method: 'POST',
+        body: JSON.stringify({ chapterId, completed }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/progress`] });
+      toast({ description: "Progress updated!" });
+    },
+    onError: () => {
+      toast({ 
+        variant: "destructive", 
+        title: "Error", 
+        description: "Failed to update progress. Please try again." 
+      });
+    },
+  });
+
+  const toggleActionPlanMutation = useMutation({
+    mutationFn: ({ dayNumber, taskId, completed }: { dayNumber: number; taskId: string; completed: boolean }) => 
+      apiRequest(`/api/playbook/${archetype}/action-plan/task`, {
+        method: 'POST',
+        body: JSON.stringify({ dayNumber, taskId, completed }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/action-plan`] });
+    },
+    onError: () => {
+      toast({ 
+        variant: "destructive", 
+        title: "Error", 
+        description: "Failed to update task. Please try again." 
+      });
+    },
+  });
+
+  const updateToolMutation = useMutation({
+    mutationFn: ({ toolId, status, notes }: { toolId: string; status: string; notes?: string }) => 
+      apiRequest(`/api/playbook/${archetype}/tools/update`, {
+        method: 'POST',
+        body: JSON.stringify({ toolId, status: status.toLowerCase().replace(' ', '_'), notes }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/tools`] });
+      toast({ description: "Tool status updated!" });
+    },
+    onError: () => {
+      toast({ 
+        variant: "destructive", 
+        title: "Error", 
+        description: "Failed to update tool. Please try again." 
+      });
+    },
+  });
+
+  // Debounced note save
+  const saveNoteMutation = useMutation({
+    mutationFn: ({ sectionId, content }: { sectionId: string; content: string }) => 
+      apiRequest(`/api/playbook/${archetype}/notes`, {
+        method: 'POST',
+        body: JSON.stringify({ sectionId, content }),
+      }),
+    onMutate: () => {
+      setNoteSaveStatus('saving');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/notes`] });
+      setNoteSaveStatus('saved');
+      setTimeout(() => setNoteSaveStatus('idle'), 2000);
+    },
+    onError: () => {
+      setNoteSaveStatus('error');
+      toast({ 
+        variant: "destructive", 
+        title: "Error", 
+        description: "Failed to save note. Please try again." 
+      });
+    },
+  });
+
+  // Debounce helper using useRef
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const handleNoteSave = (sectionId: string, content: string) => {
+    // Clear any existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    
+    // Reset status to idle while user is typing
+    setNoteSaveStatus('idle');
+    
+    // Set new timer
+    const timer = setTimeout(() => {
+      if (content.trim()) {
+        saveNoteMutation.mutate({ sectionId, content });
+      }
+    }, 1000);
+    
+    // Store timer reference
+    debounceTimerRef.current = timer;
+  };
+
+  const isChapterComplete = (chapterId: string) => {
+    return progressData?.some(p => p.chapterId === chapterId);
+  };
+
+  const isTaskComplete = (dayNumber: number, taskId: string) => {
+    return actionPlanData?.some(t => t.dayNumber === dayNumber && t.taskId === taskId);
+  };
+
+  const getToolStatus = (toolId: string) => {
+    const status = toolsData?.find(t => t.toolId === toolId)?.status || "not_started";
+    // Convert backend format (not_started) to UI format (Not Started)
+    return status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  };
+
+  const getSectionNote = (sectionId: string) => {
+    return notesData?.find(n => n.sectionId === sectionId);
+  };
+
+  const handleDownloadPDF = () => {
+    window.open(`/api/playbook/${archetype}/pdf`, '_blank');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="text-center py-20">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-          Interactive Playbook
-        </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300">
-          Coming soon - Under construction
-        </p>
-        <div className="mt-8">
-          <Link href="/dashboard">
-            <Button data-testid="button-back-dashboard">
-              Back to Dashboard
-            </Button>
-          </Link>
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                data-testid="button-menu"
+              >
+                {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                  {playbook?.title}
+                </h1>
+                <p className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">
+                  {playbook?.subtitle}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownloadPDF}
+                data-testid="button-download-pdf"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">PDF</span>
+              </Button>
+              <Link href="/dashboard">
+                <Button variant="ghost" size="sm" data-testid="button-dashboard">
+                  Dashboard
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="flex items-center justify-between text-sm mb-1">
+              <span className="text-gray-600 dark:text-gray-400">Overall Progress</span>
+              <span className="font-semibold text-gray-900 dark:text-white">{progressPercentage}%</span>
+            </div>
+            <Progress value={progressPercentage} className="h-2" />
+          </div>
         </div>
+      </div>
+
+      <div className="flex max-w-7xl mx-auto">
+        {/* Sidebar */}
+        <aside className={`
+          ${sidebarOpen ? 'block' : 'hidden'} lg:block
+          fixed lg:sticky top-[140px] left-0 h-[calc(100vh-140px)]
+          w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700
+          overflow-y-auto z-30 lg:z-0
+        `}>
+          <div className="p-4 space-y-2">
+            {playbook?.chapters.map((chapter, idx) => {
+              const isComplete = isChapterComplete(chapter.id);
+              const isActive = chapter.id === selectedChapterId;
+              return (
+                <div key={chapter.id}>
+                  <button
+                    onClick={() => {
+                      setSelectedChapterId(chapter.id);
+                      setSelectedSectionId(chapter.sections[0]?.id || "");
+                      setSidebarOpen(false);
+                    }}
+                    className={`
+                      w-full text-left px-3 py-2 rounded-lg flex items-center justify-between
+                      ${isActive ? 'bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}
+                    `}
+                    data-testid={`chapter-${chapter.id}`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      {isComplete ? (
+                        <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      ) : (
+                        <Circle className="h-5 w-5" />
+                      )}
+                      <span className="font-medium">{idx + 1}. {chapter.title}</span>
+                    </div>
+                    <ChevronRight className={`h-4 w-4 ${isActive ? '' : 'opacity-0'}`} />
+                  </button>
+                  {isActive && (
+                    <div className="ml-7 mt-1 space-y-1">
+                      {chapter.sections.map(section => (
+                        <button
+                          key={section.id}
+                          onClick={() => setSelectedSectionId(section.id)}
+                          className={`
+                            w-full text-left px-3 py-1.5 rounded text-sm
+                            ${selectedSectionId === section.id ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'}
+                          `}
+                          data-testid={`section-${section.id}`}
+                        >
+                          {section.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+          <Tabs defaultValue="content" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-4 max-w-2xl">
+              <TabsTrigger value="content" data-testid="tab-content">
+                <BookOpen className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Content</span>
+              </TabsTrigger>
+              <TabsTrigger value="action-plan" data-testid="tab-action-plan">
+                <Calendar className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">30-Day Plan</span>
+              </TabsTrigger>
+              <TabsTrigger value="tools" data-testid="tab-tools">
+                <Wrench className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Tools</span>
+              </TabsTrigger>
+              <TabsTrigger value="notes" data-testid="tab-notes">
+                <FileText className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Notes</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="content" className="space-y-6">
+              {selectedSection && (
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-2xl">{selectedSection.title}</CardTitle>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                          {selectedChapter?.title}
+                        </p>
+                      </div>
+                      <Checkbox
+                        checked={isChapterComplete(selectedChapterId)}
+                        onCheckedChange={(checked) => {
+                          toggleChapterMutation.mutate({ 
+                            chapterId: selectedChapterId, 
+                            completed: !!checked 
+                          });
+                        }}
+                        disabled={toggleChapterMutation.isPending}
+                        data-testid="checkbox-complete-chapter"
+                      />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="prose dark:prose-invert max-w-none">
+                    {selectedSection.content.split('\n\n').map((paragraph, idx) => (
+                      <p key={idx} className="text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="action-plan" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>30-Day Action Plan</CardTitle>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Track your daily progress and build momentum
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {playbook?.actionPlan.map(task => {
+                    const isComplete = isTaskComplete(task.day, task.id);
+                    return (
+                      <div
+                        key={task.id}
+                        className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                        data-testid={`task-day-${task.day}`}
+                      >
+                        <Checkbox
+                          checked={isComplete}
+                          onCheckedChange={(checked) => {
+                            toggleActionPlanMutation.mutate({ 
+                              dayNumber: task.day, 
+                              taskId: task.id, 
+                              completed: !!checked 
+                            });
+                          }}
+                          disabled={toggleActionPlanMutation.isPending}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="outline">Day {task.day}</Badge>
+                            <span className={`font-medium ${isComplete ? 'line-through text-gray-500' : 'text-gray-900 dark:text-white'}`}>
+                              {task.task}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            {task.description}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="tools" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recommended Tools</CardTitle>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Track which productivity tools you're implementing
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {playbook?.recommendedTools.map(toolId => {
+                    const status = getToolStatus(toolId);
+                    const toolNotes = toolsData?.find(t => t.toolId === toolId)?.notes || "";
+                    return (
+                      <div key={toolId} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-semibold text-gray-900 dark:text-white capitalize">
+                            {toolId.replace(/-/g, ' ')}
+                          </h3>
+                          <Select
+                            value={status}
+                            onValueChange={(value) => updateToolMutation.mutate({ toolId, status: value, notes: toolNotes })}
+                            disabled={updateToolMutation.isPending}
+                          >
+                            <SelectTrigger className="w-40" data-testid={`select-tool-${toolId}`}>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Not Started">Not Started</SelectItem>
+                              <SelectItem value="Testing">Testing</SelectItem>
+                              <SelectItem value="Using Daily">Using Daily</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <Textarea
+                          placeholder="Add notes about this tool..."
+                          defaultValue={toolNotes}
+                          onBlur={(e) => {
+                            if (e.target.value !== toolNotes) {
+                              updateToolMutation.mutate({ toolId, status, notes: e.target.value });
+                            }
+                          }}
+                          disabled={updateToolMutation.isPending}
+                          className="mt-2"
+                          data-testid={`textarea-tool-notes-${toolId}`}
+                        />
+                      </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="notes" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Personal Notes</CardTitle>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Add your reflections and insights for: {selectedSection?.title}
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <Textarea
+                    placeholder="Write your notes here..."
+                    defaultValue={getSectionNote(selectedSectionId)?.content || ""}
+                    onChange={(e) => {
+                      handleNoteSave(selectedSectionId, e.target.value);
+                    }}
+                    disabled={saveNoteMutation.isPending}
+                    className="min-h-[200px]"
+                    data-testid="textarea-section-notes"
+                  />
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {noteSaveStatus === 'saving' && 'Saving...'}
+                      {noteSaveStatus === 'saved' && '✓ Saved'}
+                      {noteSaveStatus === 'error' && '✗ Error saving'}
+                      {noteSaveStatus === 'idle' && 'Your notes are automatically saved'}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </main>
       </div>
     </div>
   );
