@@ -239,10 +239,7 @@ export default function Playbook() {
   // Mutations
   const toggleChapterMutation = useMutation({
     mutationFn: ({ chapterId, completed }: { chapterId: string; completed: boolean }) => 
-      apiRequest(`/api/playbook/${archetype}/progress/chapter`, {
-        method: 'POST',
-        body: JSON.stringify({ chapterId, completed }),
-      }),
+      apiRequest('POST', `/api/playbook/${archetype}/progress/chapter`, { chapterId, completed }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/progress`] });
       toast({ description: "Progress updated!" });
@@ -258,10 +255,7 @@ export default function Playbook() {
 
   const toggleActionPlanMutation = useMutation({
     mutationFn: ({ dayNumber, taskId, completed }: { dayNumber: number; taskId: string; completed: boolean }) => 
-      apiRequest(`/api/playbook/${archetype}/action-plan/task`, {
-        method: 'POST',
-        body: JSON.stringify({ dayNumber, taskId, completed }),
-      }),
+      apiRequest('POST', `/api/playbook/${archetype}/action-plan/task`, { dayNumber, taskId, completed }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/action-plan`] });
     },
@@ -276,10 +270,7 @@ export default function Playbook() {
 
   const updateToolMutation = useMutation({
     mutationFn: ({ toolId, status, notes }: { toolId: string; status: string; notes?: string }) => 
-      apiRequest(`/api/playbook/${archetype}/tools/update`, {
-        method: 'POST',
-        body: JSON.stringify({ toolId, status: status.toLowerCase().replace(' ', '_'), notes }),
-      }),
+      apiRequest('POST', `/api/playbook/${archetype}/tools/update`, { toolId, status: status.toLowerCase().replace(' ', '_'), notes }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/tools`] });
       toast({ description: "Tool status updated!" });
@@ -296,10 +287,7 @@ export default function Playbook() {
   // Debounced note save
   const saveNoteMutation = useMutation({
     mutationFn: ({ sectionId, content }: { sectionId: string; content: string }) => 
-      apiRequest(`/api/playbook/${archetype}/notes`, {
-        method: 'POST',
-        body: JSON.stringify({ sectionId, content }),
-      }),
+      apiRequest('POST', `/api/playbook/${archetype}/notes`, { sectionId, content }),
     onMutate: () => {
       setNoteSaveStatus('saving');
     },

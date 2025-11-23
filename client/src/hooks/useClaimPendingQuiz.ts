@@ -17,6 +17,8 @@ export function useClaimPendingQuiz() {
     onSuccess: () => {
       // Invalidate dashboard results to show the newly claimed quiz
       queryClient.invalidateQueries({ queryKey: ['/api/dashboard/results'] });
+      // Invalidate playbook access queries in case orders were claimed
+      queryClient.invalidateQueries({ queryKey: ['/api/playbook'] });
       // Clear the pending session from localStorage
       localStorage.removeItem('pendingQuizSessionId');
     },
