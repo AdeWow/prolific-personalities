@@ -35,7 +35,8 @@ The application employs a monorepo structure, separating the React-based fronten
 
 ### Quiz Logic Architecture
 
-**Assessment Design**: The quiz features 24-28 questions across four cognitive and behavioral dimensions: Structure Orientation, Motivation Style, Cognitive Focus, and Task Relationship.
+**Assessment Design**: The quiz features 28 questions across four cognitive and behavioral dimensions: Structure Orientation, Motivation Style, Cognitive Focus, and Task Relationship.
+**Quiz Flow (16personalities-style)**: 5 questions displayed per page with auto-advance on answer selection. Users don't need to click Next for individual questions - selecting an answer automatically scrolls to the next question. After completing all 5 questions on a page, auto-advances to the next page. Page navigation dots allow jumping between pages. 6 total pages (28 questions / 5 per page).
 **Scoring Algorithm**: Answers contribute to a numeric score per axis, determining the user's archetype through range matching and a distance-based fit scoring system (Manhattan distance) for all six archetypes, with edge case handling for co-primary blends and multiple moderate matches.
 **Archetypes**: Six distinct archetypes are defined, each representing a unique combination of the four dimensions.
 **Scientific Foundation**: Grounded in psychological theories such as Executive Function Theory, Cognitive Load Theory, Self-Determination Theory, procrastination research, and flow theory.
@@ -69,7 +70,8 @@ The application employs a monorepo structure, separating the React-based fronten
     -   `tool_tracking`: Tool adoption status and user notes per tool
     -   `playbook_notes`: User reflections and notes per section with CRUD support
 -   **Resources Page**: Curated productivity tools organized by archetype and universal tools.
--   **Science Page Simplification**: Redesigned for accessibility with downloadable research paper.
+-   **Science Page Simplification**: Redesigned for accessibility with downloadable research paper and embedded PDF preview.
+-   **PDF Preview Component**: Reusable component for previewing PDF documents with download and fullscreen buttons, used on Science page (research paper) and Playbook page (PDF tab).
 -   **About Page Enhancements**: Research link, waitlist form, and comprehensive feedback form.
 
 ## External Dependencies
