@@ -43,7 +43,7 @@ Your free results give you the overview, but the Premium Playbook ($27) gives yo
 - Tool recommendations rated for your archetype
 - Common failure modes and how to avoid them
 
-[View Your Results & Upgrade]
+[View Your Results & Upgrade →]
 
 ---
 
@@ -56,14 +56,10 @@ P.S. Your results are saved! You can access them anytime at [results link].
 
 ---
 
-[Unsubscribe from these emails]
-
----
-
 ## Email 2: Abandoned Cart Email (Sent 1 hour after starting checkout)
 
 ### Subject Line Options:
-1. "You left something behind"
+1. "You left something behind... 👀"
 2. "Your [Archetype Name] Playbook is waiting"
 3. "Still thinking it over? Here's what you're missing"
 
@@ -71,27 +67,27 @@ P.S. Your results are saved! You can access them anytime at [results link].
 
 ---
 
-**Subject:** You left something behind
+**Subject:** You left something behind... 👀
 
 Hi there,
 
 I noticed you started to get your **[Archetype Name] Premium Playbook** but didn't finish checking out.
 
-No pressure at all - I just wanted to make sure nothing went wrong on our end.
+No pressure at all—I just wanted to make sure nothing went wrong on our end.
 
 **Quick reminder of what's inside your personalized playbook:**
 
-- **Deep-dive analysis** of how [Archetype Name]s think, work, and thrive
-- **30-day action plan** with specific daily tasks (not generic advice)
-- **Tool recommendations** rated specifically for your working style
-- **Common failure modes** so you don't fall into the typical [Archetype Name] traps
-- **Bonus:** Implementation worksheets you can print and use
+✅ **Deep-dive analysis** of how [Archetype Name]s think, work, and thrive
+✅ **30-day action plan** with specific daily tasks (not generic advice)
+✅ **Tool recommendations** rated specifically for your working style
+✅ **Common failure modes** so you don't fall into the typical [Archetype Name] traps
+✅ **Bonus:** Implementation worksheets you can print and use
 
 **The investment:** Just $27 one-time (not a subscription)
 
 **The guarantee:** 30-day satisfaction guarantee. If it doesn't help, you get a full refund. No questions asked.
 
-[Complete My Purchase]
+[Complete My Purchase →]
 
 If you have any questions about whether it's right for you, just reply to this email. I'm happy to help.
 
@@ -99,10 +95,6 @@ Best,
 The Prolific Personalities Team
 
 P.S. Your checkout session expires in 24 hours for security reasons. After that, you'll need to start fresh from your results page.
-
----
-
-[Unsubscribe from these emails]
 
 ---
 
@@ -127,8 +119,6 @@ This sequence nurtures email subscribers who haven't purchased, providing value 
 - Quick tip to leverage this advantage today
 - Soft CTA: "Learn more advantages in your full playbook"
 
-[Unsubscribe from these emails]
-
 ---
 
 ### Day 5: Common Mistakes Email
@@ -139,8 +129,6 @@ This sequence nurtures email subscribers who haven't purchased, providing value 
 - Explain WHY this happens (validate their experience)
 - Give one actionable fix they can implement today
 - CTA: "The Premium Playbook covers 7 more common pitfalls"
-
-[Unsubscribe from these emails]
 
 ---
 
@@ -153,8 +141,6 @@ This sequence nurtures email subscribers who haven't purchased, providing value 
 - Quick-start tip for using it
 - Mention: "Your Playbook includes 10+ tool recommendations rated for your type"
 
-[Unsubscribe from these emails]
-
 ---
 
 ### Day 10: Social Proof / Case Study
@@ -162,11 +148,9 @@ This sequence nurtures email subscribers who haven't purchased, providing value 
 
 **Content Outline:**
 - Share a brief story of someone with their archetype
-- Focus on the transformation (before to after)
+- Focus on the transformation (before → after)
 - Highlight one key insight that helped them
 - CTA: "Get your own transformation roadmap"
-
-[Unsubscribe from these emails]
 
 ---
 
@@ -180,44 +164,6 @@ This sequence nurtures email subscribers who haven't purchased, providing value 
 - Clear CTA with urgency
 - Remind them of 30-day guarantee
 
-[Unsubscribe from these emails]
-
----
-
-## Unsubscribe Flow
-
-When a user clicks "Unsubscribe," they are taken to a page with:
-
-### Step 1: Confirm Unsubscribe
-"We're sorry to see you go. Before you leave, would you mind telling us why?"
-
-### Step 2: Feedback Survey (Optional but encouraged)
-
-**Question 1: Why are you unsubscribing?**
-- [ ] I receive too many emails
-- [ ] The content isn't relevant to me
-- [ ] I already purchased the playbook
-- [ ] I'm no longer interested in productivity content
-- [ ] I never signed up for this
-- [ ] Other (please specify): ___________
-
-**Question 2: How would you rate the emails you received?**
-- [ ] Very helpful
-- [ ] Somewhat helpful
-- [ ] Neutral
-- [ ] Not very helpful
-- [ ] Not helpful at all
-
-**Question 3: Is there anything we could have done differently?**
-[Open text field]
-
-### Step 3: Confirmation
-"You've been successfully unsubscribed. You will no longer receive emails from Prolific Personalities.
-
-Changed your mind? [Resubscribe]
-
-We appreciate the time you spent with us. Best of luck on your productivity journey."
-
 ---
 
 ## Archetype-Specific Content Notes
@@ -226,12 +172,12 @@ Each email should be personalized based on archetype. Here are the 6 archetypes 
 
 | Archetype | Key Strength | Common Pitfall | Tool Angle |
 |-----------|--------------|----------------|------------|
-| Momentum Master | Thrives on progress | Burns out from overcommitment | Task batching tools |
-| Strategic Planner | Long-term vision | Analysis paralysis | Planning/roadmap tools |
-| Creative Catalyst | Innovation & ideas | Shiny object syndrome | Capture & focus tools |
-| Steady Operator | Consistency & reliability | Resistance to change | Automation tools |
-| Adaptive Achiever | Flexibility | Lack of structure | Hybrid systems |
-| Deep Diver | Focus & expertise | Perfectionism | Deep work tools |
+| Structured Achiever | Systems & organization | Over-planning at expense of action | Time-blocking & task management |
+| Chaotic Creative | Innovation & connections | Jumping between projects | Idea capture & visual progress tools |
+| Anxious Perfectionist | Detail & quality | Analysis paralysis from fear | Task chunking & done-list tools |
+| Novelty Seeker | Enthusiasm & quick learning | Losing interest when novelty fades | Gamification & variety tools |
+| Strategic Planner | Big picture & long-term thinking | Getting lost in planning | Action-focused planning tools |
+| Flexible Improviser | Adaptability & handling change | Lack of consistent routines | Minimal habit tracking tools |
 
 ---
 
@@ -251,29 +197,14 @@ Each email should be personalized based on archetype. Here are the 6 archetypes 
 - Add `archetype` column to `email_captures` table
 - Create `checkout_attempts` table to track abandoned carts
 - Add `welcome_email_sent` boolean to prevent duplicates
-- Add `subscribed` boolean (default true) for unsubscribe status
-- Create `unsubscribe_feedback` table for survey responses
-
-### Unsubscribe Tracking Table:
-```
-unsubscribe_feedback:
-- id
-- email
-- reason (enum: too_many, not_relevant, already_purchased, not_interested, never_signed_up, other)
-- reason_other (text, nullable)
-- rating (enum: very_helpful, somewhat_helpful, neutral, not_very_helpful, not_helpful)
-- feedback_text (text, nullable)
-- unsubscribed_at (timestamp)
-```
 
 ---
 
 ## Next Steps
 
-1. Review these email drafts
+1. ✅ Review these email drafts
 2. Let me know any changes to tone, content, or offers
 3. Once approved, I'll implement:
    - Welcome email (automated via Resend)
    - Abandoned cart tracking + email
-   - Unsubscribe page with feedback survey
    - Export capability for nurture sequence
