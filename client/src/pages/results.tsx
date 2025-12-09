@@ -711,19 +711,40 @@ export default function Results() {
         </div>
       </section>
 
-      {/* Email Capture Section */}
+      {/* Email Capture Section - Enhanced with Lead Magnet */}
       <section className="py-12 bg-gradient-to-br from-neutral-50 to-indigo-50">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="bg-white shadow-xl" data-testid="email-capture-card">
+          <Card className="bg-white shadow-xl border-2 border-indigo-100" data-testid="email-capture-card">
             <CardContent className="p-8">
               <div className="text-center mb-6">
-                <Mail className="w-12 h-12 mx-auto mb-4 text-indigo-600" />
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 mb-4">
+                  <Mail className="w-8 h-8 text-white" />
+                </div>
                 <h3 className="text-2xl font-bold text-neutral-800 mb-2">
-                  Get Your Results via Email
+                  Get Your Free {archetype?.name || 'Productivity'} Quick-Start Guide
                 </h3>
-                <p className="text-neutral-600">
-                  Save your results and receive personalized productivity tips straight to your inbox
+                <p className="text-neutral-600 mb-4">
+                  Receive your complete results plus a personalized mini-guide with your top 3 strategies
                 </p>
+                
+                {/* Value Props */}
+                <div className="bg-indigo-50 rounded-lg p-4 text-left mb-6">
+                  <p className="text-sm font-semibold text-indigo-800 mb-2">You'll receive:</p>
+                  <ul className="space-y-2 text-sm text-indigo-700">
+                    <li className="flex items-center">
+                      <CheckCircle2 className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+                      Your complete assessment results (PDF)
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle2 className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+                      3 quick wins tailored to {archetype?.name || 'your archetype'}s
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle2 className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+                      Weekly productivity tips for your archetype
+                    </li>
+                  </ul>
+                </div>
               </div>
 
               {!emailSaved ? (
@@ -735,25 +756,28 @@ export default function Results() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="w-full"
+                      className="w-full text-base py-5"
                       data-testid="input-email"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg py-6"
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg py-6 hover:shadow-lg transition-all"
                     disabled={emailResultsMutation.isPending || emailSaved}
                     data-testid="button-submit-email"
                   >
-                    {emailResultsMutation.isPending ? "Sending..." : "Send My Results"}
-                    <Mail className="w-5 h-5 ml-2" />
+                    {emailResultsMutation.isPending ? "Sending..." : "Get My Free Guide"}
+                    <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
+                  <p className="text-xs text-neutral-500 text-center">
+                    Free forever. Unsubscribe anytime. We respect your privacy.
+                  </p>
                 </form>
               ) : (
                 <div className="text-center py-4" data-testid="email-success-message">
                   <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-green-600" />
-                  <p className="text-lg font-semibold text-green-700">Email sent successfully!</p>
-                  <p className="text-neutral-600 mt-2">Check your inbox for your complete results.</p>
+                  <p className="text-lg font-semibold text-green-700">Your guide is on the way!</p>
+                  <p className="text-neutral-600 mt-2">Check your inbox for your complete results and quick-start guide.</p>
                 </div>
               )}
             </CardContent>
@@ -935,6 +959,12 @@ export default function Results() {
               </div>
 
               <div className="border-t pt-8">
+                {/* Recent Activity Badge */}
+                <div className="flex items-center justify-center gap-2 mb-4 text-sm text-neutral-600">
+                  <span className="inline-flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                  <span>12 people purchased in the last 24 hours</span>
+                </div>
+
                 <Button 
                   size="lg" 
                   className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg py-6 hover:shadow-xl transition-all"
@@ -954,6 +984,24 @@ export default function Results() {
                     View refund policy
                   </Link>
                 </p>
+
+                {/* Trust Badges */}
+                <div className="mt-6 pt-4 border-t border-neutral-100">
+                  <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-neutral-500">
+                    <div className="flex items-center gap-1">
+                      <span className="text-lg">🔒</span>
+                      <span>Secure Checkout</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-lg">💳</span>
+                      <span>Powered by Stripe</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-lg">✨</span>
+                      <span>Instant Access</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

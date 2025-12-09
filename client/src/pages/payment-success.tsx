@@ -4,19 +4,38 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
-import { CheckCircle2, Download, ArrowRight } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
+import { CheckCircle2, Download, ArrowRight, Share2, Heart } from "lucide-react";
+import { FaTwitter, FaLinkedin } from "react-icons/fa";
 
 export default function PaymentSuccess() {
   const [, setLocation] = useLocation();
   const [sessionId, setSessionId] = useState<string>("");
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const params = new URLSearchParams(window.location.search);
     const sid = params.get("session_id");
     if (sid) {
       setSessionId(sid);
     }
+    // Track conversion (safe to call in useEffect after window check)
+    trackEvent('purchase_complete_page_view', 'Conversion', 'Payment Success Page');
   }, []);
+
+  const shareOnTwitter = () => {
+    const text = "Just discovered my productivity archetype with @ProlificPersonalities! 🚀 Finally understand why some methods work for me and others don't.";
+    const url = "https://prolificpersonalities.com/quiz";
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+    trackEvent('share_purchase_twitter', 'Social', 'Payment Success');
+  };
+
+  const shareOnLinkedIn = () => {
+    const url = "https://prolificpersonalities.com/quiz";
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+    trackEvent('share_purchase_linkedin', 'Social', 'Payment Success');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
@@ -73,6 +92,39 @@ export default function PaymentSuccess() {
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
+              </div>
+
+              {/* Social Sharing Section */}
+              <div className="mt-10 pt-8 border-t border-neutral-200">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Heart className="w-5 h-5 text-pink-500" />
+                  <p className="text-neutral-700 font-medium">Enjoying your playbook?</p>
+                </div>
+                <p className="text-neutral-600 text-sm mb-4">
+                  Help others discover their productivity archetype
+                </p>
+                <div className="flex justify-center gap-3">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={shareOnTwitter}
+                    className="flex items-center gap-2"
+                    data-testid="button-share-twitter"
+                  >
+                    <FaTwitter className="w-4 h-4 text-sky-500" />
+                    Share on Twitter
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={shareOnLinkedIn}
+                    className="flex items-center gap-2"
+                    data-testid="button-share-linkedin"
+                  >
+                    <FaLinkedin className="w-4 h-4 text-blue-700" />
+                    Share on LinkedIn
+                  </Button>
+                </div>
               </div>
 
               {sessionId && (
