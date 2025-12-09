@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { archetypes } from "@/data/archetypes";
-import { Clock, TrendingUp, BarChart3, ArrowUpRight, ArrowDownRight, Minus, Download, Lock } from "lucide-react";
+import { Clock, TrendingUp, BarChart3, ArrowUpRight, ArrowDownRight, Minus, Download, Lock, BookOpen } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
 import type { QuizResult, Order } from "@shared/schema";
 
@@ -283,24 +283,34 @@ export default function Dashboard() {
                   {orders.filter(o => o.status === 'completed').map((order) => {
                     const archetype = archetypes.find(a => a.id === order.archetype);
                     return (
-                      <div key={order.id} className="bg-white rounded-lg p-4 flex items-center justify-between shadow-sm">
-                        <div className="flex items-center gap-4">
-                          <div className="text-3xl">{archetype?.icon || '🎯'}</div>
-                          <div>
-                            <h3 className="font-bold text-neutral-900">
-                              {archetype?.name || order.archetype} Premium Playbook
-                            </h3>
-                            <p className="text-sm text-neutral-600">
-                              Purchased {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
-                            </p>
+                      <div key={order.id} className="bg-white rounded-lg p-4 shadow-sm">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <div className="text-3xl">{archetype?.icon || '🎯'}</div>
+                            <div>
+                              <h3 className="font-bold text-neutral-900">
+                                {archetype?.name || order.archetype} Premium Playbook
+                              </h3>
+                              <p className="text-sm text-neutral-600">
+                                Purchased {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <Link href={`/playbook/${order.archetype}`}>
+                              <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" data-testid={`button-playbook-${order.id}`}>
+                                <BookOpen className="w-4 h-4 mr-2" />
+                                Open Playbook
+                              </Button>
+                            </Link>
+                            <a href={`/api/download/${order.id}`} download>
+                              <Button variant="outline" className="w-full sm:w-auto" data-testid={`button-download-${order.id}`}>
+                                <Download className="w-4 h-4 mr-2" />
+                                Download PDF
+                              </Button>
+                            </a>
                           </div>
                         </div>
-                        <a href={`/api/download/${order.id}`} download>
-                          <Button className="gradient-primary text-white" data-testid={`button-download-${order.id}`}>
-                            <Download className="w-4 h-4 mr-2" />
-                            Download PDF
-                          </Button>
-                        </a>
                       </div>
                     );
                   })}

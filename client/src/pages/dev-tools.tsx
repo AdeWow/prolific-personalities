@@ -26,8 +26,10 @@ export default function DevTools() {
   const createTestResultMutation = useMutation({
     mutationFn: async (archetype: string) => {
       const testScores = getTestScoresForArchetype(archetype);
+      const sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
       const response = await apiRequest("POST", "/api/quiz/results", {
-        finalArchetype: archetype,
+        sessionId,
+        archetype,
         scores: testScores,
         answers: {},
       });

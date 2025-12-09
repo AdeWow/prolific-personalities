@@ -134,7 +134,7 @@ export default function Playbook() {
               </div>
               <div className="space-y-3">
                 <Button 
-                  onClick={() => window.location.href = '/api/auth/login'}
+                  onClick={() => window.location.href = '/api/login'}
                   className="w-full"
                   data-testid="button-login"
                 >
