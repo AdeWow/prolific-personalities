@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Header } from "@/components/header";
+import { SEOHead } from "@/components/seo-head";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -110,6 +111,11 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50 dark:from-gray-900 dark:to-indigo-950">
+      <SEOHead
+        title="About Us"
+        description="Learn about Prolific Personalities - a platform helping people overcome procrastination and overwhelm through personalized, research-backed productivity strategies."
+        keywords="about prolific personalities, productivity platform, personalized productivity, research-backed assessment"
+      />
       <Header />
 
       <section className="py-20">

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/header";
+import { SEOHead } from "@/components/seo-head";
 import { ExternalLink, Sparkles, Target, Brain, Zap, Compass, Lightbulb } from "lucide-react";
 
 export default function Resources() {
@@ -95,6 +96,11 @@ export default function Resources() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <SEOHead
+        title="Productivity Tools & Resources"
+        description="Find the perfect productivity tools matched to your archetype. Curated recommendations for task management, focus apps, time tracking, and more."
+        keywords="productivity tools, best productivity apps, time management tools, focus apps, task management software, productivity resources"
+      />
       <Header />
 
       <section className="py-16">

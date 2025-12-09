@@ -124,7 +124,6 @@ export default function Archetypes() {
         title="Six Productivity Archetypes Explained"
         description="Discover the 6 distinct productivity archetypes: Structured Achiever, Chaotic Creative, Strategic Planner, and more. Learn which working style matches yours and get personalized strategies."
         keywords="productivity archetypes, working styles, productivity types, time management styles, executive function, cognitive focus"
-        canonicalUrl={`${window.location.origin}/archetypes`}
       />
       <Header />
 

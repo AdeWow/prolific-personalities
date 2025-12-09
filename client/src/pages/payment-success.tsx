@@ -23,7 +23,6 @@ export default function PaymentSuccess() {
       <SEOHead
         title="Payment Successful - Prolific Personalities"
         description="Your premium report purchase was successful"
-        canonicalUrl={`${window.location.origin}/payment-success`}
       />
       <Header />
 

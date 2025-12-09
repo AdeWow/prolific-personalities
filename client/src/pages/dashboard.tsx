@@ -67,7 +67,6 @@ export default function Dashboard() {
       <SEOHead
         title="Dashboard - Your Productivity Journey"
         description="View all your productivity assessment results and track your progress over time."
-        canonicalUrl={`${window.location.origin}/dashboard`}
       />
       <Header />
 

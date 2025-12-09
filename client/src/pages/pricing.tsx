@@ -35,7 +35,6 @@ export default function Pricing() {
         title="Pricing - Free Assessment & Premium Report"
         description="Start with a free productivity assessment. Upgrade to Premium ($27 one-time) for your complete transformation guide with personalized strategies, 90-day action plan, and tool recommendations."
         keywords="productivity assessment pricing, premium report, productivity tools, time management, personalized strategies"
-        canonicalUrl={`${window.location.origin}/pricing`}
       />
       <Header />
 

@@ -5,12 +5,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from '@/components/ui/badge';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Header } from '@/components/header';
+import { SEOHead } from '@/components/seo-head';
 import { EmailCaptureCard } from '@/components/email-capture-card';
 import { Calendar, Clock } from 'lucide-react';
 
 export default function BlogPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <SEOHead
+        title="Productivity Insights Blog"
+        description="Research-backed productivity strategies, tips, and insights to help you work smarter. Discover articles tailored to your unique working style."
+        keywords="productivity blog, productivity tips, time management, focus strategies, work efficiency, productivity research"
+      />
       <Header />
       
       <div className="container mx-auto px-4 py-16 max-w-6xl">

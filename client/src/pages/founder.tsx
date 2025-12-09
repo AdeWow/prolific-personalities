@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
+import { SEOHead } from '@/components/seo-head';
 import { ArrowLeft } from 'lucide-react';
 
 export default function FounderPage() {
@@ -10,6 +11,11 @@ export default function FounderPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
+      <SEOHead
+        title="Founder Story"
+        description="Learn why I built Prolific Personalities - a personal journey from productivity struggle to self-understanding. Discover the story behind the assessment."
+        keywords="founder story, productivity journey, prolific personalities origin, about the founder"
+      />
       <div className="container mx-auto px-4 py-16 max-w-6xl">
         {/* Back Button */}
         <Link href="/">

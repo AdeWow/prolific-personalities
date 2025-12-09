@@ -61,7 +61,9 @@ export function SEOHead({
     setMetaTag('twitter:image', ogImage);
 
     // Canonical URL - always set to current location if not provided
-    const finalCanonicalUrl = canonicalUrl || window.location.href;
+    // Guard against SSR environments where window may not exist
+    const finalCanonicalUrl = canonicalUrl || (typeof window !== 'undefined' ? window.location.href : '');
+    if (!finalCanonicalUrl) return; // Skip if no canonical URL available
     let linkTag = document.querySelector('link[rel="canonical"]');
     if (!linkTag) {
       linkTag = document.createElement('link');

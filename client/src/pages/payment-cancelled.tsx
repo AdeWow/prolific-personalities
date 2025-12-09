@@ -11,7 +11,6 @@ export default function PaymentCancelled() {
       <SEOHead
         title="Payment Cancelled - Prolific Personalities"
         description="Your payment was cancelled"
-        canonicalUrl={`${window.location.origin}/payment-cancelled`}
       />
       <Header />
 

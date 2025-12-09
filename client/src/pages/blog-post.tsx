@@ -44,12 +44,14 @@ export default function BlogPostPage() {
     );
   }
 
-  const structuredData = {
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  
+  const structuredData = origin ? {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": post.title,
     "description": post.excerpt,
-    "image": post.image || `${window.location.origin}/og-image.png`,
+    "image": post.image || `${origin}/og-image.png`,
     "author": {
       "@type": "Person",
       "name": post.author
@@ -59,17 +61,17 @@ export default function BlogPostPage() {
       "name": "Prolific Personalities",
       "logo": {
         "@type": "ImageObject",
-        "url": `${window.location.origin}/og-image.png`
+        "url": `${origin}/og-image.png`
       }
     },
     "datePublished": post.publishDate,
     "dateModified": post.publishDate,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `${window.location.origin}/blog/${post.slug}`
+      "@id": `${origin}/blog/${post.slug}`
     },
     "keywords": post.tags.join(", ")
-  };
+  } : undefined;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
@@ -77,7 +79,6 @@ export default function BlogPostPage() {
         title={post.title}
         description={post.excerpt}
         ogImage={post.image}
-        canonicalUrl={`${window.location.origin}/blog/${post.slug}`}
         keywords={post.tags.join(", ")}
         structuredData={structuredData}
       />

@@ -11,7 +11,6 @@ export default function RefundPolicy() {
       <SEOHead
         title="Refund Policy - Prolific Personalities"
         description="Our refund policy for premium playbook purchases. We offer a 30-day satisfaction guarantee on all digital products."
-        canonicalUrl={`${window.location.origin}/refund-policy`}
       />
       <Header />
 

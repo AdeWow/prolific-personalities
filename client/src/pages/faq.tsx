@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/header";
+import { SEOHead } from "@/components/seo-head";
 
 export default function FAQ() {
   const faqs = [
@@ -50,6 +51,11 @@ export default function FAQ() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+      <SEOHead
+        title="Frequently Asked Questions"
+        description="Find answers to common questions about Prolific Personalities productivity assessment. Learn how it works, what makes it different, and how it can help you."
+        keywords="productivity FAQ, personality assessment questions, productivity quiz help, prolific personalities FAQ"
+      />
       <Header />
 
       {/* Hero Section */}

@@ -456,65 +456,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Sitemap route
-  app.get("/sitemap.xml", async (req, res) => {
-    try {
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      const currentDate = new Date().toISOString().split('T')[0];
-      
-      // Static pages with their priorities
-      const staticPages = [
-        { url: '', changefreq: 'daily', priority: '1.0' }, // Homepage
-        { url: '/quiz', changefreq: 'weekly', priority: '0.9' },
-        { url: '/archetypes', changefreq: 'monthly', priority: '0.8' },
-        { url: '/pricing', changefreq: 'weekly', priority: '0.8' },
-        { url: '/blog', changefreq: 'weekly', priority: '0.7' },
-        { url: '/about', changefreq: 'monthly', priority: '0.6' },
-        { url: '/science', changefreq: 'monthly', priority: '0.6' },
-        { url: '/faq', changefreq: 'monthly', priority: '0.5' },
-      ];
-
-      // Blog posts (we'll import the data here)
-      const blogPosts = [
-        { slug: '6-productivity-archetypes-explained' },
-      ];
-
-      let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
-
-      // Add static pages
-      for (const page of staticPages) {
-        sitemap += `
-  <url>
-    <loc>${baseUrl}${page.url}</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
-  </url>`;
-      }
-
-      // Add blog posts
-      for (const post of blogPosts) {
-        sitemap += `
-  <url>
-    <loc>${baseUrl}/blog/${post.slug}</loc>
-    <lastmod>${currentDate}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>`;
-      }
-
-      sitemap += `
-</urlset>`;
-
-      res.header('Content-Type', 'application/xml');
-      res.send(sitemap);
-    } catch (error) {
-      console.error("Error generating sitemap:", error);
-      res.status(500).send('Error generating sitemap');
-    }
-  });
-
   // Stripe Checkout Session - Create payment for premium report
   app.post("/api/create-checkout-session", writeLimiter, async (req, res) => {
     try {
@@ -866,6 +807,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error checking access:", error);
       res.status(500).json({ message: "Failed to check access" });
     }
+  });
+
+  // XML Sitemap for SEO
+  app.get("/sitemap.xml", async (req, res) => {
+    // Use APP_URL if set, otherwise safely construct from request
+    let baseUrl = process.env.APP_URL;
+    if (!baseUrl) {
+      if (process.env.NODE_ENV === 'production') {
+        baseUrl = 'https://prolificpersonalities.com';
+      } else {
+        // Safely construct URL from request, defaulting to https
+        const protocol = req.protocol || 'https';
+        const host = req.get('host') || 'localhost:5000';
+        // Validate host to prevent injection
+        const safeHost = host.replace(/[^a-zA-Z0-9.:-]/g, '');
+        baseUrl = `${protocol}://${safeHost}`;
+      }
+    }
+    
+    const staticPages = [
+      { url: '/', priority: '1.0', changefreq: 'weekly' },
+      { url: '/quiz', priority: '0.9', changefreq: 'monthly' },
+      { url: '/archetypes', priority: '0.8', changefreq: 'monthly' },
+      { url: '/pricing', priority: '0.8', changefreq: 'monthly' },
+      { url: '/blog', priority: '0.7', changefreq: 'weekly' },
+      { url: '/science', priority: '0.7', changefreq: 'monthly' },
+      { url: '/resources', priority: '0.7', changefreq: 'monthly' },
+      { url: '/about', priority: '0.6', changefreq: 'monthly' },
+      { url: '/faq', priority: '0.6', changefreq: 'monthly' },
+      { url: '/founder', priority: '0.5', changefreq: 'yearly' },
+      { url: '/refund-policy', priority: '0.3', changefreq: 'yearly' },
+      { url: '/dashboard', priority: '0.4', changefreq: 'weekly' },
+      { url: '/payment-success', priority: '0.2', changefreq: 'yearly' },
+      { url: '/payment-cancelled', priority: '0.2', changefreq: 'yearly' },
+      { url: '/purchase-success', priority: '0.2', changefreq: 'yearly' },
+    ];
+
+    const archetypes = [
+      'chaotic-creative',
+      'anxious-perfectionist', 
+      'structured-achiever',
+      'novelty-seeker',
+      'strategic-planner',
+      'flexible-improviser'
+    ];
+
+    const blogSlugs = [
+      'understanding-productivity-archetypes',
+      'productivity-guilt-self-compassion',
+      'fluid-productivity-style-transitions',
+      'digital-minimalism-notification-freedom',
+      'science-behind-personalized-productivity'
+    ];
+
+    const today = new Date().toISOString().split('T')[0];
+    
+    let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+`;
+
+    for (const page of staticPages) {
+      sitemap += `  <url>
+    <loc>${baseUrl}${page.url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>
+`;
+    }
+
+    for (const archetype of archetypes) {
+      sitemap += `  <url>
+    <loc>${baseUrl}/archetypes/${archetype}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+`;
+    }
+
+    for (const slug of blogSlugs) {
+      sitemap += `  <url>
+    <loc>${baseUrl}/blog/${slug}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+`;
+    }
+
+    // Add playbook pages (premium content)
+    for (const archetype of archetypes) {
+      sitemap += `  <url>
+    <loc>${baseUrl}/playbook/${archetype}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+`;
+    }
+
+    sitemap += `</urlset>`;
+
+    res.header('Content-Type', 'application/xml');
+    res.send(sitemap);
   });
 
   const httpServer = createServer(app);

@@ -3,12 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
+import { SEOHead } from "@/components/seo-head";
 import { PDFPreview } from "@/components/pdf-preview";
 import { Brain, Target, Zap, BookOpen, Download, TrendingUp } from "lucide-react";
 
 export default function Science() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <SEOHead
+        title="The Science Behind Personalized Productivity"
+        description="Discover the research behind Prolific Personalities. Learn about cognitive science, executive function theory, and self-determination theory that powers our assessment."
+        keywords="productivity science, cognitive science, executive function, self-determination theory, productivity research, personalized productivity"
+      />
       <Header />
 
       <section className="py-16">
