@@ -85,7 +85,7 @@ export default function Playbook() {
   });
 
   // Fetch progress data - always call these hooks but they'll only fetch when enabled
-  const { data: progressData } = useQuery<{ chapterId: string; completedAt: string }[]>({
+  const { data: progressData } = useQuery<{ chapterId: string; completed: number; completedAt: string | null }[]>({
     queryKey: [`/api/playbook/${archetype}/progress`],
     enabled: !!user && !!archetype && !!accessData?.hasAccess,
   });
@@ -178,7 +178,8 @@ export default function Playbook() {
   // Calculated values
   const selectedChapter = playbook?.chapters.find(c => c.id === selectedChapterId);
   const selectedSection = selectedChapter?.sections.find(s => s.id === selectedSectionId);
-  const completedChapters = progressData?.length || 0;
+  // Only count chapters that are actually marked as completed (completed === true or 1)
+  const completedChapters = (progressData ?? []).filter(p => p.completed).length;
   const totalChapters = playbook?.chapters.length || 1;
   const progressPercentage = Math.round((completedChapters / totalChapters) * 100);
 
