@@ -944,6 +944,12 @@ export default function Results() {
                 <p className="text-center text-neutral-500 text-sm mt-4">
                   One-time payment • Instant download • 100+ page personalized playbook
                 </p>
+                <p className="text-center text-neutral-400 text-xs mt-2">
+                  30-day satisfaction guarantee.{" "}
+                  <Link href="/refund-policy" className="text-indigo-600 hover:underline" data-testid="link-refund-policy">
+                    View refund policy
+                  </Link>
+                </p>
               </div>
             </CardContent>
           </Card>

@@ -128,6 +128,13 @@ export default function Pricing() {
                 <p className="text-sm text-neutral-600 text-center mt-4">
                   Take the free assessment first, then upgrade for the full report
                 </p>
+
+                <p className="text-xs text-neutral-500 text-center mt-4">
+                  30-day satisfaction guarantee.{" "}
+                  <Link href="/refund-policy" className="text-primary hover:underline" data-testid="link-refund-policy">
+                    View refund policy
+                  </Link>
+                </p>
               </CardContent>
             </Card>
           </div>

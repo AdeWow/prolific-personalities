@@ -273,6 +273,7 @@ export default function Home() {
               <ul className="space-y-2 text-neutral-400">
                 <li><Link href="/about" className="hover:text-white transition-colors">About</Link></li>
                 <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
+                <li><Link href="/refund-policy" className="hover:text-white transition-colors" data-testid="link-footer-refund">Refund Policy</Link></li>
               </ul>
             </div>
           </div>

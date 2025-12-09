@@ -24,6 +24,7 @@ import PaymentSuccess from "@/pages/payment-success";
 import PaymentCancelled from "@/pages/payment-cancelled";
 import PurchaseSuccess from "@/pages/purchase-success";
 import Playbook from "@/pages/playbook";
+import RefundPolicy from "@/pages/refund-policy";
 import DevTools from "@/pages/dev-tools";
 
 function Router() {
@@ -56,6 +57,7 @@ function Router() {
       <Route path="/founder" component={Founder} />
       <Route path="/blog/:slug" component={BlogPost} />
       <Route path="/blog" component={Blog} />
+      <Route path="/refund-policy" component={RefundPolicy} />
       <Route path="/results/:sessionId" component={Results} />
       <Route path="/results" component={Results} />
     </Switch>
