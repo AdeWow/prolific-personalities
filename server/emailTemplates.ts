@@ -724,7 +724,7 @@ export interface AbandonedCartEmailData {
 export function generateAbandonedCartEmail(data: AbandonedCartEmailData): { subject: string; html: string } {
   const { archetype, checkoutUrl, unsubscribeUrl } = data;
 
-  const subject = `Your ${archetype.title} Playbook is waiting`;
+  const subject = `Still thinking about the ${archetype.title} Playbook?`;
 
   const html = `
     <!DOCTYPE html>
@@ -764,6 +764,14 @@ export function generateAbandonedCartEmail(data: AbandonedCartEmailData): { subj
         .greeting {
           font-size: 16px;
           color: #475569;
+        }
+        .science-note {
+          background-color: #f0fdf4;
+          border: 1px solid #86efac;
+          border-radius: 8px;
+          padding: 16px;
+          margin: 20px 0;
+          font-size: 14px;
         }
         .benefits-list {
           background-color: #f8fafc;
@@ -841,56 +849,57 @@ export function generateAbandonedCartEmail(data: AbandonedCartEmailData): { subj
     <body>
       <div class="container">
         <div class="header">
-          <h1>You Left Something Behind</h1>
+          <h1>Take Your Time</h1>
         </div>
         
         <div class="content">
-          <p class="greeting">Hi there,</p>
+          <p class="greeting">Hey,</p>
           
-          <p>I noticed you started to get your <strong>${archetype.title} Premium Playbook</strong> but didn't finish checking out.</p>
+          <p>I noticed you were checking out the <strong>${archetype.title} Playbook</strong> yesterday. No rush—I get it. $27 is still money, and you want to know it's worth it.</p>
           
-          <p>No pressure at all - I just wanted to make sure nothing went wrong on our end.</p>
+          <p>Here's what I'll say: if you've spent years trying productivity systems that felt wrong for how you actually think, this is different.</p>
+          
+          <div class="science-note">
+            <strong>The research angle:</strong> Every strategy in the playbook is backed by peer-reviewed studies on executive function and motivation psychology. We're not just repackaging "wake up at 5 AM" advice. Studies show personalized approaches like this improve productivity by 27-42%.
+          </div>
           
           <div class="benefits-list">
-            <h3>Quick reminder of what's inside your personalized playbook:</h3>
+            <h3>What you'd get:</h3>
             
             <div class="benefit-item">
-              <strong>Deep-dive analysis</strong> of how ${archetype.title}s think, work, and thrive
+              <strong>A 30-day action plan</strong> with specific daily tasks designed for how ${archetype.title}s actually work (not generic advice that assumes everyone's brain is the same)
             </div>
             <div class="benefit-item">
-              <strong>30-day action plan</strong> with specific daily tasks (not generic advice)
+              <strong>Your specific failure modes</strong> — the traps other ${archetype.title}s fall into, so you can avoid them
             </div>
             <div class="benefit-item">
-              <strong>Tool recommendations</strong> rated specifically for your working style
+              <strong>Tool recommendations</strong> rated for your archetype (which apps work for you vs. which ones will waste your time)
             </div>
             <div class="benefit-item">
-              <strong>Common failure modes</strong> so you don't fall into the typical ${archetype.title} traps
-            </div>
-            <div class="benefit-item">
-              <strong>Bonus:</strong> Implementation worksheets you can print and use
+              <strong>Interactive progress tracking</strong> so you can see your improvement over time
             </div>
           </div>
           
           <div class="price-box">
             <div class="price">$27</div>
-            <div class="price-note">One-time payment (not a subscription)</div>
+            <div class="price-note">One-time purchase. Keep forever.</div>
           </div>
           
           <div class="guarantee">
             <strong>30-day satisfaction guarantee.</strong><br>
-            If it doesn't help, you get a full refund. No questions asked.
+            If it doesn't resonate with you, I'll refund it. No awkward questions.
           </div>
           
-          <a href="${checkoutUrl}" class="cta-button">Complete My Purchase</a>
+          <a href="${checkoutUrl}" class="cta-button">Get the Playbook</a>
           
-          <p style="color: #64748b; font-size: 14px;">If you have any questions about whether it's right for you, just reply to this email. I'm happy to help.</p>
+          <p style="color: #64748b; font-size: 14px;">Questions? Just reply to this email. I read every one.</p>
         </div>
 
         <div class="footer">
           <p><strong>Prolific Personalities</strong></p>
-          <p>Science-backed productivity insights tailored to your unique working style</p>
+          <p>Research-backed productivity for how your brain actually works</p>
           <p class="unsubscribe">
-            <a href="${unsubscribeUrl}">Unsubscribe from these emails</a>
+            <a href="${unsubscribeUrl}">Unsubscribe</a>
           </p>
         </div>
       </div>

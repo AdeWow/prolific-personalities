@@ -1,5 +1,41 @@
 # Email Marketing Plan - Prolific Personalities
 
+## Brand Voice & Tone Guidelines
+
+### Core Message
+**"You're not lazy. You're not broken. You just need a different approach."**
+
+### Target Audience
+- Burned-out knowledge workers
+- Neurodivergent professionals (ADHD, autism, etc.)
+- People who've tried countless productivity systems that never stuck
+
+### Tone Principles
+1. **Empathetic, not corporate** — Talk like a friend who gets it, not a SaaS company trying to convert
+2. **Authentic vulnerability** — Acknowledge that productivity advice often fails because it's designed for a "normal" brain
+3. **Research-backed credibility** — Our differentiator is science. Emphasize peer-reviewed studies, 27-42% effectiveness improvements
+4. **Anti-hustle culture** — No "wake up at 5 AM" advice. No guilt-tripping.
+5. **Conversational** — Use "Hey" not "Dear valued customer." Use "I" not "we" for personal touch.
+
+### Words to Use
+- "Your brain works differently"
+- "Not broken, just mismatched"
+- "Research-backed" / "Peer-reviewed studies"
+- "How you actually work"
+- "Stop fighting yourself"
+
+### Words to Avoid
+- "Congratulations!" (too corporate)
+- "Unlock your potential" (too generic)
+- "Maximize productivity" (hustle culture)
+- "Limited time offer!" (spammy)
+- "Act now!" (pushy)
+
+### Research Differentiator (Use Often)
+> "Unlike generic personality tests, every strategy is backed by peer-reviewed research on executive function, motivation psychology, and cognitive load theory. Studies show personalized approaches improve effectiveness by 27-42%."
+
+---
+
 ## Email 1: Welcome Email (Sent immediately after signup)
 
 ### Subject Line Options:
@@ -56,7 +92,7 @@ P.S. Your results are saved! You can access them anytime at [results link].
 
 ---
 
-## Email 2: Abandoned Cart Email (Sent 1 hour after starting checkout)
+## Email 2: Abandoned Cart Email (Sent 24 hours after starting checkout)
 
 ### Subject Line Options:
 1. "You left something behind... 👀"
@@ -187,8 +223,8 @@ Each email should be personalized based on archetype. Here are the 6 archetypes 
 1. **Welcome email**: Trigger on email capture (immediate)
 2. **Abandoned cart**: 
    - Track checkout initiated timestamp
-   - Cron job or scheduled task checks every 30 min
-   - Send if >1 hour passed and no completed purchase
+   - Cron job or scheduled task checks every few hours
+   - Send if >24 hours passed and no completed purchase (give users time to think)
 3. **Nurture sequence**: 
    - Option A: Build scheduler in app (complex)
    - Option B: Export to ConvertKit/Mailchimp for automation (recommended for 14-day drip)
