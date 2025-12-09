@@ -175,9 +175,11 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {archetypes.map((archetype) => (
-              <ArchetypeCard key={archetype.id} archetype={archetype} clickable={true} />
-            ))}
+            {archetypes
+              .filter((archetype) => archetype.id !== 'adaptive-generalist')
+              .map((archetype) => (
+                <ArchetypeCard key={archetype.id} archetype={archetype} clickable={true} />
+              ))}
           </div>
         </div>
       </section>

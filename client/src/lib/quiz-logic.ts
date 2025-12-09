@@ -264,6 +264,26 @@ function calculateArchetypeMatch(archetype: Archetype, scores: QuizScores, categ
   };
 }
 
+// Check if user qualifies as Adaptive Generalist
+// Trigger when: ALL 4 axes in balanced range (40-60% normalized) AND no clear winner (all matches 45-55%)
+function isAdaptiveGeneralist(normalizedScores: NormalizedScores, allFitScores: ArchetypeFitScore[]): boolean {
+  // Check 1: All 4 normalized scores must be in balanced range (40-60%)
+  const allAxesBalanced = Object.values(normalizedScores).every(score => score >= 40 && score <= 60);
+  
+  if (!allAxesBalanced) return false;
+  
+  // Check 2: All archetype matches (excluding adaptive-generalist) should be 45-55% (no clear winner)
+  // Get fit scores for the 6 core archetypes only
+  const coreArchetypeFits = allFitScores.filter(fit => fit.archetype.id !== 'adaptive-generalist');
+  const noLargeDifferences = coreArchetypeFits.every(fit => fit.fitPercentage >= 45 && fit.fitPercentage <= 55);
+  
+  // Alternative: check that top match is less than 55% (no clear winner)
+  const topCoreMatch = coreArchetypeFits[0];
+  const noStrongWinner = topCoreMatch && topCoreMatch.fitPercentage < 60;
+  
+  return allAxesBalanced && (noLargeDifferences || noStrongWinner);
+}
+
 // Enhanced archetype determination with fit-based confidence levels
 export function determineArchetypeEnhanced(scores: QuizScores): ArchetypeResult {
   const categorization = categorizeScores(scores);
@@ -297,9 +317,9 @@ export function determineArchetypeEnhanced(scores: QuizScores): ArchetypeResult 
     notes.push(`You show moderate matches across multiple archetypes. This suggests you're in transition or highly adaptive.`);
     notes.push(`Try ${topFit.archetype.name} frameworks first (${topFit.fitPercentage}% match), then explore ${secondFit.archetype.name} if needed.`);
     
-  // Scenario 3: All axes in balanced range (adaptive generalist)
-  // Actually return adaptive-generalist as the primary archetype
-  } else if (Object.values(categorization).filter(cat => cat === 'MEDIUM').length >= 3) {
+  // Scenario 3: Adaptive Generalist
+  // Trigger when: ALL 4 axes in balanced range (40-60%) AND all matches 45-55% (no clear winner)
+  } else if (isAdaptiveGeneralist(normalizedScores, allFitScores)) {
     const adaptiveGeneralist = archetypes.find(a => a.id === 'adaptive-generalist');
     if (adaptiveGeneralist) {
       // Calculate fit for adaptive-generalist
@@ -313,8 +333,9 @@ export function determineArchetypeEnhanced(scores: QuizScores): ArchetypeResult 
       if (topFit) secondary.push(topFit.archetype);
       if (secondFit) secondary.push(secondFit.archetype);
       
-      notes.push(`You scored in the balanced range on ${Object.values(categorization).filter(cat => cat === 'MEDIUM').length} of 4 axes.`);
-      notes.push(`This makes you an Adaptive Generalist - someone who can match their approach to context.`);
+      notes.push(`You scored in the balanced range (40-60%) on all 4 axes.`);
+      notes.push(`This makes you an Adaptive Generalist - a "productivity chameleon" who can match approach to context.`);
+      notes.push(`You're not broken or indecisive. You're sophisticated and adaptive. Different projects need different approaches - that's your superpower.`);
       notes.push(`You can borrow strategies from ${topFit.archetype.name} and ${secondFit?.archetype.name || 'other archetypes'} depending on the situation.`);
       
       return {
