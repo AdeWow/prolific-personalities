@@ -36,7 +36,18 @@ export default function Playbook() {
   const [, params] = useRoute("/playbook/:archetype");
   const [, setLocation] = useLocation();
   const { user, isLoading: isAuthLoading } = useAuth();
-  const archetype = params?.archetype;
+  const { toast } = useToast();
+  const archetype = params?.archetype || "";
+
+  // Get playbook content - must be before any hooks that depend on it
+  const playbook = playbookContentMap[archetype];
+
+  // ALL HOOKS MUST BE DECLARED BEFORE ANY CONDITIONAL RETURNS
+  const [selectedChapterId, setSelectedChapterId] = useState("");
+  const [selectedSectionId, setSelectedSectionId] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [noteSaveStatus, setNoteSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Set page title
   useEffect(() => {
@@ -56,12 +67,164 @@ export default function Playbook() {
     }
   }, [archetype, setLocation]);
 
+  // Initialize selected chapter/section when playbook loads
+  useEffect(() => {
+    if (playbook?.chapters?.[0]) {
+      setSelectedChapterId(playbook.chapters[0].id);
+      if (playbook.chapters[0].sections?.[0]) {
+        setSelectedSectionId(playbook.chapters[0].sections[0].id);
+      }
+    }
+  }, [playbook]);
+
   // Check if user has premium access
   const { data: accessData, isLoading: isAccessLoading, isError: isAccessError } = useQuery<{ hasAccess: boolean }>({
     queryKey: [`/api/playbook/${archetype}/access`],
     enabled: !!user && !!archetype,
     retry: 1,
   });
+
+  // Fetch progress data - always call these hooks but they'll only fetch when enabled
+  const { data: progressData } = useQuery<{ chapterId: string; completedAt: string }[]>({
+    queryKey: [`/api/playbook/${archetype}/progress`],
+    enabled: !!user && !!archetype && !!accessData?.hasAccess,
+  });
+
+  const { data: actionPlanData } = useQuery<{ dayNumber: number; taskId: string; completedAt: string }[]>({
+    queryKey: [`/api/playbook/${archetype}/action-plan`],
+    enabled: !!user && !!archetype && !!accessData?.hasAccess,
+  });
+
+  const { data: toolsData } = useQuery<{ toolId: string; status: string; notes: string }[]>({
+    queryKey: [`/api/playbook/${archetype}/tools`],
+    enabled: !!user && !!archetype && !!accessData?.hasAccess,
+  });
+
+  const { data: notesData } = useQuery<{ id: number; sectionId: string; content: string }[]>({
+    queryKey: [`/api/playbook/${archetype}/notes`],
+    enabled: !!user && !!archetype && !!accessData?.hasAccess,
+  });
+
+  // Mutations - always declare these
+  const toggleChapterMutation = useMutation({
+    mutationFn: ({ chapterId, completed }: { chapterId: string; completed: boolean }) => 
+      apiRequest('POST', `/api/playbook/${archetype}/progress/chapter`, { chapterId, completed }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/progress`] });
+      toast({ description: "Progress updated!" });
+    },
+    onError: () => {
+      toast({ 
+        variant: "destructive", 
+        title: "Error", 
+        description: "Failed to update progress. Please try again." 
+      });
+    },
+  });
+
+  const toggleActionPlanMutation = useMutation({
+    mutationFn: ({ dayNumber, taskId, completed }: { dayNumber: number; taskId: string; completed: boolean }) => 
+      apiRequest('POST', `/api/playbook/${archetype}/action-plan/task`, { dayNumber, taskId, completed }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/action-plan`] });
+    },
+    onError: () => {
+      toast({ 
+        variant: "destructive", 
+        title: "Error", 
+        description: "Failed to update task. Please try again." 
+      });
+    },
+  });
+
+  const updateToolMutation = useMutation({
+    mutationFn: ({ toolId, status, notes }: { toolId: string; status: string; notes?: string }) => 
+      apiRequest('POST', `/api/playbook/${archetype}/tools/update`, { toolId, status: status.toLowerCase().replace(' ', '_'), notes }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/tools`] });
+      toast({ description: "Tool status updated!" });
+    },
+    onError: () => {
+      toast({ 
+        variant: "destructive", 
+        title: "Error", 
+        description: "Failed to update tool. Please try again." 
+      });
+    },
+  });
+
+  // Debounced note save
+  const saveNoteMutation = useMutation({
+    mutationFn: ({ sectionId, content }: { sectionId: string; content: string }) => 
+      apiRequest('POST', `/api/playbook/${archetype}/notes`, { sectionId, content }),
+    onMutate: () => {
+      setNoteSaveStatus('saving');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/notes`] });
+      setNoteSaveStatus('saved');
+      setTimeout(() => setNoteSaveStatus('idle'), 2000);
+    },
+    onError: () => {
+      setNoteSaveStatus('error');
+      toast({ 
+        variant: "destructive", 
+        title: "Error", 
+        description: "Failed to save note. Please try again." 
+      });
+    },
+  });
+
+  // Calculated values
+  const selectedChapter = playbook?.chapters.find(c => c.id === selectedChapterId);
+  const selectedSection = selectedChapter?.sections.find(s => s.id === selectedSectionId);
+  const completedChapters = progressData?.length || 0;
+  const totalChapters = playbook?.chapters.length || 1;
+  const progressPercentage = Math.round((completedChapters / totalChapters) * 100);
+
+  const handleNoteSave = (sectionId: string, content: string) => {
+    // Clear any existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    
+    // Reset status to idle while user is typing
+    setNoteSaveStatus('idle');
+    
+    // Set new timer
+    const timer = setTimeout(() => {
+      if (content.trim()) {
+        saveNoteMutation.mutate({ sectionId, content });
+      }
+    }, 1000);
+    
+    // Store timer reference
+    debounceTimerRef.current = timer;
+  };
+
+  const isChapterComplete = (chapterId: string) => {
+    return progressData?.some(p => p.chapterId === chapterId);
+  };
+
+  const isTaskComplete = (dayNumber: number, taskId: string) => {
+    return actionPlanData?.some(t => t.dayNumber === dayNumber && t.taskId === taskId);
+  };
+
+  const getToolStatus = (toolId: string) => {
+    const status = toolsData?.find(t => t.toolId === toolId)?.status || "not_started";
+    // Convert backend format (not_started) to UI format (Not Started)
+    return status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  };
+
+  const getSectionNote = (sectionId: string) => {
+    return notesData?.find(n => n.sectionId === sectionId);
+  };
+
+  const handleDownloadPDF = () => {
+    window.open(`/api/playbook/${archetype}/pdf`, '_blank');
+  };
+
+  // CONDITIONAL RENDERING SECTION
 
   // Loading state
   if (isAuthLoading || (user && isAccessLoading)) {
@@ -155,7 +318,7 @@ export default function Playbook() {
 
   // No premium access
   if (!accessData?.hasAccess) {
-    const archetypeName = archetype!
+    const archetypeName = archetype
       .split('-')
       .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ');
@@ -203,153 +366,6 @@ export default function Playbook() {
   }
 
   // User has access - render the actual playbook
-  const playbook = playbookContentMap[archetype!];
-  const [selectedChapterId, setSelectedChapterId] = useState(playbook?.chapters[0]?.id || "");
-  const [selectedSectionId, setSelectedSectionId] = useState(playbook?.chapters[0]?.sections[0]?.id || "");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { toast } = useToast();
-
-  const selectedChapter = playbook?.chapters.find(c => c.id === selectedChapterId);
-  const selectedSection = selectedChapter?.sections.find(s => s.id === selectedSectionId);
-
-  // Fetch progress data
-  const { data: progressData } = useQuery<{ chapterId: string; completedAt: string }[]>({
-    queryKey: [`/api/playbook/${archetype}/progress`],
-  });
-
-  const { data: actionPlanData } = useQuery<{ dayNumber: number; taskId: string; completedAt: string }[]>({
-    queryKey: [`/api/playbook/${archetype}/action-plan`],
-  });
-
-  const { data: toolsData } = useQuery<{ toolId: string; status: string; notes: string }[]>({
-    queryKey: [`/api/playbook/${archetype}/tools`],
-  });
-
-  const { data: notesData } = useQuery<{ id: number; sectionId: string; content: string }[]>({
-    queryKey: [`/api/playbook/${archetype}/notes`],
-  });
-
-  const [noteSaveStatus, setNoteSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-
-  // Calculate progress percentage
-  const completedChapters = progressData?.length || 0;
-  const totalChapters = playbook?.chapters.length || 1;
-  const progressPercentage = Math.round((completedChapters / totalChapters) * 100);
-
-  // Mutations
-  const toggleChapterMutation = useMutation({
-    mutationFn: ({ chapterId, completed }: { chapterId: string; completed: boolean }) => 
-      apiRequest('POST', `/api/playbook/${archetype}/progress/chapter`, { chapterId, completed }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/progress`] });
-      toast({ description: "Progress updated!" });
-    },
-    onError: () => {
-      toast({ 
-        variant: "destructive", 
-        title: "Error", 
-        description: "Failed to update progress. Please try again." 
-      });
-    },
-  });
-
-  const toggleActionPlanMutation = useMutation({
-    mutationFn: ({ dayNumber, taskId, completed }: { dayNumber: number; taskId: string; completed: boolean }) => 
-      apiRequest('POST', `/api/playbook/${archetype}/action-plan/task`, { dayNumber, taskId, completed }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/action-plan`] });
-    },
-    onError: () => {
-      toast({ 
-        variant: "destructive", 
-        title: "Error", 
-        description: "Failed to update task. Please try again." 
-      });
-    },
-  });
-
-  const updateToolMutation = useMutation({
-    mutationFn: ({ toolId, status, notes }: { toolId: string; status: string; notes?: string }) => 
-      apiRequest('POST', `/api/playbook/${archetype}/tools/update`, { toolId, status: status.toLowerCase().replace(' ', '_'), notes }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/tools`] });
-      toast({ description: "Tool status updated!" });
-    },
-    onError: () => {
-      toast({ 
-        variant: "destructive", 
-        title: "Error", 
-        description: "Failed to update tool. Please try again." 
-      });
-    },
-  });
-
-  // Debounced note save
-  const saveNoteMutation = useMutation({
-    mutationFn: ({ sectionId, content }: { sectionId: string; content: string }) => 
-      apiRequest('POST', `/api/playbook/${archetype}/notes`, { sectionId, content }),
-    onMutate: () => {
-      setNoteSaveStatus('saving');
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/notes`] });
-      setNoteSaveStatus('saved');
-      setTimeout(() => setNoteSaveStatus('idle'), 2000);
-    },
-    onError: () => {
-      setNoteSaveStatus('error');
-      toast({ 
-        variant: "destructive", 
-        title: "Error", 
-        description: "Failed to save note. Please try again." 
-      });
-    },
-  });
-
-  // Debounce helper using useRef
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const handleNoteSave = (sectionId: string, content: string) => {
-    // Clear any existing timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-    
-    // Reset status to idle while user is typing
-    setNoteSaveStatus('idle');
-    
-    // Set new timer
-    const timer = setTimeout(() => {
-      if (content.trim()) {
-        saveNoteMutation.mutate({ sectionId, content });
-      }
-    }, 1000);
-    
-    // Store timer reference
-    debounceTimerRef.current = timer;
-  };
-
-  const isChapterComplete = (chapterId: string) => {
-    return progressData?.some(p => p.chapterId === chapterId);
-  };
-
-  const isTaskComplete = (dayNumber: number, taskId: string) => {
-    return actionPlanData?.some(t => t.dayNumber === dayNumber && t.taskId === taskId);
-  };
-
-  const getToolStatus = (toolId: string) => {
-    const status = toolsData?.find(t => t.toolId === toolId)?.status || "not_started";
-    // Convert backend format (not_started) to UI format (Not Started)
-    return status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  };
-
-  const getSectionNote = (sectionId: string) => {
-    return notesData?.find(n => n.sectionId === sectionId);
-  };
-
-  const handleDownloadPDF = () => {
-    window.open(`/api/playbook/${archetype}/pdf`, '_blank');
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
