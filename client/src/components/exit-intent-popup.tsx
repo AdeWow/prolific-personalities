@@ -21,6 +21,7 @@ export function ExitIntentPopup() {
     onSuccess: () => {
       setShowPopup(false);
       setDismissed(true);
+      localStorage.setItem('emailCaptured', 'true');
       toast({
         title: "Success!",
         description: "You've been added to our mailing list. Check your inbox soon!",
@@ -36,9 +37,10 @@ export function ExitIntentPopup() {
   });
 
   useEffect(() => {
-    // Check if user has already seen popup in this session
+    // Check if user has already seen popup in this session OR already captured email
     const hasSeenPopup = sessionStorage.getItem('exitIntentShown');
-    if (hasSeenPopup || dismissed) return;
+    const emailAlreadyCaptured = localStorage.getItem('emailCaptured');
+    if (hasSeenPopup || dismissed || emailAlreadyCaptured) return;
 
     const handleMouseLeave = (e: MouseEvent) => {
       // Detect when mouse leaves through top of viewport (about to close tab/navigate away)

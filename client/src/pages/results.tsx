@@ -115,6 +115,7 @@ export default function Results() {
     },
     onSuccess: () => {
       setEmailSaved(true);
+      localStorage.setItem('emailCaptured', 'true');
       trackEvent('email_captured', 'Conversion', archetype?.name || 'Unknown');
       toast({
         title: "Email saved!",
@@ -137,6 +138,8 @@ export default function Results() {
     },
     onSuccess: () => {
       setEmailResultsSent(true);
+      setEmailSaved(true); // Also mark as saved since email was sent
+      localStorage.setItem('emailCaptured', 'true');
       trackEvent('email_results_sent', 'Engagement', archetype?.name || 'Unknown');
       toast({
         title: "Results sent!",
@@ -236,7 +239,10 @@ export default function Results() {
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email && sessionId) {
-      emailCaptureMutation.mutate({ email, sessionId });
+      // Use emailResultsMutation to actually send the email (not just capture)
+      emailResultsMutation.mutate({ email, sessionId });
+      // Also store to localStorage so exit-intent popup knows email was captured
+      localStorage.setItem('emailCaptured', 'true');
     }
   };
 
@@ -735,10 +741,10 @@ export default function Results() {
                   <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg py-6"
-                    disabled={emailCaptureMutation.isPending || emailSaved}
+                    disabled={emailResultsMutation.isPending || emailSaved}
                     data-testid="button-submit-email"
                   >
-                    {emailCaptureMutation.isPending ? "Sending..." : "Send My Results"}
+                    {emailResultsMutation.isPending ? "Sending..." : "Send My Results"}
                     <Mail className="w-5 h-5 ml-2" />
                   </Button>
                 </form>
