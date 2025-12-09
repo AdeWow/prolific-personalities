@@ -39,7 +39,7 @@ export const PREMIUM_ASSETS: Record<ArchetypeSlug, PremiumAsset> = {
   },
   "structured-achiever": {
     displayName: "Structured Achiever Complete Playbook",
-    pdfFilename: "Structured Acheiver Premium_1762886907850.pdf" // Note: PDF has typo in filename
+    pdfFilename: "Structured Achiever Premium_1762886907850.pdf"
   }
 };
 
