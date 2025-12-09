@@ -24,6 +24,7 @@ import PaymentSuccess from "@/pages/payment-success";
 import PaymentCancelled from "@/pages/payment-cancelled";
 import PurchaseSuccess from "@/pages/purchase-success";
 import Playbook from "@/pages/playbook";
+import DevTools from "@/pages/dev-tools";
 
 function Router() {
   const [location] = useLocation();
@@ -39,6 +40,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/dev" component={DevTools} />
       <Route path="/quiz" component={Quiz} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/dashboard" component={Dashboard} />
