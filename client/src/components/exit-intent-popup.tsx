@@ -1,17 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { X, Sparkles } from "lucide-react";
+import { X, Gift, CheckCircle } from "lucide-react";
+import { useLocation } from "wouter";
+
+const PAGES_TO_EXCLUDE = [
+  '/playbook',
+  '/purchase',
+  '/success',
+  '/checkout',
+  '/dev',
+  '/dashboard',
+];
+
+const MIN_TIME_ON_PAGE_MS = 45000;
+const MIN_SCROLL_DEPTH = 25;
 
 export function ExitIntentPopup() {
   const [showPopup, setShowPopup] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [email, setEmail] = useState("");
+  const [isEligible, setIsEligible] = useState(false);
   const { toast } = useToast();
+  const [location] = useLocation();
+  
+  const timeOnPageRef = useRef(0);
+  const maxScrollDepthRef = useRef(0);
+  const hasEngagedRef = useRef(false);
 
   const emailCaptureMutation = useMutation({
     mutationFn: async (emailData: { email: string; sessionId: string }) => {
@@ -22,48 +41,96 @@ export function ExitIntentPopup() {
       setShowPopup(false);
       setDismissed(true);
       localStorage.setItem('emailCaptured', 'true');
+      localStorage.setItem('emailCaptureDate', Date.now().toString());
       toast({
-        title: "Success!",
-        description: "You've been added to our mailing list. Check your inbox soon!",
+        title: "You're all set!",
+        description: "Check your inbox for your first productivity insight.",
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to save email. Please try again.",
+        title: "Something went wrong",
+        description: "Please try again or contact us if the problem persists.",
         variant: "destructive",
       });
     },
   });
 
   useEffect(() => {
-    // Check if user has already seen popup in this session OR already captured email
+    const isExcludedPage = PAGES_TO_EXCLUDE.some(page => location.startsWith(page));
+    if (isExcludedPage) {
+      setIsEligible(false);
+      return;
+    }
+
     const hasSeenPopup = sessionStorage.getItem('exitIntentShown');
     const emailAlreadyCaptured = localStorage.getItem('emailCaptured');
-    if (hasSeenPopup || dismissed || emailAlreadyCaptured) return;
+    const lastDismissed = localStorage.getItem('exitIntentDismissedAt');
+    
+    if (lastDismissed) {
+      const daysSinceDismissed = (Date.now() - parseInt(lastDismissed)) / (1000 * 60 * 60 * 24);
+      if (daysSinceDismissed < 7) {
+        setIsEligible(false);
+        return;
+      }
+    }
+
+    if (hasSeenPopup || dismissed || emailAlreadyCaptured) {
+      setIsEligible(false);
+      return;
+    }
+
+    const startTime = Date.now();
+    
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const currentScroll = window.scrollY;
+      const scrollPercent = scrollHeight > 0 ? (currentScroll / scrollHeight) * 100 : 0;
+      maxScrollDepthRef.current = Math.max(maxScrollDepthRef.current, scrollPercent);
+    };
+
+    const checkEngagement = () => {
+      timeOnPageRef.current = Date.now() - startTime;
+      
+      const hasSpentEnoughTime = timeOnPageRef.current >= MIN_TIME_ON_PAGE_MS;
+      const hasScrolledEnough = maxScrollDepthRef.current >= MIN_SCROLL_DEPTH;
+      
+      if (hasSpentEnoughTime && hasScrolledEnough) {
+        hasEngagedRef.current = true;
+        setIsEligible(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    const engagementInterval = setInterval(checkEngagement, 5000);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearInterval(engagementInterval);
+    };
+  }, [location, dismissed]);
+
+  useEffect(() => {
+    if (!isEligible || dismissed || showPopup) return;
 
     const handleMouseLeave = (e: MouseEvent) => {
-      // Detect when mouse leaves through top of viewport (about to close tab/navigate away)
-      if (e.clientY <= 0 && !dismissed && !showPopup) {
+      if (e.clientY <= 0 && hasEngagedRef.current) {
         setShowPopup(true);
         sessionStorage.setItem('exitIntentShown', 'true');
       }
     };
 
-    // Add event listener after a short delay to avoid triggering on page load
-    const timeout = setTimeout(() => {
-      document.addEventListener('mouseleave', handleMouseLeave);
-    }, 3000);
+    document.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
-      clearTimeout(timeout);
       document.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [dismissed, showPopup]);
+  }, [isEligible, dismissed, showPopup]);
 
   const handleClose = () => {
     setShowPopup(false);
     setDismissed(true);
+    localStorage.setItem('exitIntentDismissedAt', Date.now().toString());
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -85,58 +152,81 @@ export function ExitIntentPopup() {
   if (!showPopup) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-300" data-testid="exit-intent-popup">
-      <Card className="max-w-lg w-full bg-white shadow-2xl border-0 relative animate-in zoom-in duration-300">
+    <div 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-300" 
+      data-testid="exit-intent-popup"
+    >
+      <Card className="max-w-md w-full bg-white shadow-2xl border-0 relative animate-in zoom-in-95 duration-300">
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-neutral-400 hover:text-neutral-600 transition-colors"
+          className="absolute top-4 right-4 text-neutral-400 hover:text-neutral-600 transition-colors z-10"
+          aria-label="Close popup"
           data-testid="button-close-popup"
         >
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5" />
         </button>
 
-        <CardContent className="p-8">
+        <CardContent className="p-6 sm:p-8">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="w-8 h-8 text-white" />
+            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Gift className="w-7 h-7 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-neutral-800 mb-3">
-              Wait! Before you go...
+            <h2 className="text-2xl font-bold text-neutral-800 mb-2">
+              Your Free Productivity Guide
             </h2>
-            <p className="text-lg text-neutral-600">
-              Get free productivity insights tailored to your working style delivered to your inbox every week.
+            <p className="text-neutral-600 leading-relaxed">
+              Join 2,000+ professionals getting weekly strategies matched to their productivity style.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="bg-indigo-50 rounded-lg p-4 mb-6">
+            <p className="text-sm font-medium text-indigo-900 mb-2">What you'll get:</p>
+            <ul className="space-y-2">
+              <li className="flex items-center text-sm text-indigo-800">
+                <CheckCircle className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+                Personalized tips for your archetype
+              </li>
+              <li className="flex items-center text-sm text-indigo-800">
+                <CheckCircle className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+                Tool recommendations that actually work
+              </li>
+              <li className="flex items-center text-sm text-indigo-800">
+                <CheckCircle className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+                Weekly micro-challenges to build habits
+              </li>
+            </ul>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-3">
             <Input
               type="email"
-              placeholder="Enter your email address"
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="text-lg py-6"
+              className="text-base py-5"
               data-testid="input-exit-email"
               required
             />
             <Button
               type="submit"
-              className="w-full gradient-primary text-white py-6 text-lg font-semibold hover:shadow-lg transition-all"
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-5 text-base font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all"
               disabled={emailCaptureMutation.isPending}
               data-testid="button-exit-submit"
             >
-              {emailCaptureMutation.isPending ? "Saving..." : "Get Free Insights"}
+              {emailCaptureMutation.isPending ? "Joining..." : "Get Free Access"}
             </Button>
           </form>
 
-          <p className="text-sm text-neutral-500 text-center mt-4">
-            We respect your privacy. Unsubscribe anytime.
+          <p className="text-xs text-neutral-500 text-center mt-4">
+            Free forever. Unsubscribe anytime. No spam.
           </p>
 
           <button
             onClick={handleClose}
-            className="w-full mt-4 text-neutral-500 hover:text-neutral-700 text-sm transition-colors"
+            className="w-full mt-3 text-neutral-400 hover:text-neutral-600 text-sm transition-colors"
+            data-testid="button-dismiss-popup"
           >
-            No thanks, I'll figure it out myself
+            Maybe later
           </button>
         </CardContent>
       </Card>
