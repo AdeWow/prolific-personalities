@@ -1,4 +1,4 @@
-import { users, quizResults, tools, emailCaptures, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes } from "@shared/schema";
 import { db } from "./db";
 import { eq, and } from "drizzle-orm";
 
@@ -17,6 +17,16 @@ export interface IStorage {
   createTool(tool: InsertTool): Promise<Tool>;
   // Email captures
   saveEmailCapture(capture: InsertEmailCapture): Promise<EmailCapture>;
+  getEmailCaptureByEmail(email: string): Promise<EmailCapture | undefined>;
+  updateEmailCaptureWelcomeSent(id: number): Promise<void>;
+  unsubscribeEmail(email: string): Promise<void>;
+  // Checkout attempts (for abandoned cart)
+  createCheckoutAttempt(attempt: InsertCheckoutAttempt): Promise<CheckoutAttempt>;
+  markCheckoutCompleted(sessionId: string, archetype: string): Promise<void>;
+  getAbandonedCheckouts(): Promise<CheckoutAttempt[]>;
+  markAbandonedEmailSent(id: number): Promise<void>;
+  // Unsubscribe feedback
+  saveUnsubscribeFeedback(feedback: InsertUnsubscribeFeedback): Promise<UnsubscribeFeedback>;
   // Waitlist
   saveWaitlistEntry(entry: InsertWaitlist): Promise<Waitlist>;
   // Feedback
@@ -164,6 +174,73 @@ export class DatabaseStorage implements IStorage {
       .values(insertCapture)
       .returning();
     return capture;
+  }
+
+  async getEmailCaptureByEmail(email: string): Promise<EmailCapture | undefined> {
+    const [capture] = await db.select().from(emailCaptures).where(eq(emailCaptures.email, email));
+    return capture || undefined;
+  }
+
+  async updateEmailCaptureWelcomeSent(id: number): Promise<void> {
+    await db
+      .update(emailCaptures)
+      .set({ welcomeEmailSent: 1 })
+      .where(eq(emailCaptures.id, id));
+  }
+
+  async unsubscribeEmail(email: string): Promise<void> {
+    await db
+      .update(emailCaptures)
+      .set({ subscribed: 0 })
+      .where(eq(emailCaptures.email, email));
+  }
+
+  async createCheckoutAttempt(insertAttempt: InsertCheckoutAttempt): Promise<CheckoutAttempt> {
+    const [attempt] = await db
+      .insert(checkoutAttempts)
+      .values(insertAttempt)
+      .returning();
+    return attempt;
+  }
+
+  async markCheckoutCompleted(sessionId: string, archetype: string): Promise<void> {
+    await db
+      .update(checkoutAttempts)
+      .set({ completedAt: new Date() })
+      .where(
+        and(
+          eq(checkoutAttempts.sessionId, sessionId),
+          eq(checkoutAttempts.archetype, archetype)
+        )
+      );
+  }
+
+  async getAbandonedCheckouts(): Promise<CheckoutAttempt[]> {
+    // Get checkouts that are older than 1 hour, not completed, and email not sent
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    const allAttempts = await db.select().from(checkoutAttempts);
+    
+    return allAttempts.filter(attempt => 
+      attempt.completedAt === null && 
+      attempt.abandonedEmailSent === 0 &&
+      attempt.email !== null &&
+      new Date(attempt.startedAt) < oneHourAgo
+    );
+  }
+
+  async markAbandonedEmailSent(id: number): Promise<void> {
+    await db
+      .update(checkoutAttempts)
+      .set({ abandonedEmailSent: 1 })
+      .where(eq(checkoutAttempts.id, id));
+  }
+
+  async saveUnsubscribeFeedback(insertFeedback: InsertUnsubscribeFeedback): Promise<UnsubscribeFeedback> {
+    const [feedbackEntry] = await db
+      .insert(unsubscribeFeedback)
+      .values(insertFeedback)
+      .returning();
+    return feedbackEntry;
   }
 
   async saveWaitlistEntry(insertEntry: InsertWaitlist): Promise<Waitlist> {

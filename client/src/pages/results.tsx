@@ -110,7 +110,7 @@ export default function Results() {
   // The success modal shows immediately after payment redirect
 
   const emailCaptureMutation = useMutation({
-    mutationFn: async (emailData: { email: string; sessionId: string }) => {
+    mutationFn: async (emailData: { email: string; sessionId: string; archetype?: string }) => {
       const response = await apiRequest('POST', '/api/email-capture', emailData);
       return response.json();
     },

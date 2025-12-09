@@ -12,8 +12,9 @@ import path from "path";
 import fs from "fs";
 import { getPremiumAssetForArchetype } from "./premiumAssets";
 import { Resend } from "resend";
-import { generateResultsEmail, generatePremiumPlaybookEmail } from "./emailTemplates";
+import { generateResultsEmail, generatePremiumPlaybookEmail, generateWelcomeEmail, generateAbandonedCartEmail } from "./emailTemplates";
 import { getArchetypeInfo } from "./archetypeData";
+import { insertCheckoutAttemptSchema, insertUnsubscribeFeedbackSchema } from "@shared/schema";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -74,6 +75,16 @@ export function registerWebhookRoute(app: Express) {
               customerEmail || undefined
             );
             console.log(`✅ Order ${orderId} marked as completed via webhook`);
+            
+            // Mark checkout attempt as completed (for abandoned cart tracking)
+            if (sessionId && archetype) {
+              try {
+                await storage.markCheckoutCompleted(sessionId, archetype);
+                console.log(`✅ Checkout attempt marked as completed for session ${sessionId}`);
+              } catch (err) {
+                console.error('Failed to mark checkout completed:', err);
+              }
+            }
 
             // Send premium PDF email if we have customer email
             if (resend && customerEmail && archetype && sessionId) {
@@ -339,11 +350,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Save email capture
+  // Save email capture and send welcome email
   app.post("/api/email-capture", emailLimiter, async (req, res) => {
     try {
       const validatedData = insertEmailCaptureSchema.parse(req.body);
       const capture = await storage.saveEmailCapture(validatedData);
+      
+      // Send welcome email if Resend is configured and archetype is provided
+      if (resend && validatedData.archetype) {
+        try {
+          const archetypeInfo = getArchetypeInfo(validatedData.archetype);
+          if (archetypeInfo) {
+            const baseUrl = process.env.REPLIT_DEV_DOMAIN 
+              ? `https://${process.env.REPLIT_DEV_DOMAIN}`
+              : 'https://prolificpersonalities.com';
+            
+            const { subject, html } = generateWelcomeEmail({
+              recipientEmail: validatedData.email,
+              archetype: {
+                id: validatedData.archetype,
+                title: archetypeInfo.title,
+              },
+              resultsUrl: `${baseUrl}/results?session=${validatedData.sessionId}`,
+              unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(validatedData.email)}`,
+            });
+            
+            await resend.emails.send({
+              from: 'Prolific Personalities <support@prolificpersonalities.com>',
+              to: validatedData.email,
+              subject,
+              html,
+            });
+            
+            // Mark welcome email as sent
+            await storage.updateEmailCaptureWelcomeSent(capture.id);
+            console.log(`Welcome email sent to ${validatedData.email}`);
+          }
+        } catch (emailError) {
+          console.error('Failed to send welcome email:', emailError);
+          // Don't fail the request if email fails
+        }
+      }
+      
       res.json(capture);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -445,6 +493,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log(`✅ Quiz results emailed to ${email}`);
+      
+      // Also save to email_captures and send welcome email (only if not already captured)
+      try {
+        const existingCapture = await storage.getEmailCaptureByEmail(email);
+        if (!existingCapture) {
+          const capture = await storage.saveEmailCapture({
+            email,
+            sessionId,
+            archetype: result.archetype,
+            subscribed: 1,
+          });
+          
+          // Send welcome email
+          const welcomeBaseUrl = process.env.REPLIT_DEV_DOMAIN 
+            ? `https://${process.env.REPLIT_DEV_DOMAIN}`
+            : 'https://prolificpersonalities.com';
+          
+          const welcomeEmail = generateWelcomeEmail({
+            recipientEmail: email,
+            archetype: {
+              id: result.archetype,
+              title: archetypeInfo.title,
+            },
+            resultsUrl: `${welcomeBaseUrl}/results?session=${sessionId}`,
+            unsubscribeUrl: `${welcomeBaseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
+          });
+          
+          await resend.emails.send({
+            from: 'Prolific Personalities <support@prolificpersonalities.com>',
+            to: email,
+            subject: welcomeEmail.subject,
+            html: welcomeEmail.html,
+          });
+          
+          await storage.updateEmailCaptureWelcomeSent(capture.id);
+          console.log(`✅ Welcome email sent to ${email}`);
+        }
+      } catch (captureError) {
+        console.error('Failed to save email capture or send welcome email:', captureError);
+        // Don't fail the main request
+      }
+      
       res.json({ success: true });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -493,6 +583,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amount: 2700,
         status: 'pending',
       });
+      
+      // Track checkout attempt for abandoned cart emails (will be updated with email after Stripe)
+      try {
+        await storage.createCheckoutAttempt({
+          sessionId,
+          archetype,
+          email: null, // Will be filled in by webhook if they complete
+        });
+      } catch (err) {
+        console.error('Failed to track checkout attempt:', err);
+        // Don't block checkout if tracking fails
+      }
 
       // Create Stripe Checkout Session
       const checkoutSession = await stripe.checkout.sessions.create({
@@ -806,6 +908,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error checking access:", error);
       res.status(500).json({ message: "Failed to check access" });
+    }
+  });
+
+  // Process abandoned cart emails (call this from a cron job or manually)
+  app.post("/api/process-abandoned-carts", async (req, res) => {
+    try {
+      if (!resend) {
+        res.status(503).json({ message: "Email service not configured" });
+        return;
+      }
+
+      const abandonedCheckouts = await storage.getAbandonedCheckouts();
+      console.log(`Found ${abandonedCheckouts.length} abandoned checkouts to process`);
+      
+      let sentCount = 0;
+      const baseUrl = process.env.REPLIT_DEV_DOMAIN 
+        ? `https://${process.env.REPLIT_DEV_DOMAIN}`
+        : 'https://prolificpersonalities.com';
+
+      for (const checkout of abandonedCheckouts) {
+        if (!checkout.email) continue;
+        
+        const archetypeInfo = getArchetypeInfo(checkout.archetype);
+        if (!archetypeInfo) continue;
+
+        try {
+          const { subject, html } = generateAbandonedCartEmail({
+            recipientEmail: checkout.email,
+            archetype: {
+              id: checkout.archetype,
+              title: archetypeInfo.title,
+            },
+            checkoutUrl: `${baseUrl}/results?session=${checkout.sessionId}`,
+            unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(checkout.email)}`,
+          });
+
+          await resend.emails.send({
+            from: 'Prolific Personalities <support@prolificpersonalities.com>',
+            to: checkout.email,
+            subject,
+            html,
+          });
+
+          await storage.markAbandonedEmailSent(checkout.id);
+          sentCount++;
+          console.log(`Abandoned cart email sent to ${checkout.email}`);
+        } catch (emailError) {
+          console.error(`Failed to send abandoned cart email to ${checkout.email}:`, emailError);
+        }
+      }
+
+      res.json({ message: `Processed ${abandonedCheckouts.length} abandoned carts, sent ${sentCount} emails` });
+    } catch (error) {
+      console.error("Error processing abandoned carts:", error);
+      res.status(500).json({ message: "Failed to process abandoned carts" });
+    }
+  });
+
+  // Unsubscribe endpoint
+  app.post("/api/unsubscribe", async (req, res) => {
+    try {
+      const { email, reason, reasonOther, rating, feedbackText } = z.object({
+        email: z.string().email(),
+        reason: z.string(),
+        reasonOther: z.string().optional(),
+        rating: z.string().optional(),
+        feedbackText: z.string().optional(),
+      }).parse(req.body);
+
+      // Unsubscribe the email
+      await storage.unsubscribeEmail(email);
+
+      // Save feedback
+      await storage.saveUnsubscribeFeedback({
+        email,
+        reason,
+        reasonOther: reasonOther || null,
+        rating: rating || null,
+        feedbackText: feedbackText || null,
+      });
+
+      res.json({ message: "Successfully unsubscribed" });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid data", errors: error.errors });
+      } else {
+        console.error("Error unsubscribing:", error);
+        res.status(500).json({ message: "Failed to unsubscribe" });
+      }
     }
   });
 
