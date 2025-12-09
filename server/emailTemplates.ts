@@ -500,7 +500,7 @@ export function generateWelcomeEmail(data: WelcomeEmailData): { subject: string;
   const { archetype, resultsUrl, unsubscribeUrl } = data;
   const quickWins = archetypeQuickWins[archetype.id] || archetypeQuickWins['structured-achiever'];
 
-  const subject = `Your ${archetype.title} Productivity Guide Is Here`;
+  const subject = `Welcome, ${archetype.title}! Your Productivity Guide Is Here`;
 
   const html = `
     <!DOCTYPE html>
