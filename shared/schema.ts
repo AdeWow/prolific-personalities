@@ -96,7 +96,30 @@ export const emailCaptures = pgTable("email_captures", {
   id: serial("id").primaryKey(),
   email: text("email").notNull(),
   sessionId: text("session_id").notNull(),
+  archetype: text("archetype"),
+  subscribed: integer("subscribed").notNull().default(1), // 1 = subscribed, 0 = unsubscribed
+  welcomeEmailSent: integer("welcome_email_sent").notNull().default(0), // 0 = not sent, 1 = sent
   capturedAt: timestamp("captured_at").defaultNow().notNull(),
+});
+
+export const checkoutAttempts = pgTable("checkout_attempts", {
+  id: serial("id").primaryKey(),
+  email: text("email"),
+  sessionId: text("session_id").notNull(),
+  archetype: text("archetype").notNull(),
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+  abandonedEmailSent: integer("abandoned_email_sent").notNull().default(0), // 0 = not sent, 1 = sent
+});
+
+export const unsubscribeFeedback = pgTable("unsubscribe_feedback", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull(),
+  reason: text("reason").notNull(), // too_many, not_relevant, already_purchased, not_interested, never_signed_up, other
+  reasonOther: text("reason_other"),
+  rating: text("rating"), // very_helpful, somewhat_helpful, neutral, not_very_helpful, not_helpful
+  feedbackText: text("feedback_text"),
+  unsubscribedAt: timestamp("unsubscribed_at").defaultNow().notNull(),
 });
 
 export const waitlist = pgTable("waitlist", {
@@ -179,6 +202,19 @@ export const insertToolSchema = createInsertSchema(tools).omit({
 export const insertEmailCaptureSchema = createInsertSchema(emailCaptures).omit({
   id: true,
   capturedAt: true,
+  welcomeEmailSent: true,
+});
+
+export const insertCheckoutAttemptSchema = createInsertSchema(checkoutAttempts).omit({
+  id: true,
+  startedAt: true,
+  completedAt: true,
+  abandonedEmailSent: true,
+});
+
+export const insertUnsubscribeFeedbackSchema = createInsertSchema(unsubscribeFeedback).omit({
+  id: true,
+  unsubscribedAt: true,
 });
 
 export const insertWaitlistSchema = createInsertSchema(waitlist).omit({
@@ -225,6 +261,10 @@ export type InsertTool = z.infer<typeof insertToolSchema>;
 export type Tool = typeof tools.$inferSelect;
 export type InsertEmailCapture = z.infer<typeof insertEmailCaptureSchema>;
 export type EmailCapture = typeof emailCaptures.$inferSelect;
+export type InsertCheckoutAttempt = z.infer<typeof insertCheckoutAttemptSchema>;
+export type CheckoutAttempt = typeof checkoutAttempts.$inferSelect;
+export type InsertUnsubscribeFeedback = z.infer<typeof insertUnsubscribeFeedbackSchema>;
+export type UnsubscribeFeedback = typeof unsubscribeFeedback.$inferSelect;
 export type InsertWaitlist = z.infer<typeof insertWaitlistSchema>;
 export type Waitlist = typeof waitlist.$inferSelect;
 export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
