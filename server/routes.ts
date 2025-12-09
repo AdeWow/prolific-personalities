@@ -1000,6 +1000,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test email endpoint - sends all email types to specified address for testing
+  app.post("/api/test-emails", async (req, res) => {
+    try {
+      if (!resend) {
+        res.status(503).json({ message: "Email service not configured" });
+        return;
+      }
+
+      const { email } = z.object({
+        email: z.string().email(),
+      }).parse(req.body);
+
+      const baseUrl = process.env.REPLIT_DEV_DOMAIN 
+        ? `https://${process.env.REPLIT_DEV_DOMAIN}`
+        : 'https://prolificpersonalities.com';
+
+      // Sample archetype for testing
+      const sampleArchetype = {
+        id: 'strategic-planner',
+        title: 'The Strategic Planner',
+        tagline: 'Methodical mastery through systematic thinking',
+        description: 'Strategic Planners thrive on structure, long-term goals, and detailed planning. You excel at breaking complex projects into manageable steps and maintaining focus on the big picture while executing tactical details.'
+      };
+
+      const sampleScores = {
+        structure: 85,
+        motivation: 70,
+        cognitive: 65,
+        task: 80
+      };
+
+      const results = [];
+
+      // 1. Send Welcome Email
+      try {
+        const welcomeEmail = generateWelcomeEmail({
+          recipientEmail: email,
+          archetype: {
+            id: sampleArchetype.id,
+            title: sampleArchetype.title,
+          },
+          resultsUrl: `${baseUrl}/results?session=test-session-123`,
+          unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
+        });
+
+        await resend.emails.send({
+          from: 'Prolific Personalities <support@prolificpersonalities.com>',
+          to: email,
+          subject: `[TEST] ${welcomeEmail.subject}`,
+          html: welcomeEmail.html,
+        });
+        results.push({ type: 'Welcome Email', status: 'sent' });
+      } catch (e) {
+        results.push({ type: 'Welcome Email', status: 'failed', error: String(e) });
+      }
+
+      // 2. Send Abandoned Cart Email
+      try {
+        const abandonedCartEmail = generateAbandonedCartEmail({
+          recipientEmail: email,
+          archetype: {
+            id: sampleArchetype.id,
+            title: sampleArchetype.title,
+          },
+          checkoutUrl: `${baseUrl}/results/test-session-123#premium`,
+          unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
+        });
+
+        await resend.emails.send({
+          from: 'Prolific Personalities <support@prolificpersonalities.com>',
+          to: email,
+          subject: `[TEST] ${abandonedCartEmail.subject}`,
+          html: abandonedCartEmail.html,
+        });
+        results.push({ type: 'Abandoned Cart Email', status: 'sent' });
+      } catch (e) {
+        results.push({ type: 'Abandoned Cart Email', status: 'failed', error: String(e) });
+      }
+
+      // 3. Send Results Email
+      try {
+        const resultsEmail = generateResultsEmail({
+          recipientEmail: email,
+          archetype: sampleArchetype,
+          scores: sampleScores,
+          resultsUrl: `${baseUrl}/results/test-session-123`,
+        });
+
+        await resend.emails.send({
+          from: 'Prolific Personalities <support@prolificpersonalities.com>',
+          to: email,
+          subject: `[TEST] ${resultsEmail.subject}`,
+          html: resultsEmail.html,
+        });
+        results.push({ type: 'Results Email', status: 'sent' });
+      } catch (e) {
+        results.push({ type: 'Results Email', status: 'failed', error: String(e) });
+      }
+
+      console.log(`✅ Test emails sent to ${email}:`, results);
+      res.json({ message: "Test emails sent", results });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid email address", errors: error.errors });
+      } else {
+        console.error("Error sending test emails:", error);
+        res.status(500).json({ message: "Failed to send test emails" });
+      }
+    }
+  });
+
   // XML Sitemap for SEO
   app.get("/sitemap.xml", async (req, res) => {
     // Use APP_URL if set, otherwise safely construct from request
