@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { trackEvent } from "@/lib/analytics";
 import { Mail, Sparkles } from "lucide-react";
 
 interface EmailCaptureCardProps {
@@ -34,6 +35,7 @@ export function EmailCaptureCard({
     onSuccess: () => {
       setSubmitted(true);
       setEmail("");
+      trackEvent('email_captured', 'Conversion', `Context: ${context}`);
       toast({
         title: "Success!",
         description: "You've been added to our mailing list. Check your inbox soon!",

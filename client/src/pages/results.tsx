@@ -12,6 +12,7 @@ import { determineArchetypeEnhanced } from "@/lib/quiz-logic";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle, Info } from "lucide-react";
+import { TestimonialsSection } from "@/components/testimonials-section";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
   DropdownMenu,
@@ -858,6 +859,9 @@ export default function Results() {
           </div>
         </div>
       </div>
+
+      {/* Social Proof - Compact Testimonials */}
+      <TestimonialsSection variant="compact" showTitle={true} maxItems={3} />
 
       {/* Premium Preview Section */}
       <section className="py-16 bg-gradient-to-br from-indigo-600 to-purple-600">

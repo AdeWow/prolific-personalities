@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { ArchetypeCard } from "@/components/archetype-card";
 import { QuizContainer } from "@/components/quiz-container";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
+import { TestimonialsSection } from "@/components/testimonials-section";
 import { archetypes } from "@/data/archetypes";
 import { Link } from "wouter";
 import heroImage from "@assets/adeola2020_an_inclusive_group_of_people_engaged_in_focused_work_d26c58c2-1296-4274-ac46-c7a942411aed_1750379682084.png";
@@ -161,62 +160,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
-              Real People, Real Results
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-white shadow-lg hover:shadow-xl transition-all" data-testid="testimonial-sarah">
-              <CardContent className="p-8">
-                <div className="text-yellow-500 mb-4">⭐⭐⭐⭐⭐</div>
-                <p className="text-neutral-700 italic mb-6">
-                  "Doubled my output in three weeks. Finally, a framework that fits how my brain works."
-                </p>
-                <div className="space-y-2">
-                  <div className="font-semibold text-neutral-800">Sarah M.</div>
-                  <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
-                    The Structured Achiever
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white shadow-lg hover:shadow-xl transition-all" data-testid="testimonial-david">
-              <CardContent className="p-8">
-                <div className="text-yellow-500 mb-4">⭐⭐⭐⭐⭐</div>
-                <p className="text-neutral-700 italic mb-6">
-                  "First productivity system that understands me instead of forcing me into a mold."
-                </p>
-                <div className="space-y-2">
-                  <div className="font-semibold text-neutral-800">David K.</div>
-                  <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100">
-                    The Chaotic Creative
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white shadow-lg hover:shadow-xl transition-all" data-testid="testimonial-lisa">
-              <CardContent className="p-8">
-                <div className="text-yellow-500 mb-4">⭐⭐⭐⭐⭐</div>
-                <p className="text-neutral-700 italic mb-6">
-                  "Finally understand why time-blocking never worked. Now I use strategies that match my natural flow."
-                </p>
-                <div className="space-y-2">
-                  <div className="font-semibold text-neutral-800">Lisa R.</div>
-                  <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                    The Strategic Planner
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+      <TestimonialsSection variant="full" />
 
       {/* Archetype Preview */}
       <section className="py-20 bg-gradient-to-br from-neutral-50 to-indigo-50">

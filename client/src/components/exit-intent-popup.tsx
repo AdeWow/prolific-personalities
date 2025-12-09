@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { trackEvent } from "@/lib/analytics";
 import { X, Gift, CheckCircle } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -42,6 +43,7 @@ export function ExitIntentPopup() {
       setDismissed(true);
       localStorage.setItem('emailCaptured', 'true');
       localStorage.setItem('emailCaptureDate', Date.now().toString());
+      trackEvent('email_captured', 'Conversion', 'Exit Intent Popup');
       toast({
         title: "You're all set!",
         description: "Check your inbox for your first productivity insight.",
@@ -117,6 +119,7 @@ export function ExitIntentPopup() {
       if (e.clientY <= 0 && hasEngagedRef.current) {
         setShowPopup(true);
         sessionStorage.setItem('exitIntentShown', 'true');
+        trackEvent('exit_intent_shown', 'Engagement', 'Popup Displayed');
       }
     };
 
