@@ -395,5 +395,62 @@ export const archetypes: Archetype[] = [
       cognitive: { min: 7, max: 28 },
       task: { min: 7, max: 21 }
     }
+  },
+  {
+    id: 'adaptive-generalist',
+    name: 'The Adaptive Generalist',
+    title: 'Context-Shifting Polymath',
+    tagline: 'You don\'t have one productivity style—you have many. Your superpower is matching approach to context.',
+    icon: '🔄',
+    color: 'teal',
+    gradientFrom: 'from-teal-400',
+    gradientTo: 'to-cyan-400',
+    tags: ['Adaptable', 'Multi-Modal', 'Context-Aware'],
+    struggle: [
+      "You scored in the balanced range on most productivity axes. This means you don't strongly prefer one approach over another—you're highly adaptable and context-dependent.",
+      "Traditional productivity advice says 'find YOUR system and stick to it.' But that's never worked for you. Different projects need different approaches. Your energy and context vary significantly. One-size-fits-all just doesn't fit.",
+      "Research on cognitive flexibility shows this isn't a flaw—it's a different kind of productivity profile. You're not 'in between' archetypes. You're multi-modal, able to shift approaches based on what the situation demands."
+    ],
+    superpowers: [
+      { title: 'Cognitive Flexibility', description: 'You can switch between different mental modes based on what\'s needed.' },
+      { title: 'Context Awareness', description: 'You intuitively know when to plan vs. dive in, when to focus on details vs. big picture.' },
+      { title: 'Versatility', description: 'You can work structured OR flexibly, with internal OR external motivation.' },
+      { title: 'Problem-Solving', description: 'You bring multiple tools to every challenge instead of one rigid approach.' }
+    ],
+    blockers: [
+      { title: 'Decision fatigue', description: 'Having to choose an approach for each task is mentally taxing' },
+      { title: 'No default mode', description: 'You lack the autopilot that other types have for routine tasks' },
+      { title: 'Inconsistency concerns', description: 'You may worry that switching approaches means you\'re doing it wrong' }
+    ],
+    quickWins: [
+      { 
+        title: 'Context-First Assessment', 
+        description: 'Before starting any task, ask: "What does THIS task need?" High stakes = more structure. Creative exploration = more flexibility. Match approach to context.' 
+      },
+      { 
+        title: 'Build a Toolkit, Not a System', 
+        description: 'Create a menu of approaches you can choose from: "For creative work, I do X. For admin tasks, I do Y. For deep focus, I do Z." Variety is your strength.' 
+      },
+      { 
+        title: 'Weekly Mode Review', 
+        description: 'Every Sunday, look at your week ahead and pre-decide which mode each major task needs. This reduces daily decision fatigue.' 
+      }
+    ],
+    framework: {
+      name: '🔄 Context-Mode Matching',
+      why: 'Instead of forcing one approach everywhere, you explicitly match your approach to what each task actually needs. This turns your adaptability from a liability into a superpower.'
+    },
+    premiumIncludes: {
+      frameworks: ['Context-Mode Matching', 'Energy-Based Task Assignment', 'Multi-Modal Productivity Toolkit'],
+      tools: ['Flexible task managers (Notion, Todoist)', 'Energy tracking apps', 'Context-switching rituals'],
+      plan: ['Week 1: Map your modes and when to use each', 'Week 2: Build your personal productivity toolkit', 'Week 3: Reduce decision fatigue with pre-planning', 'Week 4: Optimize your context-switching'],
+      special: ['Why consistency is overrated for you', 'Embracing productive inconsistency', 'When to borrow from other archetypes']
+    },
+    scoreRanges: {
+      structure: { min: 15, max: 28 },
+      motivation: { min: 15, max: 28 },
+      cognitive: { min: 15, max: 28 },
+      task: { min: 15, max: 28 }
+    }
   }
 ];

@@ -43,6 +43,12 @@ export const archetypeData: Record<string, ArchetypeInfo> = {
     tagline: 'You adapt effortlessly to change and thrive in dynamic environments.',
     description: "You're the person everyone wants on their team when plans fall apart. Unexpected changes don't stress you—they energize you. You think on your feet, pivot without panic, and turn chaos into opportunity.",
   },
+  'adaptive-generalist': {
+    id: 'adaptive-generalist',
+    title: 'The Adaptive Generalist',
+    tagline: "You don't have one productivity style—you have many. Your superpower is matching approach to context.",
+    description: "You scored in the balanced range on most productivity axes. This means you don't strongly prefer one approach over another—you're highly adaptable and context-dependent. Traditional productivity advice says 'find YOUR system and stick to it.' But that's never worked for you.",
+  },
 };
 
 export function getArchetypeInfo(archetypeId: string): ArchetypeInfo | null {

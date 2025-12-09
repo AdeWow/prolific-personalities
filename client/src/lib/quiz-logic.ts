@@ -83,6 +83,12 @@ export const archetypeProfiles: Record<string, NormalizedScores> = {
     cognitive: 30,    // LOW-MEDIUM (detail to action)
     task: 20,         // LOW (execution)
   },
+  'adaptive-generalist': {
+    structure: 50,    // MEDIUM (balanced)
+    motivation: 50,   // MEDIUM (balanced)
+    cognitive: 50,    // MEDIUM (balanced)
+    task: 50,         // MEDIUM (balanced)
+  },
 };
 
 // Normalize scores from 7-35 range to 0-100 range
@@ -292,14 +298,42 @@ export function determineArchetypeEnhanced(scores: QuizScores): ArchetypeResult 
     notes.push(`Try ${topFit.archetype.name} frameworks first (${topFit.fitPercentage}% match), then explore ${secondFit.archetype.name} if needed.`);
     
   // Scenario 3: All axes in balanced range (adaptive generalist)
+  // Actually return adaptive-generalist as the primary archetype
   } else if (Object.values(categorization).filter(cat => cat === 'MEDIUM').length >= 3) {
+    const adaptiveGeneralist = archetypes.find(a => a.id === 'adaptive-generalist');
+    if (adaptiveGeneralist) {
+      // Calculate fit for adaptive-generalist
+      const generalistProfile = archetypeProfiles['adaptive-generalist'];
+      const generalistFit = calculateArchetypeFit(normalizedScores, generalistProfile);
+      
+      confidenceLevel = 'strong';
+      confidence = generalistFit;
+      
+      // Add top fits as secondary options for context-specific use
+      if (topFit) secondary.push(topFit.archetype);
+      if (secondFit) secondary.push(secondFit.archetype);
+      
+      notes.push(`You scored in the balanced range on ${Object.values(categorization).filter(cat => cat === 'MEDIUM').length} of 4 axes.`);
+      notes.push(`This makes you an Adaptive Generalist - someone who can match their approach to context.`);
+      notes.push(`You can borrow strategies from ${topFit.archetype.name} and ${secondFit?.archetype.name || 'other archetypes'} depending on the situation.`);
+      
+      return {
+        primary: adaptiveGeneralist,
+        confidence,
+        confidenceLevel,
+        secondary: secondary.length > 0 ? secondary : undefined,
+        categorization,
+        notes,
+        allFitScores,
+        normalizedScores,
+      };
+    }
+    // Fallback if adaptive-generalist not found (shouldn't happen)
     confidenceLevel = 'weak';
     confidence = topFit.fitPercentage;
     if (secondFit) secondary.push(secondFit.archetype);
     if (thirdFit) secondary.push(thirdFit.archetype);
     notes.push(`You scored in the balanced range on multiple axes. This indicates high adaptability.`);
-    notes.push(`You can match your productivity style to different contexts rather than following one rigid approach.`);
-    notes.push(`Consider experimenting with ${topFit.archetype.name} and ${secondFit?.archetype.name || 'Flexible Improviser'} frameworks to see what resonates.`);
     
   // Standard scenarios based on top fit percentage
   } else if (topFit.fitPercentage >= 80) {

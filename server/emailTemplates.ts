@@ -483,6 +483,15 @@ const archetypeQuickWins: Record<string, { strength: string; pitfall: string; st
       'Use "if-then" planning for common situations instead of detailed schedules',
       'Review your week every Sunday to spot patterns and adjust course'
     ]
+  },
+  'adaptive-generalist': {
+    strength: 'Your cognitive flexibility - you can switch between different mental modes based on context',
+    pitfall: 'Decision fatigue from having to choose an approach for each task',
+    strategies: [
+      'Before starting any task, ask: "What does THIS task need?" Match approach to context.',
+      'Build a toolkit of approaches rather than one system - variety is your strength',
+      'Pre-decide modes for your week on Sunday to reduce daily decision fatigue'
+    ]
   }
 };
 
