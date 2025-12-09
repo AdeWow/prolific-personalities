@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
+import { PDFPreview } from "@/components/pdf-preview";
 import { Brain, Target, Zap, BookOpen, Download, TrendingUp } from "lucide-react";
 
 export default function Science() {
@@ -288,24 +289,25 @@ export default function Science() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-neutral-50 to-indigo-50 dark:from-gray-800 dark:to-indigo-900/20 border-neutral-200 dark:border-gray-700 shadow-lg">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Want to Dive Deeper?</h2>
-              
-              <p className="text-center text-gray-700 dark:text-gray-300 mb-6">
-                Download the full research paper for detailed methodologies, statistical analyses, and complete citations.
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Want to Dive Deeper?</h2>
+              <p className="text-gray-700 dark:text-gray-300">
+                Preview our full research paper below, or download it for offline reading.
               </p>
+            </div>
 
-              <div className="text-center mb-8">
-                <a href="/prolific-personalities-research-paper.pdf" download="Prolific-Personalities-Research-Paper.pdf">
-                  <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 gap-2" data-testid="button-download-research-bottom">
-                    <Download className="h-5 w-5" />
-                    Download Full Research Paper (PDF)
-                  </Button>
-                </a>
-              </div>
+            <PDFPreview
+              src="/prolific-personalities-research-paper.pdf"
+              title="The Science of Personalized Productivity"
+              downloadFilename="Prolific-Personalities-Research-Paper.pdf"
+              height="700px"
+              showDownloadButton={true}
+              collapsible={false}
+            />
 
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <Card className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+              <CardContent className="p-6">
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Key Sources:</h3>
                 <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                   <p>• Gollwitzer, P. M., & Sheeran, P. (2006). Implementation intentions and goal achievement. <em>Advances in Experimental Social Psychology</em>.</p>
@@ -313,9 +315,9 @@ export default function Science() {
                   <p>• Wilmot, M. P., & Ones, D. S. (2021). Conscientiousness and job performance. <em>Journal of Applied Psychology</em>.</p>
                   <p>• Plus 40+ additional peer-reviewed sources in the full paper</p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
 
           <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 border-primary/20 dark:border-primary/30 shadow-lg">
             <CardContent className="p-8 text-center">

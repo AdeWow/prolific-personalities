@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { playbookContentMap } from "@shared/playbookContent";
+import { PDFPreview } from "@/components/pdf-preview";
 import { 
   Loader2, 
   Lock, 
@@ -481,22 +482,26 @@ export default function Playbook() {
         {/* Main Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
           <Tabs defaultValue="content" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 max-w-2xl">
+            <TabsList className="grid w-full grid-cols-5 max-w-3xl">
               <TabsTrigger value="content" data-testid="tab-content">
-                <BookOpen className="h-4 w-4 mr-2" />
+                <BookOpen className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">Content</span>
               </TabsTrigger>
               <TabsTrigger value="action-plan" data-testid="tab-action-plan">
-                <Calendar className="h-4 w-4 mr-2" />
+                <Calendar className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">30-Day Plan</span>
               </TabsTrigger>
               <TabsTrigger value="tools" data-testid="tab-tools">
-                <Wrench className="h-4 w-4 mr-2" />
+                <Wrench className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">Tools</span>
               </TabsTrigger>
               <TabsTrigger value="notes" data-testid="tab-notes">
-                <FileText className="h-4 w-4 mr-2" />
+                <FileText className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">Notes</span>
+              </TabsTrigger>
+              <TabsTrigger value="pdf" data-testid="tab-pdf">
+                <Download className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">PDF</span>
               </TabsTrigger>
             </TabsList>
 
@@ -661,6 +666,25 @@ export default function Playbook() {
                       {noteSaveStatus === 'idle' && 'Your notes are automatically saved'}
                     </p>
                   </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="pdf" className="space-y-4">
+              <PDFPreview
+                src={`/api/playbook/${archetype}/pdf`}
+                title={playbook?.title || "Premium Playbook"}
+                downloadFilename={`${playbook?.title || 'Playbook'}.pdf`}
+                height="700px"
+                showDownloadButton={true}
+                collapsible={false}
+              />
+              <Card className="bg-gray-50 dark:bg-gray-800">
+                <CardContent className="p-4">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+                    Tip: Use the interactive Content tab for the best reading experience with progress tracking, 
+                    or download the PDF for offline access.
+                  </p>
                 </CardContent>
               </Card>
             </TabsContent>
