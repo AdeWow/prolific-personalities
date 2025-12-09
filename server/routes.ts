@@ -712,7 +712,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return;
       }
 
-      const hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype);
+      // Check direct access to the requested archetype
+      let hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype);
+      
+      // Special case: Adaptive Generalist purchasers also get access to Flexible Improviser playbook
+      // (since Flexible Improviser is included as a baseline in the Adaptive Generalist package)
+      if (!hasAccess && archetype === 'flexible-improviser') {
+        hasAccess = await storage.hasUserPurchasedPlaybook(userId, 'adaptive-generalist');
+      }
+      
       if (!hasAccess) {
         res.status(403).json({ message: "Premium access required. Please purchase the playbook for this archetype." });
         return;

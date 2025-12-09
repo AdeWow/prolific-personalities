@@ -28,6 +28,10 @@ export default function FAQ() {
       answer: "Many people resonate with more than one, but the quiz identifies your dominant pattern. That said, your results will evolve with self-awareness and practice—and we encourage revisiting them over time."
     },
     {
+      question: "What if I don't fit neatly into any archetype?",
+      answer: "If you score in the balanced range across all dimensions with no clear winner, you may be an Adaptive Generalist—someone whose productivity style naturally shifts based on context. This isn't a problem to fix; it's actually a sophisticated way of working. You're a 'productivity chameleon' who can borrow strategies from multiple archetypes depending on the situation. Your premium playbook includes a 4-week experimentation protocol to help you identify which approaches work best for different types of tasks."
+    },
+    {
       question: "Is this based on real science?",
       answer: "Yes. The assessment draws from cognitive load theory, self-determination theory, executive function research, and motivational psychology. We're not offering gimmicks—we're translating real science into practical insight."
     },
