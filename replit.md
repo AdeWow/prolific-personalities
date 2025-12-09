@@ -73,6 +73,8 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **Science Page Simplification**: Redesigned for accessibility with downloadable research paper and embedded PDF preview.
 -   **PDF Preview Component**: Reusable component for previewing PDF documents with download and fullscreen buttons, used on Science page (research paper) and Playbook page (PDF tab).
 -   **About Page Enhancements**: Research link, waitlist form, and comprehensive feedback form.
+-   **Refund Policy Page**: Comprehensive 30-day satisfaction guarantee with clear step-by-step refund process documentation. Links added to footer, pricing page, and results checkout section.
+-   **Image Optimization**: All images compressed using sharp library with 60-90% file size reduction (archetype images 15MB→3MB, logos 4MB→1MB, ~20MB total savings) while maintaining visual quality.
 
 ## External Dependencies
 
