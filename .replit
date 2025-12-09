@@ -28,6 +28,10 @@ localPort = 35729
 externalPort = 3001
 
 [[ports]]
+localPort = 35907
+externalPort = 9000
+
+[[ports]]
 localPort = 36965
 externalPort = 8080
 
@@ -102,3 +106,7 @@ integrations = ["javascript_log_in_with_replit:1.0.0", "javascript_google_analyt
 [userenv.production]
 STRIPE_SECRET_KEY = "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"
 VITE_STRIPE_PUBLIC_KEY = "pk_live_51SSL5XRjOgiiWfUsICUAnF5dCdZgusgSd2CCeMzQftJRRz9wNyNUtgjbxH7huxwXcXQypKlIAC0nLhZe0GpFDBlO000UiypI1L"
+
+[userenv.development]
+STRIPE_SECRET_KEY = "sk_test_51SSL5hDgYxPZetS93moC9rAHvQIZG9IPPjhc0pziUgyNMuSyVsZm0Ffj3rOC0ZZTkZQGT9QXESIwltrwWV20Tgmg00eWyYCdfO"
+VITE_STRIPE_PUBLIC_KEY = "pk_test_51SSL5hDgYxPZetS9Xcga6UODkqtqSV3l9Kh5y8upeQo25gRf70vsxmERPxf47l7rwWe6A4GjsfqAL23BYo5bKcDx00GHKnsEyi"
