@@ -4,6 +4,7 @@ import strategicPlannerImage from "@assets/ae5e43be-19bd-4df2-b053-48732a922fc6_
 import structuredAchieverImage from "@assets/e3fac029-7f4f-4a16-a237-d141ea58b5d6_1762297404337.png";
 import flexibleImproviserImage from "@assets/84c5e71b-0e9d-4158-b8a2-ea2b5f1f0abd_1762297453206.png";
 import noveltySeekerImage from "@assets/56861868-15df-4eb4-a0ae-f1629437f82e_1762297512686.png";
+import adaptiveGeneralistImage from "@assets/d9e893a7-c0ec-4b6f-92b2-d9222bdeafbc_1765447835628.png";
 
 export interface Archetype {
   id: string;
@@ -402,6 +403,7 @@ export const archetypes: Archetype[] = [
     title: 'Context-Shifting Polymath',
     tagline: 'You don\'t have one productivity style—you have many. Your superpower is matching approach to context.',
     icon: '🔄',
+    image: adaptiveGeneralistImage,
     color: 'teal',
     gradientFrom: 'from-teal-400',
     gradientTo: 'to-cyan-400',
