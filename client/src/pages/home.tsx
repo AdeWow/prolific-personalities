@@ -5,8 +5,7 @@ import { SEOHead } from "@/components/seo-head";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { archetypes } from "@/data/archetypes";
 import { Link } from "wouter";
-import heroImage from "@assets/adeola2020_an_inclusive_group_of_people_engaged_in_focused_work_d26c58c2-1296-4274-ac46-c7a942411aed_1750379682084.png";
-import humanImage from "@assets/stock_images/person_smiling_while_2501deb3.jpg";
+import quizHeroImage from "@assets/HomePage_laptop_quiz_taking_1765660797490.png";
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
 export default function Home() {
@@ -102,8 +101,8 @@ export default function Home() {
             {/* Hero Image */}
             <div className="relative">
               <img 
-                src={humanImage} 
-                alt="Person working productively with a smile"
+                src={quizHeroImage} 
+                alt="Person taking the productivity archetype quiz on laptop"
                 className="w-full h-auto rounded-2xl shadow-2xl"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent rounded-2xl"></div>
@@ -192,18 +191,30 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="text-center">
+          <div className="text-center space-y-4">
             <Link href="/quiz">
               <Button 
                 className="gradient-primary text-white px-10 py-6 rounded-xl font-semibold text-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                 data-testid="button-start-full-quiz"
               >
-                Take the Quiz (5 min)
+                Take the Full Quiz (5 min)
               </Button>
             </Link>
-            <p className="text-neutral-500 mt-4 text-sm">
-              28 questions • Free • Instant results
+            <p className="text-neutral-500 text-sm">
+              28 questions • Most accurate results
             </p>
+            <div className="pt-2">
+              <p className="text-neutral-600 text-sm mb-2">Short on time?</p>
+              <Link href="/quick-scan">
+                <Button 
+                  variant="outline"
+                  className="border-teal-300 text-teal-700 hover:bg-teal-50 px-6 py-3 rounded-lg font-medium"
+                  data-testid="button-quick-scan"
+                >
+                  Try the 1-Minute Quick Scan
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
