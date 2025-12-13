@@ -334,7 +334,7 @@ export default function Science() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/quiz">
                   <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" data-testid="button-discover-archetype">
-                    Discover Your Archetype
+                    Take the Quiz
                   </Button>
                 </Link>
                 <Link href="/about">

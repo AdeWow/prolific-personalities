@@ -93,7 +93,7 @@ export default function Home() {
                     className="gradient-primary text-white px-8 py-6 rounded-xl font-semibold text-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                     data-testid="button-start-quiz"
                   >
-                    Discover Your Archetype
+                    Take the Quiz
                   </Button>
                 </Link>
                 <Link href="/archetypes">

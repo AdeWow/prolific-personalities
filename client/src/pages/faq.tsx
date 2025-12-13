@@ -110,7 +110,7 @@ export default function FAQ() {
             <Link href="/quiz">
               <Button className="gradient-primary text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
                 <i className="fas fa-play mr-2"></i>
-                Start Assessment
+                Take the Quiz
               </Button>
             </Link>
           </div>

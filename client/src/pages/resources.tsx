@@ -120,7 +120,7 @@ export default function Resources() {
           <div className="flex justify-center mb-12">
             <Link href="/quiz">
               <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" data-testid="button-discover-archetype">
-                Discover Your Archetype First
+                Take the Quiz First
               </Button>
             </Link>
           </div>

@@ -143,7 +143,7 @@ export default function FounderPage() {
           </p>
           <Link href="/quiz">
             <Button size="lg" className="gradient-primary text-white px-8 py-4 rounded-xl font-semibold text-lg" data-testid="button-take-quiz">
-              Start Your Assessment
+              Take the Quiz
             </Button>
           </Link>
         </div>

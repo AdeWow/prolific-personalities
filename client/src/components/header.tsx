@@ -57,7 +57,7 @@ export function Header() {
               <>
                 <Link href="/quiz">
                   <Button className="gradient-primary text-white px-6 py-2 rounded-xl font-semibold hover:shadow-lg transition-all" data-testid="button-take-quiz">
-                    Take Assessment
+                    Take the Quiz
                   </Button>
                 </Link>
                 <a href="/api/login">
@@ -120,7 +120,7 @@ export function Header() {
               <>
                 <Link href="/quiz" onClick={() => setMobileMenuOpen(false)}>
                   <Button className="w-full gradient-primary text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all" data-testid="button-take-quiz-mobile">
-                    Take Assessment
+                    Take the Quiz
                   </Button>
                 </Link>
                 <a href="/api/login" onClick={() => setMobileMenuOpen(false)}>
