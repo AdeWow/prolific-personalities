@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ArchetypeCard } from "@/components/archetype-card";
-import { QuizContainer } from "@/components/quiz-container";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { TestimonialsSection } from "@/components/testimonials-section";
@@ -46,11 +45,6 @@ export default function Home() {
           "@type": "Offer",
           "price": "0",
           "priceCurrency": "USD"
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "reviewCount": "2000"
         }
       }
     ]
@@ -60,7 +54,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
       <SEOHead
         title="Discover Your Productivity Archetype"
-        description="Join 2,000+ achievers using Prolific Personalities to overcome procrastination and thrive. Science-backed strategies personalized to your productivity style. Take the free assessment now."
+        description="Discover your productivity archetype with Prolific Personalities. Science-backed strategies personalized to your working style. Take the free 5-minute assessment now."
         keywords="productivity assessment, productivity archetype, time management, procrastination, focus, executive function, working style"
         canonicalUrl={origin}
         structuredData={structuredData}
@@ -80,10 +74,7 @@ export default function Home() {
                   </span>
                 </h1>
                 <p className="text-xl text-neutral-700 leading-relaxed">
-                  Some days you're unstoppable. Other days, even small tasks feel overwhelming. You've blamed yourself for years.
-                </p>
-                <p className="text-2xl font-semibold text-indigo-700">
-                  You're not lazy. You're not broken. You just need a different approach.
+                  You're not lazy—you just need strategies that match how your brain works. Take our 5-minute assessment to find your productivity archetype.
                 </p>
               </div>
               
@@ -121,41 +112,99 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust Badges */}
+      {/* What You Get */}
       <section className="py-12 bg-white border-y border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8 items-center">
+          <h3 className="text-2xl font-bold text-neutral-800 text-center mb-8">What You'll Discover</h3>
+          <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center space-y-2">
-              <div className="text-5xl">🔬</div>
-              <h4 className="font-bold text-neutral-800 text-lg">Research-Backed</h4>
-              <p className="text-neutral-600">Science, not myths</p>
+              <div className="text-4xl">🧠</div>
+              <h4 className="font-semibold text-neutral-800">Your Archetype</h4>
+              <p className="text-neutral-600 text-sm">Learn which of 6 productivity styles fits you best</p>
             </div>
             <div className="text-center space-y-2">
-              <div className="text-5xl">🔒</div>
-              <h4 className="font-bold text-neutral-800 text-lg">Private & Secure</h4>
-              <p className="text-neutral-600">Your data stays yours</p>
+              <div className="text-4xl">🚧</div>
+              <h4 className="font-semibold text-neutral-800">Your Blockers</h4>
+              <p className="text-neutral-600 text-sm">Identify what's been holding you back</p>
             </div>
             <div className="text-center space-y-2">
-              <div className="text-5xl">🎯</div>
-              <h4 className="font-bold text-neutral-800 text-lg">Actionable Results</h4>
-              <p className="text-neutral-600">Real strategies, not fluff</p>
+              <div className="text-4xl">🚀</div>
+              <h4 className="font-semibold text-neutral-800">Starter Plan</h4>
+              <p className="text-neutral-600 text-sm">Get actionable strategies you can use today</p>
+            </div>
+            <div className="text-center space-y-2">
+              <div className="text-4xl">📘</div>
+              <h4 className="font-semibold text-neutral-800">Premium Upgrade</h4>
+              <p className="text-neutral-600 text-sm">Optional deep-dive playbook & toolkit</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Full Quiz Embedded */}
+      {/* Trust Badges */}
+      <section className="py-8 bg-neutral-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap justify-center gap-8 items-center text-neutral-500 text-sm">
+            <div className="flex items-center gap-2">
+              <span>🔬</span>
+              <span>Research-Backed</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>🔒</span>
+              <span>Private & Secure</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>🎯</span>
+              <span>Actionable Results</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quiz Preview Teaser */}
       <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
             <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
               Ready to discover your archetype?
             </h2>
             <p className="text-xl text-neutral-600">
-              Take the full assessment now • 28 questions • 5 minutes
+              Here's a quick taste of what's inside
             </p>
           </div>
-          <QuizContainer showHeader={false} showFocusIndicator={true} />
+          
+          {/* Sample Question Preview */}
+          <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <div className="text-sm text-indigo-600 font-medium mb-2">Sample Question</div>
+            <p className="text-xl text-neutral-800 font-medium mb-6">
+              When starting a new project, I prefer to...
+            </p>
+            <div className="space-y-3">
+              <div className="p-4 border-2 border-neutral-200 rounded-xl text-neutral-600 cursor-not-allowed opacity-70">
+                Create a detailed plan before taking any action
+              </div>
+              <div className="p-4 border-2 border-neutral-200 rounded-xl text-neutral-600 cursor-not-allowed opacity-70">
+                Dive in and figure things out as I go
+              </div>
+            </div>
+            <p className="text-center text-neutral-500 text-sm mt-4 italic">
+              Take the full quiz to answer this and 27 more questions
+            </p>
+          </div>
+
+          <div className="text-center">
+            <Link href="/quiz">
+              <Button 
+                className="gradient-primary text-white px-10 py-6 rounded-xl font-semibold text-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                data-testid="button-start-full-quiz"
+              >
+                Take the Quiz (5 min)
+              </Button>
+            </Link>
+            <p className="text-neutral-500 mt-4 text-sm">
+              28 questions • Free • Instant results
+            </p>
+          </div>
         </div>
       </section>
 

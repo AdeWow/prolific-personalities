@@ -108,28 +108,6 @@ export default function FounderPage() {
               </div>
             </div>
 
-            {/* Stats */}
-            <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-8 shadow-lg text-white">
-              <h3 className="text-2xl font-bold mb-6">Validated Results</h3>
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <div className="text-4xl font-bold">500+</div>
-                  <div className="text-indigo-100">Quiz Completions</div>
-                </div>
-                <div>
-                  <div className="text-4xl font-bold">40%</div>
-                  <div className="text-indigo-100">Productivity Increase</div>
-                </div>
-                <div>
-                  <div className="text-4xl font-bold">4.9/5</div>
-                  <div className="text-indigo-100">User Rating</div>
-                </div>
-                <div>
-                  <div className="text-4xl font-bold">2 weeks</div>
-                  <div className="text-indigo-100">To See Results</div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
