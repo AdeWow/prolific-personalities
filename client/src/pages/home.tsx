@@ -108,18 +108,14 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Intro Video */}
+            {/* Hero Image */}
             <div className="relative">
-              <div className="aspect-video rounded-2xl shadow-2xl overflow-hidden">
-                <iframe
-                  src="https://www.youtube.com/embed/ukFjVt1YjPM?rel=0"
-                  title="Prolific Personalities Introduction"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full"
-                  data-testid="video-intro"
-                />
-              </div>
+              <img 
+                src={humanImage} 
+                alt="Person working productively with a smile"
+                className="w-full h-auto rounded-2xl shadow-2xl"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent rounded-2xl"></div>
             </div>
           </div>
         </div>
@@ -160,6 +156,30 @@ export default function Home() {
             </p>
           </div>
           <QuizContainer showHeader={false} showFocusIndicator={true} />
+        </div>
+      </section>
+
+      {/* Intro Video */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
+              Watch: Why This Works
+            </h2>
+            <p className="text-xl text-neutral-600">
+              Learn how understanding your productivity style changes everything
+            </p>
+          </div>
+          <div className="aspect-video rounded-2xl shadow-2xl overflow-hidden">
+            <iframe
+              src="https://www.youtube.com/embed/ukFjVt1YjPM?rel=0"
+              title="Prolific Personalities Introduction"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+              data-testid="video-intro"
+            />
+          </div>
         </div>
       </section>
 
