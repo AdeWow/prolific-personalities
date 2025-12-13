@@ -1,6 +1,12 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArchetypeCard } from "@/components/archetype-card";
 import { Header } from "@/components/header";
+import { Card, CardContent } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { SEOHead } from "@/components/seo-head";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { archetypes } from "@/data/archetypes";
@@ -9,6 +15,7 @@ import quizHeroImage from "@assets/HomePage_laptop_quiz_taking_1765660797490.png
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
 export default function Home() {
+  const [previewAnswer, setPreviewAnswer] = useState<number | null>(null);
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   
   const structuredData = {
@@ -160,7 +167,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quiz Preview Teaser */}
+      {/* Interactive Quiz Preview */}
       <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
@@ -168,53 +175,84 @@ export default function Home() {
               Ready to discover your archetype?
             </h2>
             <p className="text-xl text-neutral-600">
-              Here's a quick taste of what's inside
+              Try the first question now
             </p>
           </div>
           
-          {/* Sample Question Preview */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-            <div className="text-sm text-indigo-600 font-medium mb-2">Sample Question</div>
-            <p className="text-xl text-neutral-800 font-medium mb-6">
-              When starting a new project, I prefer to...
-            </p>
-            <div className="space-y-3">
-              <div className="p-4 border-2 border-neutral-200 rounded-xl text-neutral-600 cursor-not-allowed opacity-70">
-                Create a detailed plan before taking any action
+          {/* Interactive First Question */}
+          <Card className="bg-white shadow-xl border-0 overflow-hidden mb-8">
+            <CardContent className="p-6 sm:p-8">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-medium text-indigo-600">Question 1 of 28</span>
+                <span className="text-sm text-neutral-500">5 min total</span>
               </div>
-              <div className="p-4 border-2 border-neutral-200 rounded-xl text-neutral-600 cursor-not-allowed opacity-70">
-                Dive in and figure things out as I go
+              
+              <h3 className="text-xl font-medium text-neutral-800 mb-6">
+                I feel most productive when my day follows a predictable routine.
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between text-xs sm:text-sm text-neutral-500 px-1">
+                  <span>Strongly Disagree</span>
+                  <span className="hidden sm:inline">Neutral</span>
+                  <span>Strongly Agree</span>
+                </div>
+                <RadioGroup
+                  value={previewAnswer?.toString() || ''}
+                  onValueChange={(val) => setPreviewAnswer(parseInt(val))}
+                  className="flex justify-between gap-2"
+                >
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <div key={num} className="flex-1">
+                      <RadioGroupItem
+                        value={num.toString()}
+                        id={`preview-likert-${num}`}
+                        className="peer sr-only"
+                      />
+                      <Label
+                        htmlFor={`preview-likert-${num}`}
+                        data-testid={`preview-option-${num}`}
+                        className={cn(
+                          "flex items-center justify-center cursor-pointer py-3 sm:py-4 rounded-xl border-2 text-base sm:text-lg font-semibold transition-all",
+                          "hover:scale-105 active:scale-95",
+                          previewAnswer === num
+                            ? "border-indigo-600 bg-indigo-600 text-white shadow-lg"
+                            : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-400 hover:bg-indigo-50"
+                        )}
+                      >
+                        {num}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
               </div>
-            </div>
-            <p className="text-center text-neutral-500 text-sm mt-4 italic">
-              Take the full quiz to answer this and 27 more questions
-            </p>
-          </div>
+            </CardContent>
+          </Card>
 
-          <div className="text-center space-y-4">
+          <div className="text-center">
             <Link href="/quiz">
               <Button 
-                className="gradient-primary text-white px-10 py-6 rounded-xl font-semibold text-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
-                data-testid="button-start-full-quiz"
+                className={cn(
+                  "px-10 py-6 rounded-xl font-semibold text-xl transition-all duration-200",
+                  previewAnswer 
+                    ? "gradient-primary text-white hover:shadow-lg transform hover:-translate-y-0.5" 
+                    : "bg-neutral-200 text-neutral-500"
+                )}
+                data-testid="button-continue-quiz"
               >
-                Take the Full Quiz (5 min)
+                {previewAnswer ? (
+                  <>
+                    Continue Quiz
+                    <ChevronRight className="ml-2 h-5 w-5 inline" />
+                  </>
+                ) : (
+                  "Select an answer to continue"
+                )}
               </Button>
             </Link>
-            <p className="text-neutral-500 text-sm">
-              28 questions • Most accurate results
+            <p className="text-neutral-500 mt-4 text-sm">
+              27 more questions • Free • Instant results
             </p>
-            <div className="pt-2">
-              <p className="text-neutral-600 text-sm mb-2">Short on time?</p>
-              <Link href="/quick-scan">
-                <Button 
-                  variant="outline"
-                  className="border-teal-300 text-teal-700 hover:bg-teal-50 px-6 py-3 rounded-lg font-medium"
-                  data-testid="button-quick-scan"
-                >
-                  Try the 1-Minute Quick Scan
-                </Button>
-              </Link>
-            </div>
           </div>
         </div>
       </section>

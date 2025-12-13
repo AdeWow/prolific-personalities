@@ -1,5 +1,4 @@
 import { questions, type Question } from '../data/questions';
-import { quickScanQuestionIds } from '../data/quick-scan-questions';
 import { archetypes, type Archetype } from '../data/archetypes';
 import type { QuizAnswers, QuizScores } from '@shared/schema';
 
@@ -205,51 +204,6 @@ export function calculateScores(answers: QuizAnswers): QuizScores {
   });
 
   return scores;
-}
-
-// Calculate scores for quick scan (5 questions only)
-// Quick scan has: 1 structure (q1), 1 motivation (q10), 1 cognitive (q15), 2 task (q22, q25)
-export function calculateQuickScanScores(answers: QuizAnswers): QuizScores {
-  const scores: QuizScores = {
-    structure: 0,
-    motivation: 0,
-    cognitive: 0,
-    task: 0
-  };
-
-  // Count questions per axis in quick scan
-  const axisQuestionCounts = { structure: 0, motivation: 0, cognitive: 0, task: 0 };
-
-  Object.entries(answers).forEach(([questionId, answer]) => {
-    if (!quickScanQuestionIds.includes(questionId)) return;
-    
-    const question = questions.find(q => q.id === questionId);
-    if (!question) return;
-
-    const answerKey = typeof answer === 'number' ? answer.toString() : answer;
-    const score = question.scoring[answerKey] || 0;
-    
-    scores[question.axis] += score;
-    axisQuestionCounts[question.axis]++;
-  });
-
-  // Scale each axis score to match full quiz range (7-35)
-  // For axes with 1 question (1-5 range), scale to 7-35: ((score - 1) / 4) * 28 + 7
-  // For axes with 2 questions (2-10 range), scale to 7-35: ((score - 2) / 8) * 28 + 7
-  const scaleScore = (rawScore: number, questionCount: number): number => {
-    if (questionCount === 0) return 21; // Default to middle if no questions
-    const minRaw = questionCount;
-    const maxRaw = questionCount * 5;
-    const normalized = (rawScore - minRaw) / (maxRaw - minRaw);
-    return Math.round(normalized * 28 + 7); // Scale to 7-35 range
-  };
-
-  return {
-    structure: scaleScore(scores.structure, axisQuestionCounts.structure),
-    motivation: scaleScore(scores.motivation, axisQuestionCounts.motivation),
-    cognitive: scaleScore(scores.cognitive, axisQuestionCounts.cognitive),
-    task: scaleScore(scores.task, axisQuestionCounts.task),
-  };
 }
 
 // Calculate match quality for a single archetype

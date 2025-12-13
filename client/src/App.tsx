@@ -27,7 +27,6 @@ import Playbook from "@/pages/playbook";
 import RefundPolicy from "@/pages/refund-policy";
 import Unsubscribe from "@/pages/unsubscribe";
 import DevTools from "@/pages/dev-tools";
-import QuickScan from "@/pages/quick-scan";
 
 function Router() {
   const [location] = useLocation();
@@ -45,7 +44,6 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/dev" component={DevTools} />
       <Route path="/quiz" component={Quiz} />
-      <Route path="/quick-scan" component={QuickScan} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/purchase-success" component={PurchaseSuccess} />
