@@ -108,14 +108,18 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Hero Image */}
+            {/* Intro Video */}
             <div className="relative">
-              <img 
-                src={humanImage} 
-                alt="Person working productively with a smile"
-                className="w-full h-auto rounded-2xl shadow-2xl"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent rounded-2xl"></div>
+              <div className="aspect-video rounded-2xl shadow-2xl overflow-hidden">
+                <iframe
+                  src="https://www.youtube.com/embed/ukFjVt1YjPM?rel=0"
+                  title="Prolific Personalities Introduction"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                  data-testid="video-intro"
+                />
+              </div>
             </div>
           </div>
         </div>
