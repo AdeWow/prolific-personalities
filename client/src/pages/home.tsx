@@ -8,8 +8,8 @@ import { Label } from "@/components/ui/label";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SEOHead } from "@/components/seo-head";
-import { TestimonialsSection } from "@/components/testimonials-section";
 import { archetypes } from "@/data/archetypes";
+import { User, Shield, FlaskConical } from "lucide-react";
 import { Link } from "wouter";
 import quizHeroImage from "@assets/HomePage_laptop_quiz_taking_1765660797490.png";
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
@@ -261,12 +261,12 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
+            <p className="text-lg text-indigo-600 font-medium mb-4">
+              If you've tried every system and still feel stuck, this will explain why.
+            </p>
             <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
               Watch: Why This Works
             </h2>
-            <p className="text-xl text-neutral-600">
-              Learn how understanding your productivity style changes everything
-            </p>
           </div>
           <div className="aspect-video rounded-2xl shadow-2xl overflow-hidden">
             <iframe
@@ -278,11 +278,111 @@ export default function Home() {
               data-testid="video-intro"
             />
           </div>
+          <div className="text-center mt-6 space-y-2">
+            <p className="text-neutral-500 text-sm">2:14 — Watch the explanation</p>
+            <Link href="/quiz" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
+              Or skip the video and take the quiz →
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <TestimonialsSection variant="full" />
+      {/* Built By a Real Person */}
+      <section className="py-16 bg-gradient-to-br from-neutral-50 to-indigo-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="bg-white border-0 shadow-lg">
+              <CardContent className="p-6 text-center">
+                <User className="w-10 h-10 text-indigo-600 mx-auto mb-4" />
+                <h3 className="font-semibold text-neutral-800 mb-2">Built by a Real Person</h3>
+                <p className="text-neutral-600 text-sm mb-4">
+                  Not a faceless corporation. Created by someone who struggled with the same problems.
+                </p>
+                <Link href="/about" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                  Meet the founder →
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white border-0 shadow-lg">
+              <CardContent className="p-6 text-center">
+                <Shield className="w-10 h-10 text-teal-600 mx-auto mb-4" />
+                <h3 className="font-semibold text-neutral-800 mb-2">Privacy Promise</h3>
+                <p className="text-neutral-600 text-sm">
+                  Your answers stay private. No email required to see your results. No spam, ever.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white border-0 shadow-lg">
+              <CardContent className="p-6 text-center">
+                <FlaskConical className="w-10 h-10 text-purple-600 mx-auto mb-4" />
+                <h3 className="font-semibold text-neutral-800 mb-2">Research-Based</h3>
+                <p className="text-neutral-600 text-sm mb-4">
+                  Built on Executive Function Theory, Self-Determination Theory, and flow research.
+                </p>
+                <Link href="/science" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                  See the science →
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* What You'll Get - Concrete Deliverables */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-neutral-800 mb-4">
+              What You'll Get (Free)
+            </h2>
+            <p className="text-neutral-600">
+              Your personalized results include:
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl">
+              <div className="text-2xl">🎯</div>
+              <div>
+                <h4 className="font-semibold text-neutral-800">Your Archetype Name</h4>
+                <p className="text-neutral-600 text-sm">One of 6 distinct productivity personalities that explains your natural working style</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl">
+              <div className="text-2xl">🚧</div>
+              <div>
+                <h4 className="font-semibold text-neutral-800">Top 3 Blockers</h4>
+                <p className="text-neutral-600 text-sm">The specific obstacles that hold your archetype back most often</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl">
+              <div className="text-2xl">💡</div>
+              <div>
+                <h4 className="font-semibold text-neutral-800">3 Starter Strategies</h4>
+                <p className="text-neutral-600 text-sm">Actionable techniques you can implement today</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl">
+              <div className="text-2xl">🛠️</div>
+              <div>
+                <h4 className="font-semibold text-neutral-800">Tool Recommendations</h4>
+                <p className="text-neutral-600 text-sm">Productivity apps and tools matched to your archetype</p>
+              </div>
+            </div>
+          </div>
+          <div className="text-center mt-10">
+            <Link href="/quiz">
+              <Button 
+                className="gradient-primary text-white px-8 py-6 rounded-xl font-semibold text-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                data-testid="button-get-results"
+              >
+                Take the Quiz
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Archetype Preview */}
       <section className="py-20 bg-gradient-to-br from-neutral-50 to-indigo-50">
