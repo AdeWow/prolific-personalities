@@ -280,7 +280,7 @@ export default function Home() {
           </div>
           <div className="text-center mt-6 space-y-2">
             <p className="text-neutral-500 text-sm">2:14 — Watch the explanation</p>
-            <Link href="/quiz" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
+            <Link href="/quiz" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm" data-testid="link-skip-video">
               Or skip the video and take the quiz →
             </Link>
           </div>
@@ -298,7 +298,7 @@ export default function Home() {
                 <p className="text-neutral-600 text-sm mb-4">
                   Not a faceless corporation. Created by someone who struggled with the same problems.
                 </p>
-                <Link href="/about" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                <Link href="/founder" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium" data-testid="link-meet-founder">
                   Meet the founder →
                 </Link>
               </CardContent>
@@ -321,7 +321,7 @@ export default function Home() {
                 <p className="text-neutral-600 text-sm mb-4">
                   Built on Executive Function Theory, Self-Determination Theory, and flow research.
                 </p>
-                <Link href="/science" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                <Link href="/science" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium" data-testid="link-see-science">
                   See the science →
                 </Link>
               </CardContent>
