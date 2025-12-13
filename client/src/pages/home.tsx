@@ -388,6 +388,9 @@ export default function Home() {
       <section className="py-20 bg-gradient-to-br from-neutral-50 to-indigo-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
+            <p className="text-lg text-indigo-600 font-medium">
+              Most people are a blend—but one archetype leads.
+            </p>
             <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800">
               Six Productivity Archetypes
             </h2>

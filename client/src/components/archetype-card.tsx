@@ -43,7 +43,7 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
           {archetype.tagline}
         </p>
         
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mb-4">
           {archetype.tags.map((tag) => (
             <Badge
               key={tag}
@@ -54,6 +54,12 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
             </Badge>
           ))}
         </div>
+
+        {clickable && (
+          <p className="text-indigo-600 font-medium text-sm">
+            View archetype →
+          </p>
+        )}
 
         {detailed && (
           <div className="mt-6 grid md:grid-cols-2 gap-6">
