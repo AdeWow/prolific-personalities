@@ -118,30 +118,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* What You Get */}
+      {/* What You'll Discover */}
       <section className="py-12 bg-white border-y border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-2xl font-bold text-neutral-800 text-center mb-8">What You'll Discover</h3>
-          <div className="grid md:grid-cols-4 gap-6">
-            <div className="text-center space-y-2">
-              <div className="text-4xl">🧠</div>
-              <h4 className="font-semibold text-neutral-800">Your Archetype</h4>
-              <p className="text-neutral-600 text-sm">Learn which of 6 productivity styles fits you best</p>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="flex items-start gap-3 p-4">
+              <span className="text-indigo-600 mt-1">✓</span>
+              <p className="text-neutral-700">Why productivity systems that work for others quietly fail you</p>
             </div>
-            <div className="text-center space-y-2">
-              <div className="text-4xl">🚧</div>
-              <h4 className="font-semibold text-neutral-800">Your Blockers</h4>
-              <p className="text-neutral-600 text-sm">Identify what's been holding you back</p>
+            <div className="flex items-start gap-3 p-4">
+              <span className="text-indigo-600 mt-1">✓</span>
+              <p className="text-neutral-700">The hidden pattern behind how you start, stall, and finish work</p>
             </div>
-            <div className="text-center space-y-2">
-              <div className="text-4xl">🚀</div>
-              <h4 className="font-semibold text-neutral-800">Starter Plan</h4>
-              <p className="text-neutral-600 text-sm">Get actionable strategies you can use today</p>
+            <div className="flex items-start gap-3 p-4">
+              <span className="text-indigo-600 mt-1">✓</span>
+              <p className="text-neutral-700">What kind of structure energizes you — and what drains you fast</p>
             </div>
-            <div className="text-center space-y-2">
-              <div className="text-4xl">📘</div>
-              <h4 className="font-semibold text-neutral-800">Premium Upgrade</h4>
-              <p className="text-neutral-600 text-sm">Optional deep-dive playbook & toolkit</p>
+            <div className="flex items-start gap-3 p-4">
+              <span className="text-indigo-600 mt-1">✓</span>
+              <p className="text-neutral-700">The productivity archetype that shapes how you work at your best</p>
             </div>
           </div>
         </div>
