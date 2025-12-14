@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Link } from "wouter";
 import type { Archetype } from "../data/archetypes";
+import { trackEvent } from "@/lib/analytics";
 
 interface ArchetypeCardProps {
   archetype: Archetype;
@@ -94,7 +95,10 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
 
   if (clickable) {
     return (
-      <Link href={`/archetypes#${archetype.id}`}>
+      <Link 
+        href={`/archetypes#${archetype.id}`}
+        onClick={() => trackEvent('archetype_card_click', 'Engagement', archetype.name)}
+      >
         {content}
       </Link>
     );

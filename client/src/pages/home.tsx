@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { SEOHead } from "@/components/seo-head";
 import { archetypes } from "@/data/archetypes";
 import { User, Shield, FlaskConical } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 import { Link } from "wouter";
 import quizHeroImage from "@assets/HomePage_laptop_quiz_taking_1765660797490.png";
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
@@ -89,6 +90,7 @@ export default function Home() {
                   <Button 
                     className="gradient-primary text-white px-8 py-6 rounded-xl font-semibold text-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                     data-testid="button-start-quiz"
+                    onClick={() => trackEvent('hero_cta_click', 'Conversion', 'Take the Quiz')}
                   >
                     Take the Quiz
                   </Button>
@@ -264,9 +266,12 @@ export default function Home() {
               Watch: Why This Works
             </h2>
           </div>
-          <div className="aspect-video rounded-2xl shadow-2xl overflow-hidden">
+          <div 
+            className="aspect-video rounded-2xl shadow-2xl overflow-hidden"
+            onClick={() => trackEvent('video_play', 'Engagement', 'Intro Video')}
+          >
             <iframe
-              src="https://www.youtube.com/embed/ukFjVt1YjPM?rel=0"
+              src="https://www.youtube.com/embed/ukFjVt1YjPM?rel=0&enablejsapi=1"
               title="Prolific Personalities Introduction"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
