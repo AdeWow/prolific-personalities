@@ -15,6 +15,8 @@ import { Resend } from "resend";
 import { generateResultsEmail, generatePremiumPlaybookEmail, generateWelcomeEmail, generateAbandonedCartEmail } from "./emailTemplates";
 import { getArchetypeInfo } from "./archetypeData";
 import { insertCheckoutAttemptSchema, insertUnsubscribeFeedbackSchema } from "@shared/schema";
+import { registerChatRoutes } from "./replit_integrations/chat";
+import OpenAI from "openai";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -1222,6 +1224,149 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     res.header('Content-Type', 'application/xml');
     res.send(sitemap);
+  });
+
+  // Register generic chat routes
+  registerChatRoutes(app);
+
+  // AI Coach rate limiter - 30 requests per 15 minutes
+  const aiCoachLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    message: { message: "Too many AI coach requests, please try again later" },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // AI Coach endpoint - archetype-aware productivity coaching
+  const openai = new OpenAI({
+    apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+  });
+
+  app.post("/api/ai-coach", aiCoachLimiter, async (req, res) => {
+    try {
+      const { message, archetype, scores, history = [] } = req.body;
+
+      if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      const archetypeInfo = archetype ? getArchetypeInfo(archetype) : null;
+      
+      const systemPrompt = `You are a friendly, encouraging AI productivity coach from Prolific Personalities. You help people work more effectively based on their unique productivity archetype.
+
+${archetypeInfo ? `
+The user's productivity archetype is: ${archetypeInfo.title}
+
+About this archetype:
+- ${archetypeInfo.tagline}
+- ${archetypeInfo.description}
+
+${scores ? `Their assessment scores:
+- Structure Orientation: ${scores.structure}/5 (higher = prefers more structure)
+- Motivation Style: ${scores.motivation}/5 (higher = more intrinsically motivated)
+- Cognitive Focus: ${scores.cognitive}/5 (higher = prefers deep focus)
+- Task Relationship: ${scores.task}/5 (higher = prefers working with others)` : ''}
+
+Tailor your advice to their specific archetype. Be aware of their working style and common challenges based on their archetype.
+` : 'The user has not yet taken the assessment, so give general productivity advice and encourage them to take the quiz to get personalized insights.'}
+
+Guidelines:
+- Be warm, supportive, and practical
+- Give specific, actionable advice
+- Keep responses concise (2-3 paragraphs max)
+- Use their archetype knowledge to personalize suggestions
+- If they seem stuck, suggest small, doable next steps
+- Celebrate their wins, no matter how small`;
+
+      const messages = [
+        { role: "system" as const, content: systemPrompt },
+        ...history.map((h: any) => ({ role: h.role as "user" | "assistant", content: h.content })),
+        { role: "user" as const, content: message }
+      ];
+
+      // Set up SSE for streaming
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+
+      const stream = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages,
+        stream: true,
+        max_completion_tokens: 1024,
+      });
+
+      let fullResponse = "";
+
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content || "";
+        if (content) {
+          fullResponse += content;
+          res.write(`data: ${JSON.stringify({ content })}\n\n`);
+        }
+      }
+
+      res.write(`data: ${JSON.stringify({ done: true, fullResponse })}\n\n`);
+      res.end();
+    } catch (error) {
+      console.error("Error in AI coach:", error);
+      if (res.headersSent) {
+        res.write(`data: ${JSON.stringify({ error: "Failed to get AI response" })}\n\n`);
+        res.end();
+      } else {
+        res.status(500).json({ error: "Failed to get AI response" });
+      }
+    }
+  });
+
+  // Non-streaming version for mobile API
+  app.post("/api/v1/ai-coach", aiCoachLimiter, async (req, res) => {
+    try {
+      const { message, archetype, scores, history = [] } = req.body;
+
+      if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      const archetypeInfo = archetype ? getArchetypeInfo(archetype) : null;
+      
+      const systemPrompt = `You are a friendly, encouraging AI productivity coach from Prolific Personalities. You help people work more effectively based on their unique productivity archetype.
+
+${archetypeInfo ? `
+The user's productivity archetype is: ${archetypeInfo.title}
+
+About this archetype:
+- ${archetypeInfo.tagline}
+- ${archetypeInfo.description}
+
+Tailor your advice to their specific archetype.
+` : 'The user has not yet taken the assessment, so give general productivity advice.'}
+
+Guidelines:
+- Be warm, supportive, and practical
+- Give specific, actionable advice
+- Keep responses concise (2-3 paragraphs max)`;
+
+      const messages = [
+        { role: "system" as const, content: systemPrompt },
+        ...history.map((h: any) => ({ role: h.role as "user" | "assistant", content: h.content })),
+        { role: "user" as const, content: message }
+      ];
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages,
+        max_completion_tokens: 1024,
+      });
+
+      const content = response.choices[0]?.message?.content || "";
+      res.json({ response: content });
+    } catch (error) {
+      console.error("Error in AI coach:", error);
+      res.status(500).json({ error: "Failed to get AI response" });
+    }
   });
 
   const httpServer = createServer(app);

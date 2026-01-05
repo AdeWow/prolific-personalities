@@ -282,3 +282,6 @@ export type PlaybookNotes = typeof playbookNotes.$inferSelect;
 
 // Type for tools with archetype fit score
 export type ToolWithFitScore = Tool & { fitScore: number };
+
+// Export chat models
+export * from "./models/chat";
