@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ExitIntentPopup } from "@/components/exit-intent-popup";
+import { InstallPrompt } from "@/components/install-prompt";
 import { initGA } from "./lib/analytics";
 import { useAnalytics } from "./hooks/use-analytics";
 import Home from "@/pages/home";
@@ -82,6 +83,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <ExitIntentPopup />
+        <InstallPrompt />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>
