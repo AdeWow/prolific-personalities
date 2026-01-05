@@ -75,6 +75,37 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **About Page Enhancements**: Research link, waitlist form, and comprehensive feedback form.
 -   **Refund Policy Page**: Comprehensive 30-day satisfaction guarantee with clear step-by-step refund process documentation. Links added to footer, pricing page, and results checkout section.
 -   **Image Optimization**: All images compressed using sharp library with 60-90% file size reduction (archetype images 15MB→3MB, logos 4MB→1MB, ~20MB total savings) while maintaining visual quality.
+-   **Progressive Web App (PWA)**: Full PWA support with installability on iOS and Android devices.
+    -   **Web App Manifest**: `client/public/site.webmanifest` with app icons, theme colors, and standalone display mode.
+    -   **Service Worker**: `client/public/sw.js` for offline caching and background sync.
+    -   **Install Prompt**: `client/src/components/install-prompt.tsx` with smart iOS/Android detection and platform-specific instructions.
+-   **AI Productivity Coach**: Personalized AI coaching powered by OpenAI GPT-4o-mini.
+    -   **Chat Widget**: Floating chat button on results page (`client/src/components/ai-coach-chat.tsx`) with streaming responses.
+    -   **Archetype-Aware Prompts**: System prompts personalized to user's archetype, traits, and assessment scores.
+    -   **Suggested Questions**: Pre-defined productivity questions for quick interaction.
+
+### Mobile API Endpoints (API-First Design)
+
+The backend exposes mobile-ready API endpoints for future native app development:
+
+**AI Coach API**
+-   `POST /api/ai-coach` - Streaming endpoint (Server-Sent Events)
+    -   Request: `{ message: string, archetype?: string, scores?: object, history?: array }`
+    -   Response: SSE stream with `data: {"content": "..."}\n\n` chunks
+    -   Use case: Web app with real-time streaming
+-   `POST /api/v1/ai-coach` - Non-streaming JSON endpoint
+    -   Request: `{ message: string, archetype?: string, scores?: object, history?: array }`
+    -   Response: `{ response: string }`
+    -   Use case: Mobile apps, API integrations
+
+**Quiz & Results API**
+-   `GET /api/quiz/results/:sessionId` - Get quiz results by session ID
+-   `POST /api/quiz/submit` - Submit quiz answers and get archetype
+-   `POST /api/quiz/claim/:sessionId` - Link anonymous result to authenticated user
+
+**Tools API**
+-   `GET /api/tools` - Get all productivity tools
+-   `GET /api/tools/archetype/:archetypeId` - Get tools filtered by archetype fit
 
 ## External Dependencies
 
@@ -103,6 +134,7 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **ws**: WebSocket support for Neon.
 -   **Resend**: Transactional email service for sending assessment results.
 -   **Stripe**: Payment processing for premium playbook purchases.
+-   **OpenAI**: AI productivity coach powered by GPT-4o-mini (via Replit AI Integrations).
 
 ### Development Tools
 
