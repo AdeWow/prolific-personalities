@@ -864,7 +864,7 @@ export function generateAbandonedCartEmail(data: AbandonedCartEmailData): { subj
         <div class="content">
           <p class="greeting">Hey,</p>
           
-          <p>I noticed you were checking out the <strong>${archetype.title} Playbook</strong> yesterday. No rush—I get it. $27 is still money, and you want to know it's worth it.</p>
+          <p>I noticed you were checking out the <strong>${archetype.title} Playbook</strong> yesterday. No rush—I get it. $19 is still money, and you want to know it's worth it.</p>
           
           <p>Here's what I'll say: if you've spent years trying productivity systems that felt wrong for how you actually think, this is different.</p>
           
@@ -890,7 +890,7 @@ export function generateAbandonedCartEmail(data: AbandonedCartEmailData): { subj
           </div>
           
           <div class="price-box">
-            <div class="price">$27</div>
+            <div class="price">$19</div>
             <div class="price-note">One-time purchase. Keep forever.</div>
           </div>
           

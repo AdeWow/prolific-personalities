@@ -251,15 +251,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAbandonedCheckouts(): Promise<CheckoutAttempt[]> {
-    // Get checkouts that are older than 1 hour, not completed, and email not sent
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    // Get checkouts that are older than 24 hours, not completed, and email not sent
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const allAttempts = await db.select().from(checkoutAttempts);
     
     return allAttempts.filter(attempt => 
       attempt.completedAt === null && 
       attempt.abandonedEmailSent === 0 &&
       attempt.email !== null &&
-      new Date(attempt.startedAt) < oneHourAgo
+      new Date(attempt.startedAt) < twentyFourHoursAgo
     );
   }
 

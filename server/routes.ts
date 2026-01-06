@@ -1281,17 +1281,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
 
           // Send the email
-          await resend.emails.send({
+          const { data, error } = await resend.emails.send({
             from: 'Prolific Personalities <support@prolificpersonalities.com>',
             to: checkout.email,
             subject,
             html,
           });
 
-          // Mark as sent
+          // Check for Resend errors before marking as sent
+          if (error) {
+            console.error(`Resend error for ${checkout.email}:`, error);
+            results.push({ id: checkout.id, email: checkout.email, status: 'failed', error: error.message });
+            continue;
+          }
+
+          // Mark as sent only on success
           await storage.markAbandonedEmailSent(checkout.id);
-          results.push({ id: checkout.id, email: checkout.email, status: 'sent' });
-          console.log(`✅ Abandoned cart email sent to ${checkout.email}`);
+          results.push({ id: checkout.id, email: checkout.email, status: 'sent', resendId: data?.id });
+          console.log(`✅ Abandoned cart email sent to ${checkout.email} (${data?.id})`);
         } catch (err) {
           console.error(`Failed to send abandoned cart email to ${checkout.email}:`, err);
           results.push({ id: checkout.id, email: checkout.email, status: 'failed', error: String(err) });
