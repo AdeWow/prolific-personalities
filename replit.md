@@ -165,3 +165,30 @@ The backend exposes mobile-ready API endpoints for future native app development
 -   Pricing page: ~9ms  
 -   Tools API (cached): 3-4ms
 -   AI Coach usage check: ~60ms
+
+## Funnel Analytics (PostHog)
+
+### Setup
+PostHog is integrated for conversion funnel tracking. Configure with environment variables:
+- `VITE_POSTHOG_KEY`: Your PostHog project API key
+- `VITE_POSTHOG_HOST`: PostHog host (default: https://us.i.posthog.com)
+
+### Tracked Funnel Events
+| Event | Description | Properties |
+|-------|-------------|------------|
+| `funnel_landing_view` | Landing page view | source, url |
+| `funnel_quiz_start` | Quiz started | source |
+| `funnel_quiz_page_view` | Quiz page navigation | page_number, progress_percent |
+| `funnel_quiz_question_answered` | Question answered | question_number, axis, progress_percent |
+| `funnel_quiz_complete` | Quiz completed | archetype, all scores |
+| `funnel_results_view` | Results page view | archetype, is_returning_user |
+| `funnel_paywall_view` | Pricing/paywall view | archetype, source |
+| `funnel_paywall_tier_click` | Tier selection | tier, archetype, price |
+| `funnel_checkout_start` | Checkout initiated | product_type, archetype, price |
+| `funnel_checkout_complete` | Purchase completed | product_type, archetype, price, order_id |
+
+### Key Funnels to Analyze
+1. **Main Conversion Funnel**: Landing → Quiz Start → Quiz Complete → Results View → Paywall → Checkout
+2. **Archetype Conversion**: Compare conversion rates by archetype
+3. **Quiz Completion Rate**: Track where users drop off during the quiz
+4. **Checkout Abandonment**: Users who start but don't complete checkout

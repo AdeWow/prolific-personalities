@@ -7,10 +7,12 @@ import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { CheckCircle2, Sparkles, Lock, Zap, Bot, Users, Crown } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { trackPaywallView, trackPaywallTierClick } from "@/lib/posthog";
 
 export default function Pricing() {
   useEffect(() => {
     trackEvent('pricing_page_view', 'Navigation', 'Pricing Page');
+    trackPaywallView('no_archetype', 'pricing_page');
   }, []);
 
   const tiers = {

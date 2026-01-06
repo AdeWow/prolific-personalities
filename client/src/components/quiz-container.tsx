@@ -11,6 +11,7 @@ import { calculateScores, determineArchetype, generateSessionId, getProgressPerc
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
+import { trackQuizStart, trackQuizPageView, trackQuizQuestionAnswered, trackQuizComplete } from "@/lib/posthog";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import type { QuizAnswers } from "@shared/schema";
@@ -49,9 +50,14 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   useEffect(() => {
     if (!quizStarted) {
       trackEvent('quiz_started', 'Quiz', 'Quiz Started', 1);
+      trackQuizStart('quiz_page');
       setQuizStarted(true);
     }
   }, [quizStarted]);
+
+  useEffect(() => {
+    trackQuizPageView(currentPage + 1, totalPages);
+  }, [currentPage, totalPages]);
 
   useEffect(() => {
     if (progressPercentage >= 25 && !milestonesTracked.has(25)) {
@@ -90,6 +96,9 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   const handleAnswerChange = (questionId: string, value: string | number, questionIndexInPage: number) => {
     const question = questions.find(q => q.id === questionId);
     if (question && validateAnswer(question, value)) {
+      const questionNumber = startIndex + questionIndexInPage + 1;
+      trackQuizQuestionAnswered(questionNumber, questions.length, question.axis);
+      
       setAnswers(prev => ({
         ...prev,
         [questionId]: value
@@ -117,6 +126,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
       const scores = calculateScores(answers);
       const archetype = determineArchetype(scores);
       trackEvent('quiz_completed', 'Quiz', `Archetype: ${archetype.name}`, questions.length);
+      trackQuizComplete(archetype.id, scores);
       saveResultsMutation.mutate({
         sessionId,
         answers,

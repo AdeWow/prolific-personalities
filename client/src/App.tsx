@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ExitIntentPopup } from "@/components/exit-intent-popup";
 import { InstallPrompt } from "@/components/install-prompt";
 import { initGA } from "./lib/analytics";
+import { initPostHog } from "./lib/posthog";
 import { useAnalytics } from "./hooks/use-analytics";
 import Home from "@/pages/home";
 import Quiz from "@/pages/quiz";
@@ -70,13 +71,18 @@ function Router() {
 }
 
 function App() {
-  // Initialize Google Analytics when app loads
+  // Initialize analytics when app loads
   useEffect(() => {
-    // Verify required environment variable is present
+    // Google Analytics
     if (!import.meta.env.VITE_GA_MEASUREMENT_ID) {
       console.warn('Missing required Google Analytics key: VITE_GA_MEASUREMENT_ID');
     } else {
       initGA();
+    }
+    
+    // PostHog for funnel analytics
+    if (import.meta.env.VITE_POSTHOG_KEY) {
+      initPostHog();
     }
   }, []);
 

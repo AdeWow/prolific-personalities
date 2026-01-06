@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArchetypeCard } from "@/components/archetype-card";
 import { Header } from "@/components/header";
@@ -11,6 +11,7 @@ import { SEOHead } from "@/components/seo-head";
 import { archetypes } from "@/data/archetypes";
 import { User, Shield, FlaskConical } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { trackLandingView, trackQuizStart } from "@/lib/posthog";
 import { Link } from "wouter";
 import quizHeroImage from "@assets/HomePage_laptop_quiz_taking_1765660797490.png";
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
@@ -18,6 +19,10 @@ import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 export default function Home() {
   const [previewAnswer, setPreviewAnswer] = useState<number | null>(null);
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
+
+  useEffect(() => {
+    trackLandingView();
+  }, []);
   
   const structuredData = {
     "@context": "https://schema.org",

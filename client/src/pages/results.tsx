@@ -11,6 +11,7 @@ import { archetypes } from "@/data/archetypes";
 import { determineArchetypeEnhanced } from "@/lib/quiz-logic";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
+import { trackResultsView, trackPaywallView, trackPaywallTierClick, trackCheckoutStart } from "@/lib/posthog";
 import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle, Info } from "lucide-react";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { AICoachChat } from "@/components/ai-coach-chat";
@@ -92,6 +93,7 @@ export default function Results() {
   useEffect(() => {
     if (archetype) {
       trackEvent('result_viewed', 'Results', archetype.name);
+      trackResultsView(archetype.id, false);
     }
   }, [archetype]);
   
@@ -179,6 +181,8 @@ export default function Results() {
 
   const handleUpgradeToPremium = () => {
     if (sessionId && archetype) {
+      trackPaywallTierClick('playbook', archetype.id, 19);
+      trackCheckoutStart('complete_playbook', archetype.id, 19);
       checkoutMutation.mutate({ archetype: archetype.id, sessionId });
     }
   };
