@@ -84,9 +84,13 @@ The application employs a monorepo structure, separating the React-based fronten
     -   **Service Worker**: `client/public/sw.js` for offline caching and background sync.
     -   **Install Prompt**: `client/src/components/install-prompt.tsx` with smart iOS/Android detection and platform-specific instructions.
 -   **AI Productivity Coach**: Personalized AI coaching powered by OpenAI GPT-4o-mini.
-    -   **Chat Widget**: Floating chat button on results page (`client/src/components/ai-coach-chat.tsx`) with streaming responses.
-    -   **Archetype-Aware Prompts**: System prompts personalized to user's archetype, traits, and assessment scores.
-    -   **Suggested Questions**: Pre-defined productivity questions for quick interaction.
+    -   **Dedicated Coach Page**: Full-screen coaching interface at `/coach` with conversation history sidebar.
+    -   **Archetype-Specific Suggested Prompts**: Each of 6 archetypes has 6 unique prompts tailored to their challenges.
+    -   **Personalization Banner**: Prominently displays user's archetype name with badge in chat header.
+    -   **Enhanced System Prompts**: Research-backed coaching framework with citations (Dr. Pychyl, Csikszentmihalyi, etc.).
+    -   **Usage-Based Rate Limiting**: Free/Playbook users get 10 messages/day, Productivity Partner subscribers get unlimited.
+    -   **Chat History Persistence**: Conversations saved to database with conversation management (create/delete).
+    -   **Take Quiz Prompt**: Users without archetype see prompt to take assessment for personalized coaching.
 
 ### Mobile API Endpoints (API-First Design)
 

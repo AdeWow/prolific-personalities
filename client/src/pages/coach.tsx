@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Bot, Send, Sparkles, Plus, Trash2, MessageCircle, ThumbsUp, ThumbsDown, Crown, Loader2 } from "lucide-react";
+import { Bot, Send, Sparkles, Plus, Trash2, MessageCircle, Crown, Loader2, AlertCircle, ArrowRight, ThumbsUp, ThumbsDown } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { trackEvent } from "@/lib/analytics";
 import type { ChatConversation, ChatMessage } from "@shared/schema";
@@ -20,14 +20,83 @@ interface UsageInfo {
   isPremium: boolean;
 }
 
-const SUGGESTED_PROMPTS = [
+const ARCHETYPE_PROMPTS: Record<string, string[]> = {
+  "chaotic-creative": [
+    "I'm bored with a project I started. How do I finish it?",
+    "Help me make a boring task more fun",
+    "I have too many ideas, how do I pick one?",
+    "Why do I rebel against schedules?",
+    "How can I use my creativity to get more done?",
+    "I keep starting things but never finishing",
+  ],
+  "anxious-perfectionist": [
+    "I'm afraid to start because it won't be perfect",
+    "How do I stop overthinking and just begin?",
+    "I'm stuck in analysis paralysis",
+    "Help me accept 'good enough' work",
+    "Why do I procrastinate on important things?",
+    "I feel paralyzed by my high standards",
+  ],
+  "strategic-planner": [
+    "My plan fell apart, how do I adapt?",
+    "Help me optimize my daily workflow",
+    "How do I handle unstructured creative work?",
+    "I spend more time planning than doing",
+    "What's the best way to track my progress?",
+    "Help me build a better productivity system",
+  ],
+  "novelty-seeker": [
+    "I lose interest once the novelty wears off",
+    "How do I finish projects when I'm bored?",
+    "Help me stay committed to one thing",
+    "Why do I always chase new ideas?",
+    "How can I make routine tasks exciting?",
+    "I have 10 unfinished projects, where do I start?",
+  ],
+  "structured-achiever": [
+    "I freeze when there's no clear deadline",
+    "How do I stay motivated on solo projects?",
+    "Help me handle ambiguous goals",
+    "I need external accountability, how do I create it?",
+    "What systems work best for my archetype?",
+    "How do I adapt when my plan gets disrupted?",
+  ],
+  "flexible-improviser": [
+    "How do I add structure without feeling trapped?",
+    "Help me commit to a single approach",
+    "I'm good at adapting but bad at following through",
+    "How do I balance flexibility with consistency?",
+    "What's the right amount of planning for me?",
+    "I avoid commitment, how do I overcome this?",
+  ],
+  "adaptive-generalist": [
+    "How do I find my signature productivity system?",
+    "Which strategy should I use in this situation?",
+    "I overthink which approach to take",
+    "How do I know when to switch methods?",
+    "Help me build a toolkit of strategies",
+    "I feel like no productivity advice fits me perfectly",
+  ],
+};
+
+const DEFAULT_PROMPTS = [
   "I'm feeling stuck on a project",
-  "Help me plan my day",
+  "Help me plan my day effectively",
   "Why do I keep procrastinating?",
-  "What's my archetype's biggest strength?",
   "How can I maintain focus better?",
   "I'm overwhelmed with too many tasks",
+  "What productivity strategies would work for me?",
 ];
+
+const ARCHETYPE_NAMES: Record<string, string> = {
+  "chaotic-creative": "Chaotic Creative",
+  "anxious-perfectionist": "Anxious Perfectionist", 
+  "strategic-planner": "Strategic Planner",
+  "novelty-seeker": "Novelty Seeker",
+  "structured-achiever": "Structured Achiever",
+  "flexible-improviser": "Flexible Improviser",
+  "adaptive-generalist": "Adaptive Generalist",
+};
 
 export default function CoachPage() {
   const [, setLocation] = useLocation();
@@ -297,16 +366,36 @@ export default function CoachPage() {
         <div className="flex-1 flex flex-col">
           {/* Chat Header */}
           <div className="p-4 border-b border-neutral-200 bg-white/50">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center">
-                <Bot className="w-6 h-6 text-white" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center">
+                  <Bot className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="font-semibold text-neutral-800">AI Productivity Coach</h1>
+                  {archetype ? (
+                    <Badge className="bg-gradient-to-r from-primary/10 to-purple-100 text-primary border-0 mt-1">
+                      <Sparkles className="w-3 h-3 mr-1" />
+                      Personalized for {ARCHETYPE_NAMES[archetype] || archetype}
+                    </Badge>
+                  ) : (
+                    <p className="text-sm text-neutral-500">
+                      General productivity advice
+                    </p>
+                  )}
+                </div>
               </div>
-              <div>
-                <h1 className="font-semibold text-neutral-800">AI Productivity Coach</h1>
-                <p className="text-sm text-neutral-500">
-                  {archetype ? `Personalized for your ${archetype.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} archetype` : "Take the quiz for personalized coaching"}
-                </p>
-              </div>
+              {archetype && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-xs text-neutral-500"
+                  onClick={() => setLocation("/results")}
+                  data-testid="button-view-results"
+                >
+                  View Results
+                </Button>
+              )}
             </div>
           </div>
 
@@ -327,7 +416,7 @@ export default function CoachPage() {
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg">
-                  {SUGGESTED_PROMPTS.map((prompt, i) => (
+                  {(archetype && ARCHETYPE_PROMPTS[archetype] ? ARCHETYPE_PROMPTS[archetype] : DEFAULT_PROMPTS).map((prompt: string, i: number) => (
                     <Button
                       key={i}
                       variant="outline"
@@ -339,6 +428,30 @@ export default function CoachPage() {
                     </Button>
                   ))}
                 </div>
+
+                {!archetype && (
+                  <div className="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-xl max-w-md">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-amber-800">Get personalized coaching</p>
+                        <p className="text-sm text-amber-700 mt-1">
+                          Take the free assessment to unlock coaching tailored to your unique productivity style.
+                        </p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-3 border-amber-300 text-amber-800 hover:bg-amber-100"
+                          onClick={() => setLocation("/quiz")}
+                          data-testid="button-take-quiz-coach"
+                        >
+                          Take Free Quiz
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="space-y-4 max-w-3xl mx-auto">
