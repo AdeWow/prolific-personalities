@@ -1,6 +1,6 @@
-import { users, quizResults, tools, emailCaptures, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, chatConversations, chatMessages, chatUsage, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes, type ChatConversation, type InsertChatConversation, type ChatMessage, type InsertChatMessage, type ChatUsage, type InsertChatUsage } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations for Replit Auth
@@ -53,6 +53,21 @@ export interface IStorage {
   savePlaybookNote(userId: string, archetype: string, sectionId: string, content: string): Promise<PlaybookNotes>;
   updatePlaybookNote(id: number, content: string): Promise<PlaybookNotes | undefined>;
   deletePlaybookNote(id: number): Promise<void>;
+  // Chat
+  createConversation(data: InsertChatConversation): Promise<ChatConversation>;
+  getConversation(id: number): Promise<ChatConversation | undefined>;
+  getConversationsByUser(userId: string): Promise<ChatConversation[]>;
+  getConversationsBySession(sessionId: string): Promise<ChatConversation[]>;
+  updateConversationTitle(id: number, title: string): Promise<ChatConversation | undefined>;
+  deleteConversation(id: number): Promise<void>;
+  // Chat Messages
+  createMessage(data: InsertChatMessage): Promise<ChatMessage>;
+  getMessagesByConversation(conversationId: number): Promise<ChatMessage[]>;
+  updateMessageFeedback(id: number, feedback: string, reason?: string): Promise<ChatMessage | undefined>;
+  // Chat Usage (rate limiting)
+  getChatUsage(userId: string | null, sessionId: string | null, date: string): Promise<ChatUsage | undefined>;
+  incrementChatUsage(userId: string | null, sessionId: string | null, date: string): Promise<ChatUsage>;
+  isPremiumUser(userId: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -481,6 +496,150 @@ export class DatabaseStorage implements IStorage {
     await db
       .delete(playbookNotes)
       .where(eq(playbookNotes.id, id));
+  }
+
+  // Chat Conversation Methods
+  async createConversation(data: InsertChatConversation): Promise<ChatConversation> {
+    const [conversation] = await db
+      .insert(chatConversations)
+      .values(data)
+      .returning();
+    return conversation;
+  }
+
+  async getConversation(id: number): Promise<ChatConversation | undefined> {
+    const [conversation] = await db
+      .select()
+      .from(chatConversations)
+      .where(eq(chatConversations.id, id));
+    return conversation || undefined;
+  }
+
+  async getConversationsByUser(userId: string): Promise<ChatConversation[]> {
+    const conversations = await db
+      .select()
+      .from(chatConversations)
+      .where(eq(chatConversations.userId, userId))
+      .orderBy(desc(chatConversations.updatedAt));
+    return conversations;
+  }
+
+  async getConversationsBySession(sessionId: string): Promise<ChatConversation[]> {
+    const conversations = await db
+      .select()
+      .from(chatConversations)
+      .where(eq(chatConversations.sessionId, sessionId))
+      .orderBy(desc(chatConversations.updatedAt));
+    return conversations;
+  }
+
+  async updateConversationTitle(id: number, title: string): Promise<ChatConversation | undefined> {
+    const [conversation] = await db
+      .update(chatConversations)
+      .set({ title, updatedAt: new Date() })
+      .where(eq(chatConversations.id, id))
+      .returning();
+    return conversation || undefined;
+  }
+
+  async deleteConversation(id: number): Promise<void> {
+    await db
+      .delete(chatConversations)
+      .where(eq(chatConversations.id, id));
+  }
+
+  // Chat Message Methods
+  async createMessage(data: InsertChatMessage): Promise<ChatMessage> {
+    const [message] = await db
+      .insert(chatMessages)
+      .values(data)
+      .returning();
+    
+    // Update conversation's updatedAt timestamp
+    await db
+      .update(chatConversations)
+      .set({ updatedAt: new Date() })
+      .where(eq(chatConversations.id, data.conversationId));
+    
+    return message;
+  }
+
+  async getMessagesByConversation(conversationId: number): Promise<ChatMessage[]> {
+    const messages = await db
+      .select()
+      .from(chatMessages)
+      .where(eq(chatMessages.conversationId, conversationId))
+      .orderBy(chatMessages.createdAt);
+    return messages;
+  }
+
+  async updateMessageFeedback(id: number, feedback: string, reason?: string): Promise<ChatMessage | undefined> {
+    const [message] = await db
+      .update(chatMessages)
+      .set({ feedback, feedbackReason: reason || null })
+      .where(eq(chatMessages.id, id))
+      .returning();
+    return message || undefined;
+  }
+
+  // Chat Usage Methods (Rate Limiting)
+  async getChatUsage(userId: string | null, sessionId: string | null, date: string): Promise<ChatUsage | undefined> {
+    if (userId) {
+      const [usage] = await db
+        .select()
+        .from(chatUsage)
+        .where(and(eq(chatUsage.userId, userId), eq(chatUsage.date, date)));
+      return usage || undefined;
+    } else if (sessionId) {
+      const [usage] = await db
+        .select()
+        .from(chatUsage)
+        .where(and(eq(chatUsage.sessionId, sessionId), eq(chatUsage.date, date)));
+      return usage || undefined;
+    }
+    return undefined;
+  }
+
+  async incrementChatUsage(userId: string | null, sessionId: string | null, date: string): Promise<ChatUsage> {
+    const existing = await this.getChatUsage(userId, sessionId, date);
+    
+    if (existing) {
+      const [usage] = await db
+        .update(chatUsage)
+        .set({ 
+          messageCount: existing.messageCount + 1,
+          updatedAt: new Date()
+        })
+        .where(eq(chatUsage.id, existing.id))
+        .returning();
+      return usage;
+    } else {
+      const [usage] = await db
+        .insert(chatUsage)
+        .values({
+          userId,
+          sessionId,
+          date,
+          messageCount: 1,
+        })
+        .returning();
+      return usage;
+    }
+  }
+
+  async isPremiumUser(userId: string): Promise<boolean> {
+    // Check if user has any completed orders for the "Productivity Partner" tier
+    // For now, check if they have ANY completed order (will be enhanced with tier tracking later)
+    const [order] = await db
+      .select()
+      .from(orders)
+      .where(
+        and(
+          eq(orders.userId, userId),
+          eq(orders.status, 'completed')
+        )
+      );
+    return !!order;
   }
 }
 

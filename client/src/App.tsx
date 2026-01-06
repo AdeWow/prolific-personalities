@@ -28,6 +28,7 @@ import Playbook from "@/pages/playbook";
 import RefundPolicy from "@/pages/refund-policy";
 import Unsubscribe from "@/pages/unsubscribe";
 import DevTools from "@/pages/dev-tools";
+import Coach from "@/pages/coach";
 
 function Router() {
   const [location] = useLocation();
@@ -61,6 +62,7 @@ function Router() {
       <Route path="/blog" component={Blog} />
       <Route path="/refund-policy" component={RefundPolicy} />
       <Route path="/unsubscribe" component={Unsubscribe} />
+      <Route path="/coach" component={Coach} />
       <Route path="/results/:sessionId" component={Results} />
       <Route path="/results" component={Results} />
     </Switch>

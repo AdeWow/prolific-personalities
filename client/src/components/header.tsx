@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, Bot } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import logoImage from "@assets/Logo5Nobackground1_1762920314202.png";
 
@@ -37,6 +37,10 @@ export function Header() {
             </Link>
             <Link href="/pricing" className="text-neutral-600 hover:text-primary transition-colors">
               Pricing
+            </Link>
+            <Link href="/coach" className="flex items-center gap-1 text-primary font-medium hover:text-primary/80 transition-colors" data-testid="link-ai-coach">
+              <Bot className="w-4 h-4" />
+              AI Coach
             </Link>
             {isAuthenticated ? (
               <>
@@ -100,6 +104,10 @@ export function Header() {
             </Link>
             <Link href="/pricing" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
               Pricing
+            </Link>
+            <Link href="/coach" className="flex items-center gap-1 text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-ai-coach-mobile">
+              <Bot className="w-4 h-4" />
+              AI Coach
             </Link>
             {isAuthenticated ? (
               <>
