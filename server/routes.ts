@@ -67,17 +67,21 @@ export function registerWebhookRoute(app: Express) {
           const orderId = session.metadata?.orderId;
           const archetype = session.metadata?.archetype;
           const sessionId = session.metadata?.sessionId;
+          const productType = session.metadata?.productType;
           const customerEmail = session.customer_details?.email;
 
           if (orderId) {
             // Update order status and customer email
+            // For subscriptions, store the subscription ID instead of payment_intent
+            const isSubscription = session.mode === 'subscription';
             await storage.updateOrderStatus(
               parseInt(orderId),
               'completed',
-              session.payment_intent as string,
-              customerEmail || undefined
+              isSubscription ? null : (session.payment_intent as string),
+              customerEmail || undefined,
+              isSubscription ? (session.subscription as string) : undefined
             );
-            console.log(`✅ Order ${orderId} marked as completed via webhook`);
+            console.log(`✅ Order ${orderId} marked as completed via webhook (${isSubscription ? 'subscription' : 'one-time'})`);
             
             // Mark checkout attempt as completed (for abandoned cart tracking)
             if (sessionId && archetype) {
@@ -583,7 +587,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: quizResult.userId || null,
         sessionId,
         archetype,
-        amount: 2700,
+        amount: 1900,
         status: 'pending',
       });
       
@@ -610,7 +614,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 name: `Premium ${archetype.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Playbook`,
                 description: 'Interactive web playbook with progress tracking, 30-day action plan, tool guides, and downloadable PDF',
               },
-              unit_amount: 2700,
+              unit_amount: 1900,
             },
             quantity: 1,
           },
@@ -629,6 +633,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
       res.status(500).json({ message: "Error creating checkout session: " + error.message });
+    }
+  });
+
+  // Stripe Checkout Session - Create subscription for Productivity Partner
+  app.post("/api/create-subscription-session", writeLimiter, async (req, res) => {
+    try {
+      // Block checkout if email delivery is not configured
+      if (!resend) {
+        res.status(503).json({ 
+          message: "Premium purchases are temporarily unavailable. Email delivery service is not configured." 
+        });
+        return;
+      }
+
+      const { archetype, sessionId, billingPeriod } = req.body;
+      
+      if (!archetype || !sessionId || !billingPeriod) {
+        res.status(400).json({ message: "Missing archetype, sessionId, or billingPeriod" });
+        return;
+      }
+
+      if (!['monthly', 'yearly'].includes(billingPeriod)) {
+        res.status(400).json({ message: "Invalid billing period. Must be 'monthly' or 'yearly'" });
+        return;
+      }
+
+      // Verify quiz result exists
+      const quizResult = await storage.getQuizResultBySessionId(sessionId);
+      if (!quizResult) {
+        res.status(404).json({ message: "Quiz result not found" });
+        return;
+      }
+
+      const baseUrl = process.env.NODE_ENV === 'production'
+        ? 'https://prolificpersonalities.com'
+        : `${req.protocol}://${req.get('host')}`;
+
+      // Determine price based on billing period
+      // Monthly: $7/month, Yearly: $75/year
+      const unitAmount = billingPeriod === 'monthly' ? 700 : 7500;
+      const interval = billingPeriod === 'monthly' ? 'month' : 'year';
+
+      // Create order record for subscription
+      const order = await storage.createOrder({
+        userId: quizResult.userId || null,
+        sessionId,
+        archetype,
+        amount: unitAmount,
+        status: 'pending',
+        productType: 'productivity_partner',
+        billingPeriod,
+      });
+
+      // Create Stripe Checkout Session for subscription
+      const checkoutSession = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: 'Productivity Partner',
+                description: 'Unlimited AI coaching, chat history, priority support, and early access to new features',
+              },
+              unit_amount: unitAmount,
+              recurring: {
+                interval: interval as 'month' | 'year',
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'subscription',
+        success_url: `${baseUrl}/purchase-success?session_id=${sessionId}&archetype=${archetype}&product=partner`,
+        cancel_url: `${baseUrl}/results/${sessionId}?payment=cancelled`,
+        metadata: {
+          orderId: order.id.toString(),
+          archetype,
+          sessionId,
+          productType: 'productivity_partner',
+          billingPeriod,
+        },
+      });
+
+      res.json({ sessionId: checkoutSession.id, url: checkoutSession.url });
+    } catch (error: any) {
+      console.error("Error creating subscription session:", error);
+      res.status(500).json({ message: "Error creating subscription session: " + error.message });
     }
   });
 

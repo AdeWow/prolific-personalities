@@ -147,8 +147,11 @@ export const orders = pgTable("orders", {
   amount: integer("amount").notNull(), // amount in cents
   stripePaymentIntentId: text("stripe_payment_intent_id"),
   stripeSessionId: text("stripe_session_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"), // For subscription orders
   customerEmail: text("customer_email"),
-  status: text("status").notNull().default("pending"), // pending, completed, failed
+  status: text("status").notNull().default("pending"), // pending, completed, failed, cancelled
+  productType: text("product_type").default("playbook"), // playbook, productivity_partner
+  billingPeriod: text("billing_period"), // monthly, yearly (for subscriptions)
   createdAt: timestamp("created_at").defaultNow().notNull(),
   completedAt: timestamp("completed_at"),
 });

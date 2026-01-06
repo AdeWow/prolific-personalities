@@ -1,6 +1,6 @@
 import { users, quizResults, tools, emailCaptures, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, chatConversations, chatMessages, chatUsage, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes, type ChatConversation, type InsertChatConversation, type ChatMessage, type InsertChatMessage, type ChatUsage, type InsertChatUsage } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, sql } from "drizzle-orm";
+import { eq, and, or, desc, sql, isNull } from "drizzle-orm";
 
 export interface IStorage {
   // User operations for Replit Auth
@@ -36,7 +36,7 @@ export interface IStorage {
   getOrderById(id: number): Promise<Order | undefined>;
   getOrdersByUserId(userId: string): Promise<Order[]>;
   getOrderBySessionId(sessionId: string): Promise<Order | undefined>;
-  updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string, customerEmail?: string): Promise<Order | undefined>;
+  updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string | null, customerEmail?: string, stripeSubscriptionId?: string): Promise<Order | undefined>;
   claimOrdersBySession(sessionId: string, userId: string): Promise<void>;
   hasUserPurchasedPlaybook(userId: string, archetype: string): Promise<boolean>;
   // Playbook Progress
@@ -297,7 +297,7 @@ export class DatabaseStorage implements IStorage {
     return order || undefined;
   }
 
-  async updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string, customerEmail?: string): Promise<Order | undefined> {
+  async updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string | null, customerEmail?: string, stripeSubscriptionId?: string): Promise<Order | undefined> {
     const updateData: any = { 
       status,
       completedAt: status === 'completed' ? new Date() : undefined
@@ -309,6 +309,10 @@ export class DatabaseStorage implements IStorage {
     
     if (customerEmail) {
       updateData.customerEmail = customerEmail;
+    }
+    
+    if (stripeSubscriptionId) {
+      updateData.stripeSubscriptionId = stripeSubscriptionId;
     }
     
     const [order] = await db
@@ -628,15 +632,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async isPremiumUser(userId: string): Promise<boolean> {
-    // Check if user has any completed orders for the "Productivity Partner" tier
-    // For now, check if they have ANY completed order (will be enhanced with tier tracking later)
+    // Check if user has an active Productivity Partner subscription
+    // Only Productivity Partner subscribers get unlimited AI coaching access
+    // Complete Playbook purchasers get 10 messages/day (same as free tier for AI)
     const [order] = await db
       .select()
       .from(orders)
       .where(
         and(
           eq(orders.userId, userId),
-          eq(orders.status, 'completed')
+          eq(orders.status, 'completed'),
+          eq(orders.productType, 'productivity_partner')
         )
       );
     return !!order;

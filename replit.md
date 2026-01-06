@@ -55,7 +55,11 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **Social Sharing**: Multi-platform sharing dropdown on results page.
 -   **Analytics Integration**: Google Analytics 4 integration with automatic page view and event tracking. VITE_GA_MEASUREMENT_ID configured and actively tracking user behavior.
 -   **Email Results Feature**: Users can email their complete assessment results to themselves.
--   **Stripe Premium Payment Integration**: E-commerce system for selling premium archetype playbooks ($27), including guest purchase flow and secure webhook handling. Stores customer email for post-purchase communication.
+-   **Stripe Premium Payment Integration**: E-commerce system with 3-tier pricing:
+    -   **Discovery**: Free tier with quiz access and basic insights
+    -   **Complete Playbook**: $19 one-time payment for full personalized playbook
+    -   **Productivity Partner**: $7/month or $75/year subscription for unlimited AI coaching and premium support
+    Includes guest purchase flow, subscription handling, and secure webhook processing. Stores customer email for post-purchase communication.
 -   **Premium Playbook System**: Interactive web-based playbooks with comprehensive progress tracking:
     -   **Purchase Success Page**: Post-payment confirmation with email notification and clear CTA to access the playbook.
     -   **Chapter Progress Tracking**: Users can mark chapters as complete, with completion percentage displayed.

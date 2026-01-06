@@ -35,7 +35,7 @@ export default function Pricing() {
     },
     playbook: {
       name: "Complete Playbook",
-      price: "$37",
+      price: "$19",
       priceNote: "one-time",
       description: "Your complete productivity transformation",
       icon: Lock,
@@ -56,8 +56,8 @@ export default function Pricing() {
     },
     partner: {
       name: "Productivity Partner",
-      price: "$97",
-      priceNote: "one-time or $12/mo",
+      price: "$7",
+      priceNote: "/month or $75/year",
       description: "Premium coaching with AI support",
       icon: Crown,
       features: [
@@ -96,7 +96,7 @@ export default function Pricing() {
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
       <SEOHead
         title="Pricing - Discovery, Playbook & Premium | Prolific Personalities"
-        description="Start free with Discovery tier. Upgrade to Complete Playbook ($37) for full strategies, or Productivity Partner ($97) for unlimited AI coaching and premium support."
+        description="Start free with Discovery tier. Upgrade to Complete Playbook ($19) for full strategies, or Productivity Partner ($7/month or $75/year) for unlimited AI coaching and premium support."
         keywords="productivity assessment pricing, premium report, AI productivity coach, personalized strategies, productivity tools"
       />
       <Header />
@@ -238,7 +238,7 @@ export default function Pricing() {
                 </Link>
 
                 <p className="text-sm text-neutral-600 text-center mt-4">
-                  Save $47 with one-time payment vs. monthly
+                  Save $9 with yearly subscription vs. monthly
                 </p>
 
                 <p className="text-xs text-neutral-500 text-center mt-4">
@@ -266,8 +266,8 @@ export default function Pricing() {
                 <tr className="border-b border-neutral-200">
                   <th className="text-left py-4 px-4 font-semibold text-neutral-700">Feature</th>
                   <th className="text-center py-4 px-4 font-semibold text-neutral-700">Discovery<br /><span className="text-primary font-normal">Free</span></th>
-                  <th className="text-center py-4 px-4 font-semibold text-primary bg-primary/5">Complete Playbook<br /><span className="font-normal">$37</span></th>
-                  <th className="text-center py-4 px-4 font-semibold text-purple-600">Partner<br /><span className="font-normal">$97</span></th>
+                  <th className="text-center py-4 px-4 font-semibold text-primary bg-primary/5">Complete Playbook<br /><span className="font-normal">$19</span></th>
+                  <th className="text-center py-4 px-4 font-semibold text-purple-600">Partner<br /><span className="font-normal">$7/mo</span></th>
                 </tr>
               </thead>
               <tbody>
