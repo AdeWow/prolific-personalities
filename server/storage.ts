@@ -1,6 +1,10 @@
 import { users, quizResults, tools, emailCaptures, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, chatConversations, chatMessages, chatUsage, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes, type ChatConversation, type InsertChatConversation, type ChatMessage, type InsertChatMessage, type ChatUsage, type InsertChatUsage } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, sql, isNull } from "drizzle-orm";
+import memoize from "memoizee";
+
+// Cache for tools data (refreshes every 5 minutes)
+const TOOLS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 export interface IStorage {
   // User operations for Replit Auth
@@ -132,13 +136,20 @@ export class DatabaseStorage implements IStorage {
     return result || undefined;
   }
 
+  // Memoized internal function to fetch all tools with caching
+  private _fetchAllTools = memoize(
+    async (): Promise<Tool[]> => {
+      return await db.select().from(tools);
+    },
+    { maxAge: TOOLS_CACHE_TTL, promise: true }
+  );
+
   async getTools(): Promise<Tool[]> {
-    const allTools = await db.select().from(tools);
-    return allTools;
+    return this._fetchAllTools();
   }
 
   async getToolsByArchetype(archetype: string, limit: number = 10): Promise<ToolWithFitScore[]> {
-    const allTools = await db.select().from(tools);
+    const allTools = await this._fetchAllTools();
     
     // Sort tools by archetype fit score and return top N
     const sortedTools = allTools
@@ -180,6 +191,9 @@ export class DatabaseStorage implements IStorage {
         }
       })
       .returning();
+    
+    // Clear tools cache after creating/updating a tool
+    this._fetchAllTools.clear();
     return tool;
   }
 
