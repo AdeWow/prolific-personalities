@@ -22,6 +22,7 @@ export interface IStorage {
   // Email captures
   saveEmailCapture(capture: InsertEmailCapture): Promise<EmailCapture>;
   getEmailCaptureByEmail(email: string): Promise<EmailCapture | undefined>;
+  getEmailCaptureBySessionId(sessionId: string): Promise<EmailCapture | undefined>;
   updateEmailCaptureWelcomeSent(id: number): Promise<void>;
   unsubscribeEmail(email: string): Promise<void>;
   // Checkout attempts (for abandoned cart)
@@ -207,6 +208,11 @@ export class DatabaseStorage implements IStorage {
 
   async getEmailCaptureByEmail(email: string): Promise<EmailCapture | undefined> {
     const [capture] = await db.select().from(emailCaptures).where(eq(emailCaptures.email, email));
+    return capture || undefined;
+  }
+
+  async getEmailCaptureBySessionId(sessionId: string): Promise<EmailCapture | undefined> {
+    const [capture] = await db.select().from(emailCaptures).where(eq(emailCaptures.sessionId, sessionId));
     return capture || undefined;
   }
 

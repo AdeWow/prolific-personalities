@@ -591,12 +591,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         status: 'pending',
       });
       
-      // Track checkout attempt for abandoned cart emails (will be updated with email after Stripe)
+      // Track checkout attempt for abandoned cart emails
+      // Look up any previously captured email for this session
       try {
+        const emailCapture = await storage.getEmailCaptureBySessionId(sessionId);
         await storage.createCheckoutAttempt({
           sessionId,
           archetype,
-          email: null, // Will be filled in by webhook if they complete
+          email: emailCapture?.email || null,
         });
       } catch (err) {
         console.error('Failed to track checkout attempt:', err);
@@ -685,6 +687,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         productType: 'productivity_partner',
         billingPeriod,
       });
+
+      // Track checkout attempt for abandoned cart emails
+      try {
+        const emailCapture = await storage.getEmailCaptureBySessionId(sessionId);
+        await storage.createCheckoutAttempt({
+          sessionId,
+          archetype,
+          email: emailCapture?.email || null,
+        });
+      } catch (err) {
+        console.error('Failed to track checkout attempt:', err);
+      }
 
       // Create Stripe Checkout Session for subscription
       const checkoutSession = await stripe.checkout.sessions.create({
@@ -1211,6 +1225,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error("Error sending test emails:", error);
         res.status(500).json({ message: "Failed to send test emails" });
       }
+    }
+  });
+
+  // Abandoned Cart Email Cron Job - Call this endpoint daily via external cron service
+  // Example: Use cron-job.org to hit this endpoint daily with the CRON_SECRET header
+  app.post("/api/cron/abandoned-cart", async (req, res) => {
+    // Verify cron secret for security
+    const cronSecret = process.env.CRON_SECRET;
+    const providedSecret = req.headers['x-cron-secret'] || req.headers.authorization?.replace('Bearer ', '');
+    
+    if (cronSecret && providedSecret !== cronSecret) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    if (!resend) {
+      res.status(503).json({ error: 'Email service not configured' });
+      return;
+    }
+
+    try {
+      // Get abandoned checkouts (older than 1 hour, not completed, email not sent)
+      const abandonedCheckouts = await storage.getAbandonedCheckouts();
+      
+      const results = [];
+      
+      for (const checkout of abandonedCheckouts) {
+        if (!checkout.email) {
+          results.push({ id: checkout.id, status: 'skipped', reason: 'No email' });
+          continue;
+        }
+
+        try {
+          // Get archetype info
+          const archetypeInfo = getArchetypeInfo(checkout.archetype);
+          if (!archetypeInfo) {
+            results.push({ id: checkout.id, status: 'skipped', reason: 'Unknown archetype' });
+            continue;
+          }
+
+          const baseUrl = process.env.NODE_ENV === 'production'
+            ? 'https://prolificpersonalities.com'
+            : `${req.protocol}://${req.get('host')}`;
+
+          // Generate abandoned cart email
+          const { subject, html } = generateAbandonedCartEmail({
+            recipientEmail: checkout.email,
+            archetype: {
+              id: checkout.archetype,
+              title: archetypeInfo.title,
+            },
+            checkoutUrl: `${baseUrl}/results/${checkout.sessionId}#premium`,
+            unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(checkout.email)}`,
+          });
+
+          // Send the email
+          await resend.emails.send({
+            from: 'Prolific Personalities <support@prolificpersonalities.com>',
+            to: checkout.email,
+            subject,
+            html,
+          });
+
+          // Mark as sent
+          await storage.markAbandonedEmailSent(checkout.id);
+          results.push({ id: checkout.id, email: checkout.email, status: 'sent' });
+          console.log(`✅ Abandoned cart email sent to ${checkout.email}`);
+        } catch (err) {
+          console.error(`Failed to send abandoned cart email to ${checkout.email}:`, err);
+          results.push({ id: checkout.id, email: checkout.email, status: 'failed', error: String(err) });
+        }
+      }
+
+      console.log(`📧 Abandoned cart cron completed: ${results.filter(r => r.status === 'sent').length} sent, ${results.filter(r => r.status === 'skipped').length} skipped, ${results.filter(r => r.status === 'failed').length} failed`);
+      res.json({ 
+        success: true, 
+        processed: abandonedCheckouts.length,
+        sent: results.filter(r => r.status === 'sent').length,
+        skipped: results.filter(r => r.status === 'skipped').length,
+        failed: results.filter(r => r.status === 'failed').length,
+        results 
+      });
+    } catch (error) {
+      console.error('Abandoned cart cron error:', error);
+      res.status(500).json({ error: 'Failed to process abandoned carts' });
     }
   });
 
