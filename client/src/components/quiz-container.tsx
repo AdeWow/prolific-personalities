@@ -154,7 +154,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     if (question.type === 'likert' && question.scaleLabels) {
       return (
         <div className="space-y-4">
-          <div className="flex justify-between text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 px-1">
+          <div className="flex justify-between text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground px-1">
             <span>{question.scaleLabels.min}</span>
             <span className="hidden sm:inline">Neutral</span>
             <span>{question.scaleLabels.max}</span>
@@ -178,8 +178,8 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
                     "flex items-center justify-center cursor-pointer py-3 sm:py-4 rounded-xl border-2 text-base sm:text-lg font-semibold transition-all",
                     "hover:scale-105 active:scale-95",
                     currentValue === num
-                      ? "border-indigo-600 bg-indigo-600 text-white shadow-lg"
-                      : "border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+                      ? "border-primary bg-primary text-white shadow-lg"
+                      : "border-muted dark:border-muted bg-white dark:bg-card text-muted-foreground dark:text-muted-foreground hover:border-primary/60 hover:bg-primary/5 dark:hover:bg-primary/10"
                   )}
                 >
                   {num}
@@ -212,8 +212,8 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
                   "block cursor-pointer w-full text-left p-3 sm:p-4 border-2 rounded-xl transition-all text-sm sm:text-base leading-relaxed",
                   "hover:scale-[1.01] active:scale-[0.99]",
                   currentValue !== undefined && currentValue.toString() === index.toString()
-                    ? "border-indigo-600 bg-indigo-600 text-white shadow-lg"
-                    : "border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+                    ? "border-primary bg-primary text-white shadow-lg"
+                    : "border-muted dark:border-muted bg-white dark:bg-card text-muted-foreground dark:text-muted-foreground hover:border-primary/60 hover:bg-primary/5 dark:hover:bg-primary/10"
                 )}
               >
                 {option}
@@ -245,8 +245,8 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
                   "block cursor-pointer w-full text-center p-4 sm:p-5 border-2 rounded-xl transition-all text-sm sm:text-base font-medium leading-relaxed",
                   "hover:scale-[1.02] active:scale-[0.98]",
                   currentValue !== undefined && currentValue.toString() === index.toString()
-                    ? "border-indigo-600 bg-indigo-600 text-white shadow-lg"
-                    : "border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
+                    ? "border-primary bg-primary text-white shadow-lg"
+                    : "border-muted dark:border-muted bg-white dark:bg-card text-muted-foreground dark:text-muted-foreground hover:border-primary/60 hover:bg-primary/5 dark:hover:bg-primary/10"
                 )}
               >
                 {option}
@@ -264,22 +264,22 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     <div className="w-full max-w-3xl mx-auto">
       {showHeader && (
         <div className="text-center space-y-3 mb-8">
-          <h2 className="text-2xl lg:text-3xl font-bold text-neutral-800 dark:text-neutral-100">
+          <h2 className="text-2xl lg:text-3xl font-bold text-foreground dark:text-foreground">
             Discover Your Productivity Archetype
           </h2>
-          <p className="text-base text-neutral-600 dark:text-neutral-400">
+          <p className="text-base text-muted-foreground dark:text-muted-foreground">
             Answer honestly for the most accurate results
           </p>
         </div>
       )}
 
-      <Card className="bg-white dark:bg-neutral-900 shadow-xl border-0 overflow-hidden mb-6">
+      <Card className="bg-white dark:bg-background shadow-xl border-0 overflow-hidden mb-6">
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+            <span className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
               Page {currentPage + 1} of {totalPages}
             </span>
-            <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+            <span className="text-sm font-medium text-primary">
               {answeredCount} of {questions.length} answered
             </span>
           </div>
@@ -301,10 +301,10 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
               className={cn(
                 "transition-all duration-300 border-2",
                 isActive && !isAnswered
-                  ? "border-indigo-500 shadow-lg shadow-indigo-100 dark:shadow-indigo-900/20"
+                  ? "border-primary shadow-lg shadow-primary/20 dark:shadow-primary/10"
                   : isAnswered
                   ? "border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/10"
-                  : "border-transparent hover:border-neutral-200 dark:hover:border-neutral-700"
+                  : "border-transparent hover:border-muted dark:hover:border-neutral-700"
               )}
               onClick={() => setActiveQuestionIndex(indexInPage)}
             >
@@ -315,12 +315,12 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
                     isAnswered
                       ? "bg-green-500 text-white"
                       : isActive
-                      ? "bg-indigo-600 text-white"
-                      : "bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300"
+                      ? "bg-primary text-white"
+                      : "bg-muted dark:bg-muted text-muted-foreground dark:text-muted-foreground"
                   )}>
                     {isAnswered ? "✓" : globalIndex + 1}
                   </div>
-                  <h3 className="text-base sm:text-lg font-medium text-neutral-800 dark:text-neutral-100 leading-relaxed flex-1">
+                  <h3 className="text-base sm:text-lg font-medium text-foreground dark:text-foreground leading-relaxed flex-1">
                     {question.text}
                   </h3>
                 </div>
@@ -356,8 +356,8 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
               className={cn(
                 "w-2.5 h-2.5 rounded-full transition-all",
                 idx === currentPage
-                  ? "bg-indigo-600 w-6"
-                  : "bg-neutral-300 dark:bg-neutral-600 hover:bg-indigo-400"
+                  ? "bg-primary w-6"
+                  : "bg-muted dark:bg-muted hover:bg-primary"
               )}
               data-testid={`page-indicator-${idx}`}
             />
@@ -369,7 +369,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
           disabled={(!pageQuestionsAnswered && !isLastPage) || (isLastPage && !allQuestionsAnswered) || saveResultsMutation.isPending}
           className={cn(
             "flex items-center gap-2 px-6 py-5 text-base font-medium",
-            "bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800",
+            "bg-primary hover:bg-primary/90",
             "text-white shadow-lg hover:shadow-xl transition-all"
           )}
           data-testid="button-next-page"
@@ -394,14 +394,14 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
       </div>
 
       {showFocusIndicator && (
-        <Card className="mt-8 bg-gradient-to-r from-indigo-50 to-teal-50 dark:from-indigo-950/50 dark:to-teal-950/50 border-0">
+        <Card className="mt-8 bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 border-0">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0">
                 <span className="text-xl">💡</span>
               </div>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                <span className="font-medium text-neutral-800 dark:text-neutral-200">Tip:</span> Select an answer to automatically move to the next question. Take your time and answer honestly.
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                <span className="font-medium text-foreground dark:text-muted-foreground">Tip:</span> Select an answer to automatically move to the next question. Take your time and answer honestly.
               </p>
             </div>
           </CardContent>

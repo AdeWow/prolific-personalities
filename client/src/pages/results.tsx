@@ -266,10 +266,10 @@ export default function Results() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto"></div>
-          <p className="text-neutral-600">Loading your results...</p>
+          <p className="text-muted-foreground">Loading your results...</p>
         </div>
       </div>
     );
@@ -277,12 +277,12 @@ export default function Results() {
 
   if (error || !result || !archetype) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="max-w-md mx-4">
           <CardContent className="pt-6 text-center space-y-4">
-            <div className="text-red-500 text-4xl">⚠️</div>
-            <h1 className="text-2xl font-bold text-neutral-800">Results Not Found</h1>
-            <p className="text-neutral-600">
+            <div className="text-destructive text-4xl">⚠️</div>
+            <h1 className="text-2xl font-bold text-foreground">Results Not Found</h1>
+            <p className="text-muted-foreground">
               We couldn't find your quiz results. Please take the assessment again.
             </p>
             <Link href="/quiz">
@@ -298,16 +298,16 @@ export default function Results() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       {/* Print-only Header */}
-      <div className="hidden print-only bg-white border-b-2 border-neutral-800 pb-4 mb-8">
+      <div className="hidden print-only bg-white border-b-2 border-foreground pb-4 mb-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-neutral-800">Prolific Personalities</h1>
-          <p className="text-lg text-neutral-600 mt-2">Productivity Assessment Report</p>
-          <p className="text-sm text-neutral-500 mt-2">
+          <h1 className="text-3xl font-bold text-foreground">Prolific Personalities</h1>
+          <p className="text-lg text-muted-foreground mt-2">Productivity Assessment Report</p>
+          <p className="text-sm text-muted-foreground mt-2">
             Generated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
-          <p className="text-xs text-neutral-400 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Report ID: {sessionId}
           </p>
         </div>
@@ -327,9 +327,9 @@ export default function Results() {
               Your premium productivity playbook has been purchased successfully.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 bg-neutral-50 rounded-lg p-6 text-left">
-            <h3 className="font-bold text-neutral-800 text-lg">What's Next?</h3>
-            <ul className="space-y-3 text-neutral-700">
+          <div className="space-y-4 bg-background rounded-lg p-6 text-left">
+            <h3 className="font-bold text-foreground text-lg">What's Next?</h3>
+            <ul className="space-y-3 text-muted-foreground">
               <li className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
                 <span>Your payment has been processed successfully</span>
@@ -368,7 +368,7 @@ export default function Results() {
               <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
                 <span className="text-white text-xl">🧠</span>
               </div>
-              <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
+              <h1 className="text-xl font-bold text-foreground">Prolific Personalities</h1>
             </Link>
             <div className="flex gap-3 no-print">
               <Button onClick={handlePDFExport} variant="outline" size="sm" data-testid="button-export-pdf">
@@ -484,10 +484,10 @@ export default function Results() {
                 {/* Archetype Icon & Name */}
                 <div>
                   <div className="text-7xl mb-4">{archetype.icon}</div>
-                  <h1 className="text-4xl lg:text-5xl font-bold text-neutral-800 mb-2" data-testid="archetype-name">
+                  <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-2" data-testid="archetype-name">
                     {archetype.name}
                   </h1>
-                  <p className="text-xl lg:text-2xl text-neutral-600 font-medium" data-testid="archetype-tagline">
+                  <p className="text-xl lg:text-2xl text-muted-foreground font-medium" data-testid="archetype-tagline">
                     {archetype.tagline}
                   </p>
                   
@@ -502,7 +502,7 @@ export default function Results() {
                             ? 'bg-blue-100 text-blue-700 border-blue-300'
                             : enhancedResult.confidenceLevel === 'moderate'
                             ? 'bg-yellow-100 text-yellow-700 border-yellow-300'
-                            : 'bg-purple-100 text-purple-700 border-purple-300'
+                            : 'bg-accent/10 text-accent border-accent/30'
                         }`}
                         data-testid="confidence-badge"
                       >
@@ -514,14 +514,14 @@ export default function Results() {
 
                 {/* Profile Notes */}
                 {enhancedResult && enhancedResult.notes.length > 0 && (
-                  <Card className="bg-indigo-50 border-indigo-200 text-left max-w-2xl mx-auto" data-testid="profile-notes">
+                  <Card className="bg-primary/5 border-primary/20 text-left max-w-2xl mx-auto" data-testid="profile-notes">
                     <CardContent className="p-6">
                       <div className="flex items-start gap-3">
-                        <Info className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                        <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                         <div className="space-y-2">
-                          <h4 className="font-semibold text-neutral-800">Your Unique Profile</h4>
+                          <h4 className="font-semibold text-foreground">Your Unique Profile</h4>
                           {enhancedResult.notes.map((note, idx) => (
-                            <p key={idx} className="text-sm text-neutral-700">{note}</p>
+                            <p key={idx} className="text-sm text-muted-foreground">{note}</p>
                           ))}
                         </div>
                       </div>
@@ -531,14 +531,14 @@ export default function Results() {
 
                 {/* Secondary Archetypes */}
                 {enhancedResult && enhancedResult.secondary && enhancedResult.secondary.length > 0 && (
-                  <Card className="bg-purple-50 border-purple-200 text-left max-w-2xl mx-auto" data-testid="secondary-archetypes">
+                  <Card className="bg-accent/5 border-accent/20 text-left max-w-2xl mx-auto" data-testid="secondary-archetypes">
                     <CardContent className="p-6">
-                      <h4 className="font-semibold text-neutral-800 mb-3">You also share traits with:</h4>
+                      <h4 className="font-semibold text-foreground mb-3">You also share traits with:</h4>
                       <div className="flex flex-wrap gap-3">
                         {enhancedResult.secondary.map((secondaryArchetype) => (
                           <Link key={secondaryArchetype.id} href={`/archetypes#${secondaryArchetype.id}`}>
                             <Badge 
-                              className="px-3 py-2 bg-white border-purple-300 text-purple-700 hover:bg-purple-100 cursor-pointer transition-colors"
+                              className="px-3 py-2 bg-white border-accent/30 text-accent hover:bg-accent/10 cursor-pointer transition-colors"
                               data-testid={`secondary-archetype-${secondaryArchetype.id}`}
                             >
                               {secondaryArchetype.icon} {secondaryArchetype.name}
@@ -546,7 +546,7 @@ export default function Results() {
                           </Link>
                         ))}
                       </div>
-                      <p className="text-sm text-neutral-600 mt-3">
+                      <p className="text-sm text-muted-foreground mt-3">
                         Your balanced profile means you can adapt your working style based on the situation.
                       </p>
                     </CardContent>
@@ -555,23 +555,23 @@ export default function Results() {
 
                 {/* Archetype Breakdown */}
                 {enhancedResult && enhancedResult.allFitScores && enhancedResult.allFitScores.length > 0 && (
-                  <Card className="bg-neutral-50 border-neutral-200 text-left max-w-3xl mx-auto" data-testid="archetype-breakdown">
+                  <Card className="bg-background border-neutral-200 text-left max-w-3xl mx-auto" data-testid="archetype-breakdown">
                     <CardContent className="p-6">
-                      <h4 className="font-semibold text-neutral-800 mb-4">Archetype Fit Breakdown</h4>
+                      <h4 className="font-semibold text-foreground mb-4">Archetype Fit Breakdown</h4>
                       <div className="space-y-3">
                         {enhancedResult.allFitScores.map((fitScore, index) => (
                           <div key={fitScore.archetype.id} className="space-y-1">
                             <div className="flex justify-between items-center text-sm">
-                              <span className={`font-medium ${index === 0 ? 'text-neutral-900' : 'text-neutral-700'}`}>
+                              <span className={`font-medium ${index === 0 ? 'text-foreground' : 'text-muted-foreground'}`}>
                                 {index + 1}. {fitScore.archetype.name}
                               </span>
-                              <span className={`font-bold ${index === 0 ? 'text-indigo-600' : 'text-neutral-600'}`}>
+                              <span className={`font-bold ${index === 0 ? 'text-primary' : 'text-muted-foreground'}`}>
                                 {fitScore.fitPercentage}%
                               </span>
                             </div>
-                            <div className="relative h-2 bg-neutral-200 rounded-full overflow-hidden">
+                            <div className="relative h-2 bg-muted rounded-full overflow-hidden">
                               <div 
-                                className={`absolute top-0 left-0 h-full ${index === 0 ? 'bg-indigo-600' : 'bg-neutral-400'} transition-all`}
+                                className={`absolute top-0 left-0 h-full ${index === 0 ? 'bg-primary' : 'bg-muted-foreground'} transition-all`}
                                 style={{ width: `${fitScore.fitPercentage}%` }}
                                 data-testid={`fit-bar-${fitScore.archetype.id}`}
                               />
@@ -579,7 +579,7 @@ export default function Results() {
                           </div>
                         ))}
                       </div>
-                      <p className="text-xs text-neutral-500 mt-4">
+                      <p className="text-xs text-muted-foreground mt-4">
                         Fit percentage shows how closely your scores match each archetype's ideal profile.
                       </p>
                     </CardContent>
@@ -600,7 +600,7 @@ export default function Results() {
       <section className="py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
               Your Productivity Profile
             </h2>
           </div>
@@ -608,11 +608,11 @@ export default function Results() {
           {/* Why You Struggle */}
           <Card className="bg-white shadow-lg" data-testid="struggle-section">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-neutral-800 mb-6 flex items-center">
+              <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center">
                 <span className="text-3xl mr-3">💡</span>
                 Why You Struggle
               </h3>
-              <div className="space-y-4 text-neutral-700 leading-relaxed">
+              <div className="space-y-4 text-muted-foreground leading-relaxed">
                 {archetype.struggle.map((paragraph, index) => (
                   <p key={index} className="text-lg">{paragraph}</p>
                 ))}
@@ -621,9 +621,9 @@ export default function Results() {
           </Card>
 
           {/* Your Superpowers */}
-          <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 shadow-lg" data-testid="superpowers-section">
+          <Card className="bg-gradient-to-br from-primary/5 to-accent/5 shadow-lg" data-testid="superpowers-section">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-neutral-800 mb-6 flex items-center">
+              <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center">
                 <span className="text-3xl mr-3">✨</span>
                 Your Superpowers
               </h3>
@@ -632,8 +632,8 @@ export default function Results() {
                   <div key={index} className="flex items-start space-x-3">
                     <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
                     <div>
-                      <h4 className="font-bold text-neutral-800 mb-1">{power.title}</h4>
-                      <p className="text-neutral-700">{power.description}</p>
+                      <h4 className="font-bold text-foreground mb-1">{power.title}</h4>
+                      <p className="text-muted-foreground">{power.description}</p>
                     </div>
                   </div>
                 ))}
@@ -644,7 +644,7 @@ export default function Results() {
           {/* Top 3 Productivity Blockers */}
           <Card className="bg-white shadow-lg" data-testid="blockers-section">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-neutral-800 mb-6 flex items-center">
+              <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center">
                 <span className="text-3xl mr-3">🚫</span>
                 Top 3 Productivity Blockers
               </h3>
@@ -655,8 +655,8 @@ export default function Results() {
                       {index + 1}
                     </div>
                     <div>
-                      <h4 className="font-bold text-neutral-800">{blocker.title}</h4>
-                      <p className="text-neutral-600 text-sm">→ {blocker.description}</p>
+                      <h4 className="font-bold text-foreground">{blocker.title}</h4>
+                      <p className="text-muted-foreground text-sm">→ {blocker.description}</p>
                     </div>
                   </div>
                 ))}
@@ -670,10 +670,10 @@ export default function Results() {
       <section className="py-12 bg-white/50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-2">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
               Your Quick Wins
             </h2>
-            <p className="text-lg text-neutral-600">Immediate actions you can take today</p>
+            <p className="text-lg text-muted-foreground">Immediate actions you can take today</p>
           </div>
 
           {/* Quick Win Cards */}
@@ -681,11 +681,11 @@ export default function Results() {
             {archetype.quickWins.map((win, index) => (
               <Card key={index} className="bg-white shadow-lg hover:shadow-xl transition-shadow">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 text-xl font-bold mb-4">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary text-xl font-bold mb-4">
                     {index + 1}
                   </div>
-                  <h4 className="font-bold text-neutral-800 text-lg mb-3">{win.title}</h4>
-                  <p className="text-neutral-600 text-sm leading-relaxed">{win.description}</p>
+                  <h4 className="font-bold text-foreground text-lg mb-3">{win.title}</h4>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{win.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -694,18 +694,18 @@ export default function Results() {
           {/* Framework Preview */}
           <Card className="bg-gradient-to-br from-teal-50 to-blue-50 shadow-lg border-2 border-teal-200" data-testid="framework-preview">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-neutral-800 mb-3">
+              <h3 className="text-xl font-bold text-foreground mb-3">
                 Your Top Matched Framework (Preview)
               </h3>
               <div className="bg-white rounded-lg p-6">
-                <h4 className="text-2xl font-bold text-neutral-800 mb-2">{archetype.framework.name}</h4>
-                <p className="text-neutral-700 mb-4">
+                <h4 className="text-2xl font-bold text-foreground mb-2">{archetype.framework.name}</h4>
+                <p className="text-muted-foreground mb-4">
                   <strong>Why it works for you:</strong> {archetype.framework.why}
                 </p>
                 <button 
                   onClick={handleUpgradeToPremium}
                   disabled={checkoutMutation.isPending}
-                  className="flex items-center text-indigo-600 font-semibold hover:text-indigo-700 transition-colors cursor-pointer disabled:opacity-50"
+                  className="flex items-center text-primary font-semibold hover:text-primary/80 transition-colors cursor-pointer disabled:opacity-50"
                   data-testid="link-unlock-framework"
                 >
                   <Lock className="w-5 h-5 mr-2" />
@@ -718,35 +718,35 @@ export default function Results() {
       </section>
 
       {/* Email Capture Section - Enhanced with Lead Magnet */}
-      <section className="py-12 bg-gradient-to-br from-neutral-50 to-indigo-50">
+      <section className="py-12 bg-muted">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="bg-white shadow-xl border-2 border-indigo-100" data-testid="email-capture-card">
+          <Card className="bg-white shadow-xl border-2 border-primary/10" data-testid="email-capture-card">
             <CardContent className="p-8">
               <div className="text-center mb-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary mb-4">
                   <Mail className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-neutral-800 mb-2">
+                <h3 className="text-2xl font-bold text-foreground mb-2">
                   Get Your Free {archetype?.name || 'Productivity'} Quick-Start Guide
                 </h3>
-                <p className="text-neutral-600 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Receive your complete results plus a personalized mini-guide with your top 3 strategies
                 </p>
                 
                 {/* Value Props */}
-                <div className="bg-indigo-50 rounded-lg p-4 text-left mb-6">
-                  <p className="text-sm font-semibold text-indigo-800 mb-2">You'll receive:</p>
-                  <ul className="space-y-2 text-sm text-indigo-700">
+                <div className="bg-primary/5 rounded-lg p-4 text-left mb-6">
+                  <p className="text-sm font-semibold text-primary mb-2">You'll receive:</p>
+                  <ul className="space-y-2 text-sm text-primary/80">
                     <li className="flex items-center">
-                      <CheckCircle2 className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                       Your complete assessment results (PDF)
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle2 className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                       3 quick wins tailored to {archetype?.name || 'your archetype'}s
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle2 className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                       Weekly productivity tips for your archetype
                     </li>
                   </ul>
@@ -768,14 +768,14 @@ export default function Results() {
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg py-6 hover:shadow-lg transition-all"
+                    className="w-full gradient-primary text-white text-lg py-6 hover:shadow-lg transition-all"
                     disabled={emailResultsMutation.isPending || emailSaved}
                     data-testid="button-submit-email"
                   >
                     {emailResultsMutation.isPending ? "Sending..." : "Get My Free Guide"}
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
-                  <p className="text-xs text-neutral-500 text-center">
+                  <p className="text-xs text-muted-foreground text-center">
                     Free forever. Unsubscribe anytime. We respect your privacy.
                   </p>
                 </form>
@@ -783,7 +783,7 @@ export default function Results() {
                 <div className="text-center py-4" data-testid="email-success-message">
                   <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-green-600" />
                   <p className="text-lg font-semibold text-green-700">Your guide is on the way!</p>
-                  <p className="text-neutral-600 mt-2">Check your inbox for your complete results and quick-start guide.</p>
+                  <p className="text-muted-foreground mt-2">Check your inbox for your complete results and quick-start guide.</p>
                 </div>
               )}
             </CardContent>
@@ -796,10 +796,10 @@ export default function Results() {
         <section className="py-12 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
                 Top Tools for {archetype.name}
               </h2>
-              <p className="text-lg text-neutral-600">
+              <p className="text-lg text-muted-foreground">
                 Based on your archetype, these are the productivity tools that match your working style
               </p>
             </div>
@@ -816,18 +816,18 @@ export default function Results() {
       {/* Print-Only Detailed Analysis Section */}
       <div className="hidden print-only py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-neutral-800 mb-6 border-b-2 border-neutral-300 pb-2">
+          <h2 className="text-2xl font-bold text-foreground mb-6 border-b-2 border-neutral-300 pb-2">
             Detailed Score Analysis
           </h2>
           
           <div className="space-y-6">
             {/* Structure Orientation */}
             <div className="border border-neutral-300 p-4">
-              <h3 className="text-lg font-bold text-neutral-800 mb-2">Structure Orientation</h3>
-              <p className="text-sm text-neutral-600 mb-2">
+              <h3 className="text-lg font-bold text-foreground mb-2">Structure Orientation</h3>
+              <p className="text-sm text-muted-foreground mb-2">
                 Score: {scores?.structureOrientation}/100
               </p>
-              <p className="text-sm text-neutral-700">
+              <p className="text-sm text-muted-foreground">
                 This dimension measures your preference for structured routines versus spontaneous flexibility. 
                 A higher score indicates a strong preference for planning and organization, while a lower score 
                 suggests comfort with improvisation and adaptability.
@@ -836,11 +836,11 @@ export default function Results() {
 
             {/* Motivation Style */}
             <div className="border border-neutral-300 p-4">
-              <h3 className="text-lg font-bold text-neutral-800 mb-2">Motivation Style</h3>
-              <p className="text-sm text-neutral-600 mb-2">
+              <h3 className="text-lg font-bold text-foreground mb-2">Motivation Style</h3>
+              <p className="text-sm text-muted-foreground mb-2">
                 Score: {scores?.motivationStyle}/100
               </p>
-              <p className="text-sm text-neutral-700">
+              <p className="text-sm text-muted-foreground">
                 This dimension assesses your primary sources of motivation. Higher scores indicate responsiveness 
                 to external accountability and deadlines, while lower scores reflect stronger intrinsic motivation 
                 and self-direction.
@@ -849,11 +849,11 @@ export default function Results() {
 
             {/* Cognitive Focus */}
             <div className="border border-neutral-300 p-4">
-              <h3 className="text-lg font-bold text-neutral-800 mb-2">Cognitive Focus</h3>
-              <p className="text-sm text-neutral-600 mb-2">
+              <h3 className="text-lg font-bold text-foreground mb-2">Cognitive Focus</h3>
+              <p className="text-sm text-muted-foreground mb-2">
                 Score: {scores?.cognitiveFocus}/100
               </p>
-              <p className="text-sm text-neutral-700">
+              <p className="text-sm text-muted-foreground">
                 This dimension evaluates your attention patterns and working memory preferences. Higher scores 
                 suggest a preference for deep focus on single tasks, while lower scores indicate comfort with 
                 multitasking and task-switching.
@@ -862,11 +862,11 @@ export default function Results() {
 
             {/* Task Relationship */}
             <div className="border border-neutral-300 p-4">
-              <h3 className="text-lg font-bold text-neutral-800 mb-2">Task Relationship</h3>
-              <p className="text-sm text-neutral-600 mb-2">
+              <h3 className="text-lg font-bold text-foreground mb-2">Task Relationship</h3>
+              <p className="text-sm text-muted-foreground mb-2">
                 Score: {scores?.taskRelationship}/100
               </p>
-              <p className="text-sm text-neutral-700">
+              <p className="text-sm text-muted-foreground">
                 This dimension captures how you initiate and engage with tasks. Higher scores reflect ease 
                 in starting tasks and maintaining momentum, while lower scores indicate patterns of procrastination 
                 or delayed initiation that may stem from anxiety or perfectionism.
@@ -875,13 +875,13 @@ export default function Results() {
           </div>
 
           <div className="mt-8 border-t-2 border-neutral-300 pt-6">
-            <h3 className="text-lg font-bold text-neutral-800 mb-4">About This Assessment</h3>
-            <p className="text-sm text-neutral-700 mb-4">
+            <h3 className="text-lg font-bold text-foreground mb-4">About This Assessment</h3>
+            <p className="text-sm text-muted-foreground mb-4">
               This assessment is grounded in established psychological research, including Executive Function Theory 
               (Barkley), Cognitive Load Theory (Sweller), Self-Determination Theory (Deci & Ryan), procrastination 
               research (Pychyl, Ferrari), and Flow theory (Csikszentmihalyi).
             </p>
-            <p className="text-sm text-neutral-700">
+            <p className="text-sm text-muted-foreground">
               Your archetype represents a unique combination of these four dimensions. Understanding your productivity 
               profile can help you choose strategies, tools, and environments that align with your natural working style 
               rather than fighting against it.
@@ -894,7 +894,7 @@ export default function Results() {
       <TestimonialsSection variant="compact" showTitle={true} maxItems={3} />
 
       {/* Premium Preview Section */}
-      <section className="py-16 bg-gradient-to-br from-indigo-600 to-purple-600">
+      <section className="py-16 gradient-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="bg-white shadow-2xl" data-testid="premium-preview">
             <CardContent className="p-8 lg:p-12">
@@ -902,10 +902,10 @@ export default function Results() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 mb-4">
                   <Lock className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-3">
+                <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-3">
                   Unlock Your Complete {archetype.title} Playbook
                 </h2>
-                <p className="text-lg text-neutral-600">
+                <p className="text-lg text-muted-foreground">
                   Transform insight into action with your personalized productivity system
                 </p>
               </div>
@@ -913,11 +913,11 @@ export default function Results() {
               <div className="grid md:grid-cols-2 gap-8 mb-8">
                 {/* Frameworks */}
                 <div>
-                  <h4 className="font-bold text-neutral-800 mb-3 flex items-center">
+                  <h4 className="font-bold text-foreground mb-3 flex items-center">
                     <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
                     3 Full Framework Guides
                   </h4>
-                  <ul className="space-y-2 text-neutral-600 text-sm">
+                  <ul className="space-y-2 text-muted-foreground text-sm">
                     {archetype.premiumIncludes.frameworks.map((item, index) => (
                       <li key={index} className="pl-7">• {item}</li>
                     ))}
@@ -926,11 +926,11 @@ export default function Results() {
 
                 {/* Tools */}
                 <div>
-                  <h4 className="font-bold text-neutral-800 mb-3 flex items-center">
+                  <h4 className="font-bold text-foreground mb-3 flex items-center">
                     <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
                     Tool Recommendations
                   </h4>
-                  <ul className="space-y-2 text-neutral-600 text-sm">
+                  <ul className="space-y-2 text-muted-foreground text-sm">
                     {archetype.premiumIncludes.tools.map((item, index) => (
                       <li key={index} className="pl-7">• {item}</li>
                     ))}
@@ -939,11 +939,11 @@ export default function Results() {
 
                 {/* Implementation Plan */}
                 <div>
-                  <h4 className="font-bold text-neutral-800 mb-3 flex items-center">
+                  <h4 className="font-bold text-foreground mb-3 flex items-center">
                     <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
                     30-Day Implementation Plan
                   </h4>
-                  <ul className="space-y-2 text-neutral-600 text-sm">
+                  <ul className="space-y-2 text-muted-foreground text-sm">
                     {archetype.premiumIncludes.plan.map((item, index) => (
                       <li key={index} className="pl-7">• {item}</li>
                     ))}
@@ -952,11 +952,11 @@ export default function Results() {
 
                 {/* Special Content */}
                 <div>
-                  <h4 className="font-bold text-neutral-800 mb-3 flex items-center">
+                  <h4 className="font-bold text-foreground mb-3 flex items-center">
                     <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
                     Common Failure Modes
                   </h4>
-                  <ul className="space-y-2 text-neutral-600 text-sm">
+                  <ul className="space-y-2 text-muted-foreground text-sm">
                     {archetype.premiumIncludes.special.map((item, index) => (
                       <li key={index} className="pl-7">• {item}</li>
                     ))}
@@ -966,14 +966,14 @@ export default function Results() {
 
               <div className="border-t pt-8">
                 {/* Recent Activity Badge */}
-                <div className="flex items-center justify-center gap-2 mb-4 text-sm text-neutral-600">
+                <div className="flex items-center justify-center gap-2 mb-4 text-sm text-muted-foreground">
                   <span className="inline-flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
                   <span>12 people purchased in the last 24 hours</span>
                 </div>
 
                 <Button 
                   size="lg" 
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg py-6 hover:shadow-xl transition-all"
+                  className="w-full gradient-primary text-white text-lg py-6 hover:shadow-xl transition-all"
                   data-testid="button-get-premium"
                   onClick={handleUpgradeToPremium}
                   disabled={checkoutMutation.isPending}
@@ -981,19 +981,19 @@ export default function Results() {
                   {checkoutMutation.isPending ? 'Processing...' : 'Get My Full Report - $27'}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
-                <p className="text-center text-neutral-500 text-sm mt-4">
+                <p className="text-center text-muted-foreground text-sm mt-4">
                   One-time payment • Instant download • 100+ page personalized playbook
                 </p>
-                <p className="text-center text-neutral-400 text-xs mt-2">
+                <p className="text-center text-muted-foreground text-xs mt-2">
                   30-day satisfaction guarantee.{" "}
-                  <Link href="/refund-policy" className="text-indigo-600 hover:underline" data-testid="link-refund-policy">
+                  <Link href="/refund-policy" className="text-primary hover:underline" data-testid="link-refund-policy">
                     View refund policy
                   </Link>
                 </p>
 
                 {/* Trust Badges */}
                 <div className="mt-6 pt-4 border-t border-neutral-100">
-                  <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-neutral-500">
+                  <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <span className="text-lg">🔒</span>
                       <span>Secure Checkout</span>
@@ -1019,8 +1019,8 @@ export default function Results() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="bg-white shadow-lg">
             <CardContent className="p-8 text-center">
-              <h3 className="text-2xl font-bold text-neutral-800 mb-2">Want to try again?</h3>
-              <p className="text-neutral-600 mb-6">
+              <h3 className="text-2xl font-bold text-foreground mb-2">Want to try again?</h3>
+              <p className="text-muted-foreground mb-6">
                 Your results are saved, but you can retake the assessment anytime to see if your archetype has evolved.
               </p>
               <Link href="/quiz">
@@ -1038,8 +1038,8 @@ export default function Results() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-bold text-neutral-800 mb-2">Next Steps</h3>
-              <ul className="list-disc list-inside text-sm text-neutral-700 space-y-1">
+              <h3 className="text-lg font-bold text-foreground mb-2">Next Steps</h3>
+              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                 <li>Start with one Quick Win from this report and implement it this week</li>
                 <li>Share your archetype with your team to improve collaboration</li>
                 <li>Revisit this assessment every 3-6 months to track your productivity evolution</li>
@@ -1048,7 +1048,7 @@ export default function Results() {
             </div>
             
             <div className="pt-4 border-t border-neutral-300">
-              <p className="text-xs text-neutral-500 text-center">
+              <p className="text-xs text-muted-foreground text-center">
                 © {new Date().getFullYear()} Prolific Personalities. All rights reserved. | 
                 This report is for personal use only. | 
                 For questions or support, visit our website.

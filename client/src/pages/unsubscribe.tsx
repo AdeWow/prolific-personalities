@@ -87,20 +87,20 @@ export default function Unsubscribe() {
           title="Unsubscribed | Prolific Personalities"
           description="You have been successfully unsubscribed from Prolific Personalities emails."
         />
-        <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white py-16">
+        <div className="min-h-screen bg-gradient-to-b from-background to-muted py-16">
           <div className="max-w-lg mx-auto px-4">
             <Card className="bg-white shadow-lg">
               <CardContent className="p-8 text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
                   <CheckCircle2 className="w-8 h-8 text-green-600" />
                 </div>
-                <h1 className="text-2xl font-bold text-neutral-800 mb-4">
+                <h1 className="text-2xl font-bold text-foreground mb-4">
                   Successfully Unsubscribed
                 </h1>
-                <p className="text-neutral-600 mb-6">
+                <p className="text-muted-foreground mb-6">
                   You will no longer receive emails from Prolific Personalities.
                 </p>
-                <p className="text-neutral-500 text-sm mb-8">
+                <p className="text-muted-foreground text-sm mb-8">
                   We appreciate the time you spent with us. Best of luck on your productivity journey.
                 </p>
                 <div className="space-y-3">
@@ -139,18 +139,18 @@ export default function Unsubscribe() {
         title="Unsubscribe | Prolific Personalities"
         description="Unsubscribe from Prolific Personalities emails."
       />
-      <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white py-16">
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted py-16">
         <div className="max-w-lg mx-auto px-4">
           <Card className="bg-white shadow-lg">
             <CardContent className="p-8">
               <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-neutral-100 mb-4">
-                  <Mail className="w-8 h-8 text-neutral-600" />
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
+                  <Mail className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <h1 className="text-2xl font-bold text-neutral-800 mb-2">
+                <h1 className="text-2xl font-bold text-foreground mb-2">
                   Unsubscribe
                 </h1>
-                <p className="text-neutral-600">
+                <p className="text-muted-foreground">
                   We're sorry to see you go. Before you leave, would you mind telling us why?
                 </p>
               </div>
@@ -158,7 +158,7 @@ export default function Unsubscribe() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {!email && (
                   <div>
-                    <Label htmlFor="email" className="text-neutral-700 font-medium">
+                    <Label htmlFor="email" className="text-muted-foreground font-medium">
                       Email Address
                     </Label>
                     <input
@@ -166,7 +166,7 @@ export default function Unsubscribe() {
                       id="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full mt-2 px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full mt-2 px-4 py-3 border border-muted rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                       placeholder="your@email.com"
                       required
                       data-testid="input-email"
@@ -175,15 +175,15 @@ export default function Unsubscribe() {
                 )}
 
                 {email && (
-                  <div className="bg-neutral-50 rounded-lg p-4">
-                    <p className="text-sm text-neutral-600">
+                  <div className="bg-background rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground">
                       Unsubscribing: <strong>{email}</strong>
                     </p>
                   </div>
                 )}
 
                 <div>
-                  <Label className="text-neutral-700 font-medium mb-3 block">
+                  <Label className="text-muted-foreground font-medium mb-3 block">
                     Why are you unsubscribing?
                   </Label>
                   <RadioGroup value={reason} onValueChange={setReason}>
@@ -197,7 +197,7 @@ export default function Unsubscribe() {
                           />
                           <Label
                             htmlFor={option.value}
-                            className="text-neutral-700 cursor-pointer"
+                            className="text-muted-foreground cursor-pointer"
                           >
                             {option.label}
                           </Label>
@@ -218,7 +218,7 @@ export default function Unsubscribe() {
                 </div>
 
                 <div>
-                  <Label className="text-neutral-700 font-medium mb-3 block">
+                  <Label className="text-muted-foreground font-medium mb-3 block">
                     How would you rate the emails you received? (Optional)
                   </Label>
                   <RadioGroup value={rating} onValueChange={setRating}>
@@ -232,7 +232,7 @@ export default function Unsubscribe() {
                           />
                           <Label
                             htmlFor={option.value}
-                            className="text-neutral-700 cursor-pointer"
+                            className="text-muted-foreground cursor-pointer"
                           >
                             {option.label}
                           </Label>
@@ -243,7 +243,7 @@ export default function Unsubscribe() {
                 </div>
 
                 <div>
-                  <Label htmlFor="feedback" className="text-neutral-700 font-medium">
+                  <Label htmlFor="feedback" className="text-muted-foreground font-medium">
                     Is there anything we could have done differently? (Optional)
                   </Label>
                   <Textarea
@@ -259,19 +259,19 @@ export default function Unsubscribe() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-neutral-800 text-white hover:bg-neutral-700"
+                  className="w-full bg-foreground text-white hover:bg-muted-foreground"
                   disabled={isSubmitting || !reason}
                   data-testid="button-unsubscribe"
                 >
                   {isSubmitting ? "Processing..." : "Unsubscribe"}
                 </Button>
 
-                <p className="text-center text-neutral-500 text-sm">
+                <p className="text-center text-muted-foreground text-sm">
                   Changed your mind?{" "}
                   <button
                     type="button"
                     onClick={() => setLocation("/")}
-                    className="text-indigo-600 hover:underline"
+                    className="text-primary hover:underline"
                   >
                     Go back to homepage
                   </button>

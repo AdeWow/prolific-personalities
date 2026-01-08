@@ -59,14 +59,14 @@ export function TestimonialsSection({
   const displayedTestimonials = testimonials.slice(0, maxItems);
 
   return (
-    <section className={variant === "full" ? "py-16 bg-gradient-to-br from-neutral-50 to-indigo-50" : "py-8"}>
+    <section className={variant === "full" ? "py-16 bg-gradient-to-b from-background to-muted" : "py-8"}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {showTitle && (
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-neutral-900 mb-4" data-testid="text-testimonials-title">
+            <h2 className="text-3xl font-bold text-foreground mb-4" data-testid="text-testimonials-title">
               What Our Users Say
             </h2>
-            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Join thousands who've discovered their productivity archetype and transformed their work life.
             </p>
           </div>
@@ -87,27 +87,27 @@ export function TestimonialsSection({
                 </div>
                 
                 <div className="relative mb-4">
-                  <Quote className="absolute -top-2 -left-2 w-8 h-8 text-indigo-100" />
-                  <p className="text-neutral-700 leading-relaxed pl-4" data-testid={`text-testimonial-content-${testimonial.id}`}>
+                  <Quote className="absolute -top-2 -left-2 w-8 h-8 text-primary/10" />
+                  <p className="text-muted-foreground leading-relaxed pl-4" data-testid={`text-testimonial-content-${testimonial.id}`}>
                     "{testimonial.content}"
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3 mt-4 pt-4 border-t border-neutral-100">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+                <div className="flex items-center gap-3 mt-4 pt-4 border-t border-muted">
+                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-sm">
                     {testimonial.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div>
-                    <p className="font-semibold text-neutral-900" data-testid={`text-testimonial-name-${testimonial.id}`}>
+                    <p className="font-semibold text-foreground" data-testid={`text-testimonial-name-${testimonial.id}`}>
                       {testimonial.name}
                     </p>
-                    <p className="text-sm text-neutral-500">{testimonial.role}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                   </div>
                 </div>
                 
                 {testimonial.archetype && variant === "full" && (
                   <div className="mt-3">
-                    <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-medium rounded-full">
+                    <span className="inline-block px-3 py-1 bg-primary/5 text-primary text-xs font-medium rounded-full">
                       {testimonial.archetype}
                     </span>
                   </div>
@@ -124,14 +124,14 @@ export function TestimonialsSection({
                 {["SM", "JL", "ER", "MT"].map((initials, i) => (
                   <div 
                     key={i}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-semibold border-2 border-white"
+                    className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-semibold border-2 border-white"
                   >
                     {initials}
                   </div>
                 ))}
               </div>
-              <span className="text-sm text-neutral-600 ml-2" data-testid="text-user-count">
-                <strong className="text-neutral-900">2,500+</strong> people found their archetype this month
+              <span className="text-sm text-muted-foreground ml-2" data-testid="text-user-count">
+                <strong className="text-foreground">2,500+</strong> people found their archetype this month
               </span>
             </div>
           </div>

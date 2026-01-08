@@ -3,61 +3,85 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(20, 14.3%, 4.1%);
-  --muted: hsl(60, 4.8%, 95.9%);
-  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  /* Logo-derived color palette - sophisticated muted tones */
+  --background: hsl(36, 20%, 97%);
+  --foreground: hsl(206, 21%, 16%);
+  --muted: hsl(36, 15%, 93%);
+  --muted-foreground: hsl(205, 12%, 45%);
   --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --popover-foreground: hsl(206, 21%, 16%);
   --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(20, 14.3%, 4.1%);
-  --border: hsl(20, 5.9%, 90%);
-  --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(238, 74%, 65%);
-  --primary-foreground: hsl(211, 100%, 99%);
-  --secondary: hsl(60, 4.8%, 95.9%);
-  --secondary-foreground: hsl(24, 9.8%, 10%);
-  --accent: hsl(166, 76%, 46%);
-  --accent-foreground: hsl(24, 9.8%, 10%);
-  --destructive: hsl(0, 84.2%, 60.2%);
-  --destructive-foreground: hsl(60, 9.1%, 97.8%);
-  --ring: hsl(20, 14.3%, 4.1%);
-  --radius: 0.5rem;
+  --card-foreground: hsl(206, 21%, 16%);
+  --border: hsl(36, 12%, 88%);
+  --input: hsl(36, 12%, 88%);
   
-  /* Custom productivity theme colors */
-  --neutral-50: hsl(208, 23%, 98%);
-  --neutral-100: hsl(210, 17%, 95%);
-  --neutral-200: hsl(213, 11%, 89%);
-  --neutral-300: hsl(213, 10%, 82%);
-  --neutral-400: hsl(215, 9%, 61%);
-  --neutral-500: hsl(218, 11%, 45%);
-  --neutral-600: hsl(221, 13%, 37%);
-  --neutral-700: hsl(224, 16%, 28%);
-  --neutral-800: hsl(226, 22%, 18%);
-  --neutral-900: hsl(229, 24%, 10%);
+  /* Primary: Muted Teal from logo */
+  --primary: hsl(172, 34%, 43%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  
+  /* Secondary: Dusty Rose/Coral from logo */
+  --secondary: hsl(16, 38%, 62%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  
+  /* Accent: Soft Lavender from logo */
+  --accent: hsl(281, 24%, 64%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  
+  /* Support: Sage Green from logo */
+  --support: hsl(96, 22%, 52%);
+  --support-foreground: hsl(0, 0%, 100%);
+  
+  --destructive: hsl(0, 65%, 55%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(172, 34%, 43%);
+  --radius: 0.625rem;
+  
+  /* Neutral scale - warm gray tones matching logo background */
+  --neutral-50: hsl(36, 20%, 98%);
+  --neutral-100: hsl(36, 18%, 95%);
+  --neutral-200: hsl(36, 14%, 90%);
+  --neutral-300: hsl(36, 10%, 82%);
+  --neutral-400: hsl(205, 10%, 58%);
+  --neutral-500: hsl(205, 12%, 45%);
+  --neutral-600: hsl(205, 16%, 35%);
+  --neutral-700: hsl(206, 18%, 28%);
+  --neutral-800: hsl(206, 21%, 20%);
+  --neutral-900: hsl(206, 24%, 12%);
 }
 
 .dark {
-  --background: hsl(240, 10%, 3.9%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 3.7%, 15.9%);
-  --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(240, 10%, 3.9%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(240, 10%, 3.9%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(238, 74%, 65%);
-  --primary-foreground: hsl(211, 100%, 99%);
-  --secondary: hsl(240, 3.7%, 15.9%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(166, 76%, 46%);
-  --accent-foreground: hsl(0, 0%, 98%);
-  --destructive: hsl(0, 62.8%, 30.6%);
+  /* Dark mode - logo-derived palette */
+  --background: hsl(206, 24%, 8%);
+  --foreground: hsl(36, 15%, 95%);
+  --muted: hsl(206, 18%, 14%);
+  --muted-foreground: hsl(205, 10%, 60%);
+  --popover: hsl(206, 22%, 10%);
+  --popover-foreground: hsl(36, 15%, 95%);
+  --card: hsl(206, 20%, 12%);
+  --card-foreground: hsl(36, 15%, 95%);
+  --border: hsl(206, 15%, 20%);
+  --input: hsl(206, 15%, 20%);
+  
+  /* Primary: Muted Teal - slightly brighter for dark mode */
+  --primary: hsl(172, 38%, 48%);
+  --primary-foreground: hsl(206, 24%, 8%);
+  
+  /* Secondary: Dusty Rose */
+  --secondary: hsl(16, 42%, 58%);
+  --secondary-foreground: hsl(206, 24%, 8%);
+  
+  /* Accent: Soft Lavender */
+  --accent: hsl(281, 28%, 62%);
+  --accent-foreground: hsl(206, 24%, 8%);
+  
+  /* Support: Sage Green */
+  --support: hsl(96, 26%, 50%);
+  --support-foreground: hsl(206, 24%, 8%);
+  
+  --destructive: hsl(0, 55%, 45%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 4.9%, 83.9%);
-  --radius: 0.5rem;
+  --ring: hsl(172, 38%, 48%);
+  --radius: 0.625rem;
 }
 
 /* Print Styles for PDF Export */
@@ -195,18 +219,40 @@
 }
 
 @layer utilities {
+  /* Primary gradient: Teal (primary button gradient) */
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(238, 74%, 65%) 0%, hsl(272, 92%, 69%) 100%);
+    background: linear-gradient(135deg, hsl(172, 38%, 38%) 0%, hsl(172, 34%, 48%) 100%);
   }
   
+  /* Secondary gradient: Coral tones */
   .gradient-secondary {
-    background: linear-gradient(135deg, hsl(166, 76%, 46%) 0%, hsl(238, 74%, 65%) 100%);
+    background: linear-gradient(135deg, hsl(16, 42%, 55%) 0%, hsl(16, 38%, 65%) 100%);
   }
   
+  /* Accent gradient: Lavender tones */
+  .gradient-accent {
+    background: linear-gradient(135deg, hsl(281, 28%, 58%) 0%, hsl(281, 24%, 68%) 100%);
+  }
+  
+  /* Subtle page background gradient */
+  .gradient-subtle {
+    background: linear-gradient(180deg, hsl(36, 20%, 97%) 0%, hsl(36, 15%, 93%) 100%);
+  }
+  
+  /* Text gradient: Teal to Lavender (logo harmony) */
   .text-gradient {
-    background: linear-gradient(135deg, hsl(238, 74%, 65%) 0%, hsl(272, 92%, 69%) 100%);
+    background: linear-gradient(135deg, hsl(172, 40%, 38%) 0%, hsl(281, 28%, 58%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+  
+  /* Consistent shadow utilities */
+  .shadow-soft {
+    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.08);
+  }
+  
+  .shadow-medium {
+    box-shadow: 0 8px 30px -8px rgba(0, 0, 0, 0.12);
   }
 }

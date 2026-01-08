@@ -63,7 +63,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Discover Your Productivity Archetype"
         description="Discover your productivity archetype with Prolific Personalities. Science-backed strategies personalized to your working style. Take the free 5-minute assessment now."
@@ -79,13 +79,13 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="space-y-6">
-                <h1 className="text-5xl lg:text-6xl font-bold text-neutral-800 leading-tight">
+                <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                   Stop fighting your brain.{" "}
                   <span className="text-gradient">
                     Start working with it.
                   </span>
                 </h1>
-                <p className="text-xl text-neutral-700 leading-relaxed">
+                <p className="text-xl text-muted-foreground leading-relaxed">
                   You're not lazy—you just need strategies that match how your brain works. Take our 5-minute assessment to find your productivity archetype.
                 </p>
               </div>
@@ -103,7 +103,7 @@ export default function Home() {
                 <Link href="/archetypes">
                   <Button 
                     variant="outline" 
-                    className="border-2 border-neutral-300 text-neutral-700 px-8 py-6 rounded-xl font-semibold text-xl hover:border-primary hover:text-primary transition-colors"
+                    className="border-2 border-muted-foreground/80 text-muted-foreground px-8 py-6 rounded-xl font-semibold text-xl hover:border-primary hover:text-primary transition-colors"
                     data-testid="button-learn-more"
                   >
                     Learn More
@@ -126,34 +126,34 @@ export default function Home() {
       </section>
 
       {/* What You'll Discover */}
-      <section className="py-12 bg-white border-y border-neutral-200">
+      <section className="py-12 bg-white border-y border-muted">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-2xl font-bold text-neutral-800 text-center mb-8">What You'll Discover</h3>
+          <h3 className="text-2xl font-bold text-foreground text-center mb-8">What You'll Discover</h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="flex items-start gap-3 p-4">
-              <span className="text-indigo-600 mt-1">✓</span>
-              <p className="text-neutral-700">Why productivity systems that work for others quietly fail you</p>
+              <span className="text-primary mt-1">✓</span>
+              <p className="text-muted-foreground">Why productivity systems that work for others quietly fail you</p>
             </div>
             <div className="flex items-start gap-3 p-4">
-              <span className="text-indigo-600 mt-1">✓</span>
-              <p className="text-neutral-700">The hidden pattern behind how you start, stall, and finish work</p>
+              <span className="text-primary mt-1">✓</span>
+              <p className="text-muted-foreground">The hidden pattern behind how you start, stall, and finish work</p>
             </div>
             <div className="flex items-start gap-3 p-4">
-              <span className="text-indigo-600 mt-1">✓</span>
-              <p className="text-neutral-700">What kind of structure energizes you — and what drains you fast</p>
+              <span className="text-primary mt-1">✓</span>
+              <p className="text-muted-foreground">What kind of structure energizes you — and what drains you fast</p>
             </div>
             <div className="flex items-start gap-3 p-4">
-              <span className="text-indigo-600 mt-1">✓</span>
-              <p className="text-neutral-700">The productivity archetype that shapes how you work at your best</p>
+              <span className="text-primary mt-1">✓</span>
+              <p className="text-muted-foreground">The productivity archetype that shapes how you work at your best</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Trust Badges */}
-      <section className="py-8 bg-neutral-50">
+      <section className="py-8 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-8 items-center text-neutral-500 text-sm">
+          <div className="flex flex-wrap justify-center gap-8 items-center text-muted-foreground text-sm">
             <div className="flex items-center gap-2">
               <span>🔬</span>
               <span>Research-Backed</span>
@@ -171,13 +171,13 @@ export default function Home() {
       </section>
 
       {/* Interactive Quiz Preview */}
-      <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
+      <section className="py-20 bg-gradient-to-br from-primary/5 to-accent/5">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
               Ready to discover your archetype?
             </h2>
-            <p className="text-xl text-neutral-600">
+            <p className="text-xl text-muted-foreground">
               Try the first question now
             </p>
           </div>
@@ -186,16 +186,16 @@ export default function Home() {
           <Card className="bg-white shadow-xl border-0 overflow-hidden mb-8">
             <CardContent className="p-6 sm:p-8">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-indigo-600">Question 1 of 28</span>
-                <span className="text-sm text-neutral-500">5 min total</span>
+                <span className="text-sm font-medium text-primary">Question 1 of 28</span>
+                <span className="text-sm text-muted-foreground">5 min total</span>
               </div>
               
-              <h3 className="text-xl font-medium text-neutral-800 mb-6">
+              <h3 className="text-xl font-medium text-foreground mb-6">
                 I feel most productive when my day follows a predictable routine.
               </h3>
               
               <div className="space-y-4">
-                <div className="flex justify-between text-xs sm:text-sm text-neutral-500 px-1">
+                <div className="flex justify-between text-xs sm:text-sm text-muted-foreground px-1">
                   <span>Strongly Disagree</span>
                   <span className="hidden sm:inline">Neutral</span>
                   <span>Strongly Agree</span>
@@ -219,8 +219,8 @@ export default function Home() {
                           "flex items-center justify-center cursor-pointer py-3 sm:py-4 rounded-xl border-2 text-base sm:text-lg font-semibold transition-all",
                           "hover:scale-105 active:scale-95",
                           previewAnswer === num
-                            ? "border-indigo-600 bg-indigo-600 text-white shadow-lg"
-                            : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-400 hover:bg-indigo-50"
+                            ? "border-primary bg-primary text-white shadow-lg"
+                            : "border-muted bg-white text-muted-foreground hover:border-primary/60 hover:bg-primary/5"
                         )}
                       >
                         {num}
@@ -239,7 +239,7 @@ export default function Home() {
                   "px-10 py-6 rounded-xl font-semibold text-xl transition-all duration-200",
                   previewAnswer 
                     ? "gradient-primary text-white hover:shadow-lg transform hover:-translate-y-0.5" 
-                    : "bg-neutral-200 text-neutral-500"
+                    : "bg-muted text-muted-foreground"
                 )}
                 data-testid="button-continue-quiz"
               >
@@ -253,7 +253,7 @@ export default function Home() {
                 )}
               </Button>
             </Link>
-            <p className="text-neutral-500 mt-4 text-sm">
+            <p className="text-muted-foreground mt-4 text-sm">
               27 more questions • Free • Instant results
             </p>
           </div>
@@ -264,10 +264,10 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <p className="text-lg text-indigo-600 font-medium mb-4">
+            <p className="text-lg text-primary font-medium mb-4">
               If you've tried every system and still feel stuck, this will explain why.
             </p>
-            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
               Watch: Why This Works
             </h2>
           </div>
@@ -285,8 +285,8 @@ export default function Home() {
             />
           </div>
           <div className="text-center mt-6 space-y-2">
-            <p className="text-neutral-500 text-sm">2:14 — Watch the explanation</p>
-            <Link href="/quiz" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm" data-testid="link-skip-video">
+            <p className="text-muted-foreground text-sm">2:14 — Watch the explanation</p>
+            <Link href="/quiz" className="text-primary hover:text-primary/80 font-medium text-sm" data-testid="link-skip-video">
               Or skip the video and take the quiz →
             </Link>
           </div>
@@ -294,17 +294,17 @@ export default function Home() {
       </section>
 
       {/* Built By a Real Person */}
-      <section className="py-16 bg-gradient-to-br from-neutral-50 to-indigo-50">
+      <section className="py-16 bg-muted">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="bg-white border-0 shadow-lg">
               <CardContent className="p-6 text-center">
-                <User className="w-10 h-10 text-indigo-600 mx-auto mb-4" />
-                <h3 className="font-semibold text-neutral-800 mb-2">Built by a Real Person</h3>
-                <p className="text-neutral-600 text-sm mb-4">
+                <User className="w-10 h-10 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold text-foreground mb-2">Built by a Real Person</h3>
+                <p className="text-muted-foreground text-sm mb-4">
                   Not a faceless corporation. Created by someone who struggled with the same problems.
                 </p>
-                <Link href="/founder" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium" data-testid="link-meet-founder">
+                <Link href="/founder" className="text-primary hover:text-primary/80 text-sm font-medium" data-testid="link-meet-founder">
                   Meet the founder →
                 </Link>
               </CardContent>
@@ -313,8 +313,8 @@ export default function Home() {
             <Card className="bg-white border-0 shadow-lg">
               <CardContent className="p-6 text-center">
                 <Shield className="w-10 h-10 text-teal-600 mx-auto mb-4" />
-                <h3 className="font-semibold text-neutral-800 mb-2">Privacy Promise</h3>
-                <p className="text-neutral-600 text-sm">
+                <h3 className="font-semibold text-foreground mb-2">Privacy Promise</h3>
+                <p className="text-muted-foreground text-sm">
                   Your answers stay private. No email required to see your results. No spam, ever.
                 </p>
               </CardContent>
@@ -322,12 +322,12 @@ export default function Home() {
 
             <Card className="bg-white border-0 shadow-lg">
               <CardContent className="p-6 text-center">
-                <FlaskConical className="w-10 h-10 text-purple-600 mx-auto mb-4" />
-                <h3 className="font-semibold text-neutral-800 mb-2">Research-Based</h3>
-                <p className="text-neutral-600 text-sm mb-4">
+                <FlaskConical className="w-10 h-10 text-accent mx-auto mb-4" />
+                <h3 className="font-semibold text-foreground mb-2">Research-Based</h3>
+                <p className="text-muted-foreground text-sm mb-4">
                   Built on Executive Function Theory, Self-Determination Theory, and flow research.
                 </p>
-                <Link href="/science" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium" data-testid="link-see-science">
+                <Link href="/science" className="text-primary hover:text-primary/80 text-sm font-medium" data-testid="link-see-science">
                   See the science →
                 </Link>
               </CardContent>
@@ -340,40 +340,40 @@ export default function Home() {
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-neutral-800 mb-4">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
               What You'll Get (Free)
             </h2>
-            <p className="text-neutral-600">
+            <p className="text-muted-foreground">
               Your personalized results include:
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl">
+            <div className="flex items-start gap-4 p-4 bg-background rounded-xl">
               <div className="text-2xl">🎯</div>
               <div>
-                <h4 className="font-semibold text-neutral-800">Your Archetype Name</h4>
-                <p className="text-neutral-600 text-sm">One of 6 distinct productivity personalities that explains your natural working style</p>
+                <h4 className="font-semibold text-foreground">Your Archetype Name</h4>
+                <p className="text-muted-foreground text-sm">One of 6 distinct productivity personalities that explains your natural working style</p>
               </div>
             </div>
-            <div className="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl">
+            <div className="flex items-start gap-4 p-4 bg-background rounded-xl">
               <div className="text-2xl">🚧</div>
               <div>
-                <h4 className="font-semibold text-neutral-800">Top 3 Blockers</h4>
-                <p className="text-neutral-600 text-sm">The specific obstacles that hold your archetype back most often</p>
+                <h4 className="font-semibold text-foreground">Top 3 Blockers</h4>
+                <p className="text-muted-foreground text-sm">The specific obstacles that hold your archetype back most often</p>
               </div>
             </div>
-            <div className="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl">
+            <div className="flex items-start gap-4 p-4 bg-background rounded-xl">
               <div className="text-2xl">💡</div>
               <div>
-                <h4 className="font-semibold text-neutral-800">3 Starter Strategies</h4>
-                <p className="text-neutral-600 text-sm">Actionable techniques you can implement today</p>
+                <h4 className="font-semibold text-foreground">3 Starter Strategies</h4>
+                <p className="text-muted-foreground text-sm">Actionable techniques you can implement today</p>
               </div>
             </div>
-            <div className="flex items-start gap-4 p-4 bg-neutral-50 rounded-xl">
+            <div className="flex items-start gap-4 p-4 bg-background rounded-xl">
               <div className="text-2xl">🛠️</div>
               <div>
-                <h4 className="font-semibold text-neutral-800">Tool Recommendations</h4>
-                <p className="text-neutral-600 text-sm">Productivity apps and tools matched to your archetype</p>
+                <h4 className="font-semibold text-foreground">Tool Recommendations</h4>
+                <p className="text-muted-foreground text-sm">Productivity apps and tools matched to your archetype</p>
               </div>
             </div>
           </div>
@@ -391,16 +391,16 @@ export default function Home() {
       </section>
 
       {/* Archetype Preview */}
-      <section className="py-20 bg-gradient-to-br from-neutral-50 to-indigo-50">
+      <section className="py-20 bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
-            <p className="text-lg text-indigo-600 font-medium">
+            <p className="text-lg text-primary font-medium">
               Most people are a blend—but one archetype leads.
             </p>
-            <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
               Six Productivity Archetypes
             </h2>
-            <p className="text-xl text-neutral-600">
+            <p className="text-xl text-muted-foreground">
               Which one are you?
             </p>
           </div>
@@ -416,7 +416,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-neutral-800 text-white py-16">
+      <footer className="bg-foreground text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
@@ -424,14 +424,14 @@ export default function Home() {
                 <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
                 <h3 className="text-xl font-bold">Prolific Personalities</h3>
               </div>
-              <p className="text-neutral-400">
+              <p className="text-muted-foreground">
                 Science-backed strategies for how you work best.
               </p>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Assessment</h4>
-              <ul className="space-y-2 text-neutral-400">
+              <ul className="space-y-2 text-muted-foreground">
                 <li><Link href="/quiz" className="hover:text-white transition-colors">Take Quiz</Link></li>
                 <li><Link href="/archetypes" className="hover:text-white transition-colors">Archetypes</Link></li>
                 <li><Link href="/science" className="hover:text-white transition-colors">Science</Link></li>
@@ -440,14 +440,14 @@ export default function Home() {
             
             <div>
               <h4 className="font-semibold mb-4">Resources</h4>
-              <ul className="space-y-2 text-neutral-400">
+              <ul className="space-y-2 text-muted-foreground">
                 <li><Link href="/blog" className="hover:text-white transition-colors" data-testid="link-footer-blog">Blog</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-neutral-400">
+              <ul className="space-y-2 text-muted-foreground">
                 <li><Link href="/about" className="hover:text-white transition-colors">About</Link></li>
                 <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
                 <li><Link href="/refund-policy" className="hover:text-white transition-colors" data-testid="link-footer-refund">Refund Policy</Link></li>
@@ -455,16 +455,16 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="border-t border-neutral-700 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-neutral-400">© 2024 Prolific Personalities. All rights reserved.</p>
+          <div className="border-t border-muted-foreground pt-8 mt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-muted-foreground">© 2024 Prolific Personalities. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-neutral-400 hover:text-white transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-white transition-colors">
                 <i className="fab fa-twitter"></i>
               </a>
-              <a href="#" className="text-neutral-400 hover:text-white transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-white transition-colors">
                 <i className="fab fa-linkedin"></i>
               </a>
-              <a href="#" className="text-neutral-400 hover:text-white transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-white transition-colors">
                 <i className="fab fa-github"></i>
               </a>
             </div>

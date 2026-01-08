@@ -74,23 +74,23 @@ export function InstallPrompt() {
   if (!showPrompt) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-white rounded-2xl shadow-2xl border border-neutral-200 p-4 z-50 animate-in slide-in-from-bottom-4">
+    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-white rounded-2xl shadow-2xl border border-muted p-4 z-50 animate-in slide-in-from-bottom-4">
       <button
         onClick={handleDismiss}
-        className="absolute top-3 right-3 text-neutral-400 hover:text-neutral-600"
+        className="absolute top-3 right-3 text-muted-foreground hover:text-muted-foreground"
         aria-label="Dismiss"
       >
         <X className="w-5 h-5" />
       </button>
 
       <div className="flex items-start gap-4">
-        <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
           <Smartphone className="w-6 h-6 text-white" />
         </div>
         
         <div className="flex-1 pr-6">
-          <h3 className="font-semibold text-neutral-800 mb-1">Install Prolific</h3>
-          <p className="text-sm text-neutral-600 mb-3">
+          <h3 className="font-semibold text-foreground mb-1">Install Prolific</h3>
+          <p className="text-sm text-muted-foreground mb-3">
             {isIOS 
               ? "Tap the share button, then 'Add to Home Screen'" 
               : "Get quick access to your productivity coach"

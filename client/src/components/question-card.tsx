@@ -34,14 +34,14 @@ export function QuestionCard({
     <Card className="w-full max-w-4xl mx-auto shadow-lg" data-testid="question-card">
       <CardContent className="p-6 sm:p-8 lg:p-12">
         <div className="space-y-8">
-          <h3 className="text-2xl sm:text-3xl font-semibold text-neutral-800 dark:text-neutral-200 leading-relaxed" data-testid="question-text">
+          <h3 className="text-2xl sm:text-3xl font-semibold text-foreground dark:text-muted-foreground leading-relaxed" data-testid="question-text">
             {question.text}
           </h3>
           
           {/* Likert Scale (1-5) */}
           {question.type === 'likert' && question.scaleLabels && (
             <div className="space-y-6">
-              <div className="flex justify-between text-sm sm:text-base text-neutral-600 dark:text-neutral-400">
+              <div className="flex justify-between text-sm sm:text-base text-muted-foreground dark:text-muted-foreground">
                 <span className="text-left max-w-[120px] sm:max-w-none">{question.scaleLabels.min}</span>
                 <span className="hidden sm:inline">Neutral</span>
                 <span className="text-right max-w-[120px] sm:max-w-none">{question.scaleLabels.max}</span>
@@ -64,10 +64,10 @@ export function QuestionCard({
                       data-testid={`likert-option-${num}`}
                       className={cn(
                         "flex items-center justify-center cursor-pointer py-4 sm:py-6 px-2 sm:px-4 rounded-xl border-2 text-lg sm:text-xl font-semibold transition-all touch-manipulation",
-                        "peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-600 peer-focus-visible:ring-offset-2",
+                        "peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2",
                         value === num
-                          ? "border-indigo-600 bg-indigo-50 text-indigo-700"
-                          : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300 peer-hover:border-indigo-300"
+                          ? "border-primary bg-primary/5 text-primary"
+                          : "border-muted bg-white text-muted-foreground hover:border-primary/30 peer-hover:border-primary/30"
                       )}
                     >
                       {num}
@@ -97,10 +97,10 @@ export function QuestionCard({
                     data-testid={`scenario-option-${index}`}
                     className={cn(
                       "block cursor-pointer w-full text-left p-4 sm:p-6 border-2 rounded-xl transition-all text-base sm:text-lg leading-relaxed touch-manipulation",
-                      "peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-600 peer-focus-visible:ring-offset-2",
+                      "peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2",
                       value !== undefined && value.toString() === index.toString()
-                        ? "border-indigo-600 bg-indigo-50 text-indigo-700"
-                        : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300"
+                        ? "border-primary bg-primary/5 text-primary"
+                        : "border-muted bg-white text-muted-foreground hover:border-primary/30"
                     )}
                   >
                     {option}
@@ -129,10 +129,10 @@ export function QuestionCard({
                     data-testid={`binary-option-${index}`}
                     className={cn(
                       "block cursor-pointer w-full text-left p-4 sm:p-6 border-2 rounded-xl transition-all text-base sm:text-lg leading-relaxed touch-manipulation",
-                      "peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-600 peer-focus-visible:ring-offset-2",
+                      "peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2",
                       value !== undefined && value.toString() === index.toString()
-                        ? "border-indigo-600 bg-indigo-50 text-indigo-700"
-                        : "border-neutral-200 bg-white text-neutral-700 hover:border-indigo-300"
+                        ? "border-primary bg-primary/5 text-primary"
+                        : "border-muted bg-white text-muted-foreground hover:border-primary/30"
                     )}
                   >
                     {option}

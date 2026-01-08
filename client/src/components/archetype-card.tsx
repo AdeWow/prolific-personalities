@@ -21,7 +21,7 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
     )}>
       <CardContent className="p-6">
         {archetype.image ? (
-          <div className="w-16 h-16 rounded-2xl overflow-hidden mb-4 ring-2 ring-neutral-200">
+          <div className="w-16 h-16 rounded-2xl overflow-hidden mb-4 ring-2 ring-muted">
             <img 
               src={archetype.image} 
               alt={archetype.name}
@@ -36,11 +36,11 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
           </div>
         )}
         
-        <h3 className="text-xl font-bold text-neutral-800 mb-2">
+        <h3 className="text-xl font-bold text-foreground mb-2">
           {archetype.name}
         </h3>
         
-        <p className="text-neutral-600 mb-4 leading-relaxed min-h-[3.5rem]">
+        <p className="text-muted-foreground mb-4 leading-relaxed min-h-[3.5rem]">
           {archetype.tagline}
         </p>
         
@@ -57,7 +57,7 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
         </div>
 
         {clickable && (
-          <p className="text-indigo-600 font-medium text-sm">
+          <p className="text-primary font-medium text-sm">
             View archetype →
           </p>
         )}
@@ -65,8 +65,8 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
         {detailed && (
           <div className="mt-6 grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-neutral-800 mb-3">Your Strengths:</h4>
-              <ul className="space-y-2 text-neutral-700">
+              <h4 className="font-semibold text-foreground mb-3">Your Strengths:</h4>
+              <ul className="space-y-2 text-muted-foreground">
                 {archetype.superpowers.map((power, index) => (
                   <li key={index} className="flex items-center">
                     <i className="fas fa-check-circle text-green-500 mr-2"></i>
@@ -77,8 +77,8 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
             </div>
             
             <div>
-              <h4 className="font-semibold text-neutral-800 mb-3">Growth Areas:</h4>
-              <ul className="space-y-2 text-neutral-700">
+              <h4 className="font-semibold text-foreground mb-3">Growth Areas:</h4>
+              <ul className="space-y-2 text-muted-foreground">
                 {archetype.blockers.map((blocker, index) => (
                   <li key={index} className="flex items-center">
                     <i className={`fas fa-arrow-up text-${archetype.color}-500 mr-2`}></i>

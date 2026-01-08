@@ -123,7 +123,7 @@ export function AICoachChat({ archetype, archetypeName, scores }: AICoachChatPro
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+          className="fixed bottom-6 right-6 z-50 gradient-primary text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
           aria-label="Open AI Coach chat"
           data-testid="button-open-ai-coach"
         >
@@ -131,21 +131,21 @@ export function AICoachChat({ archetype, archetypeName, scores }: AICoachChatPro
             <MessageCircle className="h-6 w-6" />
             <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-yellow-300 animate-pulse" />
           </div>
-          <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-foreground text-background text-sm px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
             Ask your AI Coach
           </span>
         </button>
       )}
 
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 z-50 w-[380px] h-[520px] flex flex-col shadow-2xl border-2 border-indigo-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3 flex items-center justify-between">
+        <Card className="fixed bottom-6 right-6 z-50 w-[380px] h-[520px] flex flex-col shadow-2xl border-2 border-primary/20 overflow-hidden">
+          <div className="gradient-primary text-white px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Bot className="h-5 w-5" />
               <div>
                 <h3 className="font-semibold text-sm">AI Productivity Coach</h3>
                 {archetypeName && (
-                  <p className="text-xs text-indigo-100">Personalized for {archetypeName}s</p>
+                  <p className="text-xs text-white/80">Personalized for {archetypeName}s</p>
                 )}
               </div>
             </div>
@@ -162,11 +162,11 @@ export function AICoachChat({ archetype, archetypeName, scores }: AICoachChatPro
           <ScrollArea className="flex-1 p-4" ref={scrollRef}>
             {messages.length === 0 ? (
               <div className="space-y-4">
-                <div className="bg-indigo-50 rounded-lg p-3 text-sm">
-                  <p className="text-gray-700">
+                <div className="bg-primary/5 rounded-lg p-3 text-sm">
+                  <p className="text-foreground">
                     Hi! I'm your AI productivity coach, personalized to help{" "}
                     {archetypeName ? (
-                      <span className="font-semibold text-indigo-700">{archetypeName}s</span>
+                      <span className="font-semibold text-primary">{archetypeName}s</span>
                     ) : (
                       "you"
                     )}{" "}
@@ -174,7 +174,7 @@ export function AICoachChat({ archetype, archetypeName, scores }: AICoachChatPro
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-xs text-gray-500 font-medium">Try asking:</p>
+                  <p className="text-xs text-muted-foreground font-medium">Try asking:</p>
                   <div className="flex flex-wrap gap-2">
                     {suggestedQuestions.map((q, i) => (
                       <button
@@ -183,7 +183,7 @@ export function AICoachChat({ archetype, archetypeName, scores }: AICoachChatPro
                           setInput(q);
                           inputRef.current?.focus();
                         }}
-                        className="text-xs bg-gray-100 hover:bg-indigo-100 text-gray-700 px-3 py-1.5 rounded-full transition-colors"
+                        className="text-xs bg-muted hover:bg-primary/10 text-foreground px-3 py-1.5 rounded-full transition-colors"
                         data-testid={`button-suggestion-${i}`}
                       >
                         {q}
@@ -204,24 +204,24 @@ export function AICoachChat({ archetype, archetypeName, scores }: AICoachChatPro
                     )}
                   >
                     {msg.role === "assistant" && (
-                      <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                        <Bot className="h-4 w-4 text-indigo-600" />
+                      <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Bot className="h-4 w-4 text-primary" />
                       </div>
                     )}
                     <div
                       className={cn(
                         "max-w-[80%] rounded-lg px-3 py-2 text-sm",
                         msg.role === "user"
-                          ? "bg-indigo-600 text-white"
-                          : "bg-gray-100 text-gray-800"
+                          ? "bg-primary text-white"
+                          : "bg-muted text-foreground"
                       )}
                     >
                       {msg.content || (
-                        <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                       )}
                     </div>
                     {msg.role === "user" && (
-                      <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center flex-shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                         <User className="h-4 w-4 text-white" />
                       </div>
                     )}
@@ -231,7 +231,7 @@ export function AICoachChat({ archetype, archetypeName, scores }: AICoachChatPro
             )}
           </ScrollArea>
 
-          <form onSubmit={handleSubmit} className="p-3 border-t bg-gray-50">
+          <form onSubmit={handleSubmit} className="p-3 border-t bg-muted">
             <div className="flex gap-2">
               <Input
                 ref={inputRef}
@@ -246,7 +246,7 @@ export function AICoachChat({ archetype, archetypeName, scores }: AICoachChatPro
                 type="submit"
                 size="icon"
                 disabled={!input.trim() || isLoading}
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="bg-primary hover:bg-primary/90"
                 data-testid="button-send-message"
               >
                 {isLoading ? (

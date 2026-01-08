@@ -12,7 +12,7 @@ export default function Resources() {
     "chaotic-creative": {
       name: "Chaotic Creative",
       icon: Sparkles,
-      color: "from-purple-500 to-pink-500",
+      color: "from-accent to-secondary",
       essentialStack: [
         { name: "Voice Memos", cost: "Free", purpose: "Fastest idea capture" },
         { name: "Evernote or Google Keep", cost: "Free-$10/mo", purpose: "Organize chaos" },
@@ -36,7 +36,7 @@ export default function Resources() {
     "structured-achiever": {
       name: "Structured Achiever",
       icon: Brain,
-      color: "from-indigo-500 to-purple-500",
+      color: "from-primary to-accent",
       essentialStack: [
         { name: "Things 3 or Todoist", cost: "$50 or Free-$4/mo", purpose: "Reliable task management" },
         { name: "Toggl", cost: "Free-$10/mo", purpose: "Track actual time spent" },

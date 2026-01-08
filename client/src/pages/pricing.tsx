@@ -95,7 +95,7 @@ export default function Pricing() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Pricing - Discovery, Playbook & Premium | Prolific Personalities"
         description="Start free with Discovery tier. Upgrade to Complete Playbook ($19) for full strategies, or Productivity Partner ($7/month or $75/year) for unlimited AI coaching and premium support."
@@ -111,11 +111,11 @@ export default function Pricing() {
             Choose Your Plan
           </Badge>
           
-          <h1 className="text-4xl lg:text-5xl font-bold text-neutral-800 mb-6">
+          <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
             Start Free. Upgrade When Ready.
           </h1>
           
-          <p className="text-xl text-neutral-600 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
             Get instant insights for free. Unlock your complete productivity blueprint with Premium plans.
           </p>
         </div>
@@ -126,24 +126,24 @@ export default function Pricing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             {/* Discovery Plan */}
-            <Card className="bg-white shadow-lg border-2 border-neutral-200 hover:border-primary/50 transition-all duration-300" data-testid="card-discovery-plan">
+            <Card className="bg-white shadow-lg border-2 border-muted hover:border-primary/50 transition-all duration-300" data-testid="card-discovery-plan">
               <CardContent className="p-8">
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
                     <tiers.discovery.icon className="w-6 h-6 text-primary" />
-                    <h3 className="text-2xl font-bold text-neutral-800">{tiers.discovery.name}</h3>
+                    <h3 className="text-2xl font-bold text-foreground">{tiers.discovery.name}</h3>
                   </div>
                   <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-5xl font-bold text-neutral-800">{tiers.discovery.price}</span>
+                    <span className="text-5xl font-bold text-foreground">{tiers.discovery.price}</span>
                   </div>
-                  <p className="text-neutral-600">{tiers.discovery.description}</p>
+                  <p className="text-muted-foreground">{tiers.discovery.description}</p>
                 </div>
 
                 <ul className="space-y-3 mb-8">
                   {tiers.discovery.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-neutral-700">{feature}</span>
+                      <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -157,8 +157,8 @@ export default function Pricing() {
             </Card>
 
             {/* Complete Playbook Plan */}
-            <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 shadow-xl border-4 border-primary relative overflow-hidden" data-testid="card-playbook-plan">
-              <div className="absolute top-0 right-0 bg-gradient-to-r from-primary to-purple-600 text-white px-6 py-2 text-sm font-semibold">
+            <Card className="bg-gradient-to-br from-primary/5 to-accent/5 shadow-xl border-4 border-primary relative overflow-hidden" data-testid="card-playbook-plan">
+              <div className="absolute top-0 right-0 bg-primary text-white px-6 py-2 text-sm font-semibold">
                 {tiers.playbook.badge}
               </div>
 
@@ -166,20 +166,20 @@ export default function Pricing() {
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
                     <tiers.playbook.icon className="w-6 h-6 text-primary" />
-                    <h3 className="text-2xl font-bold text-neutral-800">{tiers.playbook.name}</h3>
+                    <h3 className="text-2xl font-bold text-foreground">{tiers.playbook.name}</h3>
                   </div>
                   <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-5xl font-bold text-neutral-800">{tiers.playbook.price}</span>
-                    <span className="text-neutral-600">{tiers.playbook.priceNote}</span>
+                    <span className="text-5xl font-bold text-foreground">{tiers.playbook.price}</span>
+                    <span className="text-muted-foreground">{tiers.playbook.priceNote}</span>
                   </div>
-                  <p className="text-neutral-700 font-medium">{tiers.playbook.description}</p>
+                  <p className="text-muted-foreground font-medium">{tiers.playbook.description}</p>
                 </div>
 
                 <ul className="space-y-3 mb-8">
                   {tiers.playbook.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <Zap className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-neutral-700 font-medium">{feature}</span>
+                      <span className="text-muted-foreground font-medium">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -191,11 +191,11 @@ export default function Pricing() {
                   </Button>
                 </Link>
 
-                <p className="text-sm text-neutral-600 text-center mt-4">
+                <p className="text-sm text-muted-foreground text-center mt-4">
                   Take the free assessment first, then upgrade
                 </p>
 
-                <p className="text-xs text-neutral-500 text-center mt-4">
+                <p className="text-xs text-muted-foreground text-center mt-4">
                   30-day satisfaction guarantee.{" "}
                   <Link href="/refund-policy" className="text-primary hover:underline" data-testid="link-refund-policy">
                     View refund policy
@@ -205,45 +205,45 @@ export default function Pricing() {
             </Card>
 
             {/* Productivity Partner Plan */}
-            <Card className="bg-white shadow-lg border-2 border-purple-300 hover:border-purple-400 transition-all duration-300 relative overflow-hidden" data-testid="card-partner-plan">
-              <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 text-sm font-semibold">
+            <Card className="bg-white shadow-lg border-2 border-accent hover:border-accent/80 transition-all duration-300 relative overflow-hidden" data-testid="card-partner-plan">
+              <div className="absolute top-0 right-0 bg-accent text-accent-foreground px-6 py-2 text-sm font-semibold">
                 {tiers.partner.badge}
               </div>
 
               <CardContent className="p-8 pt-12">
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
-                    <tiers.partner.icon className="w-6 h-6 text-purple-600" />
-                    <h3 className="text-2xl font-bold text-neutral-800">{tiers.partner.name}</h3>
+                    <tiers.partner.icon className="w-6 h-6 text-accent" />
+                    <h3 className="text-2xl font-bold text-foreground">{tiers.partner.name}</h3>
                   </div>
                   <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-5xl font-bold text-neutral-800">{tiers.partner.price}</span>
-                    <span className="text-neutral-600">{tiers.partner.priceNote}</span>
+                    <span className="text-5xl font-bold text-foreground">{tiers.partner.price}</span>
+                    <span className="text-muted-foreground">{tiers.partner.priceNote}</span>
                   </div>
-                  <p className="text-neutral-700 font-medium">{tiers.partner.description}</p>
+                  <p className="text-muted-foreground font-medium">{tiers.partner.description}</p>
                 </div>
 
                 <ul className="space-y-3 mb-8">
                   {tiers.partner.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <Bot className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-neutral-700 font-medium">{feature}</span>
+                      <Bot className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground font-medium">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
                 <Link href={tiers.partner.ctaLink}>
-                  <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-6 text-lg font-semibold hover:shadow-lg transition-all" data-testid="button-start-partner">
+                  <Button className="w-full bg-secondary text-secondary-foreground py-6 text-lg font-semibold hover:bg-secondary/90 hover:shadow-lg transition-all" data-testid="button-start-partner">
                     <Crown className="w-5 h-5 mr-2" />
                     {tiers.partner.cta}
                   </Button>
                 </Link>
 
-                <p className="text-sm text-neutral-600 text-center mt-4">
+                <p className="text-sm text-muted-foreground text-center mt-4">
                   Save $9 with yearly subscription vs. monthly
                 </p>
 
-                <p className="text-xs text-neutral-500 text-center mt-4">
+                <p className="text-xs text-muted-foreground text-center mt-4">
                   30-day satisfaction guarantee.{" "}
                   <Link href="/refund-policy" className="text-primary hover:underline">
                     View refund policy
@@ -258,33 +258,33 @@ export default function Pricing() {
       {/* Comparison Table */}
       <section className="py-16 bg-white/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-neutral-800 text-center mb-12">
+          <h2 className="text-3xl font-bold text-foreground text-center mb-12">
             Compare Plans
           </h2>
 
           <div className="overflow-x-auto">
             <table className="w-full" data-testid="table-comparison">
               <thead>
-                <tr className="border-b border-neutral-200">
-                  <th className="text-left py-4 px-4 font-semibold text-neutral-700">Feature</th>
-                  <th className="text-center py-4 px-4 font-semibold text-neutral-700">Discovery<br /><span className="text-primary font-normal">Free</span></th>
+                <tr className="border-b border-muted">
+                  <th className="text-left py-4 px-4 font-semibold text-muted-foreground">Feature</th>
+                  <th className="text-center py-4 px-4 font-semibold text-muted-foreground">Discovery<br /><span className="text-primary font-normal">Free</span></th>
                   <th className="text-center py-4 px-4 font-semibold text-primary bg-primary/5">Complete Playbook<br /><span className="font-normal">$19</span></th>
-                  <th className="text-center py-4 px-4 font-semibold text-purple-600">Partner<br /><span className="font-normal">$7/mo</span></th>
+                  <th className="text-center py-4 px-4 font-semibold text-accent">Partner<br /><span className="font-normal">$7/mo</span></th>
                 </tr>
               </thead>
               <tbody>
                 {comparisonFeatures.map((feature, index) => (
-                  <tr key={index} className="border-b border-neutral-100">
-                    <td className="py-4 px-4 text-neutral-700">{feature.name}</td>
+                  <tr key={index} className="border-b border-muted">
+                    <td className="py-4 px-4 text-muted-foreground">{feature.name}</td>
                     <td className="text-center py-4 px-4">
                       {typeof feature.discovery === 'boolean' ? (
                         feature.discovery ? (
                           <CheckCircle2 className="w-5 h-5 text-green-500 mx-auto" />
                         ) : (
-                          <span className="text-neutral-400">—</span>
+                          <span className="text-muted-foreground">—</span>
                         )
                       ) : (
-                        <span className="text-sm text-neutral-600">{feature.discovery}</span>
+                        <span className="text-sm text-muted-foreground">{feature.discovery}</span>
                       )}
                     </td>
                     <td className="text-center py-4 px-4 bg-primary/5">
@@ -292,7 +292,7 @@ export default function Pricing() {
                         feature.playbook ? (
                           <CheckCircle2 className="w-5 h-5 text-green-500 mx-auto" />
                         ) : (
-                          <span className="text-neutral-400">—</span>
+                          <span className="text-muted-foreground">—</span>
                         )
                       ) : (
                         <span className="text-sm text-primary font-medium">{feature.playbook}</span>
@@ -303,10 +303,10 @@ export default function Pricing() {
                         feature.partner ? (
                           <CheckCircle2 className="w-5 h-5 text-green-500 mx-auto" />
                         ) : (
-                          <span className="text-neutral-400">—</span>
+                          <span className="text-muted-foreground">—</span>
                         )
                       ) : (
-                        <span className="text-sm text-purple-600 font-medium">{feature.partner}</span>
+                        <span className="text-sm text-accent font-medium">{feature.partner}</span>
                       )}
                     </td>
                   </tr>
@@ -320,7 +320,7 @@ export default function Pricing() {
       {/* Value Proposition */}
       <section className="py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-neutral-800 text-center mb-12">
+          <h2 className="text-3xl font-bold text-foreground text-center mb-12">
             Why Upgrade?
           </h2>
 
@@ -329,8 +329,8 @@ export default function Pricing() {
               <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">🎯</span>
               </div>
-              <h3 className="text-xl font-bold text-neutral-800 mb-2">Actionable Plans</h3>
-              <p className="text-neutral-600">
+              <h3 className="text-xl font-bold text-foreground mb-2">Actionable Plans</h3>
+              <p className="text-muted-foreground">
                 Not just theory—get week-by-week implementation guides tailored to your archetype
               </p>
             </div>
@@ -339,8 +339,8 @@ export default function Pricing() {
               <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">🤖</span>
               </div>
-              <h3 className="text-xl font-bold text-neutral-800 mb-2">AI Coach</h3>
-              <p className="text-neutral-600">
+              <h3 className="text-xl font-bold text-foreground mb-2">AI Coach</h3>
+              <p className="text-muted-foreground">
                 Get personalized advice from an AI coach that understands your specific archetype
               </p>
             </div>
@@ -349,8 +349,8 @@ export default function Pricing() {
               <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">⚡</span>
               </div>
-              <h3 className="text-xl font-bold text-neutral-800 mb-2">Faster Results</h3>
-              <p className="text-neutral-600">
+              <h3 className="text-xl font-bold text-foreground mb-2">Faster Results</h3>
+              <p className="text-muted-foreground">
                 Skip months of trial and error with proven strategies for your specific working style
               </p>
             </div>
@@ -361,15 +361,15 @@ export default function Pricing() {
       {/* FAQ Section */}
       <section className="py-16 bg-white/50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-neutral-800 text-center mb-12">
+          <h2 className="text-3xl font-bold text-foreground text-center mb-12">
             Frequently Asked Questions
           </h2>
 
           <div className="space-y-6">
             <Card className="bg-white shadow-lg">
               <CardContent className="p-6">
-                <h3 className="font-bold text-neutral-800 mb-2">What's the difference between Complete Playbook and Productivity Partner?</h3>
-                <p className="text-neutral-600">
+                <h3 className="font-bold text-foreground mb-2">What's the difference between Complete Playbook and Productivity Partner?</h3>
+                <p className="text-muted-foreground">
                   Complete Playbook gives you the full personalized guide with all strategies and action plans. 
                   Productivity Partner adds unlimited AI coaching, chat history, and premium support—perfect for ongoing accountability.
                 </p>
@@ -378,8 +378,8 @@ export default function Pricing() {
 
             <Card className="bg-white shadow-lg">
               <CardContent className="p-6">
-                <h3 className="font-bold text-neutral-800 mb-2">Can I try the AI Coach before upgrading?</h3>
-                <p className="text-neutral-600">
+                <h3 className="font-bold text-foreground mb-2">Can I try the AI Coach before upgrading?</h3>
+                <p className="text-muted-foreground">
                   Yes! Free and Playbook users get 10 AI coach messages per day. Upgrade to Productivity Partner for unlimited coaching.
                 </p>
               </CardContent>
@@ -387,8 +387,8 @@ export default function Pricing() {
 
             <Card className="bg-white shadow-lg">
               <CardContent className="p-6">
-                <h3 className="font-bold text-neutral-800 mb-2">Is this based on real science?</h3>
-                <p className="text-neutral-600">
+                <h3 className="font-bold text-foreground mb-2">Is this based on real science?</h3>
+                <p className="text-muted-foreground">
                   Yes! Our framework is grounded in peer-reviewed research on executive function, motivation theory, 
                   flow states, and cognitive psychology. Learn more on our <Link href="/science" className="text-primary hover:underline">Science page</Link>.
                 </p>
@@ -397,8 +397,8 @@ export default function Pricing() {
 
             <Card className="bg-white shadow-lg">
               <CardContent className="p-6">
-                <h3 className="font-bold text-neutral-800 mb-2">What if it doesn't work for me?</h3>
-                <p className="text-neutral-600">
+                <h3 className="font-bold text-foreground mb-2">What if it doesn't work for me?</h3>
+                <p className="text-muted-foreground">
                   We offer a 30-day satisfaction guarantee. If you don't find at least 3 strategies that work, 
                   we'll refund your purchase—no questions asked.
                 </p>
@@ -409,12 +409,12 @@ export default function Pricing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-primary/10 to-purple-100">
+      <section className="py-16 bg-gradient-to-r from-primary/10 to-accent/10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-6">
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
             Ready to discover your productivity archetype?
           </h2>
-          <p className="text-xl text-neutral-600 mb-8">
+          <p className="text-xl text-muted-foreground mb-8">
             Start with the free assessment. Upgrade anytime for the full transformation.
           </p>
           <Link href="/quiz">
@@ -427,9 +427,9 @@ export default function Pricing() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 bg-white border-t border-neutral-200">
+      <footer className="py-12 bg-white border-t border-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-neutral-600">
+          <div className="text-center text-muted-foreground">
             <p className="mb-4">© 2025 Prolific Personalities. All rights reserved.</p>
             <div className="flex justify-center gap-6 text-sm">
               <Link href="/about" className="hover:text-primary transition-colors">About</Link>

@@ -47,10 +47,10 @@ export default function Dashboard() {
 
   if (authLoading || resultsLoading || isClaimingQuiz) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto" />
-          <p className="mt-4 text-neutral-600">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
+          <p className="mt-4 text-muted-foreground">
             {isClaimingQuiz ? "Linking your quiz results..." : "Loading your dashboard..."}
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Dashboard - Your Productivity Journey"
         description="View all your productivity assessment results and track your progress over time."
@@ -74,10 +74,10 @@ export default function Dashboard() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Welcome Header */}
           <div className="mb-8">
-            <h1 className="text-3xl lg:text-4xl font-bold text-neutral-900 mb-2">
+            <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
               Welcome back{user?.firstName ? `, ${user.firstName}` : ''}! 👋
             </h1>
-            <p className="text-lg text-neutral-600">
+            <p className="text-lg text-muted-foreground">
               Here's your productivity journey so far
             </p>
           </div>
@@ -88,12 +88,12 @@ export default function Dashboard() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-indigo-100 rounded-lg">
-                      <TrendingUp className="w-6 h-6 text-indigo-600" />
+                    <div className="p-3 bg-primary/10 rounded-lg">
+                      <TrendingUp className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-neutral-900">{results.length}</p>
-                      <p className="text-sm text-neutral-600">
+                      <p className="text-2xl font-bold text-foreground">{results.length}</p>
+                      <p className="text-sm text-muted-foreground">
                         {results.length === 1 ? 'Assessment Taken' : 'Assessments Taken'}
                       </p>
                     </div>
@@ -108,8 +108,8 @@ export default function Dashboard() {
                       <Clock className="w-6 h-6 text-teal-600" />
                     </div>
                     <div>
-                      <p className="text-sm text-neutral-600">Latest Assessment</p>
-                      <p className="text-lg font-semibold text-neutral-900">
+                      <p className="text-sm text-muted-foreground">Latest Assessment</p>
+                      <p className="text-lg font-semibold text-foreground">
                         {formatDistanceToNow(new Date(results[0].completedAt), { addSuffix: true })}
                       </p>
                     </div>
@@ -120,12 +120,12 @@ export default function Dashboard() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-purple-100 rounded-lg">
+                    <div className="p-3 bg-accent/10 rounded-lg">
                       <span className="text-2xl">🎯</span>
                     </div>
                     <div>
-                      <p className="text-sm text-neutral-600">Current Archetype</p>
-                      <p className="text-lg font-semibold text-neutral-900">
+                      <p className="text-sm text-muted-foreground">Current Archetype</p>
+                      <p className="text-lg font-semibold text-foreground">
                         {archetypes.find(a => a.id === results[0].archetype)?.name || 'Unknown'}
                       </p>
                     </div>
@@ -140,8 +140,8 @@ export default function Dashboard() {
             <Card className="mb-8">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3 mb-6">
-                  <BarChart3 className="w-6 h-6 text-indigo-600" />
-                  <h2 className="text-2xl font-bold text-neutral-900">
+                  <BarChart3 className="w-6 h-6 text-primary" />
+                  <h2 className="text-2xl font-bold text-foreground">
                     Your Progress Over Time
                   </h2>
                 </div>
@@ -149,7 +149,7 @@ export default function Dashboard() {
                 <div className="space-y-6">
                   {/* Score Comparison */}
                   <div>
-                    <h3 className="text-lg font-semibold text-neutral-800 mb-4">
+                    <h3 className="text-lg font-semibold text-foreground mb-4">
                       Score Changes (Latest vs First Assessment)
                     </h3>
                     {(() => {
@@ -174,9 +174,9 @@ export default function Dashboard() {
                             const changePercent = firstScore > 0 ? ((change / firstScore) * 100).toFixed(1) : null;
 
                             return (
-                              <div key={dim.key} className="bg-neutral-50 rounded-lg p-4 border border-neutral-200">
+                              <div key={dim.key} className="bg-background rounded-lg p-4 border border-muted">
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="font-medium text-neutral-700 text-sm">{dim.label}</span>
+                                  <span className="font-medium text-muted-foreground text-sm">{dim.label}</span>
                                   <div className="flex items-center gap-2">
                                     {change > 0 && (
                                       <div className="flex items-center text-green-600 text-sm font-semibold">
@@ -191,14 +191,14 @@ export default function Dashboard() {
                                       </div>
                                     )}
                                     {change === 0 && (
-                                      <div className="flex items-center text-neutral-500 text-sm font-semibold">
+                                      <div className="flex items-center text-muted-foreground text-sm font-semibold">
                                         <Minus className="w-4 h-4" />
                                         No change
                                       </div>
                                     )}
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-4 text-sm text-neutral-600">
+                                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                   <span>First: <strong>{firstScore}</strong></span>
                                   <span>•</span>
                                   <span>Latest: <strong>{latestScore}</strong></span>
@@ -232,11 +232,11 @@ export default function Dashboard() {
                     if (uniqueArchetypes.size > 1) {
                       return (
                         <div>
-                          <h3 className="text-lg font-semibold text-neutral-800 mb-4">
+                          <h3 className="text-lg font-semibold text-foreground mb-4">
                             Archetype Evolution
                           </h3>
-                          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-6 border border-indigo-200">
-                            <p className="text-neutral-700 mb-4">
+                          <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg p-6 border border-primary/20">
+                            <p className="text-muted-foreground mb-4">
                               Your productivity archetype has evolved over {results.length} assessments:
                             </p>
                             <div className="flex flex-wrap gap-3">
@@ -246,12 +246,12 @@ export default function Dashboard() {
                                     {change.archetype}
                                   </Badge>
                                   {index < archetypeChanges.length - 1 && (
-                                    <span className="text-neutral-400">→</span>
+                                    <span className="text-muted-foreground">→</span>
                                   )}
                                 </div>
                               ))}
                             </div>
-                            <p className="text-sm text-neutral-600 mt-4">
+                            <p className="text-sm text-muted-foreground mt-4">
                               This shows how your working style adapts over time. Explore your latest archetype to understand your current strengths.
                             </p>
                           </div>
@@ -267,13 +267,13 @@ export default function Dashboard() {
 
           {/* Premium Downloads */}
           {orders && orders.filter(o => o.status === 'completed').length > 0 && (
-            <Card className="mb-8 border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50">
+            <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 bg-indigo-600 rounded-lg">
+                  <div className="p-3 bg-primary rounded-lg">
                     <Download className="w-6 h-6 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold text-neutral-900">
+                  <h2 className="text-2xl font-bold text-foreground">
                     Your Premium Reports
                   </h2>
                 </div>
@@ -287,17 +287,17 @@ export default function Dashboard() {
                           <div className="flex items-center gap-4">
                             <div className="text-3xl">{archetype?.icon || '🎯'}</div>
                             <div>
-                              <h3 className="font-bold text-neutral-900">
+                              <h3 className="font-bold text-foreground">
                                 {archetype?.name || order.archetype} Premium Playbook
                               </h3>
-                              <p className="text-sm text-neutral-600">
+                              <p className="text-sm text-muted-foreground">
                                 Purchased {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
                               </p>
                             </div>
                           </div>
                           <div className="flex flex-col sm:flex-row gap-2">
                             <Link href={`/playbook/${order.archetype}`}>
-                              <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white" data-testid={`button-playbook-${order.id}`}>
+                              <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white" data-testid={`button-playbook-${order.id}`}>
                                 <BookOpen className="w-4 h-4 mr-2" />
                                 Open Playbook
                               </Button>
@@ -320,14 +320,14 @@ export default function Dashboard() {
 
           {/* Results List */}
           <div>
-            <h2 className="text-2xl font-bold text-neutral-900 mb-6">
+            <h2 className="text-2xl font-bold text-foreground mb-6">
               Your Assessment History
             </h2>
 
             {(!results || results.length === 0) ? (
               <Card>
                 <CardContent className="py-12 text-center">
-                  <p className="text-neutral-600 mb-6">
+                  <p className="text-muted-foreground mb-6">
                     You haven't taken any assessments yet.
                   </p>
                   <Link href="/quiz">
@@ -349,10 +349,10 @@ export default function Dashboard() {
                           <div className="flex items-start gap-4">
                             <div className="text-4xl">{archetype?.icon || '🎯'}</div>
                             <div>
-                              <h3 className="text-xl font-bold text-neutral-900 mb-1">
+                              <h3 className="text-xl font-bold text-foreground mb-1">
                                 {archetype?.name || 'Unknown Archetype'}
                               </h3>
-                              <p className="text-sm text-neutral-600 mb-2">
+                              <p className="text-sm text-muted-foreground mb-2">
                                 Completed {formatDistanceToNow(new Date(result.completedAt), { addSuffix: true })}
                               </p>
                               <div className="flex gap-2">
@@ -381,7 +381,7 @@ export default function Dashboard() {
           {/* CTA for another assessment */}
           {results && results.length > 0 && (
             <div className="mt-12 text-center">
-              <p className="text-neutral-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Ready to retake the assessment and see how you've evolved?
               </p>
               <Link href="/quiz">

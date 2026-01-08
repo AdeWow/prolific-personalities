@@ -13,12 +13,12 @@ export function ProgressBar({ value, max = 100, className, showPercentage = fals
   return (
     <div className={cn("space-y-2", className)}>
       {showPercentage && (
-        <div className="flex justify-between text-sm text-neutral-600">
+        <div className="flex justify-between text-sm text-muted-foreground">
           <span>Progress</span>
           <span>{Math.round(percentage)}%</span>
         </div>
       )}
-      <div className="w-full bg-neutral-200 rounded-full h-2">
+      <div className="w-full bg-muted rounded-full h-2">
         <div 
           className="gradient-primary h-2 rounded-full transition-all duration-300 ease-out"
           style={{ width: `${percentage}%` }}

@@ -281,7 +281,7 @@ export default function CoachPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <SEOHead
         title="AI Productivity Coach | Prolific Personalities"
         description="Get personalized productivity advice from your AI coach based on your unique archetype. Overcome procrastination, improve focus, and work more effectively."
@@ -291,7 +291,7 @@ export default function CoachPage() {
 
       <div className="flex-1 flex max-w-7xl mx-auto w-full">
         {/* Sidebar */}
-        <div className="w-64 border-r border-neutral-200 bg-white/50 p-4 hidden md:flex flex-col">
+        <div className="w-64 border-r border-muted bg-white/50 p-4 hidden md:flex flex-col">
           <Button 
             onClick={() => createConversationMutation.mutate()}
             className="w-full mb-4 gradient-primary"
@@ -309,7 +309,7 @@ export default function CoachPage() {
                 className={`group flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
                   selectedConversation === conv.id 
                     ? "bg-primary/10 text-primary" 
-                    : "hover:bg-neutral-100"
+                    : "hover:bg-muted"
                 }`}
                 onClick={() => loadConversation(conv.id)}
                 data-testid={`conversation-item-${conv.id}`}
@@ -338,13 +338,13 @@ export default function CoachPage() {
           <Separator className="my-4" />
           <div className="text-center">
             {usage?.isPremium ? (
-              <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+              <Badge className="bg-accent text-accent-foreground">
                 <Crown className="w-3 h-3 mr-1" />
                 Unlimited Coaching
               </Badge>
             ) : (
               <div className="space-y-2">
-                <p className="text-sm text-neutral-600">
+                <p className="text-sm text-muted-foreground">
                   {usage?.remaining ?? 10}/{usage?.limit ?? 10} messages today
                 </p>
                 <Button 
@@ -365,21 +365,21 @@ export default function CoachPage() {
         {/* Main Chat Area */}
         <div className="flex-1 flex flex-col">
           {/* Chat Header */}
-          <div className="p-4 border-b border-neutral-200 bg-white/50">
+          <div className="p-4 border-b border-muted bg-white/50">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                   <Bot className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="font-semibold text-neutral-800">AI Productivity Coach</h1>
+                  <h1 className="font-semibold text-foreground">AI Productivity Coach</h1>
                   {archetype ? (
-                    <Badge className="bg-gradient-to-r from-primary/10 to-purple-100 text-primary border-0 mt-1">
+                    <Badge className="bg-primary/10 text-primary border-0 mt-1">
                       <Sparkles className="w-3 h-3 mr-1" />
                       Personalized for {ARCHETYPE_NAMES[archetype] || archetype}
                     </Badge>
                   ) : (
-                    <p className="text-sm text-neutral-500">
+                    <p className="text-sm text-muted-foreground">
                       General productivity advice
                     </p>
                   )}
@@ -389,7 +389,7 @@ export default function CoachPage() {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="text-xs text-neutral-500"
+                  className="text-xs text-muted-foreground"
                   onClick={() => setLocation("/results")}
                   data-testid="button-view-results"
                 >
@@ -403,13 +403,13 @@ export default function CoachPage() {
           <ScrollArea className="flex-1 p-4" ref={scrollRef}>
             {messages.length === 0 && !currentResponse ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-8">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center mb-4">
+                <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center mb-4">
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-xl font-semibold text-neutral-800 mb-2">
+                <h2 className="text-xl font-semibold text-foreground mb-2">
                   Welcome to AI Coaching
                 </h2>
-                <p className="text-neutral-600 mb-6 max-w-md">
+                <p className="text-muted-foreground mb-6 max-w-md">
                   {archetype 
                     ? `I'm here to help you work more effectively as a ${archetype.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}. What would you like help with?`
                     : "I can provide general productivity advice. Take the quiz for personalized coaching based on your archetype!"}
@@ -464,17 +464,17 @@ export default function CoachPage() {
                       className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                         msg.role === "user"
                           ? "bg-primary text-white"
-                          : "bg-white shadow-sm border border-neutral-100"
+                          : "bg-white shadow-sm border border-muted"
                       }`}
                       data-testid={`message-${msg.role}-${i}`}
                     >
                       <p className="whitespace-pre-wrap">{msg.content}</p>
                       {msg.role === "assistant" && (
-                        <div className="flex items-center gap-2 mt-2 pt-2 border-t border-neutral-100">
+                        <div className="flex items-center gap-2 mt-2 pt-2 border-t border-muted">
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-6 w-6 text-neutral-400 hover:text-green-500"
+                            className="h-6 w-6 text-muted-foreground hover:text-green-500"
                             data-testid={`feedback-helpful-${i}`}
                           >
                             <ThumbsUp className="w-3 h-3" />
@@ -482,7 +482,7 @@ export default function CoachPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-6 w-6 text-neutral-400 hover:text-red-500"
+                            className="h-6 w-6 text-muted-foreground hover:text-red-500"
                             data-testid={`feedback-not-helpful-${i}`}
                           >
                             <ThumbsDown className="w-3 h-3" />
@@ -495,7 +495,7 @@ export default function CoachPage() {
 
                 {currentResponse && (
                   <div className="flex justify-start">
-                    <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-white shadow-sm border border-neutral-100">
+                    <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-white shadow-sm border border-muted">
                       <p className="whitespace-pre-wrap">{currentResponse}</p>
                       <div className="flex items-center gap-1 mt-2">
                         <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
@@ -508,8 +508,8 @@ export default function CoachPage() {
 
                 {isStreaming && !currentResponse && (
                   <div className="flex justify-start">
-                    <div className="rounded-2xl px-4 py-3 bg-white shadow-sm border border-neutral-100">
-                      <div className="flex items-center gap-2 text-neutral-500">
+                    <div className="rounded-2xl px-4 py-3 bg-white shadow-sm border border-muted">
+                      <div className="flex items-center gap-2 text-muted-foreground">
                         <Loader2 className="w-4 h-4 animate-spin" />
                         <span>AI Coach is thinking...</span>
                       </div>
@@ -521,16 +521,16 @@ export default function CoachPage() {
           </ScrollArea>
 
           {/* Input Area */}
-          <div className="p-4 border-t border-neutral-200 bg-white/50">
+          <div className="p-4 border-t border-muted bg-white/50">
             {/* Mobile Usage Counter */}
             <div className="md:hidden mb-3 text-center">
               {usage?.isPremium ? (
-                <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                <Badge className="bg-accent text-accent-foreground">
                   <Crown className="w-3 h-3 mr-1" />
                   Premium - Unlimited
                 </Badge>
               ) : (
-                <p className="text-sm text-neutral-600">
+                <p className="text-sm text-muted-foreground">
                   {usage?.remaining ?? 10}/{usage?.limit ?? 10} messages remaining today
                 </p>
               )}
@@ -564,7 +564,7 @@ export default function CoachPage() {
                 <Button 
                   size="sm" 
                   onClick={() => setLocation("/pricing")}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600"
+                  className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
                   data-testid="button-upgrade-cta"
                 >
                   <Crown className="w-4 h-4 mr-2" />

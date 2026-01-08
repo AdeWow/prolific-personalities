@@ -162,7 +162,7 @@ export function ExitIntentPopup() {
       <Card className="max-w-md w-full bg-white shadow-2xl border-0 relative animate-in zoom-in-95 duration-300">
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-neutral-400 hover:text-neutral-600 transition-colors z-10"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-muted-foreground transition-colors z-10"
           aria-label="Close popup"
           data-testid="button-close-popup"
         >
@@ -171,30 +171,30 @@ export function ExitIntentPopup() {
 
         <CardContent className="p-6 sm:p-8">
           <div className="text-center mb-6">
-            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
               <Gift className="w-7 h-7 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-neutral-800 mb-2">
+            <h2 className="text-2xl font-bold text-foreground mb-2">
               Your Free Productivity Guide
             </h2>
-            <p className="text-neutral-600 leading-relaxed">
+            <p className="text-muted-foreground leading-relaxed">
               Join 2,000+ professionals getting weekly strategies matched to their productivity style.
             </p>
           </div>
 
-          <div className="bg-indigo-50 rounded-lg p-4 mb-6">
-            <p className="text-sm font-medium text-indigo-900 mb-2">What you'll get:</p>
+          <div className="bg-primary/5 rounded-lg p-4 mb-6">
+            <p className="text-sm font-medium text-primary mb-2">What you'll get:</p>
             <ul className="space-y-2">
-              <li className="flex items-center text-sm text-indigo-800">
-                <CheckCircle className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+              <li className="flex items-center text-sm text-primary/80">
+                <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                 Personalized tips for your archetype
               </li>
-              <li className="flex items-center text-sm text-indigo-800">
-                <CheckCircle className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+              <li className="flex items-center text-sm text-primary/80">
+                <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                 Tool recommendations that actually work
               </li>
-              <li className="flex items-center text-sm text-indigo-800">
-                <CheckCircle className="w-4 h-4 mr-2 text-indigo-600 flex-shrink-0" />
+              <li className="flex items-center text-sm text-primary/80">
+                <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                 Weekly micro-challenges to build habits
               </li>
             </ul>
@@ -212,7 +212,7 @@ export function ExitIntentPopup() {
             />
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-5 text-base font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all"
+              className="w-full gradient-primary text-white py-5 text-base font-semibold hover:opacity-90 transition-all"
               disabled={emailCaptureMutation.isPending}
               data-testid="button-exit-submit"
             >
@@ -220,13 +220,13 @@ export function ExitIntentPopup() {
             </Button>
           </form>
 
-          <p className="text-xs text-neutral-500 text-center mt-4">
+          <p className="text-xs text-muted-foreground text-center mt-4">
             Free forever. Unsubscribe anytime. No spam.
           </p>
 
           <button
             onClick={handleClose}
-            className="w-full mt-3 text-neutral-400 hover:text-neutral-600 text-sm transition-colors"
+            className="w-full mt-3 text-muted-foreground hover:text-muted-foreground text-sm transition-colors"
             data-testid="button-dismiss-popup"
           >
             Maybe later

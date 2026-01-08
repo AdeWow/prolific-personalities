@@ -4,7 +4,7 @@ import { SEOHead } from "@/components/seo-head";
 
 export default function Quiz() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Productivity Assessment Quiz"
         description="Take our free 5-minute assessment to discover your unique productivity archetype. Get personalized strategies based on how your brain naturally works."

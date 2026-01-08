@@ -110,7 +110,7 @@ export default function About() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50 dark:from-gray-900 dark:to-indigo-950">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:from-card dark:to-background">
       <SEOHead
         title="About Us"
         description="Learn about Prolific Personalities - a platform helping people overcome procrastination and overwhelm through personalized, research-backed productivity strategies."
@@ -125,7 +125,7 @@ export default function About() {
               <i className="fas fa-info-circle mr-2"></i>
               About Us
             </Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold text-neutral-800 dark:text-white">
+            <h2 className="text-4xl lg:text-5xl font-bold text-foreground dark:text-white">
               About <span className="text-gradient">Prolific Personalities</span>
             </h2>
           </div>
@@ -137,11 +137,11 @@ export default function About() {
           
           <Card className="bg-white dark:bg-gray-800 shadow-lg">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-6">Why We Exist</h3>
-              <p className="text-lg text-neutral-700 dark:text-gray-300 leading-relaxed mb-4">
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-6">Why We Exist</h3>
+              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed mb-4">
                 Prolific Personalities was created to solve a common but frustrating problem: most productivity advice fails because it's generic. It assumes everyone is wired the same way—when in reality, people vary widely in how they think, focus, and stay motivated.
               </p>
-              <p className="text-lg text-neutral-700 dark:text-gray-300 leading-relaxed">
+              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed">
                 This platform is built on the belief that productivity becomes sustainable only when it's personalized. By understanding your personality, cognitive patterns, and behavioral tendencies, we help you identify what actually works for you.
               </p>
             </CardContent>
@@ -149,11 +149,11 @@ export default function About() {
 
           <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 border-primary/20 shadow-lg">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-6">Our Mission</h3>
-              <p className="text-lg text-neutral-700 dark:text-gray-300 leading-relaxed mb-4">
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-6">Our Mission</h3>
+              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed mb-4">
                 To help people overcome procrastination, distraction, and overwhelm through personalized, research-backed productivity strategies.
               </p>
-              <p className="text-lg text-neutral-700 dark:text-gray-300 leading-relaxed">
+              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed">
                 We don't just give you tips. We give you a framework that's designed for how your brain works—then connect you to tools and tactics that align with your unique style.
               </p>
             </CardContent>
@@ -161,7 +161,7 @@ export default function About() {
 
           <Card className="bg-white dark:bg-gray-800 shadow-lg">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-8">What Makes Us Different</h3>
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-8">What Makes Us Different</h3>
               
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-4">
@@ -170,8 +170,8 @@ export default function About() {
                       <i className="fas fa-user text-primary"></i>
                     </div>
                     <div>
-                      <h4 className="font-bold text-neutral-800 dark:text-white mb-2">Personality-first approach</h4>
-                      <p className="text-neutral-700 dark:text-gray-300">We assess your patterns through a short but insightful quiz, then map you to one of six productivity archetypes with tailored insights.</p>
+                      <h4 className="font-bold text-foreground dark:text-white mb-2">Personality-first approach</h4>
+                      <p className="text-muted-foreground dark:text-gray-300">We assess your patterns through a short but insightful quiz, then map you to one of six productivity archetypes with tailored insights.</p>
                     </div>
                   </div>
                   
@@ -180,8 +180,8 @@ export default function About() {
                       <i className="fas fa-flask text-primary"></i>
                     </div>
                     <div>
-                      <h4 className="font-bold text-neutral-800 dark:text-white mb-2">Backed by behavioral science</h4>
-                      <p className="text-neutral-700 dark:text-gray-300">We draw from executive function theory, cognitive load theory, and motivation science to build recommendations that reflect how people actually work.</p>
+                      <h4 className="font-bold text-foreground dark:text-white mb-2">Backed by behavioral science</h4>
+                      <p className="text-muted-foreground dark:text-gray-300">We draw from executive function theory, cognitive load theory, and motivation science to build recommendations that reflect how people actually work.</p>
                     </div>
                   </div>
                 </div>
@@ -192,8 +192,8 @@ export default function About() {
                       <i className="fas fa-rocket text-primary"></i>
                     </div>
                     <div>
-                      <h4 className="font-bold text-neutral-800 dark:text-white mb-2">Actionable over aspirational</h4>
-                      <p className="text-neutral-700 dark:text-gray-300">Instead of vague advice or unrealistic habits, we provide clear next steps, customized tools, and systems you can actually follow through on.</p>
+                      <h4 className="font-bold text-foreground dark:text-white mb-2">Actionable over aspirational</h4>
+                      <p className="text-muted-foreground dark:text-gray-300">Instead of vague advice or unrealistic habits, we provide clear next steps, customized tools, and systems you can actually follow through on.</p>
                     </div>
                   </div>
                   
@@ -202,8 +202,8 @@ export default function About() {
                       <i className="fas fa-heart text-primary"></i>
                     </div>
                     <div>
-                      <h4 className="font-bold text-neutral-800 dark:text-white mb-2">Designed for real humans</h4>
-                      <p className="text-neutral-700 dark:text-gray-300">This platform is especially valuable for people who are neurodivergent, multi-passionate, or simply tired of trying productivity systems that don't stick.</p>
+                      <h4 className="font-bold text-foreground dark:text-white mb-2">Designed for real humans</h4>
+                      <p className="text-muted-foreground dark:text-gray-300">This platform is especially valuable for people who are neurodivergent, multi-passionate, or simply tired of trying productivity systems that don't stick.</p>
                     </div>
                   </div>
                 </div>
@@ -213,7 +213,7 @@ export default function About() {
 
           <Card className="bg-white dark:bg-gray-800 shadow-lg">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-6">Who It's For</h3>
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-6">Who It's For</h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
                   "Creatives who struggle to stay focused and organized",
@@ -222,9 +222,9 @@ export default function About() {
                   "High-achievers battling burnout",
                   "Anyone who wants to get more done in a way that feels natural and sustainable"
                 ].map((item, index) => (
-                  <div key={index} className="flex items-start space-x-3 p-4 bg-neutral-50 dark:bg-gray-900 rounded-xl">
+                  <div key={index} className="flex items-start space-x-3 p-4 bg-background dark:bg-gray-900 rounded-xl">
                     <i className="fas fa-check-circle text-green-500 mt-1"></i>
-                    <span className="text-neutral-700 dark:text-gray-300">{item}</span>
+                    <span className="text-muted-foreground dark:text-gray-300">{item}</span>
                   </div>
                 ))}
               </div>
@@ -233,8 +233,8 @@ export default function About() {
 
           <Card className="bg-white dark:bg-gray-800 shadow-lg border-l-4 border-l-primary">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-6">The Research Behind It</h3>
-              <p className="text-lg text-neutral-700 dark:text-gray-300 leading-relaxed mb-6">
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-6">The Research Behind It</h3>
+              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed mb-6">
                 Prolific Personalities is grounded in behavioral psychology and cognitive science. Our models and quiz system reference:
               </p>
               <div className="space-y-3 mb-6">
@@ -246,7 +246,7 @@ export default function About() {
                 ].map((item, index) => (
                   <div key={index} className="flex items-center space-x-3">
                     <i className="fas fa-book text-primary"></i>
-                    <span className="text-neutral-700 dark:text-gray-300">{item}</span>
+                    <span className="text-muted-foreground dark:text-gray-300">{item}</span>
                   </div>
                 ))}
               </div>
@@ -269,8 +269,8 @@ export default function About() {
                   <Sparkles className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-2">What's Next</h3>
-                  <p className="text-lg text-neutral-700 dark:text-gray-300">We're actively building exciting new features:</p>
+                  <h3 className="text-2xl font-bold text-foreground dark:text-white mb-2">What's Next</h3>
+                  <p className="text-lg text-muted-foreground dark:text-gray-300">We're actively building exciting new features:</p>
                 </div>
               </div>
               
@@ -283,7 +283,7 @@ export default function About() {
                 ].map((item, index) => (
                   <div key={index} className="flex items-start space-x-3">
                     <i className="fas fa-arrow-right text-primary mt-1"></i>
-                    <span className="text-neutral-700 dark:text-gray-300">{item}</span>
+                    <span className="text-muted-foreground dark:text-gray-300">{item}</span>
                   </div>
                 ))}
               </div>
@@ -291,12 +291,12 @@ export default function About() {
               <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border-2 border-primary/30 dark:border-primary/50">
                 <div className="flex items-center gap-2 mb-4">
                   <Gift className="h-5 w-5 text-primary" />
-                  <h4 className="text-lg font-bold text-neutral-800 dark:text-white">Join the Waitlist - Get Early Access!</h4>
+                  <h4 className="text-lg font-bold text-foreground dark:text-white">Join the Waitlist - Get Early Access!</h4>
                 </div>
-                <p className="text-neutral-700 dark:text-gray-300 mb-4">
+                <p className="text-muted-foreground dark:text-gray-300 mb-4">
                   Be the first to try new features before anyone else. Waitlist members get:
                 </p>
-                <ul className="space-y-2 mb-6 text-neutral-700 dark:text-gray-300">
+                <ul className="space-y-2 mb-6 text-muted-foreground dark:text-gray-300">
                   <li className="flex items-start gap-2">
                     <span className="text-green-500">✓</span>
                     <span>Early access to all new productivity tools</span>
@@ -346,14 +346,14 @@ export default function About() {
 
           <Card className="bg-white dark:bg-gray-800 shadow-lg">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-4">Stay Connected & Help Us Improve</h3>
-              <p className="text-lg text-neutral-700 dark:text-gray-300 leading-relaxed mb-6">
+              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-4">Stay Connected & Help Us Improve</h3>
+              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed mb-6">
                 Prolific Personalities is actively being developed and improved based on real user feedback. We'd love to hear your thoughts, recommendations, and ideas for new features!
               </p>
               
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 mb-6 border border-blue-200 dark:border-blue-700">
-                <p className="text-neutral-800 dark:text-white font-semibold mb-2">Your input directly shapes our roadmap!</p>
-                <p className="text-neutral-700 dark:text-gray-300 text-sm">
+              <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-6 mb-6 border border-primary/20 dark:border-primary/30">
+                <p className="text-foreground dark:text-white font-semibold mb-2">Your input directly shapes our roadmap!</p>
+                <p className="text-muted-foreground dark:text-gray-300 text-sm">
                   Every piece of feedback helps us build a better productivity platform. Whether it's a bug report, feature suggestion, or just thoughts on what's working, we read and consider everything.
                 </p>
               </div>
@@ -366,7 +366,7 @@ export default function About() {
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-neutral-700 dark:text-gray-300">Name (optional)</FormLabel>
+                          <FormLabel className="text-muted-foreground dark:text-gray-300">Name (optional)</FormLabel>
                           <FormControl>
                             <Input
                               type="text"
@@ -384,7 +384,7 @@ export default function About() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-neutral-700 dark:text-gray-300">Email (optional)</FormLabel>
+                          <FormLabel className="text-muted-foreground dark:text-gray-300">Email (optional)</FormLabel>
                           <FormControl>
                             <Input
                               type="email"
@@ -404,7 +404,7 @@ export default function About() {
                     name="type"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-neutral-700 dark:text-gray-300">Type of Feedback</FormLabel>
+                        <FormLabel className="text-muted-foreground dark:text-gray-300">Type of Feedback</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger data-testid="select-feedback-type">
@@ -427,7 +427,7 @@ export default function About() {
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-neutral-700 dark:text-gray-300">Your Message *</FormLabel>
+                        <FormLabel className="text-muted-foreground dark:text-gray-300">Your Message *</FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="Share your thoughts, ideas, or suggestions..."
@@ -443,7 +443,7 @@ export default function About() {
 
                   <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4">
                     <Link href="/quiz">
-                      <Button variant="outline" className="border-2 border-neutral-200 dark:border-gray-600 text-neutral-700 dark:text-gray-300 px-8 py-3 rounded-xl font-semibold hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors w-full sm:w-auto" data-testid="button-take-assessment">
+                      <Button variant="outline" className="border-2 border-muted dark:border-gray-600 text-muted-foreground dark:text-gray-300 px-8 py-3 rounded-xl font-semibold hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors w-full sm:w-auto" data-testid="button-take-assessment">
                         <i className="fas fa-play mr-2"></i>
                         Take the Assessment
                       </Button>

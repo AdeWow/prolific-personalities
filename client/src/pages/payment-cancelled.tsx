@@ -7,7 +7,7 @@ import { XCircle, ArrowLeft, HelpCircle } from "lucide-react";
 
 export default function PaymentCancelled() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Payment Cancelled - Prolific Personalities"
         description="Your payment was cancelled"
@@ -18,27 +18,27 @@ export default function PaymentCancelled() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="shadow-xl">
             <CardContent className="pt-12 pb-8 text-center">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-neutral-400 to-neutral-500 mb-6">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-muted-foreground to-muted-foreground mb-6">
                 <XCircle className="w-12 h-12 text-white" />
               </div>
 
-              <h1 className="text-3xl lg:text-4xl font-bold text-neutral-900 mb-4">
+              <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
                 Payment Cancelled
               </h1>
 
-              <p className="text-lg text-neutral-600 mb-8">
+              <p className="text-lg text-muted-foreground mb-8">
                 Your payment was not completed. Don't worry – you haven't been charged.
               </p>
 
-              <div className="space-y-4 bg-neutral-50 rounded-lg p-6 mb-8 text-left">
-                <h2 className="font-bold text-neutral-800 text-lg flex items-center gap-2">
+              <div className="space-y-4 bg-background rounded-lg p-6 mb-8 text-left">
+                <h2 className="font-bold text-foreground text-lg flex items-center gap-2">
                   <HelpCircle className="w-5 h-5" />
                   What happened?
                 </h2>
-                <p className="text-neutral-700">
+                <p className="text-muted-foreground">
                   The payment process was cancelled before completion. This could be because:
                 </p>
-                <ul className="space-y-2 text-neutral-700 text-sm ml-4">
+                <ul className="space-y-2 text-muted-foreground text-sm ml-4">
                   <li>• You clicked the back button</li>
                   <li>• You closed the payment window</li>
                   <li>• You chose not to complete the purchase</li>
@@ -60,7 +60,7 @@ export default function PaymentCancelled() {
                 </Link>
               </div>
 
-              <p className="text-sm text-neutral-500 mt-8">
+              <p className="text-sm text-muted-foreground mt-8">
                 Your quiz results are still saved and you can upgrade to premium anytime from your results page.
               </p>
             </CardContent>

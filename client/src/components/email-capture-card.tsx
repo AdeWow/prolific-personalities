@@ -73,8 +73,8 @@ export function EmailCaptureCard({
           <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <Sparkles className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-2xl font-bold text-neutral-800 mb-2">You're in!</h3>
-          <p className="text-neutral-600">
+          <h3 className="text-2xl font-bold text-foreground mb-2">You're in!</h3>
+          <p className="text-muted-foreground">
             Check your inbox for personalized productivity tips and insights.
           </p>
         </CardContent>
@@ -90,8 +90,8 @@ export function EmailCaptureCard({
             <Mail className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-neutral-800 mb-2">{title}</h3>
-            <p className="text-neutral-600">{description}</p>
+            <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
+            <p className="text-muted-foreground">{description}</p>
           </div>
         </div>
 
@@ -115,7 +115,7 @@ export function EmailCaptureCard({
           </Button>
         </form>
 
-        <p className="text-sm text-neutral-500 mt-4 text-center">
+        <p className="text-sm text-muted-foreground mt-4 text-center">
           We respect your privacy. Unsubscribe anytime.
         </p>
       </CardContent>

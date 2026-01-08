@@ -44,7 +44,7 @@ function renderInlineFormatting(text: string): (string | JSX.Element)[] {
     if (first.type === 'link' && first.match) {
       const [fullMatch, linkText, url] = first.match;
       elements.push(
-        <a key={keyIndex++} href={url} className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+        <a key={keyIndex++} href={url} className="text-primary hover:underline font-medium">
           {linkText}
         </a>
       );
@@ -95,9 +95,9 @@ export default function BlogPostPage() {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">Post Not Found</h1>
+          <h1 className="text-4xl font-bold mb-4 text-foreground">Post Not Found</h1>
           <Link href="/blog">
             <Button data-testid="button-back-blog">← Back to Blog</Button>
           </Link>
@@ -136,7 +136,7 @@ export default function BlogPostPage() {
   } : undefined;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title={post.title}
         description={post.excerpt}
@@ -163,11 +163,11 @@ export default function BlogPostPage() {
             ))}
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white leading-tight" data-testid="text-post-title">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-foreground leading-tight" data-testid="text-post-title">
             {post.title}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-6 text-gray-600 dark:text-gray-400">
+          <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
             <div className="flex items-center gap-2" data-testid="text-post-author">
               <span className="font-medium">{post.author}</span>
             </div>
@@ -272,7 +272,7 @@ export default function BlogPostPage() {
         </div>
 
         {/* CTA Card */}
-        <Card className="bg-gradient-to-r from-indigo-50 to-teal-50 dark:from-indigo-900/20 dark:to-teal-900/20 border-2 border-indigo-200 dark:border-indigo-800 p-8 text-center" data-testid="card-cta-assessment">
+        <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 border-2 border-primary/20 dark:border-primary/30 p-8 text-center" data-testid="card-cta-assessment">
           <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
             🚀 Discover Your Productivity Archetype
           </h2>

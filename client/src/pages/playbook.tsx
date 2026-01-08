@@ -231,9 +231,9 @@ export default function Playbook() {
   // Loading state
   if (isAuthLoading || (user && isAccessLoading)) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-indigo-600 mx-auto mb-4" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400">Loading playbook...</p>
         </div>
       </div>
@@ -243,7 +243,7 @@ export default function Playbook() {
   // Error checking access
   if (user && isAccessError) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="pt-6">
             <div className="text-center space-y-6">
@@ -282,12 +282,12 @@ export default function Playbook() {
   // Not logged in
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="pt-6">
             <div className="text-center space-y-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 dark:bg-indigo-900 rounded-full">
-                <LogIn className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full">
+                <LogIn className="w-8 h-8 text-primary" />
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -326,7 +326,7 @@ export default function Playbook() {
       .join(' ');
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="pt-6">
             <div className="text-center space-y-6">
@@ -442,7 +442,7 @@ export default function Playbook() {
                     }}
                     className={`
                       w-full text-left px-3 py-2 rounded-lg flex items-center justify-between
-                      ${isActive ? 'bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}
+                      ${isActive ? 'bg-primary/10 dark:bg-primary/20 text-primary' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}
                     `}
                     data-testid={`chapter-${chapter.id}`}
                   >

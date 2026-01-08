@@ -10,32 +10,32 @@ export function Header() {
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+    <header className="bg-white dark:bg-card backdrop-blur-sm shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <img src={logoImage} alt="Prolific Personalities Logo" className="w-20 h-20" />
-            <h1 className="text-xl font-bold text-neutral-800">Prolific Personalities</h1>
+            <h1 className="text-xl font-bold text-foreground">Prolific Personalities</h1>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/about" className="text-neutral-600 hover:text-primary transition-colors">
+            <Link href="/about" className="text-muted-foreground hover:text-primary transition-colors font-medium">
               About
             </Link>
-            <Link href="/archetypes" className="text-neutral-600 hover:text-primary transition-colors">
+            <Link href="/archetypes" className="text-muted-foreground hover:text-primary transition-colors font-medium">
               Archetypes
             </Link>
-            <Link href="/science" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-research">
+            <Link href="/science" className="text-muted-foreground hover:text-primary transition-colors font-medium" data-testid="link-research">
               The Research
             </Link>
-            <Link href="/resources" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-resources">
+            <Link href="/resources" className="text-muted-foreground hover:text-primary transition-colors font-medium" data-testid="link-resources">
               Resources
             </Link>
-            <Link href="/blog" className="text-neutral-600 hover:text-primary transition-colors" data-testid="link-blog">
+            <Link href="/blog" className="text-muted-foreground hover:text-primary transition-colors font-medium" data-testid="link-blog">
               Blog
             </Link>
-            <Link href="/pricing" className="text-neutral-600 hover:text-primary transition-colors">
+            <Link href="/pricing" className="text-muted-foreground hover:text-primary transition-colors font-medium">
               Pricing
             </Link>
             <Link href="/coach" className="flex items-center gap-1 text-primary font-medium hover:text-primary/80 transition-colors" data-testid="link-ai-coach">
@@ -76,7 +76,7 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-neutral-600 hover:text-primary transition-colors"
+            className="md:hidden p-2 text-muted-foreground hover:text-primary transition-colors"
             aria-label="Toggle mobile menu"
             data-testid="button-mobile-menu"
           >
@@ -86,23 +86,23 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <nav className="md:hidden py-4 space-y-4 border-t border-neutral-200">
-            <Link href="/about" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+          <nav className="md:hidden py-4 space-y-4 border-t border-border">
+            <Link href="/about" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium" onClick={() => setMobileMenuOpen(false)}>
               About
             </Link>
-            <Link href="/archetypes" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/archetypes" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium" onClick={() => setMobileMenuOpen(false)}>
               Archetypes
             </Link>
-            <Link href="/science" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-research-mobile">
+            <Link href="/science" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium" onClick={() => setMobileMenuOpen(false)} data-testid="link-research-mobile">
               The Research
             </Link>
-            <Link href="/resources" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-resources-mobile">
+            <Link href="/resources" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium" onClick={() => setMobileMenuOpen(false)} data-testid="link-resources-mobile">
               Resources
             </Link>
-            <Link href="/blog" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-blog-mobile">
+            <Link href="/blog" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium" onClick={() => setMobileMenuOpen(false)} data-testid="link-blog-mobile">
               Blog
             </Link>
-            <Link href="/pricing" className="block text-neutral-600 hover:text-primary transition-colors py-2" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/pricing" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium" onClick={() => setMobileMenuOpen(false)}>
               Pricing
             </Link>
             <Link href="/coach" className="flex items-center gap-1 text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)} data-testid="link-ai-coach-mobile">

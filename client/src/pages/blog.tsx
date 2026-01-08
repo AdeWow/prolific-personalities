@@ -11,7 +11,7 @@ import { Calendar, Clock } from 'lucide-react';
 
 export default function BlogPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Productivity Insights Blog"
         description="Research-backed productivity strategies, tips, and insights to help you work smarter. Discover articles tailored to your unique working style."
@@ -22,10 +22,10 @@ export default function BlogPage() {
       <div className="container mx-auto px-4 py-16 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
             Productivity Insights
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Research-backed strategies and insights to help you work with your natural productivity style
           </p>
         </div>
@@ -35,7 +35,7 @@ export default function BlogPage() {
           {blogPosts.map((post) => (
             <Card key={post.id} className="flex flex-col hover:shadow-lg transition-shadow" data-testid={`card-blog-${post.slug}`}>
               {post.image && (
-                <AspectRatio ratio={16 / 9} className="bg-gray-100 dark:bg-gray-800 rounded-t-lg overflow-hidden">
+                <AspectRatio ratio={16 / 9} className="bg-muted dark:bg-card rounded-t-lg overflow-hidden">
                   <img
                     src={post.image}
                     alt={post.title}
@@ -65,7 +65,7 @@ export default function BlogPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow">
-                <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1" data-testid={`text-date-${post.slug}`}>
                     <Calendar className="h-4 w-4" />
                     {new Date(post.publishDate).toLocaleDateString('en-US', {

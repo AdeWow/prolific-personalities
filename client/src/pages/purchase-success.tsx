@@ -35,9 +35,9 @@ export default function PurchaseSuccess() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-indigo-600 border-r-transparent"></div>
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
           <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
         </div>
       </div>
@@ -50,7 +50,7 @@ export default function PurchaseSuccess() {
     .join(' ');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:bg-background">
         <div className="container mx-auto px-4 py-16 max-w-4xl">
           {/* Success Header */}
           <div className="text-center mb-12">
@@ -89,11 +89,11 @@ export default function PurchaseSuccess() {
             </Card>
 
             {/* Interactive Playbook Card */}
-            <Card data-testid="card-interactive-playbook" className="border-2 border-indigo-200 dark:border-indigo-800">
+            <Card data-testid="card-interactive-playbook" className="border-2 border-primary/20 dark:border-primary/30">
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
-                    <BookOpen className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                  <div className="p-2 bg-primary/10 dark:bg-primary/20 rounded-lg">
+                    <BookOpen className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <CardTitle>Access Your Interactive Playbook</CardTitle>
@@ -144,8 +144,8 @@ export default function PurchaseSuccess() {
             <Card data-testid="card-download-pdf">
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                    <Download className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  <div className="p-2 bg-accent/10 dark:bg-accent/20 rounded-lg">
+                    <Download className="w-6 h-6 text-accent" />
                   </div>
                   <div>
                     <CardTitle>Prefer the PDF?</CardTitle>
@@ -172,7 +172,7 @@ export default function PurchaseSuccess() {
               Need help? Contact us at{' '}
               <a 
                 href="mailto:support@prolificpersonalities.com" 
-                className="text-indigo-600 dark:text-indigo-400 hover:underline"
+                className="text-primary hover:underline"
                 data-testid="link-support-email"
               >
                 support@prolificpersonalities.com

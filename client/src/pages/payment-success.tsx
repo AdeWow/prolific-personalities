@@ -38,7 +38,7 @@ export default function PaymentSuccess() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Payment Successful - Prolific Personalities"
         description="Your premium report purchase was successful"
@@ -53,17 +53,17 @@ export default function PaymentSuccess() {
                 <CheckCircle2 className="w-12 h-12 text-white" />
               </div>
 
-              <h1 className="text-3xl lg:text-4xl font-bold text-neutral-900 mb-4">
+              <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
                 Payment Successful! 🎉
               </h1>
 
-              <p className="text-lg text-neutral-600 mb-8">
+              <p className="text-lg text-muted-foreground mb-8">
                 Your premium productivity playbook is ready for download.
               </p>
 
-              <div className="space-y-4 bg-neutral-50 rounded-lg p-6 mb-8 text-left">
-                <h2 className="font-bold text-neutral-800 text-lg">What's Next?</h2>
-                <ul className="space-y-3 text-neutral-700">
+              <div className="space-y-4 bg-background rounded-lg p-6 mb-8 text-left">
+                <h2 className="font-bold text-foreground text-lg">What's Next?</h2>
+                <ul className="space-y-3 text-muted-foreground">
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
                     <span>Your premium PDF is processing and will be available in your dashboard within minutes</span>
@@ -95,12 +95,12 @@ export default function PaymentSuccess() {
               </div>
 
               {/* Social Sharing Section */}
-              <div className="mt-10 pt-8 border-t border-neutral-200">
+              <div className="mt-10 pt-8 border-t border-muted">
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <Heart className="w-5 h-5 text-pink-500" />
-                  <p className="text-neutral-700 font-medium">Enjoying your playbook?</p>
+                  <p className="text-muted-foreground font-medium">Enjoying your playbook?</p>
                 </div>
-                <p className="text-neutral-600 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Help others discover their productivity archetype
                 </p>
                 <div className="flex justify-center gap-3">
@@ -128,7 +128,7 @@ export default function PaymentSuccess() {
               </div>
 
               {sessionId && (
-                <p className="text-xs text-neutral-400 mt-8">
+                <p className="text-xs text-muted-foreground mt-8">
                   Session ID: {sessionId}
                 </p>
               )}

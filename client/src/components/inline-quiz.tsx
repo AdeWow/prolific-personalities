@@ -10,30 +10,30 @@ export function InlineQuiz() {
   const firstQuestion = questions[0];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
+    <section className="py-20 bg-gradient-to-br from-primary/5 to-accent/5">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-neutral-800 mb-4">
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
             Ready to discover your archetype?
           </h2>
-          <p className="text-xl text-neutral-600">
+          <p className="text-xl text-muted-foreground">
             Here's a preview - 28 questions total
           </p>
         </div>
 
-        <Card className="bg-white shadow-2xl border-2 border-indigo-100">
+        <Card className="bg-white shadow-2xl border-2 border-primary/20">
           <CardContent className="p-8 lg:p-12">
             <div className="space-y-8">
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-sm font-semibold text-indigo-600 uppercase tracking-wide">
+                  <span className="text-sm font-semibold text-primary uppercase tracking-wide">
                     Sample Question
                   </span>
-                  <span className="text-sm text-neutral-500">
+                  <span className="text-sm text-muted-foreground">
                     28 questions • 5 min
                   </span>
                 </div>
-                <h3 className="text-2xl font-bold text-neutral-800 mb-8">
+                <h3 className="text-2xl font-bold text-foreground mb-8">
                   {firstQuestion.text}
                 </h3>
               </div>
@@ -41,7 +41,7 @@ export function InlineQuiz() {
               <div className="space-y-4">
                 {firstQuestion.type === 'likert' && (
                   <>
-                    <div className="flex justify-between text-sm text-neutral-600 mb-2">
+                    <div className="flex justify-between text-sm text-muted-foreground mb-2">
                       <span>{firstQuestion.scaleLabels?.min}</span>
                       <span>{firstQuestion.scaleLabels?.max}</span>
                     </div>
@@ -49,7 +49,7 @@ export function InlineQuiz() {
                       {['1', '2', '3', '4', '5'].map((value) => (
                         <div
                           key={value}
-                          className="py-6 px-4 rounded-xl border-2 text-lg font-semibold border-neutral-200 bg-white text-neutral-700"
+                          className="py-6 px-4 rounded-xl border-2 text-lg font-semibold border-muted bg-white text-muted-foreground"
                         >
                           {value}
                         </div>
@@ -68,7 +68,7 @@ export function InlineQuiz() {
                   Start Full Assessment
                   <ChevronRight className="ml-2 h-5 w-5" />
                 </Button>
-                <p className="text-center text-sm text-neutral-500 mt-4">
+                <p className="text-center text-sm text-muted-foreground mt-4">
                   Free • No email required • Results in 5 minutes
                 </p>
               </div>

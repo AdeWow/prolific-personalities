@@ -9,7 +9,7 @@ import { Brain, Target, Zap, BookOpen, Download, TrendingUp } from "lucide-react
 
 export default function Science() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:from-card dark:to-background">
       <SEOHead
         title="The Science Behind Personalized Productivity"
         description="Discover the research behind Prolific Personalities. Learn about cognitive science, executive function theory, and self-determination theory that powers our assessment."
@@ -136,9 +136,9 @@ export default function Science() {
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-6 rounded-xl border border-purple-200 dark:border-purple-700">
+                <div className="bg-accent/10 dark:bg-accent/20 p-6 rounded-xl border border-accent/20 dark:border-accent/30">
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                    <div className="w-8 h-8 bg-purple-600 dark:bg-purple-500 text-white rounded-lg flex items-center justify-center font-bold text-sm">3</div>
+                    <div className="w-8 h-8 bg-accent text-white rounded-lg flex items-center justify-center font-bold text-sm">3</div>
                     Cognitive Focus
                   </h3>
                   <p className="text-gray-700 dark:text-gray-300">
@@ -162,8 +162,8 @@ export default function Science() {
           <Card className="bg-white dark:bg-gray-800 shadow-lg">
             <CardContent className="p-8">
               <div className="flex items-start gap-4 mb-6">
-                <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
-                  <TrendingUp className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
+                <div className="p-3 bg-primary/10 dark:bg-primary/20 rounded-lg">
+                  <TrendingUp className="h-8 w-8 text-primary" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Why Personality Matters</h2>

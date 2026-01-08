@@ -54,7 +54,7 @@ export default function FAQ() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Frequently Asked Questions"
         description="Find answers to common questions about Prolific Personalities productivity assessment. Learn how it works, what makes it different, and how it can help you."
@@ -70,10 +70,10 @@ export default function FAQ() {
               <i className="fas fa-question-circle mr-2"></i>
               Frequently Asked Questions
             </Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold text-neutral-800">
+            <h2 className="text-4xl lg:text-5xl font-bold text-foreground">
               Got <span className="text-gradient">Questions?</span>
             </h2>
-            <p className="text-xl text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Find answers to common questions about Prolific Personalities, how the assessment works, and what makes it different.
             </p>
           </div>
@@ -87,11 +87,11 @@ export default function FAQ() {
             {faqs.map((faq, index) => (
               <Card key={index} className="bg-white shadow-lg border-0 hover:shadow-xl transition-shadow duration-200">
                 <CardContent className="p-8">
-                  <h3 className="text-xl font-bold text-neutral-800 mb-4 flex items-start">
+                  <h3 className="text-xl font-bold text-foreground mb-4 flex items-start">
                     <span className="text-primary mr-3 mt-1">{index + 1}.</span>
                     {faq.question}
                   </h3>
-                  <p className="text-lg text-neutral-700 leading-relaxed ml-8">
+                  <p className="text-lg text-muted-foreground leading-relaxed ml-8">
                     {faq.answer}
                   </p>
                 </CardContent>
@@ -101,10 +101,10 @@ export default function FAQ() {
 
           {/* Call to Action */}
           <div className="text-center mt-16 p-8 bg-white rounded-2xl shadow-lg">
-            <h3 className="text-2xl font-bold text-neutral-800 mb-4">
+            <h3 className="text-2xl font-bold text-foreground mb-4">
               Ready to Discover Your Productivity Archetype?
             </h3>
-            <p className="text-neutral-600 mb-6 text-lg">
+            <p className="text-muted-foreground mb-6 text-lg">
               Take our 5-minute assessment and unlock personalized strategies that work with your brain, not against it.
             </p>
             <Link href="/quiz">

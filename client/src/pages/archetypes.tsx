@@ -119,7 +119,7 @@ export default function Archetypes() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Six Productivity Archetypes Explained"
         description="Discover the 6 distinct productivity archetypes: Structured Achiever, Chaotic Creative, Strategic Planner, and more. Learn which working style matches yours and get personalized strategies."
@@ -135,14 +135,14 @@ export default function Archetypes() {
               <i className="fas fa-users mr-2"></i>
               Productivity Archetypes
             </Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold text-neutral-800">
+            <h2 className="text-4xl lg:text-5xl font-bold text-foreground">
               Six Distinct <span className="text-gradient">Productivity Personalities</span>
             </h2>
-            <p className="text-xl text-neutral-600 max-w-3xl mx-auto leading-relaxed mb-6">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-6">
               Everyone approaches productivity differently. Some thrive on structure, others crave spontaneity. 
               This framework is built on real psychological principles and helps you understand how you focus, plan, and follow through.
             </p>
-            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Each archetype represents a unique blend of cognitive patterns, motivational tendencies, and behavioral strategies. Discover which one resonates with you.
             </p>
           </div>
@@ -177,7 +177,7 @@ export default function Archetypes() {
                     <div className="p-8 space-y-8">
                       <div className="flex flex-col lg:flex-row gap-8 items-start">
                         <div className="flex-1">
-                          <p className="text-lg text-neutral-700 leading-relaxed font-medium">
+                          <p className="text-lg text-muted-foreground leading-relaxed font-medium">
                             {archetype.description}
                           </p>
                         </div>
@@ -191,7 +191,7 @@ export default function Archetypes() {
                       </div>
                       
                       {archetype.fullDescription.map((paragraph, i) => (
-                        <p key={i} className="text-lg text-neutral-700 leading-relaxed">
+                        <p key={i} className="text-lg text-muted-foreground leading-relaxed">
                           {paragraph}
                         </p>
                       ))}
@@ -211,15 +211,15 @@ export default function Archetypes() {
 
                       {/* Superpowers Section */}
                       <div className="bg-emerald-50 border-l-4 border-emerald-500 rounded-lg p-6">
-                        <h4 className="text-2xl font-bold text-neutral-800 mb-4 flex items-center">
+                        <h4 className="text-2xl font-bold text-foreground mb-4 flex items-center">
                           <i className="fas fa-star text-emerald-500 mr-3"></i>
                           Your Superpowers
                         </h4>
                         <div className="grid md:grid-cols-2 gap-4">
                           {archetypeData.superpowers.map((power, i) => (
                             <div key={i} className="bg-white rounded-lg p-4 shadow-sm">
-                              <h5 className="font-bold text-neutral-800 mb-2">{power.title}</h5>
-                              <p className="text-neutral-600 text-sm">{power.description}</p>
+                              <h5 className="font-bold text-foreground mb-2">{power.title}</h5>
+                              <p className="text-muted-foreground text-sm">{power.description}</p>
                             </div>
                           ))}
                         </div>
@@ -227,7 +227,7 @@ export default function Archetypes() {
 
                       {/* Blockers Section */}
                       <div className="bg-red-50 border-l-4 border-red-400 rounded-lg p-6">
-                        <h4 className="text-2xl font-bold text-neutral-800 mb-4 flex items-center">
+                        <h4 className="text-2xl font-bold text-foreground mb-4 flex items-center">
                           <i className="fas fa-ban text-red-500 mr-3"></i>
                           Common Blockers
                         </h4>
@@ -238,8 +238,8 @@ export default function Archetypes() {
                                 <i className="fas fa-times text-red-600 text-xs"></i>
                               </div>
                               <div>
-                                <span className="font-semibold text-neutral-800">{blocker.title}:</span>
-                                <span className="text-neutral-700"> {blocker.description}</span>
+                                <span className="font-semibold text-foreground">{blocker.title}:</span>
+                                <span className="text-muted-foreground"> {blocker.description}</span>
                               </div>
                             </div>
                           ))}
@@ -247,8 +247,8 @@ export default function Archetypes() {
                       </div>
 
                       {/* Call to Action */}
-                      <div className="text-center pt-8 border-t-2 border-neutral-200 mt-8">
-                        <p className="text-neutral-600 mb-4 text-lg">
+                      <div className="text-center pt-8 border-t-2 border-muted mt-8">
+                        <p className="text-muted-foreground mb-4 text-lg">
                           Want to discover your personalized strengths, growth areas, and tool recommendations?
                         </p>
                         <Link href="/quiz">
@@ -268,7 +268,7 @@ export default function Archetypes() {
       </section>
 
       {/* Email Capture */}
-      <section className="py-16 bg-gradient-to-br from-neutral-50 to-indigo-50">
+      <section className="py-16 bg-gradient-to-b from-background to-muted">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <EmailCaptureCard 
             title="Get your personalized archetype guide"
@@ -282,7 +282,7 @@ export default function Archetypes() {
       {/* Navigation */}
       <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-2xl font-bold text-neutral-800 mb-8">Quick Navigation</h3>
+          <h3 className="text-2xl font-bold text-foreground mb-8">Quick Navigation</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {archetypeDetails.map((archetype) => {
               const archetypeData = archetypes.find(a => a.id === archetype.id);
@@ -294,14 +294,14 @@ export default function Archetypes() {
                   href={`#${archetype.id}`}
                   className={`p-4 rounded-xl border-2 border-${archetypeData.color}-200 bg-${archetypeData.color}-50 hover:border-${archetypeData.color}-400 hover:shadow-lg transition-all text-center group`}
                 >
-                  <div className="w-16 h-16 rounded-xl overflow-hidden mx-auto mb-3 ring-2 ring-neutral-200 group-hover:ring-4 group-hover:ring-primary/30 transition-all">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden mx-auto mb-3 ring-2 ring-muted group-hover:ring-4 group-hover:ring-primary/30 transition-all">
                     <img 
                       src={archetype.image} 
                       alt={archetype.name}
                       className="w-full h-full object-cover object-center scale-125"
                     />
                   </div>
-                  <div className="font-semibold text-neutral-800 text-sm">{archetype.name}</div>
+                  <div className="font-semibold text-foreground text-sm">{archetype.name}</div>
                 </a>
               );
             })}

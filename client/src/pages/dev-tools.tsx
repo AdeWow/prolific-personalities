@@ -59,7 +59,7 @@ export default function DevTools() {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white p-8">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex items-center gap-3">
-          <Wrench className="h-8 w-8 text-indigo-600" />
+          <Wrench className="h-8 w-8 text-primary" />
           <div>
             <h1 className="text-3xl font-bold">Developer Tools</h1>
             <p className="text-muted-foreground">Quick shortcuts for testing</p>
