@@ -2,11 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { trackEvent } from "@/lib/analytics";
-import { X, Gift, CheckCircle } from "lucide-react";
+import { X, Gift, CheckCircle, Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
 
 const PAGES_TO_EXCLUDE = [
@@ -25,9 +26,12 @@ export function ExitIntentPopup() {
   const [showPopup, setShowPopup] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [email, setEmail] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [touched, setTouched] = useState(false);
   const [isEligible, setIsEligible] = useState(false);
   const { toast } = useToast();
   const [location] = useLocation();
+  const inputRef = useRef<HTMLInputElement>(null);
   
   const timeOnPageRef = useRef(0);
   const maxScrollDepthRef = useRef(0);
@@ -50,6 +54,7 @@ export function ExitIntentPopup() {
       });
     },
     onError: () => {
+      setError("Something went wrong. Please try again.");
       toast({
         title: "Something went wrong",
         description: "Please try again or contact us if the problem persists.",
@@ -130,103 +135,173 @@ export function ExitIntentPopup() {
     };
   }, [isEligible, dismissed, showPopup]);
 
+  useEffect(() => {
+    if (showPopup && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showPopup]);
+
   const handleClose = () => {
     setShowPopup(false);
     setDismissed(true);
     localStorage.setItem('exitIntentDismissedAt', Date.now().toString());
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email && email.includes('@')) {
-      emailCaptureMutation.mutate({
-        email,
-        sessionId: `exit-intent-${Date.now()}`,
-      });
-    } else {
-      toast({
-        title: "Invalid email",
-        description: "Please enter a valid email address.",
-        variant: "destructive",
-      });
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleClose();
     }
   };
+
+  const validateEmail = (value: string): string | null => {
+    if (!value.trim()) {
+      return "Email is required";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      return "Please enter a valid email address";
+    }
+    return null;
+  };
+
+  const handleBlur = () => {
+    setTouched(true);
+    setError(validateEmail(email));
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (touched) {
+      setError(validateEmail(e.target.value));
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setTouched(true);
+    const validationError = validateEmail(email);
+    
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    
+    emailCaptureMutation.mutate({
+      email,
+      sessionId: `exit-intent-${Date.now()}`,
+    });
+  };
+
+  const showError = touched && error;
 
   if (!showPopup) return null;
 
   return (
     <div 
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-300" 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-300"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="exit-popup-title"
+      onKeyDown={handleKeyDown}
       data-testid="exit-intent-popup"
     >
-      <Card className="max-w-md w-full bg-white shadow-2xl border-0 relative animate-in zoom-in-95 duration-300">
+      <Card className="max-w-md w-full bg-white dark:bg-card shadow-2xl border-0 relative animate-in zoom-in-95 duration-300">
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-muted-foreground hover:text-muted-foreground transition-colors z-10"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors z-10 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           aria-label="Close popup"
           data-testid="button-close-popup"
         >
-          <X className="w-5 h-5" />
+          <X className="w-5 h-5" aria-hidden="true" />
         </button>
 
         <CardContent className="p-6 sm:p-8">
           <div className="text-center mb-6">
-            <div className="w-14 h-14 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 bg-primary rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true">
               <Gift className="w-7 h-7 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">
+            <h2 id="exit-popup-title" className="text-xl sm:text-2xl font-bold text-foreground mb-2">
               Your Free Productivity Guide
             </h2>
-            <p className="text-muted-foreground leading-relaxed">
+            <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
               Join 2,000+ professionals getting weekly strategies matched to their productivity style.
             </p>
           </div>
 
-          <div className="bg-primary/5 rounded-lg p-4 mb-6">
+          <div className="bg-primary/5 dark:bg-primary/10 rounded-lg p-4 mb-6">
             <p className="text-sm font-medium text-primary mb-2">What you'll get:</p>
-            <ul className="space-y-2">
+            <ul className="space-y-2" aria-label="Benefits list">
               <li className="flex items-center text-sm text-primary/80">
-                <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
+                <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" aria-hidden="true" />
                 Personalized tips for your archetype
               </li>
               <li className="flex items-center text-sm text-primary/80">
-                <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
+                <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" aria-hidden="true" />
                 Tool recommendations that actually work
               </li>
               <li className="flex items-center text-sm text-primary/80">
-                <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
+                <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" aria-hidden="true" />
                 Weekly micro-challenges to build habits
               </li>
             </ul>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="text-base py-5"
-              data-testid="input-exit-email"
-              required
-            />
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            <div className="space-y-2">
+              <Label htmlFor="exit-email-input" className="sr-only">
+                Email address
+              </Label>
+              <Input
+                ref={inputRef}
+                id="exit-email-input"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                aria-invalid={showError ? "true" : "false"}
+                aria-describedby={showError ? "exit-email-error" : "exit-email-hint"}
+                className={`text-base py-5 ${showError ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                disabled={emailCaptureMutation.isPending}
+                data-testid="input-exit-email"
+              />
+              
+              {showError && (
+                <p 
+                  id="exit-email-error" 
+                  className="text-sm text-destructive" 
+                  role="alert" 
+                  aria-live="polite"
+                >
+                  {error}
+                </p>
+              )}
+            </div>
+            
             <Button
               type="submit"
-              className="w-full gradient-primary text-white py-5 text-base font-semibold hover:opacity-90 transition-all"
+              className="w-full gradient-primary text-white py-5 text-base font-semibold hover:opacity-90 transition-all disabled:opacity-50"
               disabled={emailCaptureMutation.isPending}
               data-testid="button-exit-submit"
             >
-              {emailCaptureMutation.isPending ? "Joining..." : "Get Free Access"}
+              {emailCaptureMutation.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+                  <span>Joining...</span>
+                </>
+              ) : (
+                "Get Free Access"
+              )}
             </Button>
           </form>
 
-          <p className="text-xs text-muted-foreground text-center mt-4">
+          <p id="exit-email-hint" className="text-xs text-muted-foreground text-center mt-4">
             Free forever. Unsubscribe anytime. No spam.
           </p>
 
           <button
             onClick={handleClose}
-            className="w-full mt-3 text-muted-foreground hover:text-muted-foreground text-sm transition-colors"
+            className="w-full mt-3 text-muted-foreground hover:text-foreground text-sm transition-colors focus:outline-none focus:underline"
             data-testid="button-dismiss-popup"
           >
             Maybe later

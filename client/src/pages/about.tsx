@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormErrorSummary, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertWaitlistSchema, insertFeedbackSchema } from "@shared/schema";
 import { z } from "zod";
-import { Gift, Sparkles } from "lucide-react";
+import { Gift, Sparkles, Loader2, CheckCircle2 } from "lucide-react";
 
 // Validation schemas
 const waitlistFormSchema = insertWaitlistSchema.omit({ sessionId: true }).extend({
@@ -312,32 +312,57 @@ export default function About() {
                 </ul>
                 
                 <Form {...waitlistForm}>
-                  <form onSubmit={waitlistForm.handleSubmit(handleWaitlistSubmit)} className="flex flex-col sm:flex-row gap-3">
-                    <FormField
-                      control={waitlistForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem className="flex-1">
-                          <FormControl>
-                            <Input
-                              type="email"
-                              placeholder="Enter your email"
-                              {...field}
-                              data-testid="input-waitlist-email"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button 
-                      type="submit" 
-                      className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg font-semibold whitespace-nowrap"
-                      disabled={waitlistMutation.isPending}
-                      data-testid="button-join-waitlist"
-                    >
-                      {waitlistMutation.isPending ? "Joining..." : "Join Waitlist"}
-                    </Button>
+                  <form 
+                    onSubmit={waitlistForm.handleSubmit(handleWaitlistSubmit)} 
+                    className="space-y-4"
+                    noValidate
+                  >
+                    {waitlistMutation.isSuccess ? (
+                      <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-700 dark:text-green-300 animate-in fade-in slide-in-from-bottom-2">
+                        <CheckCircle2 className="h-5 w-5" />
+                        <p className="font-medium">You've been added to the waitlist!</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col sm:flex-row gap-3 items-end">
+                        <FormField
+                          control={waitlistForm.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem className="flex-1 w-full">
+                              <FormLabel className="sr-only">Email address</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="email"
+                                  placeholder="Enter your email"
+                                  {...field}
+                                  data-testid="input-waitlist-email"
+                                  className="h-11"
+                                />
+                              </FormControl>
+                              <FormDescription>
+                                Join our waitlist for early access to new features
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button 
+                          type="submit" 
+                          className="bg-primary hover:bg-primary/90 text-white px-6 h-11 rounded-lg font-semibold whitespace-nowrap w-full sm:w-auto"
+                          disabled={waitlistMutation.isPending}
+                          data-testid="button-join-waitlist"
+                        >
+                          {waitlistMutation.isPending ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Joining...
+                            </>
+                          ) : (
+                            "Join Waitlist"
+                          )}
+                        </Button>
+                      </div>
+                    )}
                   </form>
                 </Form>
               </div>
@@ -359,104 +384,144 @@ export default function About() {
               </div>
 
               <Form {...feedbackForm}>
-                <form onSubmit={feedbackForm.handleSubmit(handleFeedbackSubmit)} className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={feedbackForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-muted-foreground dark:text-gray-300">Name (optional)</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="text"
-                              placeholder="Your name"
-                              {...field}
-                              data-testid="input-feedback-name"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={feedbackForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-muted-foreground dark:text-gray-300">Email (optional)</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="email"
-                              placeholder="your@email.com"
-                              {...field}
-                              data-testid="input-feedback-email"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                <form 
+                  onSubmit={feedbackForm.handleSubmit(handleFeedbackSubmit)} 
+                  className="space-y-6"
+                  noValidate
+                >
+                  {feedbackMutation.isSuccess ? (
+                    <Card className="bg-green-50 dark:bg-green-900/10 border-green-100 dark:border-green-800 animate-in fade-in zoom-in duration-300">
+                      <CardContent className="p-8 text-center flex flex-col items-center gap-4">
+                        <div className="w-16 h-16 bg-green-100 dark:bg-green-800/30 rounded-full flex items-center justify-center">
+                          <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
+                        </div>
+                        <h4 className="text-xl font-bold text-green-800 dark:text-green-200">Feedback Received!</h4>
+                        <p className="text-green-700 dark:text-green-300 max-w-md">
+                          Thank you for sharing your thoughts. We read every submission and truly appreciate your input in making Prolific Personalities better.
+                        </p>
+                        <Button 
+                          onClick={() => feedbackMutation.reset()} 
+                          variant="outline" 
+                          className="mt-2 border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30"
+                        >
+                          Send more feedback
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <>
+                      <FormErrorSummary errors={feedbackForm.formState.errors} />
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <FormField
+                          control={feedbackForm.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-muted-foreground dark:text-gray-300">Name (optional)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="text"
+                                  placeholder="Your name"
+                                  {...field}
+                                  data-testid="input-feedback-name"
+                                />
+                              </FormControl>
+                              <FormDescription>How should we address you?</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={feedbackForm.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-muted-foreground dark:text-gray-300">Email (optional)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="email"
+                                  placeholder="your@email.com"
+                                  {...field}
+                                  data-testid="input-feedback-email"
+                                />
+                              </FormControl>
+                              <FormDescription>Only if you'd like a response</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
-                  <FormField
-                    control={feedbackForm.control}
-                    name="type"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-muted-foreground dark:text-gray-300">Type of Feedback</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger data-testid="select-feedback-type">
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="feedback">General Feedback</SelectItem>
-                            <SelectItem value="recommendation">Recommendation</SelectItem>
-                            <SelectItem value="feature_request">Feature Request</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      <FormField
+                        control={feedbackForm.control}
+                        name="type"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-muted-foreground dark:text-gray-300">Type of Feedback</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger data-testid="select-feedback-type">
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="feedback">General Feedback</SelectItem>
+                                <SelectItem value="recommendation">Recommendation</SelectItem>
+                                <SelectItem value="feature_request">Feature Request</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormDescription>What is this regarding?</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                  <FormField
-                    control={feedbackForm.control}
-                    name="message"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-muted-foreground dark:text-gray-300">Your Message *</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Share your thoughts, ideas, or suggestions..."
-                            rows={5}
-                            {...field}
-                            data-testid="textarea-feedback-message"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      <FormField
+                        control={feedbackForm.control}
+                        name="message"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-muted-foreground dark:text-gray-300">Your Message *</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Share your thoughts, ideas, or suggestions..."
+                                rows={5}
+                                {...field}
+                                data-testid="textarea-feedback-message"
+                              />
+                            </FormControl>
+                            <FormDescription>Please provide at least 10 characters</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                  <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4">
-                    <Link href="/quiz">
-                      <Button variant="outline" className="border-2 border-muted dark:border-gray-600 text-muted-foreground dark:text-gray-300 px-8 py-3 rounded-xl font-semibold hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors w-full sm:w-auto" data-testid="button-take-assessment">
-                        <i className="fas fa-play mr-2"></i>
-                        Take the Assessment
-                      </Button>
-                    </Link>
-                    <Button 
-                      type="submit"
-                      className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-auto"
-                      disabled={feedbackMutation.isPending}
-                      data-testid="button-submit-feedback"
-                    >
-                      {feedbackMutation.isPending ? "Sending..." : "Submit Feedback"}
-                    </Button>
-                  </div>
+                      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4">
+                        <Link href="/quiz">
+                          <Button variant="outline" className="border-2 border-muted dark:border-gray-600 text-muted-foreground dark:text-gray-300 px-8 py-3 rounded-xl font-semibold hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors w-full sm:w-auto" data-testid="button-take-assessment">
+                            <i className="fas fa-play mr-2"></i>
+                            Take the Assessment
+                          </Button>
+                        </Link>
+                        <Button 
+                          type="submit"
+                          className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-auto"
+                          disabled={feedbackMutation.isPending}
+                          data-testid="button-submit-feedback"
+                        >
+                          {feedbackMutation.isPending ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Sending...
+                            </>
+                          ) : (
+                            "Submit Feedback"
+                          )}
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </form>
               </Form>
             </CardContent>

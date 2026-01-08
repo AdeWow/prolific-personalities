@@ -157,6 +157,8 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
+      role="alert"
+      aria-live="polite"
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}
     >
@@ -166,6 +168,42 @@ const FormMessage = React.forwardRef<
 })
 FormMessage.displayName = "FormMessage"
 
+const FormErrorSummary = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & { errors: Record<string, { message?: string }> }
+>(({ className, errors, ...props }, ref) => {
+  const errorEntries = Object.entries(errors).filter(([, v]) => v?.message)
+  
+  if (errorEntries.length === 0) {
+    return null
+  }
+
+  return (
+    <div
+      ref={ref}
+      role="alert"
+      aria-live="assertive"
+      className={cn(
+        "bg-destructive/10 border border-destructive/30 rounded-lg p-4 mb-6",
+        className
+      )}
+      {...props}
+    >
+      <p className="text-sm font-semibold text-destructive mb-2">
+        Please fix the following errors:
+      </p>
+      <ul className="list-disc list-inside space-y-1">
+        {errorEntries.map(([key, error]) => (
+          <li key={key} className="text-sm text-destructive">
+            {error.message}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+})
+FormErrorSummary.displayName = "FormErrorSummary"
+
 export {
   useFormField,
   Form,
@@ -174,5 +212,6 @@ export {
   FormControl,
   FormDescription,
   FormMessage,
+  FormErrorSummary,
   FormField,
 }
