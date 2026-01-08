@@ -17,7 +17,30 @@ The application employs a monorepo structure, separating the React-based fronten
 ### Frontend Architecture
 
 **Technology Stack**: React 18 with TypeScript, Vite.
-**UI/UX**: shadcn/ui components (Radix UI primitives) and Tailwind CSS, "new-york" design aesthetic with a custom productivity-focused color palette. Wouter for client-side routing, TanStack Query for server state management.
+**UI/UX**: shadcn/ui components (Radix UI primitives) and Tailwind CSS, "new-york" design aesthetic with a logo-derived muted color palette. Wouter for client-side routing, TanStack Query for server state management.
+
+### Design System (January 2026 Refresh)
+
+**Color Palette** (derived from hexagonal logo):
+- **Primary**: Muted Teal `hsl(172, 34%, 43%)` - main brand color for buttons and CTAs
+- **Secondary**: Dusty Rose `hsl(16, 38%, 62%)` - complementary accent
+- **Accent**: Soft Lavender `hsl(281, 24%, 64%)` - highlights and badges
+- **Support**: Sage Green `hsl(96, 22%, 52%)` - success states and secondary accents
+- **Background**: Warm Cream `hsl(36, 20%, 97%)` - page backgrounds
+- **Foreground**: Dark Blue-Gray `hsl(206, 21%, 16%)` - primary text
+
+**Gradient Utilities** (defined in index.css):
+- `gradient-primary`: Teal-to-teal (single-family)
+- `gradient-secondary`: Coral-to-coral
+- `gradient-accent`: Lavender-to-lavender
+- `gradient-subtle`: Cream-to-muted (page backgrounds)
+- `text-gradient`: Teal-to-lavender (headline accents)
+
+**Component Styling**:
+- Header: White background with subtle shadow for visual separation
+- Page containers: `bg-gradient-to-b from-background to-muted` for depth
+- Text: Uses semantic tokens (`text-foreground`, `text-muted-foreground`)
+- Interactive elements: Primary teal for buttons and links
 
 ### Backend Architecture
 
