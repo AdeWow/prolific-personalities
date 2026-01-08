@@ -126,16 +126,16 @@ export default function Archetypes() {
         keywords="productivity archetypes, working styles, productivity types, time management styles, executive function, cognitive focus"
       />
       <Header />
-
-      {/* Hero Section */}
-      <section className="py-20">
+      <main id="main-content" role="main">
+        {/* Hero Section */}
+        <section className="py-20" aria-labelledby="archetypes-title">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <Badge className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary/10 to-secondary/10 border-0 text-primary font-semibold">
               <i className="fas fa-users mr-2"></i>
               Productivity Archetypes
             </Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold text-foreground">
+            <h2 id="archetypes-title" className="text-4xl lg:text-5xl font-bold text-foreground">
               Six Distinct <span className="text-gradient">Productivity Personalities</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-6">
@@ -307,7 +307,8 @@ export default function Archetypes() {
             })}
           </div>
         </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

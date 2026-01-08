@@ -13,8 +13,8 @@ export default function RefundPolicy() {
         description="Our refund policy for premium playbook purchases. We offer a 30-day satisfaction guarantee on all digital products."
       />
       <Header />
-
-      <section className="py-16">
+      <main id="main-content" role="main">
+        <section className="py-16" aria-labelledby="refund-title">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link href="/">
             <Button variant="ghost" className="mb-6" data-testid="button-back-home">
@@ -23,7 +23,7 @@ export default function RefundPolicy() {
             </Button>
           </Link>
 
-          <h1 className="text-4xl font-bold text-foreground dark:text-white mb-4">
+          <h1 id="refund-title" className="text-4xl font-bold text-foreground dark:text-white mb-4">
             Refund Policy
           </h1>
           <p className="text-lg text-muted-foreground dark:text-muted-foreground mb-8">
@@ -194,7 +194,8 @@ export default function RefundPolicy() {
             </Card>
           </div>
         </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

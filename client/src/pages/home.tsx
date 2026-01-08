@@ -73,13 +73,15 @@ export default function Home() {
       />
       <Header />
 
+      {/* Main Content - 508 Compliance */}
+      <main id="main-content" role="main">
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
+      <section className="relative py-20 lg:py-32 overflow-hidden" aria-labelledby="hero-heading">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="space-y-6">
-                <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+                <h1 id="hero-heading" className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                   Stop fighting your brain.{" "}
                   <span className="text-gradient">
                     Start working with it.
@@ -471,6 +473,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      </main>
     </div>
   );
 }

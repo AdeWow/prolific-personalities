@@ -117,15 +117,15 @@ export default function About() {
         keywords="about prolific personalities, productivity platform, personalized productivity, research-backed assessment"
       />
       <Header />
-
-      <section className="py-20">
+      <main id="main-content" role="main">
+        <section className="py-20" aria-labelledby="about-title">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <Badge className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary/10 to-secondary/10 border-0 text-primary font-semibold">
               <i className="fas fa-info-circle mr-2"></i>
               About Us
             </Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold text-foreground dark:text-white">
+            <h2 id="about-title" className="text-4xl lg:text-5xl font-bold text-foreground dark:text-white">
               About <span className="text-gradient">Prolific Personalities</span>
             </h2>
           </div>
@@ -462,7 +462,8 @@ export default function About() {
             </CardContent>
           </Card>
         </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

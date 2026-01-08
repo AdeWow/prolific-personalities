@@ -61,16 +61,16 @@ export default function FAQ() {
         keywords="productivity FAQ, personality assessment questions, productivity quiz help, prolific personalities FAQ"
       />
       <Header />
-
-      {/* Hero Section */}
-      <section className="py-20">
+      <main id="main-content" role="main">
+        {/* Hero Section */}
+        <section className="py-20" aria-labelledby="faq-title">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <Badge className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary/10 to-secondary/10 border-0 text-primary font-semibold">
               <i className="fas fa-question-circle mr-2"></i>
               Frequently Asked Questions
             </Badge>
-            <h2 className="text-4xl lg:text-5xl font-bold text-foreground">
+            <h2 id="faq-title" className="text-4xl lg:text-5xl font-bold text-foreground">
               Got <span className="text-gradient">Questions?</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
@@ -115,7 +115,8 @@ export default function FAQ() {
             </Link>
           </div>
         </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

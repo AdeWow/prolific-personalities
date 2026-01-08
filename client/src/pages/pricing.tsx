@@ -102,16 +102,16 @@ export default function Pricing() {
         keywords="productivity assessment pricing, premium report, AI productivity coach, personalized strategies, productivity tools"
       />
       <Header />
-
-      {/* Hero Section */}
-      <section className="py-20">
+      <main id="main-content" role="main">
+        {/* Hero Section */}
+        <section className="py-20" aria-labelledby="pricing-title">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full text-sm font-medium text-primary mb-6">
             <Sparkles className="w-4 h-4 mr-2" />
             Choose Your Plan
           </Badge>
           
-          <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
+          <h1 id="pricing-title" className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
             Start Free. Upgrade When Ready.
           </h1>
           
@@ -426,8 +426,9 @@ export default function Pricing() {
         </div>
       </section>
 
+      </main>
       {/* Footer */}
-      <footer className="py-12 bg-white border-t border-muted">
+      <footer className="py-12 bg-white border-t border-muted" role="contentinfo">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-muted-foreground">
             <p className="mb-4">© 2025 Prolific Personalities. All rights reserved.</p>

@@ -18,11 +18,11 @@ export default function BlogPage() {
         keywords="productivity blog, productivity tips, time management, focus strategies, work efficiency, productivity research"
       />
       <Header />
-      
-      <div className="container mx-auto px-4 py-16 max-w-6xl">
+      <main id="main-content" role="main">
+        <div className="container mx-auto px-4 py-16 max-w-6xl">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+        <div className="text-center mb-12" aria-labelledby="blog-title">
+          <h1 id="blog-title" className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
             Productivity Insights
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -109,7 +109,8 @@ export default function BlogPage() {
             </Button>
           </Link>
         </div>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

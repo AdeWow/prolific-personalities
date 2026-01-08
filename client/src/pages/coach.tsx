@@ -288,8 +288,7 @@ export default function CoachPage() {
         keywords="AI productivity coach, personalized productivity advice, archetype coaching, productivity tips"
       />
       <Header />
-
-      <div className="flex-1 flex max-w-7xl mx-auto w-full">
+      <main id="main-content" role="main" className="flex-1 flex max-w-7xl mx-auto w-full">
         {/* Sidebar */}
         <div className="w-64 border-r border-muted bg-white/50 p-4 hidden md:flex flex-col">
           <Button 
@@ -574,7 +573,7 @@ export default function CoachPage() {
             )}
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

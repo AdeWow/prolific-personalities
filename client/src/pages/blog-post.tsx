@@ -144,7 +144,8 @@ export default function BlogPostPage() {
         keywords={post.tags.join(", ")}
         structuredData={structuredData}
       />
-      <article className="container mx-auto px-4 py-16 max-w-4xl">
+      <main id="main-content" role="main">
+        <article className="container mx-auto px-4 py-16 max-w-4xl">
         {/* Back Button */}
         <Link href="/blog">
           <Button variant="ghost" className="mb-8" data-testid="button-back-blog">
@@ -154,7 +155,7 @@ export default function BlogPostPage() {
         </Link>
 
         {/* Article Header */}
-        <header className="mb-12">
+        <header className="mb-12" aria-labelledby="post-title">
           <div className="flex flex-wrap gap-2 mb-4">
             {post.tags.map((tag) => (
               <Badge key={tag} variant="secondary" data-testid={`badge-tag-${tag.toLowerCase()}`}>
@@ -163,7 +164,7 @@ export default function BlogPostPage() {
             ))}
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-foreground leading-tight" data-testid="text-post-title">
+          <h1 id="post-title" className="text-4xl md:text-5xl font-bold mb-6 text-foreground leading-tight" data-testid="text-post-title">
             {post.title}
           </h1>
 
@@ -295,7 +296,8 @@ export default function BlogPostPage() {
             </Button>
           </Link>
         </div>
-      </article>
+        </article>
+      </main>
     </div>
   );
 }

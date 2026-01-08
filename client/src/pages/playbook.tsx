@@ -480,7 +480,7 @@ export default function Playbook() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+        <main id="main-content" role="main" className="flex-1 p-4 sm:p-6 lg:p-8">
           <Tabs defaultValue="content" className="space-y-6">
             <TabsList className="grid w-full grid-cols-5 max-w-3xl">
               <TabsTrigger value="content" data-testid="tab-content">

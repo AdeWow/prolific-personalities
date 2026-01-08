@@ -16,14 +16,14 @@ export default function Science() {
         keywords="productivity science, cognitive science, executive function, self-determination theory, productivity research, personalized productivity"
       />
       <Header />
-
-      <section className="py-16">
+      <main id="main-content" role="main">
+        <section className="py-16" aria-labelledby="science-title">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6 mb-12">
             <Badge className="inline-flex items-center px-6 py-3 bg-primary/10 border-primary/20 text-primary font-semibold">
               Research-Backed Assessment
             </Badge>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
+            <h1 id="science-title" className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
               The Science Behind <span className="text-primary">Personalized Productivity</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
@@ -346,7 +346,8 @@ export default function Science() {
             </CardContent>
           </Card>
         </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

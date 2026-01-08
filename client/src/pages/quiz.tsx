@@ -11,11 +11,13 @@ export default function Quiz() {
         keywords="productivity quiz, productivity assessment, productivity test, work style quiz, focus assessment"
       />
       <Header />
-      <section className="py-12">
+      <main id="main-content" role="main">
+        <section className="py-12" aria-labelledby="quiz-title">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <QuizContainer showHeader={true} showFocusIndicator={true} />
         </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

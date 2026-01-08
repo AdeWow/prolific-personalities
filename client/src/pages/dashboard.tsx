@@ -69,12 +69,12 @@ export default function Dashboard() {
         description="View all your productivity assessment results and track your progress over time."
       />
       <Header />
-
-      <section className="py-12 lg:py-20">
+      <main id="main-content" role="main">
+        <section className="py-12 lg:py-20" aria-labelledby="dashboard-title">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Welcome Header */}
           <div className="mb-8">
-            <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
+            <h1 id="dashboard-title" className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
               Welcome back{user?.firstName ? `, ${user.firstName}` : ''}! 👋
             </h1>
             <p className="text-lg text-muted-foreground">
@@ -392,7 +392,8 @@ export default function Dashboard() {
             </div>
           )}
         </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

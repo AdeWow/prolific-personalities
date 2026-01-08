@@ -16,8 +16,9 @@ export default function FounderPage() {
         description="Learn why I built Prolific Personalities - a personal journey from productivity struggle to self-understanding. Discover the story behind the assessment."
         keywords="founder story, productivity journey, prolific personalities origin, about the founder"
       />
-      <div className="container mx-auto px-4 py-16 max-w-6xl">
-        {/* Back Button */}
+      <main id="main-content" role="main">
+        <div className="container mx-auto px-4 py-16 max-w-6xl">
+          {/* Back Button */}
         <Link href="/">
           <Button variant="ghost" className="mb-8" data-testid="button-back-home">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -26,8 +27,8 @@ export default function FounderPage() {
         </Link>
 
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+        <div className="text-center mb-12" aria-labelledby="founder-title">
+          <h1 id="founder-title" className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
             Why I Built Prolific Personalities
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -125,7 +126,8 @@ export default function FounderPage() {
             </Button>
           </Link>
         </div>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
