@@ -35,12 +35,12 @@ export default function BlogPage() {
           {blogPosts.map((post) => (
             <Card key={post.id} className="flex flex-col hover:shadow-lg transition-shadow" data-testid={`card-blog-${post.slug}`}>
               {post.image && (
-                <AspectRatio ratio={16 / 9} className="bg-gray-100 dark:bg-gray-800">
+                <AspectRatio ratio={16 / 9} className="bg-gray-100 dark:bg-gray-800 rounded-t-lg overflow-hidden">
                   <img
                     src={post.image}
                     alt={post.title}
                     loading="lazy"
-                    className="w-full h-full object-cover rounded-t-lg"
+                    className="w-full h-full object-contain"
                     data-testid={`img-blog-${post.slug}`}
                   />
                 </AspectRatio>

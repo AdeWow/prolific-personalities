@@ -189,14 +189,14 @@ export default function BlogPostPage() {
         {/* Featured Image */}
         {post.image && (
           <div className="mb-12 -mx-4 sm:mx-0">
-            <AspectRatio ratio={16 / 9} className="bg-gray-100 dark:bg-gray-800">
+            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
               <img
                 src={post.image}
                 alt={post.title}
-                className="w-full h-full object-cover rounded-lg"
+                className="w-full h-auto rounded-lg"
                 data-testid="img-featured"
               />
-            </AspectRatio>
+            </div>
           </div>
         )}
 
