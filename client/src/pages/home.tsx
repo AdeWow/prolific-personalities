@@ -92,26 +92,15 @@ export default function Home() {
                 </p>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/quiz">
-                  <Button 
-                    className="gradient-primary text-white px-8 py-6 rounded-xl font-semibold text-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
-                    data-testid="button-start-quiz"
-                    onClick={() => trackEvent('hero_cta_click', 'Conversion', 'Take the Quiz')}
-                  >
-                    Take the Quiz
-                  </Button>
-                </Link>
-                <Link href="/archetypes">
-                  <Button 
-                    variant="outline" 
-                    className="border-2 border-muted-foreground/80 text-muted-foreground px-8 py-6 rounded-xl font-semibold text-xl hover:border-primary hover:text-primary transition-colors"
-                    data-testid="button-learn-more"
-                  >
-                    Learn More
-                  </Button>
-                </Link>
-              </div>
+              <Link href="/quiz">
+                <Button 
+                  className="gradient-primary text-white px-8 py-6 rounded-xl font-semibold text-lg shadow-lg"
+                  data-testid="button-start-quiz"
+                  onClick={() => trackEvent('hero_cta_click', 'Conversion', 'Take the Quiz')}
+                >
+                  Take the Free Quiz
+                </Button>
+              </Link>
             </div>
 
             {/* Hero Image */}
@@ -119,9 +108,8 @@ export default function Home() {
               <img 
                 src={quizHeroImage} 
                 alt="Person taking the productivity archetype quiz on laptop"
-                className="w-full h-auto rounded-2xl shadow-2xl"
+                className="w-full h-auto rounded-xl shadow-lg"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent rounded-2xl"></div>
             </div>
           </div>
         </div>
@@ -152,40 +140,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust Badges */}
-      <section className="py-8 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-8 items-center text-muted-foreground text-sm">
-            <div className="flex items-center gap-2">
-              <span>🔬</span>
-              <span>Research-Backed</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>🔒</span>
-              <span>Private & Secure</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>🎯</span>
-              <span>Actionable Results</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Interactive Quiz Preview */}
-      <section className="py-20 bg-gradient-to-br from-primary/5 to-accent/5">
+      <section className="py-16 bg-muted/50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Ready to discover your archetype?
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Try the first question
             </h2>
-            <p className="text-xl text-muted-foreground">
-              Try the first question now
+            <p className="text-muted-foreground">
+              5 minutes to discover your archetype
             </p>
           </div>
           
           {/* Interactive First Question */}
-          <Card className="bg-white shadow-xl border-0 overflow-hidden mb-8">
+          <Card className="bg-white shadow-lg border-0 overflow-hidden mb-8">
             <CardContent className="p-6 sm:p-8">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-medium text-primary">Question 1 of 28</span>
@@ -263,18 +231,15 @@ export default function Home() {
       </section>
 
       {/* Intro Video */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <p className="text-lg text-primary font-medium mb-4">
-              If you've tried every system and still feel stuck, this will explain why.
-            </p>
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Watch: Why This Works
+      <section className="py-16 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-foreground">
+              Why This Works (2 min)
             </h2>
           </div>
           <div 
-            className="aspect-video rounded-2xl shadow-2xl overflow-hidden"
+            className="aspect-video rounded-xl shadow-lg overflow-hidden"
             onClick={() => trackEvent('video_play', 'Engagement', 'Intro Video')}
           >
             <iframe
@@ -285,12 +250,6 @@ export default function Home() {
               className="w-full h-full"
               data-testid="video-intro"
             />
-          </div>
-          <div className="text-center mt-6 space-y-2">
-            <p className="text-muted-foreground text-sm">2:14 — Watch the explanation</p>
-            <Link href="/quiz" className="text-primary hover:text-primary/80 font-medium text-sm" data-testid="link-skip-video">
-              Or skip the video and take the quiz →
-            </Link>
           </div>
         </div>
       </section>
@@ -340,74 +299,44 @@ export default function Home() {
 
       {/* What You'll Get - Concrete Deliverables */}
       <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              What You'll Get (Free)
-            </h2>
-            <p className="text-muted-foreground">
-              Your personalized results include:
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="flex items-start gap-4 p-4 bg-background rounded-xl">
-              <div className="text-2xl">🎯</div>
-              <div>
-                <h4 className="font-semibold text-foreground">Your Archetype Name</h4>
-                <p className="text-muted-foreground text-sm">One of 6 distinct productivity personalities that explains your natural working style</p>
-              </div>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-foreground text-center mb-8">
+            Your Free Results Include
+          </h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="flex items-start gap-3 p-4">
+              <span className="text-primary">✓</span>
+              <p className="text-muted-foreground">Your productivity archetype with personalized strategies</p>
             </div>
-            <div className="flex items-start gap-4 p-4 bg-background rounded-xl">
-              <div className="text-2xl">🚧</div>
-              <div>
-                <h4 className="font-semibold text-foreground">Top 3 Blockers</h4>
-                <p className="text-muted-foreground text-sm">The specific obstacles that hold your archetype back most often</p>
-              </div>
+            <div className="flex items-start gap-3 p-4">
+              <span className="text-primary">✓</span>
+              <p className="text-muted-foreground">Your top 3 productivity blockers and how to overcome them</p>
             </div>
-            <div className="flex items-start gap-4 p-4 bg-background rounded-xl">
-              <div className="text-2xl">💡</div>
-              <div>
-                <h4 className="font-semibold text-foreground">3 Starter Strategies</h4>
-                <p className="text-muted-foreground text-sm">Actionable techniques you can implement today</p>
-              </div>
+            <div className="flex items-start gap-3 p-4">
+              <span className="text-primary">✓</span>
+              <p className="text-muted-foreground">Starter strategies you can implement today</p>
             </div>
-            <div className="flex items-start gap-4 p-4 bg-background rounded-xl">
-              <div className="text-2xl">🛠️</div>
-              <div>
-                <h4 className="font-semibold text-foreground">Tool Recommendations</h4>
-                <p className="text-muted-foreground text-sm">Productivity apps and tools matched to your archetype</p>
-              </div>
+            <div className="flex items-start gap-3 p-4">
+              <span className="text-primary">✓</span>
+              <p className="text-muted-foreground">Tool recommendations matched to your working style</p>
             </div>
-          </div>
-          <div className="text-center mt-10">
-            <Link href="/quiz">
-              <Button 
-                className="gradient-primary text-white px-8 py-6 rounded-xl font-semibold text-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
-                data-testid="button-get-results"
-              >
-                Take the Quiz
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
 
       {/* Archetype Preview */}
-      <section className="py-20 bg-muted">
+      <section className="py-16 bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <p className="text-lg text-primary font-medium">
-              Most people are a blend—but one archetype leads.
-            </p>
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
-              Six Productivity Archetypes
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              The Six Archetypes
             </h2>
-            <p className="text-xl text-muted-foreground">
-              Which one are you?
+            <p className="text-muted-foreground">
+              Which one describes how you work?
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {archetypes
               .filter((archetype) => archetype.id !== 'adaptive-generalist')
               .map((archetype) => (
