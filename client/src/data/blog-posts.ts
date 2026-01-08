@@ -4,7 +4,7 @@ import digitalMinimalismImage from "@assets/generated_images/Digital_minimalism_
 import productivityGuiltImage from "@assets/generated_images/Productivity_guilt_and_self-compassion_d607f244.png";
 import archetypesExplainedImage from "@assets/generated_images/Six_productivity_archetypes_illustration_4184a68e.png";
 import disciplineMythImage from "@assets/2bb97c3f-43a9-4163-aa48-fe6058b63331_1767841288138.png";
-import toolSelectionImage from "@assets/generated_images/choosing_productivity_tool_quickly.png";
+import toolSelectionImage from "@assets/ProductivityToolin5mins_1767841874561.png";
 
 export interface BlogPost {
   id: string;
