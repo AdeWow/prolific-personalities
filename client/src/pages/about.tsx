@@ -1,7 +1,5 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormDescription, FormErrorSummary, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -15,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertWaitlistSchema, insertFeedbackSchema } from "@shared/schema";
 import { z } from "zod";
-import { Gift, Sparkles, Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2 } from "lucide-react";
 
 // Validation schemas
 const waitlistFormSchema = insertWaitlistSchema.omit({ sessionId: true }).extend({
@@ -118,270 +116,176 @@ export default function About() {
       />
       <Header />
       <main id="main-content" role="main">
-        <section className="py-20" aria-labelledby="about-title">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <Badge className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary/10 to-secondary/10 border-0 text-primary font-semibold">
-              <i className="fas fa-info-circle mr-2"></i>
-              About Us
-            </Badge>
-            <h2 id="about-title" className="text-4xl lg:text-5xl font-bold text-foreground dark:text-white">
-              About <span className="text-gradient">Prolific Personalities</span>
-            </h2>
+        <section className="py-16" aria-labelledby="about-title">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 id="about-title" className="text-3xl font-bold text-foreground text-center mb-12">
+            About Prolific Personalities
+          </h1>
+          
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-xl font-bold text-foreground mb-4">Why We Exist</h2>
+              <p className="text-muted-foreground leading-relaxed mb-3">
+                Most productivity advice fails because it's generic. It assumes everyone is wired the same way—when in reality, people vary widely in how they think, focus, and stay motivated.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Productivity becomes sustainable only when it's personalized. By understanding your patterns and tendencies, we help you identify what actually works for you.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-bold text-foreground mb-4">Our Mission</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                To help people overcome procrastination, distraction, and overwhelm through personalized, research-backed productivity strategies designed for how your brain works.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="pb-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          <Card className="bg-white dark:bg-gray-800 shadow-lg">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-6">Why We Exist</h3>
-              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed mb-4">
-                Prolific Personalities was created to solve a common but frustrating problem: most productivity advice fails because it's generic. It assumes everyone is wired the same way—when in reality, people vary widely in how they think, focus, and stay motivated.
-              </p>
-              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed">
-                This platform is built on the belief that productivity becomes sustainable only when it's personalized. By understanding your personality, cognitive patterns, and behavioral tendencies, we help you identify what actually works for you.
-              </p>
-            </CardContent>
-          </Card>
+      <section className="pb-16 bg-muted/50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
 
-          <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 border-primary/20 shadow-lg">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-6">Our Mission</h3>
-              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed mb-4">
-                To help people overcome procrastination, distraction, and overwhelm through personalized, research-backed productivity strategies.
-              </p>
-              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed">
-                We don't just give you tips. We give you a framework that's designed for how your brain works—then connect you to tools and tactics that align with your unique style.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white dark:bg-gray-800 shadow-lg">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-8">What Makes Us Different</h3>
-              
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <i className="fas fa-user text-primary"></i>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-foreground dark:text-white mb-2">Personality-first approach</h4>
-                      <p className="text-muted-foreground dark:text-gray-300">We assess your patterns through a short but insightful quiz, then map you to one of six productivity archetypes with tailored insights.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-4">
-                    <div className="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <i className="fas fa-flask text-primary"></i>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-foreground dark:text-white mb-2">Backed by behavioral science</h4>
-                      <p className="text-muted-foreground dark:text-gray-300">We draw from executive function theory, cognitive load theory, and motivation science to build recommendations that reflect how people actually work.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <i className="fas fa-rocket text-primary"></i>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-foreground dark:text-white mb-2">Actionable over aspirational</h4>
-                      <p className="text-muted-foreground dark:text-gray-300">Instead of vague advice or unrealistic habits, we provide clear next steps, customized tools, and systems you can actually follow through on.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-4">
-                    <div className="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <i className="fas fa-heart text-primary"></i>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-foreground dark:text-white mb-2">Designed for real humans</h4>
-                      <p className="text-muted-foreground dark:text-gray-300">This platform is especially valuable for people who are neurodivergent, multi-passionate, or simply tired of trying productivity systems that don't stick.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white dark:bg-gray-800 shadow-lg">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-6">Who It's For</h3>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  "Creatives who struggle to stay focused and organized",
-                  "Professionals who are highly driven but easily overwhelmed", 
-                  "People with ADHD or executive dysfunction",
-                  "High-achievers battling burnout",
-                  "Anyone who wants to get more done in a way that feels natural and sustainable"
-                ].map((item, index) => (
-                  <div key={index} className="flex items-start space-x-3 p-4 bg-background dark:bg-gray-900 rounded-xl">
-                    <i className="fas fa-check-circle text-green-500 mt-1"></i>
-                    <span className="text-muted-foreground dark:text-gray-300">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white dark:bg-gray-800 shadow-lg border-l-4 border-l-primary">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-6">The Research Behind It</h3>
-              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed mb-6">
-                Prolific Personalities is grounded in behavioral psychology and cognitive science. Our models and quiz system reference:
-              </p>
-              <div className="space-y-3 mb-6">
-                {[
-                  "Executive Function theory (e.g., Barkley, Dawson & Guare)",
-                  "Cognitive Load Theory",
-                  "Self-Determination Theory (Deci & Ryan)",
-                  "Productivity research by authors like Cal Newport, Nir Eyal, and James Clear"
-                ].map((item, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <i className="fas fa-book text-primary"></i>
-                    <span className="text-muted-foreground dark:text-gray-300">{item}</span>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                <Link href="/science">
-                  <Button className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg font-semibold" data-testid="button-view-research">
-                    <i className="fas fa-microscope mr-2"></i>
-                    View Full Research & Evidence
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 border-primary/20 shadow-lg">
-            <CardContent className="p-8">
-              <div className="flex items-start gap-4 mb-6">
-                <div className="p-3 bg-primary/10 dark:bg-primary/20 rounded-xl">
-                  <Sparkles className="h-6 w-6 text-primary" />
-                </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground mb-6">What Makes Us Different</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="flex items-start gap-3">
+                <span className="text-primary">✓</span>
                 <div>
-                  <h3 className="text-2xl font-bold text-foreground dark:text-white mb-2">What's Next</h3>
-                  <p className="text-lg text-muted-foreground dark:text-gray-300">We're actively building exciting new features:</p>
+                  <h3 className="font-semibold text-foreground mb-1">Personality-first approach</h3>
+                  <p className="text-muted-foreground text-sm">Map to one of six productivity archetypes with tailored insights.</p>
                 </div>
               </div>
-              
-              <div className="space-y-3 mb-8">
-                {[
-                  "A personalization engine that adapts to your usage and behavior over time",
-                  "A tool recommendation system that evolves with your needs",
-                  "AI-powered focus assistants and thought organization tools",
-                  "More resources and frameworks to help you follow through on your goals"
-                ].map((item, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <i className="fas fa-arrow-right text-primary mt-1"></i>
-                    <span className="text-muted-foreground dark:text-gray-300">{item}</span>
+              <div className="flex items-start gap-3">
+                <span className="text-primary">✓</span>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">Backed by behavioral science</h3>
+                  <p className="text-muted-foreground text-sm">Built on executive function theory, cognitive load theory, and motivation science.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-primary">✓</span>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">Actionable over aspirational</h3>
+                  <p className="text-muted-foreground text-sm">Clear next steps and systems you can actually follow through on.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-primary">✓</span>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">Designed for real humans</h3>
+                  <p className="text-muted-foreground text-sm">Especially valuable for neurodivergent, multi-passionate people.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-bold text-foreground mb-4">Who It's For</h2>
+            <ul className="space-y-2">
+              {[
+                "Creatives who struggle to stay focused and organized",
+                "Professionals who are highly driven but easily overwhelmed", 
+                "People with ADHD or executive dysfunction",
+                "High-achievers battling burnout",
+                "Anyone who wants sustainable productivity"
+              ].map((item, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <span className="text-primary">✓</span>
+                  <span className="text-muted-foreground">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-bold text-foreground mb-4">The Research Behind It</h2>
+            <p className="text-muted-foreground mb-4">
+              Grounded in behavioral psychology and cognitive science:
+            </p>
+            <ul className="space-y-2 mb-6">
+              {[
+                "Executive Function theory (Barkley, Dawson & Guare)",
+                "Cognitive Load Theory",
+                "Self-Determination Theory (Deci & Ryan)",
+                "Productivity research (Newport, Eyal, Clear)"
+              ].map((item, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <span className="text-primary">•</span>
+                  <span className="text-muted-foreground">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <Link href="/science">
+              <Button variant="outline" className="text-primary border-primary" data-testid="button-view-research">
+                View Research Details
+              </Button>
+            </Link>
+          </div>
+
+          <div className="border-t pt-8">
+            <h2 className="text-xl font-bold text-foreground mb-4">Get Early Access</h2>
+            <p className="text-muted-foreground mb-6">
+              Join the waitlist for new features, beta access, and special discounts.
+            </p>
+            
+            <Form {...waitlistForm}>
+              <form 
+                onSubmit={waitlistForm.handleSubmit(handleWaitlistSubmit)} 
+                className="space-y-4"
+                noValidate
+              >
+                {waitlistMutation.isSuccess ? (
+                  <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
+                    <CheckCircle2 className="h-5 w-5" />
+                    <p className="font-medium">You've been added to the waitlist!</p>
                   </div>
-                ))}
-              </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <FormField
+                      control={waitlistForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="flex-1 w-full">
+                          <FormLabel className="sr-only">Email address</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="your@email.com"
+                              {...field}
+                              data-testid="input-waitlist-email"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button 
+                      type="submit" 
+                      className="gradient-primary text-white w-full sm:w-auto"
+                      disabled={waitlistMutation.isPending}
+                      data-testid="button-join-waitlist"
+                    >
+                      {waitlistMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Joining...
+                        </>
+                      ) : (
+                        "Join Waitlist"
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </form>
+            </Form>
+          </div>
 
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border-2 border-primary/30 dark:border-primary/50">
-                <div className="flex items-center gap-2 mb-4">
-                  <Gift className="h-5 w-5 text-primary" />
-                  <h4 className="text-lg font-bold text-foreground dark:text-white">Join the Waitlist - Get Early Access!</h4>
-                </div>
-                <p className="text-muted-foreground dark:text-gray-300 mb-4">
-                  Be the first to try new features before anyone else. Waitlist members get:
-                </p>
-                <ul className="space-y-2 mb-6 text-muted-foreground dark:text-gray-300">
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span>Early access to all new productivity tools</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span>Exclusive beta features before public launch</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span>Special discounts on premium features</span>
-                  </li>
-                </ul>
-                
-                <Form {...waitlistForm}>
-                  <form 
-                    onSubmit={waitlistForm.handleSubmit(handleWaitlistSubmit)} 
-                    className="space-y-4"
-                    noValidate
-                  >
-                    {waitlistMutation.isSuccess ? (
-                      <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-700 dark:text-green-300 animate-in fade-in slide-in-from-bottom-2">
-                        <CheckCircle2 className="h-5 w-5" />
-                        <p className="font-medium">You've been added to the waitlist!</p>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col sm:flex-row gap-3 items-end">
-                        <FormField
-                          control={waitlistForm.control}
-                          name="email"
-                          render={({ field }) => (
-                            <FormItem className="flex-1 w-full">
-                              <FormLabel className="sr-only">Email address</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="email"
-                                  placeholder="Enter your email"
-                                  {...field}
-                                  data-testid="input-waitlist-email"
-                                  className="h-11"
-                                />
-                              </FormControl>
-                              <FormDescription>
-                                Join our waitlist for early access to new features
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button 
-                          type="submit" 
-                          className="bg-primary hover:bg-primary/90 text-white px-6 h-11 rounded-lg font-semibold whitespace-nowrap w-full sm:w-auto"
-                          disabled={waitlistMutation.isPending}
-                          data-testid="button-join-waitlist"
-                        >
-                          {waitlistMutation.isPending ? (
-                            <>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Joining...
-                            </>
-                          ) : (
-                            "Join Waitlist"
-                          )}
-                        </Button>
-                      </div>
-                    )}
-                  </form>
-                </Form>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white dark:bg-gray-800 shadow-lg">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground dark:text-white mb-4">Stay Connected & Help Us Improve</h3>
-              <p className="text-lg text-muted-foreground dark:text-gray-300 leading-relaxed mb-6">
-                Prolific Personalities is actively being developed and improved based on real user feedback. We'd love to hear your thoughts, recommendations, and ideas for new features!
-              </p>
-              
-              <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-6 mb-6 border border-primary/20 dark:border-primary/30">
-                <p className="text-foreground dark:text-white font-semibold mb-2">Your input directly shapes our roadmap!</p>
-                <p className="text-muted-foreground dark:text-gray-300 text-sm">
-                  Every piece of feedback helps us build a better productivity platform. Whether it's a bug report, feature suggestion, or just thoughts on what's working, we read and consider everything.
-                </p>
-              </div>
+          <div className="border-t pt-8">
+            <h2 className="text-xl font-bold text-foreground mb-4">Send Feedback</h2>
+            <p className="text-muted-foreground mb-6">
+              Share your thoughts, suggestions, or feature requests. We read everything.
+            </p>
 
               <Form {...feedbackForm}>
                 <form 
@@ -497,35 +401,26 @@ export default function About() {
                         )}
                       />
 
-                      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4">
-                        <Link href="/quiz">
-                          <Button variant="outline" className="border-2 border-muted dark:border-gray-600 text-muted-foreground dark:text-gray-300 px-8 py-3 rounded-xl font-semibold hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors w-full sm:w-auto" data-testid="button-take-assessment">
-                            <i className="fas fa-play mr-2"></i>
-                            Take the Assessment
-                          </Button>
-                        </Link>
-                        <Button 
-                          type="submit"
-                          className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-auto"
-                          disabled={feedbackMutation.isPending}
-                          data-testid="button-submit-feedback"
-                        >
-                          {feedbackMutation.isPending ? (
-                            <>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Sending...
-                            </>
-                          ) : (
-                            "Submit Feedback"
-                          )}
-                        </Button>
-                      </div>
+                      <Button 
+                        type="submit"
+                        className="gradient-primary text-white w-full sm:w-auto"
+                        disabled={feedbackMutation.isPending}
+                        data-testid="button-submit-feedback"
+                      >
+                        {feedbackMutation.isPending ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          "Send Feedback"
+                        )}
+                      </Button>
                     </>
                   )}
                 </form>
               </Form>
-            </CardContent>
-          </Card>
+          </div>
         </div>
         </section>
       </main>
