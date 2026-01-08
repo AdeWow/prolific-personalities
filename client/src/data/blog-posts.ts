@@ -122,7 +122,7 @@ Each archetype needs specific tool characteristics:
 
 Based on your archetype, here are your shortlist options:
 
-## 🌪️ Chaotic Creative: Your Top 3
+## Chaotic Creative: Your Top 3
 
 **#1 - Sunsama ($20/month)**
 - Why: Gentle daily planning ritual, minimal friction, visual drag-and-drop
@@ -141,7 +141,7 @@ Based on your archetype, here are your shortlist options:
 
 *Just pick one and start today. Perfectionism about tool choice is procrastination.*
 
-## 🎯 Anxious Perfectionist: Your Top 3
+## Anxious Perfectionist: Your Top 3
 
 **#1 - Things 3 (iOS/Mac: $50 one-time)**
 - Why: Beautiful, limited customization (prevents tinkering), clear project structure
@@ -160,7 +160,7 @@ Based on your archetype, here are your shortlist options:
 
 *Pick #1 or #2, download in the next 2 minutes, add three tasks, and ship something today at 80%.*
 
-## ✓ Structured Achiever: Your Top 3
+## Structured Achiever: Your Top 3
 
 **#1 - Akiflow ($34/month)**
 - Why: Time-blocking + task management integrated, connects to everything
@@ -180,7 +180,7 @@ Based on your archetype, here are your shortlist options:
 
 *Set a 30-minute timer. Pick one tool, do basic setup, and STOP. Use it for one week before any tweaking.*
 
-## 🎨 Novelty Seeker: Your Top 3
+## Novelty Seeker: Your Top 3
 
 **#1 - Habitica (Free/$5/month)**
 - Why: Gamifies tasks with RPG mechanics, makes routine interesting, visual progress
@@ -200,7 +200,7 @@ Based on your archetype, here are your shortlist options:
 
 *Choose one, set up only TWO project boards (not ten), and commit to one week of rotation.*
 
-## 🗺️ Strategic Planner: Your Top 3
+## Strategic Planner: Your Top 3
 
 **#1 - Notion (Free/$8/month)**
 - Why: Excellent for strategic planning, roadmaps, big-picture documentation
@@ -219,7 +219,7 @@ Based on your archetype, here are your shortlist options:
 
 *Pick one. Set a 1-hour planning limit. When timer ends, you MUST start executing something, anything.*
 
-## 🌊 Flexible Improviser: Your Top 3
+## Flexible Improviser: Your Top 3
 
 **#1 - Google Calendar with color-coded energy blocks (Free)**
 - Why: Visual energy mapping, flexible rescheduling, accessible everywhere

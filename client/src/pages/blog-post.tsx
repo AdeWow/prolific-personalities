@@ -9,6 +9,68 @@ import { Card } from '@/components/ui/card';
 import { trackEvent } from '@/lib/analytics';
 import { SEOHead } from '@/components/seo-head';
 
+function renderInlineFormatting(text: string): (string | JSX.Element)[] {
+  const elements: (string | JSX.Element)[] = [];
+  let remaining = text;
+  let keyIndex = 0;
+  
+  while (remaining.length > 0) {
+    // Check for links [text](url)
+    const linkMatch = remaining.match(/\[([^\]]+)\]\(([^)]+)\)/);
+    // Check for bold **text**
+    const boldMatch = remaining.match(/\*\*([^*]+)\*\*/);
+    // Check for italic *text* (but not bold)
+    const italicMatch = remaining.match(/(?<!\*)\*([^*]+)\*(?!\*)/);
+    
+    // Find the earliest match
+    const matches = [
+      { type: 'link', match: linkMatch, index: linkMatch?.index ?? Infinity },
+      { type: 'bold', match: boldMatch, index: boldMatch?.index ?? Infinity },
+      { type: 'italic', match: italicMatch, index: italicMatch?.index ?? Infinity },
+    ].filter(m => m.match).sort((a, b) => a.index - b.index);
+    
+    if (matches.length === 0) {
+      elements.push(remaining);
+      break;
+    }
+    
+    const first = matches[0];
+    
+    // Add text before the match
+    if (first.index > 0) {
+      elements.push(remaining.slice(0, first.index));
+    }
+    
+    if (first.type === 'link' && first.match) {
+      const [fullMatch, linkText, url] = first.match;
+      elements.push(
+        <a key={keyIndex++} href={url} className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+          {linkText}
+        </a>
+      );
+      remaining = remaining.slice(first.index + fullMatch.length);
+    } else if (first.type === 'bold' && first.match) {
+      const [fullMatch, boldText] = first.match;
+      elements.push(
+        <strong key={keyIndex++} className="font-semibold text-gray-900 dark:text-white">
+          {boldText}
+        </strong>
+      );
+      remaining = remaining.slice(first.index + fullMatch.length);
+    } else if (first.type === 'italic' && first.match) {
+      const [fullMatch, italicText] = first.match;
+      elements.push(
+        <em key={keyIndex++} className="italic">
+          {italicText}
+        </em>
+      );
+      remaining = remaining.slice(first.index + fullMatch.length);
+    }
+  }
+  
+  return elements;
+}
+
 export default function BlogPostPage() {
   const [, params] = useRoute('/blog/:slug');
   const post = blogPosts.find(p => p.slug === params?.slug);
@@ -141,7 +203,7 @@ export default function BlogPostPage() {
         {/* Article Content */}
         <div className="prose prose-lg dark:prose-invert max-w-none mb-16">
           {post.content.split('\n\n').map((paragraph, index) => {
-            // Handle headings
+            // Handle H2 headings
             if (paragraph.startsWith('## ')) {
               const heading = paragraph.replace('## ', '');
               return (
@@ -151,22 +213,59 @@ export default function BlogPostPage() {
               );
             }
             
-            // Handle bold text patterns
-            if (paragraph.includes('**')) {
-              const parts = paragraph.split(/\*\*(.*?)\*\*/g);
+            // Handle H3 headings
+            if (paragraph.startsWith('### ')) {
+              const heading = paragraph.replace('### ', '');
               return (
-                <p key={index} className="mb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-                  {parts.map((part, i) => 
-                    i % 2 === 1 ? <strong key={i} className="font-semibold text-gray-900 dark:text-white">{part}</strong> : part
-                  )}
-                </p>
+                <h3 key={index} className="text-2xl font-bold mt-10 mb-4 text-gray-900 dark:text-white">
+                  {heading}
+                </h3>
               );
             }
             
-            // Regular paragraphs
+            // Handle horizontal rules
+            if (paragraph.trim() === '---') {
+              return <hr key={index} className="my-8 border-gray-200 dark:border-gray-700" />;
+            }
+            
+            // Handle bullet lists (lines starting with -)
+            if (paragraph.includes('\n-') || paragraph.startsWith('-')) {
+              const lines = paragraph.split('\n').filter(line => line.trim());
+              return (
+                <ul key={index} className="mb-6 space-y-2 ml-4">
+                  {lines.map((line, i) => {
+                    const content = line.replace(/^-\s*/, '');
+                    return (
+                      <li key={i} className="text-gray-700 dark:text-gray-300 leading-relaxed list-disc ml-4">
+                        {renderInlineFormatting(content)}
+                      </li>
+                    );
+                  })}
+                </ul>
+              );
+            }
+            
+            // Handle numbered lists
+            if (/^\d+\.\s/.test(paragraph)) {
+              const lines = paragraph.split('\n').filter(line => line.trim());
+              return (
+                <ol key={index} className="mb-6 space-y-2 ml-4">
+                  {lines.map((line, i) => {
+                    const content = line.replace(/^\d+\.\s*/, '');
+                    return (
+                      <li key={i} className="text-gray-700 dark:text-gray-300 leading-relaxed list-decimal ml-4">
+                        {renderInlineFormatting(content)}
+                      </li>
+                    );
+                  })}
+                </ol>
+              );
+            }
+            
+            // Regular paragraphs with inline formatting
             return (
               <p key={index} className="mb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-                {paragraph}
+                {renderInlineFormatting(paragraph)}
               </p>
             );
           })}
