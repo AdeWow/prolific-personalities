@@ -221,48 +221,38 @@ export default function Unsubscribe() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-                {!email && (
-                  <div className="space-y-2">
-                    <Label htmlFor="unsubscribe-email" className="text-foreground font-medium">
-                      Email Address <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      type="email"
-                      id="unsubscribe-email"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        if (touched.email) {
-                          const error = validateEmail(e.target.value);
-                          setErrors(prev => error ? { ...prev, email: error } : { ...prev, email: "" });
-                        }
-                      }}
-                      onBlur={() => handleBlur("email")}
-                      aria-invalid={touched.email && errors.email ? "true" : "false"}
-                      aria-describedby={touched.email && errors.email ? "email-error" : "email-hint"}
-                      className={touched.email && errors.email ? "border-destructive focus-visible:ring-destructive" : ""}
-                      placeholder="your@email.com"
-                      data-testid="input-email"
-                    />
-                    {touched.email && errors.email ? (
-                      <p id="email-error" className="text-sm text-destructive" role="alert" aria-live="polite">
-                        {errors.email}
-                      </p>
-                    ) : (
-                      <p id="email-hint" className="text-xs text-muted-foreground">
-                        Enter the email address you want to unsubscribe
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {email && (
-                  <div className="bg-muted rounded-lg p-4">
-                    <p className="text-sm text-muted-foreground">
-                      Unsubscribing: <strong className="text-foreground">{email}</strong>
+                <div className="space-y-2">
+                  <Label htmlFor="unsubscribe-email" className="text-foreground font-medium">
+                    Email Address <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    type="email"
+                    id="unsubscribe-email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (touched.email) {
+                        const error = validateEmail(e.target.value);
+                        setErrors(prev => error ? { ...prev, email: error } : { ...prev, email: "" });
+                      }
+                    }}
+                    onBlur={() => handleBlur("email")}
+                    aria-invalid={touched.email && errors.email ? "true" : "false"}
+                    aria-describedby={touched.email && errors.email ? "email-error" : "email-hint"}
+                    className={touched.email && errors.email ? "border-destructive focus-visible:ring-destructive" : ""}
+                    placeholder="your@email.com"
+                    data-testid="input-email"
+                  />
+                  {touched.email && errors.email ? (
+                    <p id="email-error" className="text-sm text-destructive" role="alert" aria-live="polite">
+                      {errors.email}
                     </p>
-                  </div>
-                )}
+                  ) : (
+                    <p id="email-hint" className="text-xs text-muted-foreground">
+                      Enter the email address you want to unsubscribe
+                    </p>
+                  )}
+                </div>
 
                 <fieldset className="space-y-3">
                   <legend className="text-foreground font-medium mb-3 block">
