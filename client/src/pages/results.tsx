@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dialog";
 import { apiRequest } from "@/lib/queryClient";
 import type { QuizResult, ToolWithFitScore, QuizScores } from "@shared/schema";
+import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
 export default function Results() {
   const params = useParams();
@@ -366,9 +367,7 @@ export default function Results() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
-                <span className="text-white text-xl">🧠</span>
-              </div>
+              <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
               <h1 className="text-xl font-bold text-foreground">Prolific Personalities</h1>
             </Link>
             <div className="flex gap-3 no-print">
