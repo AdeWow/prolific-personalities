@@ -7,7 +7,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Header } from '@/components/header';
 import { SEOHead } from '@/components/seo-head';
 import { EmailCaptureCard } from '@/components/email-capture-card';
-import { Calendar, Clock } from 'lucide-react';
+import { Calendar, Clock, Pin } from 'lucide-react';
 
 export default function BlogPage() {
   return (
@@ -30,9 +30,70 @@ export default function BlogPage() {
           </p>
         </div>
 
+        {/* Featured/Pinned Post */}
+        {blogPosts.filter(post => post.pinned).map((post) => (
+          <Card key={post.id} className="mb-12 overflow-hidden hover:shadow-lg transition-shadow border-2 border-primary/20" data-testid={`card-featured-${post.slug}`}>
+            <div className="grid md:grid-cols-2 gap-0">
+              {post.image && (
+                <div className="bg-muted dark:bg-card">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    loading="eager"
+                    className="w-full h-full object-cover min-h-[250px]"
+                    data-testid={`img-featured-${post.slug}`}
+                  />
+                </div>
+              )}
+              <div className="p-6 flex flex-col justify-center">
+                <div className="flex items-center gap-2 mb-3">
+                  <Badge variant="default" className="bg-primary text-primary-foreground">
+                    <Pin className="h-3 w-3 mr-1" />
+                    Featured
+                  </Badge>
+                  {post.tags.slice(0, 2).map((tag) => (
+                    <Badge key={tag} variant="secondary">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-3 text-foreground">
+                  <Link href={`/blog/${post.slug}`}>
+                    <a className="hover:text-primary transition-colors" data-testid={`link-featured-${post.slug}`}>
+                      {post.title}
+                    </a>
+                  </Link>
+                </h2>
+                <p className="text-muted-foreground mb-4 text-lg">
+                  {post.excerpt}
+                </p>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    {new Date(post.publishDate).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    {post.readTime}
+                  </div>
+                </div>
+                <Link href={`/blog/${post.slug}`}>
+                  <Button className="w-fit" data-testid={`button-read-featured-${post.slug}`}>
+                    Read the Full Story
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </Card>
+        ))}
+
         {/* Blog Posts Grid */}
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {blogPosts.map((post) => (
+          {blogPosts.filter(post => !post.pinned).map((post) => (
             <Card key={post.id} className="flex flex-col hover:shadow-lg transition-shadow" data-testid={`card-blog-${post.slug}`}>
               {post.image && (
                 <AspectRatio ratio={16 / 9} className="bg-muted dark:bg-card rounded-t-lg overflow-hidden">

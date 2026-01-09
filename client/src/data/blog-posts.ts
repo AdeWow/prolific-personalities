@@ -29,19 +29,29 @@ export interface BlogPost {
   readTime: string;
   tags: string[];
   image?: string;
+  pinned?: boolean;
 }
 
 export const blogPosts: BlogPost[] = [
   {
-    id: '19',
-    title: 'Confessions of an Imperfect Founder: I Procrastinated on My Anti-Procrastination Platform',
-    slug: 'confessions-imperfect-founder-procrastination',
-    excerpt: 'I launched Prolific Personalities three weeks late. The reason? I got distracted building a feature for people who get distracted. The irony wasn\'t lost on me.',
-    publishDate: '2025-01-09',
-    author: 'Prolific Personalities Team',
-    readTime: '8 min read',
-    tags: ['Founder Story', 'Procrastination', 'ADHD', 'Behind the Scenes', 'Authenticity'],
+    id: "19",
+    title:
+      "Confessions of an Imperfect Founder: I Procrastinated on My Anti-Procrastination Platform",
+    slug: "confessions-imperfect-founder-procrastination",
+    excerpt:
+      "I launched Prolific Personalities three weeks late. The reason? I got distracted building a feature for people who get distracted. The irony wasn't lost on me.",
+    publishDate: "2025-01-09",
+    author: "Prolific Personalities Team",
+    readTime: "8 min read",
+    tags: [
+      "Founder Story",
+      "Procrastination",
+      "ADHD",
+      "Behind the Scenes",
+      "Authenticity",
+    ],
     image: founderConfessionsImage,
+    pinned: true,
     content: `I launched Prolific Personalities three weeks late.
 
 The reason? I got distracted building a feature for people who get distracted.
@@ -78,7 +88,7 @@ I didn't wake up wanting to build a productivity platform. I built this because 
 
 **The result:** A growing pile of abandoned productivity apps and increasing certainty that something was fundamentally wrong with me.
 
-**Year 11:** I got diagnosed with ADHD at 32.
+**Year 11:** I got diagnosed with ADHD at 31.
 
 Suddenly things made sense. The task initiation problems. The hyperfocus on interesting things, inability to focus on boring things. The burst-crash energy patterns.
 
@@ -96,13 +106,13 @@ Every time I struggled building this platform, I learned something that made it 
 
 ### The Burst Protocol (Born from 11 PM Coding Sessions)
 
-I wrote my best code between 10 PM and 2 AM. Not by choice—that's when burst energy hit.
+I wrote my best code between 2 AM and 4 AM. Not by choice—that's when burst energy hit.
 
-I tried forcing morning work. Two hours of brain fog and nothing. Then 10 PM would arrive and I'd code brilliantly for four hours.
+I tried forcing "regular" hours work. Two hours of brain fog and nothing. Then 10 PM would arrive, I'd take a 4 hour "nap", wake up, and I'd code brilliantly for four hours.
 
 **The lesson:** My productivity doesn't follow a schedule. It follows bursts.
 
-**The product:** The Burst Protocol for [Chaotic Creatives](/archetypes#chaotic-creative)—4-hour maximum rule, momentum maps, permission to work at 11 PM. I didn't design this from theory. I designed it from living it.
+**The product:** The Burst Protocol for [Chaotic Creatives](/archetypes#chaotic-creative)—4-hour maximum rule, momentum maps, permission to work at 2 AM. I didn't design this from theory. I designed it from living it.
 
 ### The 70% Shipping Rule (Born from My Project Graveyard)
 
@@ -150,7 +160,7 @@ Every strategy in Prolific Personalities, I test on myself first.
 
 When I recommend body doubling, it's because I literally can't start tasks without it.
 
-When I say "honor your burst windows," it's because I'm typing this at 11:43 PM.
+When I say "honor your burst windows," it's because I'm typing this at 12:35 AM.
 
 I'm not teaching what I learned in business school. I'm teaching what I learned from desperately trying to function with a brain that doesn't follow conventional rules.
 
@@ -195,19 +205,26 @@ Ready to discover your productivity archetype? [Take the free 5-minute assessmen
 
 Built by a procrastinator, for procrastinators. And I mean that as the highest possible credibility.
 
-*P.S. I'm writing this at 12:14 AM. The burst is fading. I'm going to hit publish at 80% and go to sleep. Tomorrow I might not be able to write at all.*
+*P.S. Because I'm writing this at 12:35 AM, the burst is fading. I'm going to hit publish at 80% and go to sleep. Tomorrow I might not be able to write at all.*
 
-*And that's okay. That's the whole point.*`
+*And that's okay. That's the whole point.*`,
   },
   {
-    id: '18',
-    title: 'Why Time Blocking Makes You Less Productive (For Some Brains)',
-    slug: 'time-blocking-less-productive-some-brains',
-    excerpt: 'You\'ve tried time blocking. Cal Newport swears by it. Day 1: The schedule mocks you. Day 2: You feel like a failure. Day 3: You abandon it. Here\'s the truth: Time blocking is legitimately counterproductive for your brain type.',
-    publishDate: '2025-01-09',
-    author: 'Prolific Personalities Team',
-    readTime: '18 min read',
-    tags: ['Time Blocking', 'Chaotic Creative', 'Flexible Improviser', 'Productivity Methods', 'Scheduling'],
+    id: "18",
+    title: "Why Time Blocking Makes You Less Productive (For Some Brains)",
+    slug: "time-blocking-less-productive-some-brains",
+    excerpt:
+      "You've tried time blocking. Cal Newport swears by it. Day 1: The schedule mocks you. Day 2: You feel like a failure. Day 3: You abandon it. Here's the truth: Time blocking is legitimately counterproductive for your brain type.",
+    publishDate: "2025-01-09",
+    author: "Prolific Personalities Team",
+    readTime: "18 min read",
+    tags: [
+      "Time Blocking",
+      "Chaotic Creative",
+      "Flexible Improviser",
+      "Productivity Methods",
+      "Scheduling",
+    ],
     image: timeBlockingImage,
     content: `You've tried time blocking. Everyone says it's the productivity holy grail.
 
@@ -635,17 +652,25 @@ These aren't failures to time block. They're alternatives designed for how your 
 
 Ready to discover your productivity archetype and find scheduling methods that actually work for you? Take our free assessment and finally stop fighting your brain.
 
-Your failed time blocking attempts aren't the problem. The mismatch between your brain and one-size-fits-all productivity advice is the problem—and that's fixable.`
+Your failed time blocking attempts aren't the problem. The mismatch between your brain and one-size-fits-all productivity advice is the problem—and that's fixable.`,
   },
   {
-    id: '17',
-    title: 'I Need Constant Stimulation to Work: ADHD or Just My Productivity Style?',
-    slug: 'constant-stimulation-adhd-or-productivity-style',
-    excerpt: 'You can\'t work in silence. Your browser has 47 tabs open. You\'ve Googled "do I have ADHD" more times than you can count. Here\'s the truth: Both ADHD and novelty-seeking are real. This article helps you understand the difference.',
-    publishDate: '2025-01-09',
-    author: 'Prolific Personalities Team',
-    readTime: '20 min read',
-    tags: ['ADHD', 'Novelty Seeker', 'Chaotic Creative', 'Focus', 'Stimulation'],
+    id: "17",
+    title:
+      "I Need Constant Stimulation to Work: ADHD or Just My Productivity Style?",
+    slug: "constant-stimulation-adhd-or-productivity-style",
+    excerpt:
+      "You can't work in silence. Your browser has 47 tabs open. You've Googled \"do I have ADHD\" more times than you can count. Here's the truth: Both ADHD and novelty-seeking are real. This article helps you understand the difference.",
+    publishDate: "2025-01-09",
+    author: "Prolific Personalities Team",
+    readTime: "20 min read",
+    tags: [
+      "ADHD",
+      "Novelty Seeker",
+      "Chaotic Creative",
+      "Focus",
+      "Stimulation",
+    ],
     image: adhdStimulationImage,
     content: `You can't work in silence. You need music, or podcasts, or YouTube videos playing. Just you and a blank document? Impossible.
 
@@ -1122,17 +1147,25 @@ Answer that question honestly. Then build your work life around it.
 
 Ready to discover your productivity archetype and understand how your brain actually works? Take our free assessment and finally get strategies designed for YOUR cognitive style.
 
-Your need for stimulation isn't the problem. The mismatch between your needs and standard productivity advice is the problem—and that's fixable.`
+Your need for stimulation isn't the problem. The mismatch between your needs and standard productivity advice is the problem—and that's fixable.`,
   },
   {
-    id: '16',
-    title: 'The Real Reason You Can\'t Stick to a Routine (And What to Do Instead)',
-    slug: 'cant-stick-to-routine-what-to-do-instead',
-    excerpt: 'You\'ve tried morning routines. Evening routines. Productivity routines. Day 1 is perfect. Day 7, you sleep through your alarm. Here\'s what the productivity industry won\'t tell you: Routines aren\'t universal. Some brains genuinely can\'t operate on fixed schedules.',
-    publishDate: '2025-01-09',
-    author: 'Prolific Personalities Team',
-    readTime: '18 min read',
-    tags: ['Routines', 'Flexible Improviser', 'Novelty Seeker', 'Chaotic Creative', 'Habits'],
+    id: "16",
+    title:
+      "The Real Reason You Can't Stick to a Routine (And What to Do Instead)",
+    slug: "cant-stick-to-routine-what-to-do-instead",
+    excerpt:
+      "You've tried morning routines. Evening routines. Productivity routines. Day 1 is perfect. Day 7, you sleep through your alarm. Here's what the productivity industry won't tell you: Routines aren't universal. Some brains genuinely can't operate on fixed schedules.",
+    publishDate: "2025-01-09",
+    author: "Prolific Personalities Team",
+    readTime: "18 min read",
+    tags: [
+      "Routines",
+      "Flexible Improviser",
+      "Novelty Seeker",
+      "Chaotic Creative",
+      "Habits",
+    ],
     image: cantStickRoutineImage,
     content: `You've tried morning routines. Evening routines. Productivity routines. Self-care routines.
 
@@ -1572,17 +1605,25 @@ Work with it, not against it.
 
 Ready to discover your productivity archetype and stop fighting your brain? Take our free assessment and finally understand why routines don't work for you—and what will.
 
-Your failed routines aren't the problem. The mismatch between your brain and one-size-fits-all productivity advice is the problem—and that's fixable.`
+Your failed routines aren't the problem. The mismatch between your brain and one-size-fits-all productivity advice is the problem—and that's fixable.`,
   },
   {
-    id: '15',
-    title: 'Why Do I Start Everything and Finish Nothing? The Psychology of Incomplete Projects',
-    slug: 'start-everything-finish-nothing-psychology',
-    excerpt: 'Your hard drive has a folder called "Projects." Inside: A half-finished novel. A business idea with 60% of the landing page built. Three different online courses you started. The problem isn\'t your commitment. It\'s that your brain has a specific completion pattern.',
-    publishDate: '2025-01-09',
-    author: 'Prolific Personalities Team',
-    readTime: '20 min read',
-    tags: ['Project Completion', 'Novelty Seeker', 'Chaotic Creative', 'Finishing', 'Productivity'],
+    id: "15",
+    title:
+      "Why Do I Start Everything and Finish Nothing? The Psychology of Incomplete Projects",
+    slug: "start-everything-finish-nothing-psychology",
+    excerpt:
+      "Your hard drive has a folder called \"Projects.\" Inside: A half-finished novel. A business idea with 60% of the landing page built. Three different online courses you started. The problem isn't your commitment. It's that your brain has a specific completion pattern.",
+    publishDate: "2025-01-09",
+    author: "Prolific Personalities Team",
+    readTime: "20 min read",
+    tags: [
+      "Project Completion",
+      "Novelty Seeker",
+      "Chaotic Creative",
+      "Finishing",
+      "Productivity",
+    ],
     image: startEverythingImage,
     content: `Your hard drive has a folder called "Projects." You know the one.
 
@@ -1991,17 +2032,25 @@ You can finish things. You just need strategies that work with your wiring, not 
 
 Ready to discover your productivity archetype and get strategies designed for how YOUR brain works? Take our free assessment and finally understand why your projects die—and what to do about it.
 
-Your project graveyard isn't the problem. The mismatch between your brain and generic completion advice is the problem—and that's fixable.`
+Your project graveyard isn't the problem. The mismatch between your brain and generic completion advice is the problem—and that's fixable.`,
   },
   {
-    id: '14',
-    title: 'I Can\'t Focus Anymore: Why Your Brain Won\'t Cooperate (And What to Do About It)',
-    slug: 'cant-focus-anymore-brain-wont-cooperate',
-    excerpt: 'You sit down to work. You have clear tasks. You want to focus. But your brain won\'t cooperate. Your inability to focus isn\'t a discipline problem. It\'s an executive function breakdown. And treating it like a character flaw makes it worse.',
-    publishDate: '2025-01-09',
-    author: 'Prolific Personalities Team',
-    readTime: '18 min read',
-    tags: ['Focus', 'Executive Function', 'All Archetypes', 'Concentration', 'Distraction'],
+    id: "14",
+    title:
+      "I Can't Focus Anymore: Why Your Brain Won't Cooperate (And What to Do About It)",
+    slug: "cant-focus-anymore-brain-wont-cooperate",
+    excerpt:
+      "You sit down to work. You have clear tasks. You want to focus. But your brain won't cooperate. Your inability to focus isn't a discipline problem. It's an executive function breakdown. And treating it like a character flaw makes it worse.",
+    publishDate: "2025-01-09",
+    author: "Prolific Personalities Team",
+    readTime: "18 min read",
+    tags: [
+      "Focus",
+      "Executive Function",
+      "All Archetypes",
+      "Concentration",
+      "Distraction",
+    ],
     image: cantFocusImage,
     content: `You sit down to work. You have clear tasks. You want to focus. You need to focus.
 
@@ -2393,17 +2442,24 @@ Your brain isn't broken. It's just wired differently. And once you understand yo
 
 Ready to discover your productivity archetype and get strategies designed for how YOUR brain works? Take our free assessment and stop forcing focus strategies that don't match your wiring.
 
-Your focus problems aren't the problem. The mismatch between your brain and generic productivity advice is the problem—and that's fixable.`
+Your focus problems aren't the problem. The mismatch between your brain and generic productivity advice is the problem—and that's fixable.`,
   },
   {
-    id: '13',
-    title: 'Flexible Improvisers: Why Your Energy Won\'t Follow a Schedule (And How to Work With It)',
-    slug: 'flexible-improvisers-energy-wont-follow-schedule',
-    excerpt: 'Monday at 10 AM: You\'re unstoppable. Wednesday at 10 AM: You can barely respond to emails. Everyone tells you to "just be consistent." But here\'s what they don\'t understand: Your energy doesn\'t run on a schedule. And forcing consistency creates burnout.',
-    publishDate: '2025-01-09',
-    author: 'Prolific Personalities Team',
-    readTime: '15 min read',
-    tags: ['Flexible Improviser', 'Energy Management', 'Ultradian Rhythms', 'Work-Life Balance'],
+    id: "13",
+    title:
+      "Flexible Improvisers: Why Your Energy Won't Follow a Schedule (And How to Work With It)",
+    slug: "flexible-improvisers-energy-wont-follow-schedule",
+    excerpt:
+      "Monday at 10 AM: You're unstoppable. Wednesday at 10 AM: You can barely respond to emails. Everyone tells you to \"just be consistent.\" But here's what they don't understand: Your energy doesn't run on a schedule. And forcing consistency creates burnout.",
+    publishDate: "2025-01-09",
+    author: "Prolific Personalities Team",
+    readTime: "15 min read",
+    tags: [
+      "Flexible Improviser",
+      "Energy Management",
+      "Ultradian Rhythms",
+      "Work-Life Balance",
+    ],
     image: flexibleImproviserImage,
     content: `Monday at 10 AM: You're unstoppable. Six hours of deep flow, crushing your to-do list, feeling like you could conquer the world.
 
@@ -2792,17 +2848,23 @@ That's how Flexible Improvisers thrive. Not through forced consistency, but thro
 
 Ready to discover your productivity archetype and get strategies designed for how YOUR brain works? Take our free assessment and stop fighting your natural rhythms.
 
-Your variable energy isn't the problem. The lack of energy-aligned strategy is the problem—and that's fixable.`
+Your variable energy isn't the problem. The lack of energy-aligned strategy is the problem—and that's fixable.`,
   },
   {
-    id: '12',
-    title: 'Strategic Planners: When Your Brilliant Plans Never Become Reality',
-    slug: 'strategic-planners-brilliant-plans-never-reality',
-    excerpt: 'Your roadmap is comprehensive. Your strategy document is 47 pages of brilliance. Your actual execution? Nonexistent. Here\'s the uncomfortable truth: You\'re not a strategic thinker who struggles with execution. You\'re using strategic thinking to avoid the vulnerable act of doing.',
-    publishDate: '2025-01-09',
-    author: 'Prolific Personalities Team',
-    readTime: '16 min read',
-    tags: ['Strategic Planner', 'Execution', 'Planning Addiction', 'Action-First'],
+    id: "12",
+    title: "Strategic Planners: When Your Brilliant Plans Never Become Reality",
+    slug: "strategic-planners-brilliant-plans-never-reality",
+    excerpt:
+      "Your roadmap is comprehensive. Your strategy document is 47 pages of brilliance. Your actual execution? Nonexistent. Here's the uncomfortable truth: You're not a strategic thinker who struggles with execution. You're using strategic thinking to avoid the vulnerable act of doing.",
+    publishDate: "2025-01-09",
+    author: "Prolific Personalities Team",
+    readTime: "16 min read",
+    tags: [
+      "Strategic Planner",
+      "Execution",
+      "Planning Addiction",
+      "Action-First",
+    ],
     image: strategicPlannerImage,
     content: `Your roadmap is comprehensive. Your strategy document is 47 pages of brilliance. Your quarterly plan has contingencies for every scenario. Stakeholders love your presentations.
 
@@ -3180,17 +3242,24 @@ Your brain isn't broken. Your strategic instincts aren't the problem. The inabil
 
 Ready to discover your productivity archetype and get strategies designed for how YOUR brain works? Take our free assessment and transform from a Strategic Planner who plans into an Execution-First Strategist who ships.
 
-Your strategic thinking isn't the problem. The lack of execution constraints is the problem—and that's fixable.`
+Your strategic thinking isn't the problem. The lack of execution constraints is the problem—and that's fixable.`,
   },
   {
-    id: '11',
-    title: 'Novelty Seekers: Why Boredom Kills Your Projects (And How to Finally Finish Things)',
-    slug: 'novelty-seekers-boredom-kills-projects',
-    excerpt: 'You have 10 side projects. Each one started with genuine excitement and big dreams. You made real progress—60%, maybe 70% done. Then... nothing. The problem isn\'t your commitment. It\'s that your brain is optimized for learning and exploration, not sustained execution.',
-    publishDate: '2025-01-09',
-    author: 'Prolific Personalities Team',
-    readTime: '15 min read',
-    tags: ['Novelty Seeker', 'Project Completion', 'Boredom', 'Strategic Finishing'],
+    id: "11",
+    title:
+      "Novelty Seekers: Why Boredom Kills Your Projects (And How to Finally Finish Things)",
+    slug: "novelty-seekers-boredom-kills-projects",
+    excerpt:
+      "You have 10 side projects. Each one started with genuine excitement and big dreams. You made real progress—60%, maybe 70% done. Then... nothing. The problem isn't your commitment. It's that your brain is optimized for learning and exploration, not sustained execution.",
+    publishDate: "2025-01-09",
+    author: "Prolific Personalities Team",
+    readTime: "15 min read",
+    tags: [
+      "Novelty Seeker",
+      "Project Completion",
+      "Boredom",
+      "Strategic Finishing",
+    ],
     image: noveltySeekerImage,
     content: `You have 10 side projects. Each one started with genuine excitement and big dreams. You spent weeks planning, researching, building. You made real progress—60%, maybe 70% done.
 
@@ -3534,17 +3603,24 @@ That's how Novelty Seekers finish things. Not through discipline that fights you
 
 Ready to discover your productivity archetype and get strategies designed for how YOUR brain works? Take our free assessment and stop fighting your wiring.
 
-Your variety-seeking isn't the problem. The lack of strategic constraints is the problem—and that's fixable.`
+Your variety-seeking isn't the problem. The lack of strategic constraints is the problem—and that's fixable.`,
   },
   {
-    id: '10',
-    title: 'The Structured Achiever\'s Hidden Trap: When Your System Becomes Your Work',
-    slug: 'structured-achiever-hidden-trap',
-    excerpt: 'Your Notion workspace is a work of art. Color-coded databases, linked properties, automated workflows. You\'ve spent 6 hours this week perfecting it. Your actual work? Untouched. Here\'s the paradox: Your greatest strength has become your greatest weakness.',
-    publishDate: '2025-01-09',
-    author: 'Prolific Personalities Team',
-    readTime: '16 min read',
-    tags: ['Structured Achiever', 'Productivity Systems', 'Over-Optimization', 'Implementation'],
+    id: "10",
+    title:
+      "The Structured Achiever's Hidden Trap: When Your System Becomes Your Work",
+    slug: "structured-achiever-hidden-trap",
+    excerpt:
+      "Your Notion workspace is a work of art. Color-coded databases, linked properties, automated workflows. You've spent 6 hours this week perfecting it. Your actual work? Untouched. Here's the paradox: Your greatest strength has become your greatest weakness.",
+    publishDate: "2025-01-09",
+    author: "Prolific Personalities Team",
+    readTime: "16 min read",
+    tags: [
+      "Structured Achiever",
+      "Productivity Systems",
+      "Over-Optimization",
+      "Implementation",
+    ],
     image: structuredAchieverImage,
     content: `Your Notion workspace is a work of art. Color-coded databases, linked properties, automated workflows, custom views for every context. You've spent 6 hours this week perfecting it.
 
@@ -3904,17 +3980,24 @@ No more system tweaking. Just strategic implementation.
 
 **References:**
 
-Cubel, M., et al. (2016). Do Personality Traits Affect Productivity? Evidence from the Laboratory. The Economic Journal, 126(592), 654-681.`
+Cubel, M., et al. (2016). Do Personality Traits Affect Productivity? Evidence from the Laboratory. The Economic Journal, 126(592), 654-681.`,
   },
   {
-    id: '9',
-    title: 'The Anxious Perfectionist\'s Paradox: When High Standards Sabotage Performance',
-    slug: 'anxious-perfectionist-paradox',
-    excerpt: 'You\'ve rewritten that email four times. It\'s still not right. Your colleague ships work that\'s "good enough" in half the time. They get promoted. You\'re still perfecting drafts no one will ever see. Here\'s the brutal truth about your "high standards."',
-    publishDate: '2025-11-22',
-    author: 'Prolific Personalities Team',
-    readTime: '14 min read',
-    tags: ['Anxious Perfectionist', 'Perfectionism', 'Productivity', 'Shipping'],
+    id: "9",
+    title:
+      "The Anxious Perfectionist's Paradox: When High Standards Sabotage Performance",
+    slug: "anxious-perfectionist-paradox",
+    excerpt:
+      "You've rewritten that email four times. It's still not right. Your colleague ships work that's \"good enough\" in half the time. They get promoted. You're still perfecting drafts no one will ever see. Here's the brutal truth about your \"high standards.\"",
+    publishDate: "2025-11-22",
+    author: "Prolific Personalities Team",
+    readTime: "14 min read",
+    tags: [
+      "Anxious Perfectionist",
+      "Perfectionism",
+      "Productivity",
+      "Shipping",
+    ],
     image: anxiousPerfectionistImage,
     content: `You've rewritten that email four times. It's still not right.
 
@@ -4218,17 +4301,24 @@ You don't need to become careless. You need to become strategic about where you 
 
 80% shipped beats 99% hidden. Version 0.1 with feedback beats version 1.0 that never launches. Done and improving beats perfect and stalled.
 
-Your brain isn't broken. Your standards aren't the problem. The inability to execute on those standards is the problem, and that's fixable.`
+Your brain isn't broken. Your standards aren't the problem. The inability to execute on those standards is the problem, and that's fixable.`,
   },
   {
-    id: '8',
-    title: 'Chaotic Creatives: Why Your Brain Isn\'t Broken (And How to Finally Get Stuff Done)',
-    slug: 'chaotic-creatives-brain-not-broken',
-    excerpt: 'It\'s 11 PM on a Tuesday. Inspiration hits. You create something brilliant in 4 hours of pure flow. By Thursday, you can barely respond to emails. Everyone else seems to work consistently. Why can\'t you? Here\'s the truth: Your brain isn\'t broken.',
-    publishDate: '2025-11-20',
-    author: 'Prolific Personalities Team',
-    readTime: '12 min read',
-    tags: ['Chaotic Creative', 'Executive Function', 'Productivity', 'Self-Acceptance'],
+    id: "8",
+    title:
+      "Chaotic Creatives: Why Your Brain Isn't Broken (And How to Finally Get Stuff Done)",
+    slug: "chaotic-creatives-brain-not-broken",
+    excerpt:
+      "It's 11 PM on a Tuesday. Inspiration hits. You create something brilliant in 4 hours of pure flow. By Thursday, you can barely respond to emails. Everyone else seems to work consistently. Why can't you? Here's the truth: Your brain isn't broken.",
+    publishDate: "2025-11-20",
+    author: "Prolific Personalities Team",
+    readTime: "12 min read",
+    tags: [
+      "Chaotic Creative",
+      "Executive Function",
+      "Productivity",
+      "Self-Acceptance",
+    ],
     image: chaoticCreativeImage,
     content: `It's 11 PM on a Tuesday. Suddenly, inspiration hits. You open your laptop and create something brilliant. Four hours of pure flow, ideas connecting faster than you can type, the best work you've done in weeks.
 
@@ -4463,17 +4553,18 @@ You need different strategies, not more discipline.
 
 Stop reading productivity advice written for brains that work consistently. Start implementing systems designed for how you actually operate.
 
-Your brain isn't broken. The advice you've been following was just never meant for you.`
+Your brain isn't broken. The advice you've been following was just never meant for you.`,
   },
   {
-    id: '7',
-    title: 'How to Choose a Productivity Tool in 5 Minutes (Instead of 5 Days)',
-    slug: 'choose-productivity-tool-5-minutes',
-    excerpt: 'You\'ve spent 6 hours watching productivity YouTube. You have 14 tabs open comparing Notion vs. Obsidian vs. Roam. Your actual work? Still not done. Here\'s the 5-minute decision framework based on your productivity archetype.',
-    publishDate: '2025-11-18',
-    author: 'Prolific Personalities Team',
-    readTime: '10 min read',
-    tags: ['Productivity', 'Tools', 'Decision Making', 'Archetypes'],
+    id: "7",
+    title: "How to Choose a Productivity Tool in 5 Minutes (Instead of 5 Days)",
+    slug: "choose-productivity-tool-5-minutes",
+    excerpt:
+      "You've spent 6 hours watching productivity YouTube. You have 14 tabs open comparing Notion vs. Obsidian vs. Roam. Your actual work? Still not done. Here's the 5-minute decision framework based on your productivity archetype.",
+    publishDate: "2025-11-18",
+    author: "Prolific Personalities Team",
+    readTime: "10 min read",
+    tags: ["Productivity", "Tools", "Decision Making", "Archetypes"],
     image: toolSelectionImage,
     content: `You've spent 6 hours watching productivity YouTube. You have 14 tabs open comparing Notion vs. Obsidian vs. Roam. You've read 23 Reddit threads about the "best" task manager. Your actual work? Still not done.
 
@@ -4741,17 +4832,18 @@ Now use it for a week before you research anything else.
 
 *Still not sure which archetype you are? [Take our free 5-minute assessment](/quiz) and get personalized tool recommendations based on your actual cognitive architecture—not just what's popular on YouTube.*
 
-*Stop researching. Start doing.*`
+*Stop researching. Start doing.*`,
   },
   {
-    id: '6',
+    id: "6",
     title: 'How "Just Be More Disciplined" Advice Destroys Productivity',
-    slug: 'discipline-advice-destroys-productivity',
-    excerpt: 'You\'ve heard it a thousand times: "You just need more discipline." Here\'s what they\'re not telling you: discipline-based productivity advice is gaslighting backed by pseudoscience. And for millions of people, it\'s actively harmful.',
-    publishDate: '2025-11-15',
-    author: 'Prolific Personalities Team',
-    readTime: '12 min read',
-    tags: ['Productivity', 'Psychology', 'Research', 'Self-Compassion'],
+    slug: "discipline-advice-destroys-productivity",
+    excerpt:
+      "You've heard it a thousand times: \"You just need more discipline.\" Here's what they're not telling you: discipline-based productivity advice is gaslighting backed by pseudoscience. And for millions of people, it's actively harmful.",
+    publishDate: "2025-11-15",
+    author: "Prolific Personalities Team",
+    readTime: "12 min read",
+    tags: ["Productivity", "Psychology", "Research", "Self-Compassion"],
     image: disciplineMythImage,
     content: `You've heard it a thousand times:
 
@@ -4994,17 +5086,19 @@ You don't need more discipline. You need the right approach for your brain.
 
 - Cubel, M., Nuevo-Chiquero, A., Sanchez-Pages, S., & Vidal-Fernandez, M. (2016). Do Personality Traits Affect Productivity? Evidence from the Laboratory. *The Economic Journal*, 126(592), 654-681.
 - Barkley, R. A. (2012). *Executive Functions: What They Are, How They Work, and Why They Evolved*. Guilford Press.
-- Judge, T. A., & Ilies, R. (2002). Relationship of personality to performance motivation: A meta-analytic review. *Journal of Applied Psychology*, 87(4), 797-807.`
+- Judge, T. A., & Ilies, R. (2002). Relationship of personality to performance motivation: A meta-analytic review. *Journal of Applied Psychology*, 87(4), 797-807.`,
   },
   {
-    id: '5',
-    title: 'Why Every Productivity System Has Failed You (And What Actually Works)',
-    slug: 'why-every-productivity-system-has-failed-you',
-    excerpt: 'It\'s 9 AM on Monday. You open your task manager—the third one this year—with genuine optimism. By Friday, you haven\'t opened it once. You\'re not lazy. You\'re the victim of the productivity industry\'s biggest lie.',
-    publishDate: '2025-11-12',
-    author: 'Prolific Personalities Team',
-    readTime: '8 min read',
-    tags: ['Productivity', 'Systems', 'Psychology', 'Research'],
+    id: "5",
+    title:
+      "Why Every Productivity System Has Failed You (And What Actually Works)",
+    slug: "why-every-productivity-system-has-failed-you",
+    excerpt:
+      "It's 9 AM on Monday. You open your task manager—the third one this year—with genuine optimism. By Friday, you haven't opened it once. You're not lazy. You're the victim of the productivity industry's biggest lie.",
+    publishDate: "2025-11-12",
+    author: "Prolific Personalities Team",
+    readTime: "8 min read",
+    tags: ["Productivity", "Systems", "Psychology", "Research"],
     image: productivitySystemsImage,
     content: `It's 9 AM on Monday. You open your task manager—the third one this year—with genuine optimism. This time will be different.
 
@@ -5122,17 +5216,19 @@ Because the problem was never you. It was the one-size-fits-all lie.
 
 - Cubel, M., Nuevo-Chiquero, A., Sanchez-Pages, S., & Vidal-Fernandez, M. (2016). Do Personality Traits Affect Productivity? Evidence from the Laboratory. *The Economic Journal*, 126(592), 654-681.
 - Judge, T. A., & Ilies, R. (2002). Relationship of personality to performance motivation: A meta-analytic review. *Journal of Applied Psychology*, 87(4), 797-807.
-- Barrick, M. R., & Mount, M. K. (1991). The big five personality dimensions and job performance: A meta-analysis. *Personnel Psychology*, 44(1), 1-26.`
+- Barrick, M. R., & Mount, M. K. (1991). The big five personality dimensions and job performance: A meta-analysis. *Personnel Psychology*, 44(1), 1-26.`,
   },
   {
-    id: '4',
-    title: 'What If My Productivity Archetype Changes? The Truth About Fluid Styles',
-    slug: 'productivity-archetype-changes-fluid-styles',
-    excerpt: 'Have you ever taken a productivity quiz, identified your "type," and then realized a week later you\'re approaching work completely differently? Maybe you recognize patterns from every archetype depending on your mood, the season, or even your monthly cycle. If so, you\'re not alone.',
-    publishDate: '2025-11-06',
-    author: 'Prolific Personalities Team',
-    readTime: '5 min read',
-    tags: ['Productivity', 'Psychology', 'Archetypes'],
+    id: "4",
+    title:
+      "What If My Productivity Archetype Changes? The Truth About Fluid Styles",
+    slug: "productivity-archetype-changes-fluid-styles",
+    excerpt:
+      "Have you ever taken a productivity quiz, identified your \"type,\" and then realized a week later you're approaching work completely differently? Maybe you recognize patterns from every archetype depending on your mood, the season, or even your monthly cycle. If so, you're not alone.",
+    publishDate: "2025-11-06",
+    author: "Prolific Personalities Team",
+    readTime: "5 min read",
+    tags: ["Productivity", "Psychology", "Archetypes"],
     image: fluidProductivityImage,
     content: `Have you ever taken a productivity quiz, identified your "type," and then realized a week later you're approaching work completely differently? Maybe you recognize patterns from every archetype—Structured Achiever, Momentum Chaser, Flow Seeker, or Chaotic Innovator—depending on your mood, the season, or even your monthly cycle. If so, you're not alone.
 
@@ -5182,17 +5278,19 @@ The goal isn't to find your one true archetype and stick to it forever. The goal
 
 - Barkley, R. A. (2012). *Executive Functions: What They Are, How They Work, and Why They Evolved*. Guilford Press.
 - Csikszentmihalyi, M. (1990). *Flow: The Psychology of Optimal Experience*. Harper & Row.
-- University studies on hormonal/mood effects on productivity (see our Science page for detailed research).`
+- University studies on hormonal/mood effects on productivity (see our Science page for detailed research).`,
   },
   {
-    id: '3',
-    title: 'Digital Minimalism Challenge: Can You Survive Without Notifications?',
-    slug: 'digital-minimalism-challenge',
-    excerpt: 'I used to think notifications were just a minor annoyance—a ping here, a badge there. But one week, I decided to turn them all off. What happened next was both painful and eye-opening.',
-    publishDate: '2025-11-05',
-    author: 'Prolific Personalities Team',
-    readTime: '5 min read',
-    tags: ['Digital Minimalism', 'Focus', 'Productivity'],
+    id: "3",
+    title:
+      "Digital Minimalism Challenge: Can You Survive Without Notifications?",
+    slug: "digital-minimalism-challenge",
+    excerpt:
+      "I used to think notifications were just a minor annoyance—a ping here, a badge there. But one week, I decided to turn them all off. What happened next was both painful and eye-opening.",
+    publishDate: "2025-11-05",
+    author: "Prolific Personalities Team",
+    readTime: "5 min read",
+    tags: ["Digital Minimalism", "Focus", "Productivity"],
     image: digitalMinimalismImage,
     content: `I used to think notifications were just a minor annoyance—a ping here, a badge there. But one week, I decided to turn them all off. Not just silent mode, but a full digital detox: no phone buzzes, no desktop banners, no "New message!" pop-ups. What happened next was both painful and eye-opening.
 
@@ -5233,17 +5331,18 @@ So—are you ready to try it? Can you survive without notifications? The results
 ## References
 
 - Mark, G., Gudith, D., & Klocke, U. (2008). *The cost of interrupted work: More speed and stress*. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems.
-- Ophir, E., Nass, C., Wagner, A. D. (2009). *Cognitive control in media multitaskers*. Proceedings of the National Academy of Sciences, 106(37), 15583-15587.`
+- Ophir, E., Nass, C., Wagner, A. D. (2009). *Cognitive control in media multitaskers*. Proceedings of the National Academy of Sciences, 106(37), 15583-15587.`,
   },
   {
-    id: '2',
-    title: 'When Productivity Hurts: The Real Weight of Guilt',
-    slug: 'when-productivity-hurts',
-    excerpt: 'Sometimes, the hardest part of building a productivity platform isn\'t the code or the research—it\'s facing our own productivity guilt. The hurt that comes from "not being productive" is something so many share, but few talk about openly.',
-    publishDate: '2025-11-05',
-    author: 'Prolific Personalities Team',
-    readTime: '6 min read',
-    tags: ['Mental Health', 'Productivity', 'Self-Compassion'],
+    id: "2",
+    title: "When Productivity Hurts: The Real Weight of Guilt",
+    slug: "when-productivity-hurts",
+    excerpt:
+      "Sometimes, the hardest part of building a productivity platform isn't the code or the research—it's facing our own productivity guilt. The hurt that comes from \"not being productive\" is something so many share, but few talk about openly.",
+    publishDate: "2025-11-05",
+    author: "Prolific Personalities Team",
+    readTime: "6 min read",
+    tags: ["Mental Health", "Productivity", "Self-Compassion"],
     image: productivityGuiltImage,
     content: `I'll be honest: sometimes, the hardest part of building a productivity platform isn't the code or the research citations—it's facing my own productivity guilt.
 
@@ -5277,17 +5376,19 @@ To everyone who knows that pain: **you're not alone**. Guilt may be part of the 
 
 - Pychyl, T. A., Sirois, F. M. (2016). *Procrastination, emotion regulation, and well-being*. In Procrastination, Health, and Well-Being (pp. 163-188). Academic Press.
 - Salesforce Research, 2023 (on tool overload)
-- Barkley, R. A. (2012). *Executive Functions: What They Are, How They Work, and Why They Evolved*. Guilford Press.`
+- Barkley, R. A. (2012). *Executive Functions: What They Are, How They Work, and Why They Evolved*. Guilford Press.`,
   },
   {
-    id: '1',
-    title: '6 Productivity Archetypes Explained: Why Some Systems Work for You (and Others Don\'t)',
-    slug: '6-productivity-archetypes-explained',
-    excerpt: 'If you\'ve ever wondered why productivity hacks that seem life-changing for others completely fall flat for you, you\'re not alone. The truth is: productivity isn\'t just about discipline or organization — it\'s about fit.',
-    publishDate: '2025-11-03',
-    author: 'Prolific Personalities Team',
-    readTime: '8 min read',
-    tags: ['Productivity', 'Archetypes', 'Psychology'],
+    id: "1",
+    title:
+      "6 Productivity Archetypes Explained: Why Some Systems Work for You (and Others Don't)",
+    slug: "6-productivity-archetypes-explained",
+    excerpt:
+      "If you've ever wondered why productivity hacks that seem life-changing for others completely fall flat for you, you're not alone. The truth is: productivity isn't just about discipline or organization — it's about fit.",
+    publishDate: "2025-11-03",
+    author: "Prolific Personalities Team",
+    readTime: "8 min read",
+    tags: ["Productivity", "Archetypes", "Psychology"],
     image: archetypesExplainedImage,
     content: `If you've ever wondered why productivity hacks that seem life-changing for others completely fall flat for you, you're not alone. The truth is: productivity isn't just about discipline or organization — it's about fit.
 
@@ -5400,6 +5501,6 @@ Ready to discover your archetype and get personalized strategies that actually w
 ## References
 
 - Barkley, R. A. (2012). *Executive Functions: What They Are, How They Work, and Why They Evolved*
-- Deci, E. L., & Ryan, R. M. (1985). *Intrinsic Motivation and Self-Determination in Human Behavior*`
-  }
+- Deci, E. L., & Ryan, R. M. (1985). *Intrinsic Motivation and Self-Determination in Human Behavior*`,
+  },
 ];
