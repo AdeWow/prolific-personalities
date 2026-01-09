@@ -104,17 +104,17 @@ export default function Home() {
         {/* Social Proof */}
         <section className="py-12 border-y border-muted bg-muted/30">
           <div className="max-w-4xl mx-auto px-6">
-            <div className="flex flex-wrap justify-center items-center gap-8 text-muted-foreground text-sm">
+            <div className="flex flex-wrap justify-center items-center gap-8 text-muted-foreground text-base">
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-primary" aria-hidden="true" />
+                <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
                 <span>10,000+ assessments taken</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-primary" aria-hidden="true" />
+                <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
                 <span>Research-backed methodology</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-primary" aria-hidden="true" />
+                <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
                 <span>Free instant results</span>
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function Home() {
               <h2 className="text-3xl font-bold text-foreground mb-4">
                 Why this works
               </h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
+              <p className="text-lg text-muted-foreground max-w-xl mx-auto">
                 Generic productivity advice fails because it ignores how you actually think and work.
               </p>
             </div>
@@ -139,10 +139,10 @@ export default function Home() {
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
                     <Brain className="h-6 w-6 text-primary" aria-hidden="true" />
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-3">
+                  <h3 className="text-xl font-semibold text-foreground mb-3">
                     Understand your patterns
                   </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-base leading-relaxed">
                     Learn why you start, stall, and finish work the way you do.
                   </p>
                 </CardContent>
@@ -153,10 +153,10 @@ export default function Home() {
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
                     <Target className="h-6 w-6 text-primary" aria-hidden="true" />
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-3">
+                  <h3 className="text-xl font-semibold text-foreground mb-3">
                     Get matched strategies
                   </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-base leading-relaxed">
                     Receive tactics designed for your specific working style.
                   </p>
                 </CardContent>
@@ -167,10 +167,10 @@ export default function Home() {
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
                     <Zap className="h-6 w-6 text-primary" aria-hidden="true" />
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-3">
+                  <h3 className="text-xl font-semibold text-foreground mb-3">
                     Take action today
                   </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-base leading-relaxed">
                     Start with simple changes that fit how your brain works.
                   </p>
                 </CardContent>
@@ -190,37 +190,37 @@ export default function Home() {
 
             <div className="grid md:grid-cols-3 gap-12">
               <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center mx-auto mb-6 text-lg font-semibold">
+                <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center mx-auto mb-6 text-xl font-semibold">
                   1
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="text-xl font-semibold text-foreground mb-3">
                   Answer 28 questions
                 </h3>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-base">
                   Takes about 5 minutes. No email required.
                 </p>
               </div>
 
               <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center mx-auto mb-6 text-lg font-semibold">
+                <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center mx-auto mb-6 text-xl font-semibold">
                   2
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="text-xl font-semibold text-foreground mb-3">
                   Get your archetype
                 </h3>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-base">
                   Discover which of 6 archetypes matches your style.
                 </p>
               </div>
 
               <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center mx-auto mb-6 text-lg font-semibold">
+                <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center mx-auto mb-6 text-xl font-semibold">
                   3
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="text-xl font-semibold text-foreground mb-3">
                   Apply your strategies
                 </h3>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-base">
                   Use personalized tactics designed for you.
                 </p>
               </div>
@@ -231,15 +231,15 @@ export default function Home() {
         {/* Final CTA */}
         <section className="py-24">
           <div className="max-w-3xl mx-auto px-6 text-center">
-            <div className="flex items-center justify-center gap-2 mb-6 text-muted-foreground text-sm">
-              <Clock className="h-4 w-4" aria-hidden="true" />
+            <div className="flex items-center justify-center gap-2 mb-6 text-muted-foreground text-base">
+              <Clock className="h-5 w-5" aria-hidden="true" />
               <span>5 minutes • Free • Instant results</span>
             </div>
             
             <h2 className="text-3xl font-bold text-foreground mb-4">
               Ready to work smarter?
             </h2>
-            <p className="text-muted-foreground mb-10 max-w-lg mx-auto">
+            <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">
               Join thousands who've discovered their productivity archetype and started working with their brain, not against it.
             </p>
             
@@ -254,7 +254,7 @@ export default function Home() {
               </Button>
             </Link>
             
-            <p className="text-muted-foreground text-sm mt-6">
+            <p className="text-muted-foreground text-base mt-6">
               No signup required. Your answers stay private.
             </p>
           </div>
@@ -269,14 +269,14 @@ export default function Home() {
                   <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
                   <span className="text-lg font-semibold">Prolific Personalities</span>
                 </div>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-gray-400 text-base">
                   Science-backed strategies for how you work best.
                 </p>
               </div>
               
               <div>
-                <h4 className="font-semibold mb-4 text-sm">Assessment</h4>
-                <ul className="space-y-2 text-muted-foreground text-sm">
+                <h4 className="font-semibold mb-4 text-base">Assessment</h4>
+                <ul className="space-y-3 text-gray-400 text-base">
                   <li><Link href="/quiz" className="hover:text-white transition-colors">Take Quiz</Link></li>
                   <li><Link href="/archetypes" className="hover:text-white transition-colors">Archetypes</Link></li>
                   <li><Link href="/science" className="hover:text-white transition-colors">Research</Link></li>
@@ -284,8 +284,8 @@ export default function Home() {
               </div>
               
               <div>
-                <h4 className="font-semibold mb-4 text-sm">Resources</h4>
-                <ul className="space-y-2 text-muted-foreground text-sm">
+                <h4 className="font-semibold mb-4 text-base">Resources</h4>
+                <ul className="space-y-3 text-gray-400 text-base">
                   <li><Link href="/blog" className="hover:text-white transition-colors" data-testid="link-footer-blog">Blog</Link></li>
                   <li><Link href="/resources" className="hover:text-white transition-colors">Tools</Link></li>
                   <li><Link href="/coach" className="hover:text-white transition-colors">AI Coach</Link></li>
@@ -293,8 +293,8 @@ export default function Home() {
               </div>
               
               <div>
-                <h4 className="font-semibold mb-4 text-sm">Company</h4>
-                <ul className="space-y-2 text-muted-foreground text-sm">
+                <h4 className="font-semibold mb-4 text-base">Company</h4>
+                <ul className="space-y-3 text-gray-400 text-base">
                   <li><Link href="/about" className="hover:text-white transition-colors">About</Link></li>
                   <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
                   <li><Link href="/refund-policy" className="hover:text-white transition-colors" data-testid="link-footer-refund">Refund Policy</Link></li>
@@ -302,7 +302,7 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="border-t border-white/20 pt-8 mt-12 text-center text-muted-foreground text-sm">
+            <div className="border-t border-white/20 pt-8 mt-12 text-center text-gray-400 text-base">
               <p>© 2024 Prolific Personalities. All rights reserved.</p>
             </div>
           </div>
