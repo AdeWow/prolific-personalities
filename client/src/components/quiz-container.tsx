@@ -99,10 +99,14 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
       const questionNumber = startIndex + questionIndexInPage + 1;
       trackQuizQuestionAnswered(questionNumber, questions.length, question.axis);
       
-      setAnswers(prev => ({
-        ...prev,
+      const newAnswers = {
+        ...answers,
         [questionId]: value
-      }));
+      };
+      setAnswers(newAnswers);
+
+      const newAnsweredCount = Object.keys(newAnswers).length;
+      const isLastQuestion = newAnsweredCount === questions.length;
 
       setTimeout(() => {
         const nextQuestionIndex = questionIndexInPage + 1;
@@ -115,6 +119,20 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
         } else if (!isLastPage) {
           setTimeout(() => {
             handleNextPage();
+          }, 300);
+        } else if (isLastQuestion) {
+          // Auto-submit when the last question is answered
+          setTimeout(() => {
+            const scores = calculateScores(newAnswers);
+            const archetype = determineArchetype(scores);
+            trackEvent('quiz_completed', 'Quiz', `Archetype: ${archetype.name}`, questions.length);
+            trackQuizComplete(archetype.id, scores);
+            saveResultsMutation.mutate({
+              sessionId,
+              answers: newAnswers,
+              scores,
+              archetype: archetype.id
+            });
           }, 300);
         }
       }, 150);
