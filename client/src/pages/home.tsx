@@ -102,19 +102,19 @@ export default function Home() {
         </section>
 
         {/* Social Proof */}
-        <section className="py-12 border-y border-muted bg-muted/30">
+        <section className="py-16 border-y border-muted bg-muted/30">
           <div className="max-w-4xl mx-auto px-6">
-            <div className="flex flex-wrap justify-center items-center gap-8 text-muted-foreground text-base">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
+            <div className="flex flex-wrap justify-center items-center gap-10 text-foreground text-lg font-medium">
+              <div className="flex items-center gap-3">
+                <CheckCircle className="h-6 w-6 text-primary" aria-hidden="true" />
                 <span>10,000+ assessments taken</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
+              <div className="flex items-center gap-3">
+                <CheckCircle className="h-6 w-6 text-primary" aria-hidden="true" />
                 <span>Research-backed methodology</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-primary" aria-hidden="true" />
+              <div className="flex items-center gap-3">
+                <CheckCircle className="h-6 w-6 text-primary" aria-hidden="true" />
                 <span>Free instant results</span>
               </div>
             </div>
