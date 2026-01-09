@@ -86,7 +86,7 @@ Research on executive function shows that individual differences in cognitive co
 
 Translation: Your focus problems are brain-based, not willpower-based.
 
-This is especially true for Chaotic Creatives, whose executive function naturally operates differently—task initiation is genuinely difficult, sustained attention on boring tasks is physiologically challenging, and working memory for details is limited.
+This is especially true for [Chaotic Creatives](/archetypes#chaotic-creative), whose executive function naturally operates differently—task initiation is genuinely difficult, sustained attention on boring tasks is physiologically challenging, and working memory for details is limited.
 
 ### 2. Energy Depletion (Not Laziness)
 
@@ -101,7 +101,7 @@ Your cognitive resources are finite. They get depleted by:
 
 When your energy is depleted, focus becomes impossible regardless of willpower.
 
-This is the daily reality for Flexible Improvisers, whose energy naturally fluctuates in ways that don't respect schedules. A 3/10 energy day isn't laziness—it's physiology. Forcing focus during these valleys depletes you further.
+This is the daily reality for [Flexible Improvisers](/archetypes#flexible-improviser), whose energy naturally fluctuates in ways that don't respect schedules. A 3/10 energy day isn't laziness—it's physiology. Forcing focus during these valleys depletes you further.
 
 ### 3. Anxiety Masquerading as Distraction
 
