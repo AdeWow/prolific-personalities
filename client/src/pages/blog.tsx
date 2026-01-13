@@ -58,10 +58,8 @@ export default function BlogPage() {
                   ))}
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-3 text-foreground">
-                  <Link href={`/blog/${post.slug}`}>
-                    <a className="hover:text-primary transition-colors" data-testid={`link-featured-${post.slug}`}>
-                      {post.title}
-                    </a>
+                  <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors" data-testid={`link-featured-${post.slug}`}>
+                    {post.title}
                   </Link>
                 </h2>
                 <p className="text-muted-foreground mb-4 text-lg">
@@ -115,10 +113,8 @@ export default function BlogPage() {
                   ))}
                 </div>
                 <CardTitle className="text-xl leading-tight">
-                  <Link href={`/blog/${post.slug}`}>
-                    <a className="hover:text-primary transition-colors" data-testid={`link-blog-${post.slug}`}>
-                      {post.title}
-                    </a>
+                  <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors" data-testid={`link-blog-${post.slug}`}>
+                    {post.title}
                   </Link>
                 </CardTitle>
                 <CardDescription className="mt-2">
