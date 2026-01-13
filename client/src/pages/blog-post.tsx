@@ -202,13 +202,26 @@ export default function BlogPostPage() {
         )}
 
         {/* Article Content */}
-        <div className="prose prose-lg dark:prose-invert max-w-none mb-16">
+        <div className="max-w-none mb-16">
           {post.content.split('\n\n').map((paragraph, index) => {
+            // Handle code blocks
+            if (paragraph.startsWith('```')) {
+              const lines = paragraph.split('\n');
+              const codeContent = lines.slice(1, -1).join('\n');
+              return (
+                <pre key={index} className="mb-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-x-auto">
+                  <code className="text-base text-gray-800 dark:text-gray-200 font-mono whitespace-pre">
+                    {codeContent}
+                  </code>
+                </pre>
+              );
+            }
+            
             // Handle H2 headings
             if (paragraph.startsWith('## ')) {
               const heading = paragraph.replace('## ', '');
               return (
-                <h2 key={index} className="text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">
+                <h2 key={index} className="text-2xl md:text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">
                   {heading}
                 </h2>
               );
@@ -218,7 +231,7 @@ export default function BlogPostPage() {
             if (paragraph.startsWith('### ')) {
               const heading = paragraph.replace('### ', '');
               return (
-                <h3 key={index} className="text-2xl font-bold mt-10 mb-4 text-gray-900 dark:text-white">
+                <h3 key={index} className="text-xl md:text-2xl font-bold mt-10 mb-4 text-gray-900 dark:text-white">
                   {heading}
                 </h3>
               );
@@ -226,18 +239,18 @@ export default function BlogPostPage() {
             
             // Handle horizontal rules
             if (paragraph.trim() === '---') {
-              return <hr key={index} className="my-8 border-gray-200 dark:border-gray-700" />;
+              return <hr key={index} className="my-10 border-gray-200 dark:border-gray-700" />;
             }
             
             // Handle bullet lists (lines starting with -)
             if (paragraph.includes('\n-') || paragraph.startsWith('-')) {
               const lines = paragraph.split('\n').filter(line => line.trim());
               return (
-                <ul key={index} className="mb-6 space-y-2 ml-4">
+                <ul key={index} className="mb-8 space-y-3 pl-6">
                   {lines.map((line, i) => {
                     const content = line.replace(/^-\s*/, '');
                     return (
-                      <li key={i} className="text-gray-700 dark:text-gray-300 leading-relaxed list-disc ml-4">
+                      <li key={i} className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed list-disc">
                         {renderInlineFormatting(content)}
                       </li>
                     );
@@ -250,11 +263,11 @@ export default function BlogPostPage() {
             if (/^\d+\.\s/.test(paragraph)) {
               const lines = paragraph.split('\n').filter(line => line.trim());
               return (
-                <ol key={index} className="mb-6 space-y-2 ml-4">
+                <ol key={index} className="mb-8 space-y-3 pl-6">
                   {lines.map((line, i) => {
                     const content = line.replace(/^\d+\.\s*/, '');
                     return (
-                      <li key={i} className="text-gray-700 dark:text-gray-300 leading-relaxed list-decimal ml-4">
+                      <li key={i} className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed list-decimal">
                         {renderInlineFormatting(content)}
                       </li>
                     );
@@ -265,7 +278,7 @@ export default function BlogPostPage() {
             
             // Regular paragraphs with inline formatting
             return (
-              <p key={index} className="mb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
+              <p key={index} className="mb-6 text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
                 {renderInlineFormatting(paragraph)}
               </p>
             );
