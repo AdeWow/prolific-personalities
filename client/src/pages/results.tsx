@@ -44,6 +44,10 @@ export default function Results() {
   const [emailResultsSent, setEmailResultsSent] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoCodeValid, setPromoCodeValid] = useState<boolean | null>(null);
+  const [promoCodeMessage, setPromoCodeMessage] = useState("");
+  const [showPromoInput, setShowPromoInput] = useState(false);
   const { toast } = useToast();
 
   // Check for payment status in URL
@@ -179,6 +183,61 @@ export default function Results() {
       });
     },
   });
+
+  const promoCodeMutation = useMutation({
+    mutationFn: async (data: { code: string; archetype: string; sessionId: string; email?: string }) => {
+      const response = await apiRequest('POST', '/api/promo-code/redeem', data);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data.success && data.redirectUrl) {
+        trackEvent('promo_code_redeemed', 'Conversion', archetype?.name || 'Unknown', 0);
+        toast({
+          title: "Promo code applied!",
+          description: "You now have premium access. Redirecting...",
+        });
+        setTimeout(() => {
+          window.location.href = data.redirectUrl;
+        }, 1000);
+      }
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to redeem promo code. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const validatePromoCode = async () => {
+    if (!promoCode.trim()) {
+      setPromoCodeValid(false);
+      setPromoCodeMessage("Please enter a promo code");
+      return;
+    }
+
+    try {
+      const response = await apiRequest('POST', '/api/promo-code/validate', { code: promoCode.trim() });
+      const data = await response.json();
+      setPromoCodeValid(data.valid);
+      setPromoCodeMessage(data.message);
+    } catch (error) {
+      setPromoCodeValid(false);
+      setPromoCodeMessage("Invalid promo code");
+    }
+  };
+
+  const handleApplyPromoCode = () => {
+    if (promoCodeValid && sessionId && archetype) {
+      promoCodeMutation.mutate({ 
+        code: promoCode.trim(), 
+        archetype: archetype.id, 
+        sessionId,
+        email: email || emailResultsInput || undefined
+      });
+    }
+  };
 
   const handleUpgradeToPremium = () => {
     if (sessionId && archetype) {
@@ -969,6 +1028,59 @@ export default function Results() {
                 <div className="flex items-center justify-center gap-2 mb-4 text-sm text-muted-foreground">
                   <span className="inline-flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
                   <span>12 people purchased in the last 24 hours</span>
+                </div>
+
+                {/* Promo Code Section */}
+                <div className="mb-6">
+                  {!showPromoInput ? (
+                    <button
+                      type="button"
+                      onClick={() => setShowPromoInput(true)}
+                      className="text-sm text-primary hover:underline"
+                      data-testid="button-show-promo"
+                    >
+                      Have a promo code?
+                    </button>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex gap-2">
+                        <Input
+                          value={promoCode}
+                          onChange={(e) => {
+                            setPromoCode(e.target.value);
+                            setPromoCodeValid(null);
+                            setPromoCodeMessage("");
+                          }}
+                          placeholder="Enter promo code"
+                          className="flex-1"
+                          data-testid="input-promo-code"
+                        />
+                        <Button
+                          variant="outline"
+                          onClick={validatePromoCode}
+                          disabled={!promoCode.trim()}
+                          data-testid="button-validate-promo"
+                        >
+                          Check
+                        </Button>
+                      </div>
+                      {promoCodeMessage && (
+                        <p className={`text-sm ${promoCodeValid ? 'text-green-600' : 'text-red-500'}`}>
+                          {promoCodeMessage}
+                        </p>
+                      )}
+                      {promoCodeValid && (
+                        <Button
+                          className="w-full gradient-primary text-white"
+                          onClick={handleApplyPromoCode}
+                          disabled={promoCodeMutation.isPending}
+                          data-testid="button-apply-promo"
+                        >
+                          {promoCodeMutation.isPending ? 'Applying...' : 'Apply Promo Code & Get Access'}
+                        </Button>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <Button 
