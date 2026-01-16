@@ -1,4 +1,4 @@
-import { users, quizResults, tools, emailCaptures, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, chatConversations, chatMessages, chatUsage, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes, type ChatConversation, type InsertChatConversation, type ChatMessage, type InsertChatMessage, type ChatUsage, type InsertChatUsage } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, chatConversations, chatMessages, chatUsage, promoCodes, promoCodeRedemptions, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes, type ChatConversation, type InsertChatConversation, type ChatMessage, type InsertChatMessage, type ChatUsage, type InsertChatUsage, type PromoCode, type InsertPromoCode, type PromoCodeRedemption, type InsertPromoCodeRedemption } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, sql, isNull } from "drizzle-orm";
 import memoize from "memoizee";
@@ -73,6 +73,13 @@ export interface IStorage {
   getChatUsage(userId: string | null, sessionId: string | null, date: string): Promise<ChatUsage | undefined>;
   incrementChatUsage(userId: string | null, sessionId: string | null, date: string): Promise<ChatUsage>;
   isPremiumUser(userId: string): Promise<boolean>;
+  // Promo Codes
+  getPromoCodeByCode(code: string): Promise<PromoCode | undefined>;
+  createPromoCode(promoCode: InsertPromoCode): Promise<PromoCode>;
+  redeemPromoCode(promoCodeId: number, data: Omit<InsertPromoCodeRedemption, 'promoCodeId'>): Promise<PromoCodeRedemption>;
+  getAllPromoCodes(): Promise<PromoCode[]>;
+  getPromoCodeRedemptions(promoCodeId: number): Promise<PromoCodeRedemption[]>;
+  hasUserRedeemedPromoCode(sessionId: string, promoCodeId: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -666,6 +673,60 @@ export class DatabaseStorage implements IStorage {
         )
       );
     return !!order;
+  }
+
+  // Promo Code methods
+  async getPromoCodeByCode(code: string): Promise<PromoCode | undefined> {
+    const [promoCode] = await db
+      .select()
+      .from(promoCodes)
+      .where(eq(promoCodes.code, code));
+    return promoCode || undefined;
+  }
+
+  async createPromoCode(promoCode: InsertPromoCode): Promise<PromoCode> {
+    const [created] = await db.insert(promoCodes).values(promoCode).returning();
+    return created;
+  }
+
+  async redeemPromoCode(promoCodeId: number, data: Omit<InsertPromoCodeRedemption, 'promoCodeId'>): Promise<PromoCodeRedemption> {
+    // Increment usage count on the promo code
+    await db
+      .update(promoCodes)
+      .set({ currentUses: sql`${promoCodes.currentUses} + 1` })
+      .where(eq(promoCodes.id, promoCodeId));
+
+    // Create redemption record
+    const [redemption] = await db
+      .insert(promoCodeRedemptions)
+      .values({ ...data, promoCodeId })
+      .returning();
+    return redemption;
+  }
+
+  async getAllPromoCodes(): Promise<PromoCode[]> {
+    return await db.select().from(promoCodes).orderBy(desc(promoCodes.createdAt));
+  }
+
+  async getPromoCodeRedemptions(promoCodeId: number): Promise<PromoCodeRedemption[]> {
+    return await db
+      .select()
+      .from(promoCodeRedemptions)
+      .where(eq(promoCodeRedemptions.promoCodeId, promoCodeId))
+      .orderBy(desc(promoCodeRedemptions.redeemedAt));
+  }
+
+  async hasUserRedeemedPromoCode(sessionId: string, promoCodeId: number): Promise<boolean> {
+    const [existing] = await db
+      .select()
+      .from(promoCodeRedemptions)
+      .where(
+        and(
+          eq(promoCodeRedemptions.sessionId, sessionId),
+          eq(promoCodeRedemptions.promoCodeId, promoCodeId)
+        )
+      );
+    return !!existing;
   }
 }
 
