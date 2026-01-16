@@ -553,6 +553,168 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Validate promo code
+  app.post("/api/promo-code/validate", async (req, res) => {
+    try {
+      const { code } = req.body;
+      
+      if (!code) {
+        res.status(400).json({ valid: false, message: "Promo code is required" });
+        return;
+      }
+
+      const promoCode = await storage.getPromoCodeByCode(code.trim());
+      
+      if (!promoCode) {
+        res.status(404).json({ valid: false, message: "Invalid promo code" });
+        return;
+      }
+
+      // Check if active
+      if (!promoCode.isActive) {
+        res.status(400).json({ valid: false, message: "This promo code is no longer active" });
+        return;
+      }
+
+      // Check if expired
+      if (promoCode.expiresAt && new Date(promoCode.expiresAt) < new Date()) {
+        res.status(400).json({ valid: false, message: "This promo code has expired" });
+        return;
+      }
+
+      // Check if max uses reached
+      if (promoCode.maxUses !== null && promoCode.currentUses >= promoCode.maxUses) {
+        res.status(400).json({ valid: false, message: "This promo code has reached its maximum uses" });
+        return;
+      }
+
+      res.json({
+        valid: true,
+        discountPercent: promoCode.discountPercent,
+        productType: promoCode.productType,
+        message: promoCode.discountPercent === 100 
+          ? "100% off - Free access!" 
+          : `${promoCode.discountPercent}% off`,
+      });
+    } catch (error: any) {
+      console.error("Error validating promo code:", error);
+      res.status(500).json({ valid: false, message: "Error validating promo code" });
+    }
+  });
+
+  // Redeem promo code (bypasses Stripe for 100% discount)
+  app.post("/api/promo-code/redeem", writeLimiter, async (req, res) => {
+    try {
+      const { code, archetype, sessionId, email } = req.body;
+      
+      if (!code || !archetype || !sessionId) {
+        res.status(400).json({ success: false, message: "Missing required fields" });
+        return;
+      }
+
+      const promoCode = await storage.getPromoCodeByCode(code.trim());
+      
+      if (!promoCode) {
+        res.status(404).json({ success: false, message: "Invalid promo code" });
+        return;
+      }
+
+      // Validate promo code is still valid
+      if (!promoCode.isActive) {
+        res.status(400).json({ success: false, message: "This promo code is no longer active" });
+        return;
+      }
+
+      if (promoCode.expiresAt && new Date(promoCode.expiresAt) < new Date()) {
+        res.status(400).json({ success: false, message: "This promo code has expired" });
+        return;
+      }
+
+      if (promoCode.maxUses !== null && promoCode.currentUses >= promoCode.maxUses) {
+        res.status(400).json({ success: false, message: "This promo code has reached its maximum uses" });
+        return;
+      }
+
+      // Check if already redeemed by this session
+      const alreadyRedeemed = await storage.hasUserRedeemedPromoCode(sessionId, promoCode.id);
+      if (alreadyRedeemed) {
+        res.status(400).json({ success: false, message: "You have already redeemed this promo code" });
+        return;
+      }
+
+      // Verify quiz result exists
+      const quizResult = await storage.getQuizResultBySessionId(sessionId);
+      if (!quizResult) {
+        res.status(404).json({ success: false, message: "Quiz result not found" });
+        return;
+      }
+
+      // For 100% discount, create a completed order without Stripe
+      if (promoCode.discountPercent === 100) {
+        // Create completed order
+        const order = await storage.createOrder({
+          userId: quizResult.userId || null,
+          sessionId,
+          archetype,
+          amount: 0,
+          status: 'completed',
+          productType: promoCode.productType,
+          customerEmail: email || null,
+        });
+
+        // Update order status to completed
+        await storage.updateOrderStatus(order.id, 'completed', null, email || undefined);
+
+        // Record the redemption
+        await storage.redeemPromoCode(promoCode.id, {
+          sessionId,
+          userId: quizResult.userId || null,
+          email: email || null,
+          archetype,
+        });
+
+        res.json({
+          success: true,
+          message: "Promo code redeemed successfully! You now have premium access.",
+          orderId: order.id,
+          redirectUrl: `/purchase-success?session_id=${sessionId}&archetype=${archetype}&promo=true`,
+        });
+      } else {
+        // For partial discounts, would integrate with Stripe coupon - not implemented yet
+        res.status(400).json({ 
+          success: false, 
+          message: "Partial discount promo codes are not yet supported" 
+        });
+      }
+    } catch (error: any) {
+      console.error("Error redeeming promo code:", error);
+      res.status(500).json({ success: false, message: "Error redeeming promo code" });
+    }
+  });
+
+  // Get all promo codes (admin endpoint)
+  app.get("/api/admin/promo-codes", async (req, res) => {
+    try {
+      const codes = await storage.getAllPromoCodes();
+      res.json(codes);
+    } catch (error: any) {
+      console.error("Error fetching promo codes:", error);
+      res.status(500).json({ message: "Error fetching promo codes" });
+    }
+  });
+
+  // Get redemptions for a promo code (admin endpoint)
+  app.get("/api/admin/promo-codes/:id/redemptions", async (req, res) => {
+    try {
+      const promoCodeId = parseInt(req.params.id);
+      const redemptions = await storage.getPromoCodeRedemptions(promoCodeId);
+      res.json(redemptions);
+    } catch (error: any) {
+      console.error("Error fetching redemptions:", error);
+      res.status(500).json({ message: "Error fetching redemptions" });
+    }
+  });
+
   // Stripe Checkout Session - Create payment for premium report
   app.post("/api/create-checkout-session", writeLimiter, async (req, res) => {
     try {
