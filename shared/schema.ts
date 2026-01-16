@@ -260,6 +260,46 @@ export const insertPlaybookNotesSchema = createInsertSchema(playbookNotes).omit(
   updatedAt: true,
 });
 
+// Promo codes table - for free access without Stripe
+export const promoCodes = pgTable("promo_codes", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  discountPercent: integer("discount_percent").notNull().default(100), // 100 = fully free
+  maxUses: integer("max_uses"), // null = unlimited
+  currentUses: integer("current_uses").notNull().default(0),
+  productType: text("product_type").notNull().default("playbook"), // playbook, productivity_partner
+  isActive: integer("is_active").notNull().default(1), // 1 = active, 0 = disabled
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Track who redeemed which promo code
+export const promoCodeRedemptions = pgTable("promo_code_redemptions", {
+  id: serial("id").primaryKey(),
+  promoCodeId: integer("promo_code_id").notNull().references(() => promoCodes.id),
+  userId: varchar("user_id").references(() => users.id),
+  sessionId: text("session_id").notNull(),
+  email: text("email"),
+  archetype: text("archetype"),
+  redeemedAt: timestamp("redeemed_at").defaultNow().notNull(),
+});
+
+export const insertPromoCodeSchema = createInsertSchema(promoCodes).omit({
+  id: true,
+  currentUses: true,
+  createdAt: true,
+});
+
+export const insertPromoCodeRedemptionSchema = createInsertSchema(promoCodeRedemptions).omit({
+  id: true,
+  redeemedAt: true,
+});
+
+export type InsertPromoCode = z.infer<typeof insertPromoCodeSchema>;
+export type PromoCode = typeof promoCodes.$inferSelect;
+export type InsertPromoCodeRedemption = z.infer<typeof insertPromoCodeRedemptionSchema>;
+export type PromoCodeRedemption = typeof promoCodeRedemptions.$inferSelect;
+
 export type InsertTool = z.infer<typeof insertToolSchema>;
 export type Tool = typeof tools.$inferSelect;
 export type InsertEmailCapture = z.infer<typeof insertEmailCaptureSchema>;
