@@ -44,7 +44,6 @@ export const blogPosts: BlogPost[] = [
     readTime: "7 min read",
     tags: ["Productivity", "Humor", "Flexible Improviser", "Energy Management", "Self-Improvement"],
     image: bennyResumeImage,
-    pinned: true,
     content: `I posted a job listing for Head of Growth at Prolific Personalities.
 
 What I got: A Yorkshire Terrier named Benny.
