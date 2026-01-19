@@ -57,9 +57,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Discover Your Productivity Archetype"
-        description="Discover your productivity archetype with Prolific Personalities. Science-backed strategies personalized to your working style. Take the free 5-minute assessment now."
-        keywords="productivity assessment, productivity archetype, time management, procrastination, focus, executive function, working style"
+        title="Free Productivity Test - Discover Your Work Style in 5 Minutes"
+        description="Take our free productivity test and quiz to discover your unique productivity archetype. Get personalized strategies based on science-backed research. Find out why traditional productivity advice doesn't work for you."
+        keywords="productivity test, productivity quiz, free productivity assessment, work style quiz, productivity archetype, time management test, focus assessment, procrastination quiz, executive function test, ADHD productivity"
         canonicalUrl={origin}
         structuredData={structuredData}
       />

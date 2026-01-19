@@ -97,9 +97,10 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Pricing - Discovery, Playbook & Premium | Prolific Personalities"
-        description="Start free with Discovery tier. Upgrade to Complete Playbook ($19) for full strategies, or Productivity Partner ($7/month or $75/year) for unlimited AI coaching and premium support."
-        keywords="productivity assessment pricing, premium report, AI productivity coach, personalized strategies, productivity tools"
+        title="Pricing - Free Productivity Test + Premium Playbooks | Prolific Personalities"
+        description="Take our free productivity test and quiz. Upgrade to Complete Playbook ($19) for 35+ pages of personalized strategies, or Productivity Partner ($7/month) for unlimited AI coaching."
+        keywords="free productivity test, productivity quiz pricing, productivity assessment cost, AI productivity coach, personalized productivity strategies, productivity playbook"
+        canonicalUrl={typeof window !== 'undefined' ? `${window.location.origin}/pricing` : undefined}
       />
       <Header />
       <main id="main-content" role="main">

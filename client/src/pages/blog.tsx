@@ -13,9 +13,10 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Productivity Insights Blog"
-        description="Research-backed productivity strategies, tips, and insights to help you work smarter. Discover articles tailored to your unique working style."
-        keywords="productivity blog, productivity tips, time management, focus strategies, work efficiency, productivity research"
+        title="Productivity Blog - Tips, Strategies & Research | Prolific Personalities"
+        description="Research-backed productivity tips, strategies, and insights. Learn about productivity archetypes, time management, focus techniques, and personalized approaches that work for your unique brain."
+        keywords="productivity blog, productivity tips, productivity strategies, time management tips, focus techniques, ADHD productivity, productivity research, work style optimization"
+        canonicalUrl={typeof window !== 'undefined' ? `${window.location.origin}/blog` : undefined}
       />
       <Header />
       <main id="main-content" role="main">

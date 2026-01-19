@@ -6,9 +6,10 @@ export default function Quiz() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Productivity Assessment Quiz"
-        description="Take our free 5-minute assessment to discover your unique productivity archetype. Get personalized strategies based on how your brain naturally works."
-        keywords="productivity quiz, productivity assessment, productivity test, work style quiz, focus assessment"
+        title="Free Productivity Test & Quiz - 28 Research-Backed Questions"
+        description="Take our free 5-minute productivity test with 28 research-backed questions. Discover your unique productivity archetype and get personalized strategies that work for your brain. No signup required."
+        keywords="productivity test, productivity quiz, free productivity test, work style quiz, productivity assessment, focus test, time management quiz, procrastination test, ADHD productivity quiz, executive function assessment"
+        canonicalUrl={typeof window !== 'undefined' ? `${window.location.origin}/quiz` : undefined}
       />
       <Header />
       <main id="main-content" role="main">

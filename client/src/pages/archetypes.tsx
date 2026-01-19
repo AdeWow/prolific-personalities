@@ -121,9 +121,10 @@ export default function Archetypes() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Six Productivity Archetypes Explained"
-        description="Discover the 6 distinct productivity archetypes: Structured Achiever, Chaotic Creative, Strategic Planner, and more. Learn which working style matches yours and get personalized strategies."
-        keywords="productivity archetypes, working styles, productivity types, time management styles, executive function, cognitive focus"
+        title="6 Productivity Archetypes - Which Type Are You? | Free Test"
+        description="Discover the 6 productivity archetypes: Structured Achiever, Chaotic Creative, Strategic Planner, Anxious Perfectionist, Novelty Seeker, and Flexible Improviser. Take our free productivity test to find yours."
+        keywords="productivity archetypes, productivity types, work style types, structured achiever, chaotic creative, strategic planner, anxious perfectionist, novelty seeker, flexible improviser, productivity test results"
+        canonicalUrl={typeof window !== 'undefined' ? `${window.location.origin}/archetypes` : undefined}
       />
       <Header />
       <main id="main-content" role="main">
