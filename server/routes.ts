@@ -2256,6 +2256,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ============================================
+  // MOBILE PREMIUM STATUS ENDPOINT
+  // ============================================
+
+  // GET /api/mobile/user/premium - Check user's premium status
+  app.get("/api/mobile/user/premium", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        res.status(401).json({ success: false, error: "Authorization header required" });
+        return;
+      }
+
+      const sessionToken = authHeader.substring(7);
+
+      // Verify JWT
+      const decoded = verifySessionToken(sessionToken);
+      if (!decoded) {
+        res.status(401).json({ success: false, error: "Invalid or expired session" });
+        return;
+      }
+
+      // Check session exists in database
+      const sessionRecord = await db
+        .select()
+        .from(mobileSessions)
+        .where(
+          and(
+            eq(mobileSessions.token, sessionToken),
+            gt(mobileSessions.expiresAt, new Date())
+          )
+        );
+
+      if (sessionRecord.length === 0) {
+        res.status(401).json({ success: false, error: "Session not found or expired" });
+        return;
+      }
+
+      // Query orders table for successful purchases
+      const premiumOrders = await db
+        .select()
+        .from(orders)
+        .where(
+          and(
+            eq(orders.userId, decoded.userId),
+            or(
+              eq(orders.status, 'completed'),
+              eq(orders.status, 'paid'),
+              eq(orders.status, 'succeeded')
+            )
+          )
+        )
+        .orderBy(desc(orders.createdAt))
+        .limit(1);
+
+      if (premiumOrders.length === 0) {
+        res.json({
+          success: true,
+          isPremium: false
+        });
+        return;
+      }
+
+      const latestOrder = premiumOrders[0];
+
+      res.json({
+        success: true,
+        isPremium: true,
+        purchaseDate: latestOrder.createdAt.toISOString(),
+        productType: latestOrder.productType || 'playbook'
+      });
+
+    } catch (error) {
+      console.error('Premium status fetch error:', error);
+      res.status(500).json({ success: false, error: "Failed to fetch premium status" });
+    }
+  });
+
   // Register generic chat routes
   registerChatRoutes(app);
 
