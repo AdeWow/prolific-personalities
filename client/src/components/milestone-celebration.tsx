@@ -9,21 +9,21 @@ interface MilestoneCelebrationProps {
 const milestoneData = {
   1: {
     emoji: "🎯",
-    title: "Nice work! You're 1/4 done",
+    title: "Nice work! You're 1/3 done",
     message: "Fun fact: The fact that you're still here shows solid focus! (Or procrastination from real work? 😉)",
-    progress: 25
+    progress: 33
   },
   2: {
     emoji: "🔥",
     title: "Halfway there!",
     message: "You're doing great! Most people give up by now. Not you though.",
-    progress: 50
+    progress: 67
   },
   3: {
     emoji: "🚀",
-    title: "Almost done! Just 7 more",
-    message: "You're 75% done! Your future productive self thanks you.",
-    progress: 75
+    title: "Almost done! Just 3 more",
+    message: "You're 89% done! Your future productive self thanks you.",
+    progress: 89
   }
 };
 

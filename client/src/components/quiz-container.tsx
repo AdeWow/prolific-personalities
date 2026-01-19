@@ -99,11 +99,11 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     },
   });
 
-  const checkForMilestoneCelebration = useCallback((questionNumber: number): 1 | 2 | 3 | null => {
+  const checkForPageMilestoneCelebration = useCallback((completedPage: number): 1 | 2 | 3 | null => {
     if (quickMode) return null;
-    if (questionNumber === 7 && !celebrationsShown.has(1)) return 1;
-    if (questionNumber === 14 && !celebrationsShown.has(2)) return 2;
-    if (questionNumber === 21 && !celebrationsShown.has(3)) return 3;
+    if (completedPage === 2 && !celebrationsShown.has(1)) return 1;
+    if (completedPage === 4 && !celebrationsShown.has(2)) return 2;
+    if (completedPage === 5 && !celebrationsShown.has(3)) return 3;
     return null;
   }, [quickMode, celebrationsShown]);
 
@@ -138,18 +138,16 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
       setTimeout(() => {
         const nextQuestionIndex = questionIndexInPage + 1;
         
-        const milestone = checkForMilestoneCelebration(questionNumber);
-        
         if (nextQuestionIndex < currentQuestions.length) {
           setActiveQuestionIndex(nextQuestionIndex);
           questionRefs.current[nextQuestionIndex]?.scrollIntoView({ 
             behavior: 'smooth', 
             block: 'center' 
           });
-          if (milestone) {
-            setShowCelebration(milestone);
-          }
         } else if (!isLastPage) {
+          const completedPage = currentPage + 1;
+          const milestone = checkForPageMilestoneCelebration(completedPage);
+          
           if (milestone) {
             setShowCelebration(milestone);
             setPendingPageAdvance(true);
