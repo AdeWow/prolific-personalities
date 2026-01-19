@@ -2044,6 +2044,218 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ============================================
+  // MOBILE QUIZ ENDPOINTS
+  // ============================================
+
+  const VALID_ARCHETYPES = [
+    'structured-achiever',
+    'chaotic-creative',
+    'balanced-practitioner',
+    'novelty-seeker',
+    'steady-operator',
+    'adaptive-executor',
+    'precision-planner'
+  ];
+
+  // POST /api/mobile/quiz/submit - Submit quiz results
+  app.post("/api/mobile/quiz/submit", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        res.status(401).json({ success: false, error: "Authorization header required" });
+        return;
+      }
+
+      const sessionToken = authHeader.substring(7);
+
+      // Verify JWT
+      const decoded = verifySessionToken(sessionToken);
+      if (!decoded) {
+        res.status(401).json({ success: false, error: "Invalid or expired session" });
+        return;
+      }
+
+      // Check session exists in database
+      const sessionRecord = await db
+        .select()
+        .from(mobileSessions)
+        .where(
+          and(
+            eq(mobileSessions.token, sessionToken),
+            gt(mobileSessions.expiresAt, new Date())
+          )
+        );
+
+      if (sessionRecord.length === 0) {
+        res.status(401).json({ success: false, error: "Session not found or expired" });
+        return;
+      }
+
+      // Validate request body
+      const { responses, archetype, scores } = req.body;
+
+      if (!responses || typeof responses !== 'object') {
+        res.status(400).json({ success: false, error: "Responses object is required" });
+        return;
+      }
+
+      if (!archetype || !VALID_ARCHETYPES.includes(archetype)) {
+        res.status(400).json({ 
+          success: false, 
+          error: `Invalid archetype. Must be one of: ${VALID_ARCHETYPES.join(', ')}` 
+        });
+        return;
+      }
+
+      if (!scores || typeof scores !== 'object') {
+        res.status(400).json({ success: false, error: "Scores object is required" });
+        return;
+      }
+
+      // Validate all 28 responses are present
+      const responseKeys = Object.keys(responses);
+      if (responseKeys.length < 28) {
+        res.status(400).json({ 
+          success: false, 
+          error: `All 28 responses are required. Received ${responseKeys.length}` 
+        });
+        return;
+      }
+
+      // Validate response values are 0-100
+      for (const [key, value] of Object.entries(responses)) {
+        if (typeof value !== 'number' || value < 0 || value > 100) {
+          res.status(400).json({ 
+            success: false, 
+            error: `Response for question ${key} must be a number between 0-100` 
+          });
+          return;
+        }
+      }
+
+      // Validate scores structure
+      const requiredScores = ['structure', 'motivation', 'cognitive', 'taskRelationship'];
+      for (const scoreKey of requiredScores) {
+        if (typeof scores[scoreKey] !== 'number') {
+          res.status(400).json({ 
+            success: false, 
+            error: `Score '${scoreKey}' is required and must be a number` 
+          });
+          return;
+        }
+      }
+
+      // Generate a unique session ID for this quiz result
+      const quizSessionId = `mobile_${decoded.userId}_${Date.now()}`;
+
+      // Delete any existing quiz results for this user (to handle retakes)
+      await db
+        .delete(quizResults)
+        .where(eq(quizResults.userId, decoded.userId));
+
+      // Insert new quiz result
+      const [newResult] = await db
+        .insert(quizResults)
+        .values({
+          sessionId: quizSessionId,
+          userId: decoded.userId,
+          answers: responses,
+          scores: scores,
+          archetype: archetype,
+        })
+        .returning();
+
+      res.json({
+        success: true,
+        archetype: archetype,
+        message: "Quiz results saved successfully"
+      });
+
+    } catch (error) {
+      console.error('Quiz submit error:', error);
+      res.status(500).json({ success: false, error: "Failed to save quiz results" });
+    }
+  });
+
+  // GET /api/mobile/quiz/results - Get user's quiz results
+  app.get("/api/mobile/quiz/results", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        res.status(401).json({ success: false, error: "Authorization header required" });
+        return;
+      }
+
+      const sessionToken = authHeader.substring(7);
+
+      // Verify JWT
+      const decoded = verifySessionToken(sessionToken);
+      if (!decoded) {
+        res.status(401).json({ success: false, error: "Invalid or expired session" });
+        return;
+      }
+
+      // Check session exists in database
+      const sessionRecord = await db
+        .select()
+        .from(mobileSessions)
+        .where(
+          and(
+            eq(mobileSessions.token, sessionToken),
+            gt(mobileSessions.expiresAt, new Date())
+          )
+        );
+
+      if (sessionRecord.length === 0) {
+        res.status(401).json({ success: false, error: "Session not found or expired" });
+        return;
+      }
+
+      // Get latest quiz result for this user
+      const quizResultsData = await db
+        .select()
+        .from(quizResults)
+        .where(eq(quizResults.userId, decoded.userId))
+        .orderBy(desc(quizResults.completedAt))
+        .limit(1);
+
+      if (quizResultsData.length === 0) {
+        res.json({
+          success: true,
+          archetype: null
+        });
+        return;
+      }
+
+      const latestResult = quizResultsData[0];
+      const scores = latestResult.scores as {
+        structure?: number;
+        motivation?: number;
+        cognitive?: number;
+        taskRelationship?: number;
+      };
+
+      res.json({
+        success: true,
+        archetype: latestResult.archetype,
+        scores: {
+          structure: scores.structure || 0,
+          motivation: scores.motivation || 0,
+          cognitive: scores.cognitive || 0,
+          taskRelationship: scores.taskRelationship || 0
+        },
+        completedAt: latestResult.completedAt.toISOString()
+      });
+
+    } catch (error) {
+      console.error('Quiz results fetch error:', error);
+      res.status(500).json({ success: false, error: "Failed to fetch quiz results" });
+    }
+  });
+
   // Register generic chat routes
   registerChatRoutes(app);
 
