@@ -1612,7 +1612,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ============================================
 
   const JWT_SECRET = process.env.SESSION_SECRET || 'fallback-jwt-secret-change-in-production';
-  const MAGIC_LINK_EXPIRY_MINUTES = 15;
+  const MAGIC_LINK_EXPIRY_MINUTES = 60;
   const SESSION_EXPIRY_DAYS = 30;
   const RATE_LIMIT_WINDOW_HOURS = 1;
   const RATE_LIMIT_MAX_REQUESTS = 5;
