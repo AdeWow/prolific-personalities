@@ -18,6 +18,11 @@ import { insertCheckoutAttemptSchema, insertUnsubscribeFeedbackSchema } from "@s
 import { registerChatRoutes } from "./replit_integrations/chat";
 import OpenAI from "openai";
 import { buildSystemPrompt } from "./archetypePrompts";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import { magicLinkTokens, mobileSessions, magicLinkRateLimits } from "@shared/schema";
+import { eq, and, gt, sql } from "drizzle-orm";
+import { db } from "./db";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -1600,6 +1605,319 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     res.header('Content-Type', 'application/xml');
     res.send(sitemap);
+  });
+
+  // ============================================
+  // MOBILE AUTHENTICATION ENDPOINTS
+  // ============================================
+
+  const JWT_SECRET = process.env.SESSION_SECRET || 'fallback-jwt-secret-change-in-production';
+  const MAGIC_LINK_EXPIRY_MINUTES = 15;
+  const SESSION_EXPIRY_DAYS = 30;
+  const RATE_LIMIT_WINDOW_HOURS = 1;
+  const RATE_LIMIT_MAX_REQUESTS = 5;
+
+  // Helper: Generate secure random token
+  function generateSecureToken(): string {
+    return crypto.randomBytes(32).toString('hex');
+  }
+
+  // Helper: Generate JWT session token
+  function generateSessionToken(userId: string, email: string): string {
+    return jwt.sign(
+      { userId, email },
+      JWT_SECRET,
+      { expiresIn: `${SESSION_EXPIRY_DAYS}d` }
+    );
+  }
+
+  // Helper: Verify JWT session token
+  function verifySessionToken(token: string): { userId: string; email: string } | null {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
+      return decoded;
+    } catch {
+      return null;
+    }
+  }
+
+  // POST /api/mobile/auth/signin - Send magic link to user's email
+  app.post("/api/mobile/auth/signin", async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      // Validate email format
+      const emailSchema = z.string().email();
+      const validationResult = emailSchema.safeParse(email);
+      if (!validationResult.success) {
+        res.status(400).json({ success: false, error: "Invalid email format" });
+        return;
+      }
+
+      const normalizedEmail = email.toLowerCase().trim();
+
+      // Check rate limiting
+      const oneHourAgo = new Date(Date.now() - RATE_LIMIT_WINDOW_HOURS * 60 * 60 * 1000);
+      const rateLimitCheck = await db
+        .select()
+        .from(magicLinkRateLimits)
+        .where(
+          and(
+            eq(magicLinkRateLimits.email, normalizedEmail),
+            gt(magicLinkRateLimits.windowStart, oneHourAgo)
+          )
+        );
+
+      if (rateLimitCheck.length > 0 && rateLimitCheck[0].requestCount >= RATE_LIMIT_MAX_REQUESTS) {
+        res.status(429).json({ 
+          success: false, 
+          error: "Too many sign-in attempts. Please try again in an hour." 
+        });
+        return;
+      }
+
+      // Update or create rate limit record
+      if (rateLimitCheck.length > 0) {
+        await db
+          .update(magicLinkRateLimits)
+          .set({ requestCount: rateLimitCheck[0].requestCount + 1 })
+          .where(eq(magicLinkRateLimits.id, rateLimitCheck[0].id));
+      } else {
+        await db.insert(magicLinkRateLimits).values({
+          email: normalizedEmail,
+          requestCount: 1,
+          windowStart: new Date(),
+        });
+      }
+
+      // Check if user exists, create if not
+      let user = await storage.getUserByEmail(normalizedEmail);
+      if (!user) {
+        // Create new user with generated ID
+        const newUserId = crypto.randomUUID();
+        await storage.upsertUser({
+          id: newUserId,
+          email: normalizedEmail,
+          firstName: null,
+          lastName: null,
+          profileImageUrl: null,
+        });
+        user = await storage.getUserByEmail(normalizedEmail);
+      }
+
+      // Generate magic link token
+      const token = generateSecureToken();
+      const expiresAt = new Date(Date.now() + MAGIC_LINK_EXPIRY_MINUTES * 60 * 1000);
+
+      // Store token in database
+      await db.insert(magicLinkTokens).values({
+        email: normalizedEmail,
+        token,
+        expiresAt,
+        used: 0,
+      });
+
+      // Generate magic link URL
+      const baseUrl = process.env.APP_URL || 'https://prolificpersonalities.com';
+      const magicLink = `${baseUrl}/api/mobile/auth/verify?token=${token}`;
+
+      // Send email with magic link
+      if (!resend) {
+        console.warn('⚠️ Resend not configured - magic link email not sent');
+        res.status(503).json({ 
+          success: false, 
+          error: "Email service not configured" 
+        });
+        return;
+      }
+
+      await resend.emails.send({
+        from: 'Prolific Personalities <support@prolificpersonalities.com>',
+        to: normalizedEmail,
+        subject: 'Sign in to Prolific Personalities',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h1 style="color: #0d9488; margin-bottom: 20px;">Sign in to Prolific Personalities</h1>
+            <p style="font-size: 16px; color: #374151; margin-bottom: 20px;">
+              Click the button below to sign in to your account. This link will expire in ${MAGIC_LINK_EXPIRY_MINUTES} minutes.
+            </p>
+            <a href="${magicLink}" style="display: inline-block; background-color: #0d9488; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-bottom: 20px;">
+              Sign In
+            </a>
+            <p style="font-size: 14px; color: #6b7280; margin-top: 20px;">
+              If you didn't request this link, you can safely ignore this email.
+            </p>
+            <p style="font-size: 12px; color: #9ca3af; margin-top: 30px;">
+              If the button doesn't work, copy and paste this link into your browser:<br/>
+              <a href="${magicLink}" style="color: #0d9488;">${magicLink}</a>
+            </p>
+          </div>
+        `,
+      });
+
+      console.log(`✅ Magic link sent to ${normalizedEmail}`);
+      res.json({ 
+        success: true, 
+        message: "Check your email for the magic link" 
+      });
+
+    } catch (error) {
+      console.error('Magic link signin error:', error);
+      res.status(500).json({ success: false, error: "Failed to send magic link" });
+    }
+  });
+
+  // GET /api/mobile/auth/verify - Verify magic link token and create session
+  app.get("/api/mobile/auth/verify", async (req, res) => {
+    try {
+      const { token } = req.query;
+
+      if (!token || typeof token !== 'string') {
+        res.status(400).json({ success: false, error: "Token is required" });
+        return;
+      }
+
+      // Find token in database
+      const tokenRecord = await db
+        .select()
+        .from(magicLinkTokens)
+        .where(
+          and(
+            eq(magicLinkTokens.token, token),
+            eq(magicLinkTokens.used, 0),
+            gt(magicLinkTokens.expiresAt, new Date())
+          )
+        );
+
+      if (tokenRecord.length === 0) {
+        res.status(400).json({ success: false, error: "Invalid or expired token" });
+        return;
+      }
+
+      const magicToken = tokenRecord[0];
+
+      // Mark token as used
+      await db
+        .update(magicLinkTokens)
+        .set({ used: 1 })
+        .where(eq(magicLinkTokens.id, magicToken.id));
+
+      // Get user
+      const user = await storage.getUserByEmail(magicToken.email);
+      if (!user) {
+        res.status(400).json({ success: false, error: "User not found" });
+        return;
+      }
+
+      // Generate session token
+      const sessionToken = generateSessionToken(user.id, magicToken.email);
+      const sessionExpiresAt = new Date(Date.now() + SESSION_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+
+      // Store session in database
+      await db.insert(mobileSessions).values({
+        userId: user.id,
+        token: sessionToken,
+        expiresAt: sessionExpiresAt,
+      });
+
+      console.log(`✅ Mobile session created for ${magicToken.email}`);
+
+      res.json({
+        success: true,
+        sessionToken,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: [user.firstName, user.lastName].filter(Boolean).join(' ') || null,
+        },
+      });
+
+    } catch (error) {
+      console.error('Magic link verify error:', error);
+      res.status(500).json({ success: false, error: "Failed to verify token" });
+    }
+  });
+
+  // GET /api/mobile/auth/session - Validate session token and get user info
+  app.get("/api/mobile/auth/session", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        res.status(401).json({ success: false, error: "Authorization header required" });
+        return;
+      }
+
+      const sessionToken = authHeader.substring(7); // Remove 'Bearer ' prefix
+
+      // Verify JWT
+      const decoded = verifySessionToken(sessionToken);
+      if (!decoded) {
+        res.status(401).json({ success: false, error: "Invalid or expired session" });
+        return;
+      }
+
+      // Check session exists in database and is not expired
+      const sessionRecord = await db
+        .select()
+        .from(mobileSessions)
+        .where(
+          and(
+            eq(mobileSessions.token, sessionToken),
+            gt(mobileSessions.expiresAt, new Date())
+          )
+        );
+
+      if (sessionRecord.length === 0) {
+        res.status(401).json({ success: false, error: "Session not found or expired" });
+        return;
+      }
+
+      // Get user info
+      const user = await storage.getUserByEmail(decoded.email);
+      if (!user) {
+        res.status(401).json({ success: false, error: "User not found" });
+        return;
+      }
+
+      res.json({
+        success: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: [user.firstName, user.lastName].filter(Boolean).join(' ') || null,
+        },
+      });
+
+    } catch (error) {
+      console.error('Session validation error:', error);
+      res.status(500).json({ success: false, error: "Failed to validate session" });
+    }
+  });
+
+  // POST /api/mobile/auth/signout - Invalidate session
+  app.post("/api/mobile/auth/signout", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        res.status(401).json({ success: false, error: "Authorization header required" });
+        return;
+      }
+
+      const sessionToken = authHeader.substring(7);
+
+      // Delete session from database
+      await db
+        .delete(mobileSessions)
+        .where(eq(mobileSessions.token, sessionToken));
+
+      res.json({ success: true, message: "Signed out successfully" });
+
+    } catch (error) {
+      console.error('Signout error:', error);
+      res.status(500).json({ success: false, error: "Failed to sign out" });
+    }
   });
 
   // Register generic chat routes
