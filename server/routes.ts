@@ -2049,13 +2049,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ============================================
 
   const VALID_ARCHETYPES = [
-    'structured-achiever',
     'chaotic-creative',
-    'balanced-practitioner',
+    'anxious-perfectionist',
+    'strategic-planner',
     'novelty-seeker',
-    'steady-operator',
-    'adaptive-executor',
-    'precision-planner'
+    'flexible-improviser',
+    'structured-achiever',
+    'adaptive-generalist'
   ];
 
   // POST /api/mobile/quiz/submit - Submit quiz results
