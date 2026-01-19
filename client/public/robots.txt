@@ -1,11 +1,12 @@
 User-agent: *
 Allow: /
 
-Sitemap: /sitemap.xml
+Sitemap: https://prolificpersonalities.com/sitemap.xml
 
 # Disallow admin/dev pages
 Disallow: /dev-tools
 Disallow: /api/
+Disallow: /admin/
 
 # Allow search engines to index all main content
 Allow: /quiz
@@ -18,3 +19,5 @@ Allow: /science
 Allow: /resources
 Allow: /founder
 Allow: /refund-policy
+Allow: /coach
+Allow: /dashboard

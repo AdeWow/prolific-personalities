@@ -94,13 +94,53 @@ export default function Pricing() {
     { name: "Priority Support", discovery: false, playbook: false, partner: true },
   ];
 
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://prolificpersonalities.com';
+  
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Prolific Personalities Productivity Assessment",
+    "description": "Science-backed productivity assessment with personalized strategies based on your unique archetype",
+    "brand": {
+      "@type": "Brand",
+      "name": "Prolific Personalities"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Discovery - Free Assessment",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "description": "Complete 28-question assessment with archetype reveal and quick-win tactics"
+      },
+      {
+        "@type": "Offer",
+        "name": "Complete Playbook",
+        "price": "19",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "description": "35+ page personalized playbook with evidence-based strategies and implementation guides"
+      },
+      {
+        "@type": "Offer",
+        "name": "Productivity Partner Monthly",
+        "price": "7",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "description": "Unlimited AI productivity coaching with chat history and priority support"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Pricing - Free Productivity Test + Premium Playbooks | Prolific Personalities"
         description="Take our free productivity test and quiz. Upgrade to Complete Playbook ($19) for 35+ pages of personalized strategies, or Productivity Partner ($7/month) for unlimited AI coaching."
         keywords="free productivity test, productivity quiz pricing, productivity assessment cost, AI productivity coach, personalized productivity strategies, productivity playbook"
-        canonicalUrl={typeof window !== 'undefined' ? `${window.location.origin}/pricing` : undefined}
+        canonicalUrl={`${origin}/pricing`}
+        structuredData={structuredData}
       />
       <Header />
       <main id="main-content" role="main">

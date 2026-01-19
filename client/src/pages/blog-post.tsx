@@ -138,10 +138,11 @@ export default function BlogPostPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title={post.title}
+        title={`${post.title} | Productivity Blog`}
         description={post.excerpt}
         ogImage={post.image}
         keywords={post.tags.join(", ")}
+        canonicalUrl={origin ? `${origin}/blog/${post.slug}` : undefined}
         structuredData={structuredData}
       />
       <main id="main-content" role="main">

@@ -1527,11 +1527,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     ];
 
     const blogSlugs = [
-      'understanding-productivity-archetypes',
-      'productivity-guilt-self-compassion',
-      'fluid-productivity-style-transitions',
-      'digital-minimalism-notification-freedom',
-      'science-behind-personalized-productivity'
+      'dog-applied-head-of-growth-productivity-strategy',
+      'confessions-imperfect-founder-procrastination',
+      'time-blocking-less-productive-some-brains',
+      'constant-stimulation-adhd-or-productivity-style',
+      'cant-stick-to-routine-what-to-do-instead',
+      'start-everything-finish-nothing-psychology',
+      'cant-focus-anymore-brain-wont-cooperate',
+      'flexible-improvisers-energy-wont-follow-schedule',
+      'strategic-planners-brilliant-plans-never-reality',
+      'novelty-seekers-boredom-kills-projects',
+      'structured-achiever-hidden-trap',
+      'anxious-perfectionist-paradox',
+      'chaotic-creatives-brain-not-broken',
+      'choose-productivity-tool-5-minutes',
+      'discipline-advice-destroys-productivity',
+      'why-every-productivity-system-has-failed-you',
+      'productivity-archetype-changes-fluid-styles',
+      'digital-minimalism-challenge',
+      'when-productivity-hurts',
+      '6-productivity-archetypes-explained'
     ];
 
     const today = new Date().toISOString().split('T')[0];
