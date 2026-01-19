@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
 import { questions } from "@/data/questions";
 import { calculateScores, determineArchetype, generateSessionId, getProgressPercentage, validateAnswer } from "@/lib/quiz-logic";
 import { apiRequest } from "@/lib/queryClient";
@@ -13,7 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { trackQuizStart, trackQuizPageView, trackQuizQuestionAnswered, trackQuizComplete } from "@/lib/posthog";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Zap } from "lucide-react";
+import { MilestoneCelebration } from "@/components/milestone-celebration";
 import type { QuizAnswers } from "@shared/schema";
 import type { Question } from "@/data/questions";
 
@@ -31,6 +33,10 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   const [sessionId] = useState(() => generateSessionId());
   const [quizStarted, setQuizStarted] = useState(false);
   const [milestonesTracked, setMilestonesTracked] = useState<Set<number>>(new Set());
+  const [quickMode, setQuickMode] = useState(false);
+  const [showCelebration, setShowCelebration] = useState<1 | 2 | 3 | null>(null);
+  const [celebrationsShown, setCelebrationsShown] = useState<Set<number>>(new Set());
+  const [pendingPageAdvance, setPendingPageAdvance] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -93,6 +99,27 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     },
   });
 
+  const checkForMilestoneCelebration = useCallback((questionNumber: number): 1 | 2 | 3 | null => {
+    if (quickMode) return null;
+    if (questionNumber === 7 && !celebrationsShown.has(1)) return 1;
+    if (questionNumber === 14 && !celebrationsShown.has(2)) return 2;
+    if (questionNumber === 21 && !celebrationsShown.has(3)) return 3;
+    return null;
+  }, [quickMode, celebrationsShown]);
+
+  const handleCelebrationComplete = useCallback(() => {
+    if (showCelebration) {
+      setCelebrationsShown(prev => new Set(prev).add(showCelebration));
+    }
+    setShowCelebration(null);
+    if (pendingPageAdvance) {
+      setPendingPageAdvance(false);
+      setCurrentPage(prev => prev + 1);
+      setActiveQuestionIndex(0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [showCelebration, pendingPageAdvance]);
+
   const handleAnswerChange = (questionId: string, value: string | number, questionIndexInPage: number) => {
     const question = questions.find(q => q.id === questionId);
     if (question && validateAnswer(question, value)) {
@@ -106,18 +133,28 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
 
       setTimeout(() => {
         const nextQuestionIndex = questionIndexInPage + 1;
+        
+        const milestone = checkForMilestoneCelebration(questionNumber);
+        
         if (nextQuestionIndex < currentQuestions.length) {
           setActiveQuestionIndex(nextQuestionIndex);
           questionRefs.current[nextQuestionIndex]?.scrollIntoView({ 
             behavior: 'smooth', 
             block: 'center' 
           });
+          if (milestone) {
+            setShowCelebration(milestone);
+          }
         } else if (!isLastPage) {
-          setTimeout(() => {
-            handleNextPage();
-          }, 300);
+          if (milestone) {
+            setShowCelebration(milestone);
+            setPendingPageAdvance(true);
+          } else {
+            setTimeout(() => {
+              handleNextPage();
+            }, 300);
+          }
         }
-        // On last page after answering last question, user clicks "See Results" manually
       }, 150);
     }
   };
@@ -263,6 +300,13 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
 
   return (
     <div className="w-full max-w-3xl mx-auto">
+      {showCelebration && (
+        <MilestoneCelebration 
+          milestone={showCelebration} 
+          onComplete={handleCelebrationComplete} 
+        />
+      )}
+
       {showHeader && (
         <div className="text-center space-y-3 mb-8">
           <h2 className="text-2xl lg:text-3xl font-bold text-foreground dark:text-foreground">
@@ -271,6 +315,22 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
           <p className="text-base text-muted-foreground dark:text-muted-foreground">
             Answer honestly for the most accurate results
           </p>
+          
+          <div className="flex items-center justify-center gap-2 pt-2">
+            <Switch
+              id="quick-mode"
+              checked={quickMode}
+              onCheckedChange={setQuickMode}
+              aria-label="Quick mode - skip milestone celebrations"
+            />
+            <Label 
+              htmlFor="quick-mode" 
+              className="text-sm text-muted-foreground dark:text-muted-foreground cursor-pointer flex items-center gap-1.5"
+            >
+              <Zap className="h-4 w-4" />
+              Quick Mode
+            </Label>
+          </div>
         </div>
       )}
 
