@@ -126,10 +126,14 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
       const questionNumber = startIndex + questionIndexInPage + 1;
       trackQuizQuestionAnswered(questionNumber, questions.length, question.axis);
       
-      setAnswers(prev => ({
-        ...prev,
-        [questionId]: value
-      }));
+      setAnswers(prev => {
+        const newAnswers = {
+          ...prev,
+          [questionId]: value
+        };
+        console.log(`Answer ${questionId}: ${Object.keys(newAnswers).length}/${questions.length} answered`);
+        return newAnswers;
+      });
 
       setTimeout(() => {
         const nextQuestionIndex = questionIndexInPage + 1;
@@ -427,7 +431,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
 
         <Button
           onClick={handleNextPage}
-          disabled={(!pageQuestionsAnswered && !isLastPage) || (isLastPage && !allQuestionsAnswered) || saveResultsMutation.isPending}
+          disabled={(!pageQuestionsAnswered && !isLastPage) || (isLastPage && !allQuestionsAnswered) || saveResultsMutation.isPending || showCelebration !== null}
           className={cn(
             "flex items-center gap-2 px-6 py-5 text-base font-medium",
             "bg-primary hover:bg-primary/90",
