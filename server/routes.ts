@@ -20,8 +20,8 @@ import OpenAI from "openai";
 import { buildSystemPrompt } from "./archetypePrompts";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { magicLinkTokens, mobileSessions, magicLinkRateLimits } from "@shared/schema";
-import { eq, and, gt, sql } from "drizzle-orm";
+import { magicLinkTokens, mobileSessions, magicLinkRateLimits, quizResults, orders } from "@shared/schema";
+import { eq, and, gt, sql, desc, or } from "drizzle-orm";
 import { db } from "./db";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -1917,6 +1917,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Signout error:', error);
       res.status(500).json({ success: false, error: "Failed to sign out" });
+    }
+  });
+
+  // ============================================
+  // MOBILE USER PROFILE ENDPOINT
+  // ============================================
+
+  // GET /api/mobile/user/profile - Get user's complete profile with quiz results and premium status
+  app.get("/api/mobile/user/profile", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        res.status(401).json({ success: false, error: "Authorization header required" });
+        return;
+      }
+
+      const sessionToken = authHeader.substring(7);
+
+      // Verify JWT
+      const decoded = verifySessionToken(sessionToken);
+      if (!decoded) {
+        res.status(401).json({ success: false, error: "Invalid or expired session" });
+        return;
+      }
+
+      // Check session exists in database and is not expired
+      const sessionRecord = await db
+        .select()
+        .from(mobileSessions)
+        .where(
+          and(
+            eq(mobileSessions.token, sessionToken),
+            gt(mobileSessions.expiresAt, new Date())
+          )
+        );
+
+      if (sessionRecord.length === 0) {
+        res.status(401).json({ success: false, error: "Session not found or expired" });
+        return;
+      }
+
+      // Get user from database
+      const user = await storage.getUser(decoded.userId);
+      if (!user) {
+        res.status(404).json({ success: false, error: "User not found" });
+        return;
+      }
+
+      // Get latest quiz result for this user
+      const quizResultsData = await db
+        .select()
+        .from(quizResults)
+        .where(eq(quizResults.userId, decoded.userId))
+        .orderBy(desc(quizResults.completedAt))
+        .limit(1);
+
+      const latestQuizResult = quizResultsData[0] || null;
+
+      // Check premium status - any completed or paid order
+      const premiumOrders = await db
+        .select()
+        .from(orders)
+        .where(
+          and(
+            eq(orders.userId, decoded.userId),
+            or(
+              eq(orders.status, 'completed'),
+              eq(orders.status, 'paid')
+            )
+          )
+        )
+        .orderBy(orders.createdAt)
+        .limit(1);
+
+      const isPremium = premiumOrders.length > 0;
+      const premiumSince = isPremium && premiumOrders[0].createdAt 
+        ? premiumOrders[0].createdAt.toISOString() 
+        : null;
+
+      // Build archetype response
+      let archetypeResponse = null;
+      if (latestQuizResult) {
+        const scores = latestQuizResult.scores as { 
+          structure?: number; 
+          motivation?: number; 
+          cognitive?: number; 
+          taskRelationship?: number 
+        };
+        
+        // Get archetype info for display name
+        const archetypeInfo = getArchetypeInfo(latestQuizResult.archetype);
+        
+        archetypeResponse = {
+          id: latestQuizResult.archetype,
+          name: archetypeInfo?.title || latestQuizResult.archetype,
+          assessmentDate: latestQuizResult.completedAt.toISOString(),
+          scores: {
+            structure: scores.structure || 0,
+            motivation: scores.motivation || 0,
+            cognitive: scores.cognitive || 0,
+            taskRelationship: scores.taskRelationship || 0
+          }
+        };
+      }
+
+      // Build user name from firstName and lastName
+      const userName = [user.firstName, user.lastName].filter(Boolean).join(' ') || null;
+
+      res.json({
+        success: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: userName
+        },
+        archetype: archetypeResponse,
+        isPremium,
+        premiumSince
+      });
+
+    } catch (error) {
+      console.error('Profile fetch error:', error);
+      res.status(500).json({ success: false, error: "Failed to fetch profile" });
     }
   });
 
