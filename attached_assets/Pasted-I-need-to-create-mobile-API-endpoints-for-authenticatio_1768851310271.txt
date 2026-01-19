@@ -1,0 +1,91 @@
+I need to create mobile API endpoints for authentication.
+
+BACKGROUND:
+- I already have Replit Auth working on the web app
+- I have a `users` table in PostgreSQL
+- Mobile app needs to authenticate users via API
+
+CREATE THESE ENDPOINTS:
+
+1. POST /api/mobile/auth/signin
+   Purpose: Send magic link to user's email
+   
+   Request body:
+   {
+     "email": "user@example.com"
+   }
+   
+   Logic:
+   - Validate email format
+   - Check if user exists in users table
+   - If not, create new user
+   - Generate a secure magic link token (JWT or random string)
+   - Store token in database with expiration (15 minutes)
+   - Send email with magic link: https://ProlificPersonalities.replit.app/api/mobile/auth/verify?token=<token>
+   - Return success response
+   
+   Response:
+   {
+     "success": true,
+     "message": "Check your email for the magic link"
+   }
+
+2. GET /api/mobile/auth/verify?token=<token>
+   Purpose: Verify magic link token and create session
+   
+   Logic:
+   - Validate token from query params
+   - Check token exists in database and hasn't expired
+   - If valid: Create user session
+   - Generate session token (JWT)
+   - Delete the magic link token (one-time use)
+   - Return session token
+   
+   Response:
+   {
+     "success": true,
+     "sessionToken": "jwt_token_here",
+     "user": {
+       "id": "user_id",
+       "email": "user@example.com",
+       "name": "User Name"
+     }
+   }
+   
+   Error response (invalid/expired token):
+   {
+     "success": false,
+     "error": "Invalid or expired token"
+   }
+
+3. GET /api/mobile/auth/session
+   Purpose: Validate session token and get user info
+   
+   Headers:
+   Authorization: Bearer <session_token>
+   
+   Logic:
+   - Validate JWT session token from Authorization header
+   - If valid, return user info
+   - If invalid/expired, return 401 error
+   
+   Response:
+   {
+     "success": true,
+     "user": {
+       "id": "user_id",
+       "email": "user@example.com",
+       "name": "User Name"
+     }
+   }
+
+REQUIREMENTS:
+- Use existing database connection (server/db.ts)
+- Use Drizzle ORM for database queries
+- Create a new table for magic_link_tokens if needed
+- Create a new table for sessions if it doesn't exist
+- Use jsonwebtoken library for JWT (install if needed: npm install jsonwebtoken)
+- Add proper error handling
+- Add rate limiting (max 5 requests per email per hour for signin)
+
+Create these files in the appropriate location (probably app/api/mobile/auth/) and show me the code.

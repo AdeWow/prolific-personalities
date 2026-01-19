@@ -326,5 +326,35 @@ export type PlaybookNotes = typeof playbookNotes.$inferSelect;
 // Type for tools with archetype fit score
 export type ToolWithFitScore = Tool & { fitScore: number };
 
+// Magic link tokens for mobile authentication
+export const magicLinkTokens = pgTable("magic_link_tokens", {
+  id: serial("id").primaryKey(),
+  email: varchar("email").notNull(),
+  token: varchar("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  used: integer("used").default(0).notNull(),
+});
+
+// Mobile sessions for JWT-based authentication
+export const mobileSessions = pgTable("mobile_sessions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  token: varchar("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Rate limiting for magic link requests
+export const magicLinkRateLimits = pgTable("magic_link_rate_limits", {
+  id: serial("id").primaryKey(),
+  email: varchar("email").notNull(),
+  requestCount: integer("request_count").default(1).notNull(),
+  windowStart: timestamp("window_start").defaultNow().notNull(),
+});
+
+export type MagicLinkToken = typeof magicLinkTokens.$inferSelect;
+export type MobileSession = typeof mobileSessions.$inferSelect;
+
 // Export chat models
 export * from "./models/chat";
