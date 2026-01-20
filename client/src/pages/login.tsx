@@ -52,17 +52,12 @@ export default function Login() {
 
     setIsLoadingEmail(true);
     try {
-      console.log("Sending magic link to:", email);
-      console.log("Redirect URL:", `${window.location.origin}/auth/callback`);
-      
-      const { data, error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
-      
-      console.log("Supabase OTP response:", { data, error });
       
       if (error) throw error;
       
@@ -72,7 +67,6 @@ export default function Login() {
         description: "We sent you a magic link to sign in.",
       });
     } catch (error: any) {
-      console.error("Magic link error:", error);
       toast({
         title: "Sign in failed",
         description: error.message || "Unable to send magic link. Please try again.",
