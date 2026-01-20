@@ -1,20 +1,25 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import type { Express, RequestHandler, Response } from "express";
 import { storage } from "./storage";
+import { db } from "./db";
+import { users, quizResults, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes } from "@shared/schema";
+import { eq, sql } from "drizzle-orm";
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error("Missing Supabase environment variables for server auth");
+let supabaseAdmin: SupabaseClient | null = null;
+
+if (supabaseUrl && supabaseServiceKey) {
+  supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+} else {
+  console.warn("Missing Supabase environment variables. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.");
 }
-
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-  },
-});
 
 export interface AuthenticatedRequest extends Express.Request {
   user?: {
@@ -24,6 +29,10 @@ export interface AuthenticatedRequest extends Express.Request {
 }
 
 export const isAuthenticated: RequestHandler = async (req: any, res, next) => {
+  if (!supabaseAdmin) {
+    return res.status(503).json({ message: "Authentication service unavailable" });
+  }
+
   try {
     const authHeader = req.headers.authorization;
     
@@ -32,7 +41,6 @@ export const isAuthenticated: RequestHandler = async (req: any, res, next) => {
     }
 
     const token = authHeader.substring(7);
-
     const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
 
     if (error || !user) {
@@ -43,10 +51,6 @@ export const isAuthenticated: RequestHandler = async (req: any, res, next) => {
     req.user = {
       id: user.id,
       email: user.email || null,
-      claims: {
-        sub: user.id,
-        email: user.email,
-      },
     };
 
     next();
@@ -56,8 +60,24 @@ export const isAuthenticated: RequestHandler = async (req: any, res, next) => {
   }
 };
 
+async function migrateUserToSupabaseId(oldUserId: string, newSupabaseId: string): Promise<void> {
+  await db.transaction(async (tx) => {
+    await tx.update(quizResults).set({ userId: newSupabaseId }).where(eq(quizResults.userId, oldUserId));
+    await tx.update(orders).set({ userId: newSupabaseId }).where(eq(orders.userId, oldUserId));
+    await tx.update(playbookProgress).set({ userId: newSupabaseId }).where(eq(playbookProgress.userId, oldUserId));
+    await tx.update(actionPlanProgress).set({ userId: newSupabaseId }).where(eq(actionPlanProgress.userId, oldUserId));
+    await tx.update(toolTracking).set({ userId: newSupabaseId }).where(eq(toolTracking.userId, oldUserId));
+    await tx.update(playbookNotes).set({ userId: newSupabaseId }).where(eq(playbookNotes.userId, oldUserId));
+    await tx.delete(users).where(eq(users.id, oldUserId));
+  });
+}
+
 export async function setupAuth(app: Express) {
   app.post("/api/auth/sync", async (req: any, res: Response) => {
+    if (!supabaseAdmin) {
+      return res.status(503).json({ message: "Authentication service unavailable" });
+    }
+
     try {
       const authHeader = req.headers.authorization;
       
@@ -66,27 +86,51 @@ export async function setupAuth(app: Express) {
       }
 
       const token = authHeader.substring(7);
-      const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+      const { data: { user: supabaseUser }, error } = await supabaseAdmin.auth.getUser(token);
 
-      if (error || !user) {
+      if (error || !supabaseUser) {
         return res.status(401).json({ message: "Invalid token" });
       }
 
       const { id, email, firstName, lastName, profileImageUrl } = req.body;
 
-      if (id !== user.id) {
+      if (id !== supabaseUser.id) {
         return res.status(403).json({ message: "User ID mismatch" });
+      }
+
+      const userEmail = email || supabaseUser.email;
+      
+      const existingUserById = await storage.getUser(id);
+      
+      if (existingUserById) {
+        await storage.upsertUser({
+          id,
+          email: userEmail,
+          firstName,
+          lastName,
+          profileImageUrl,
+        });
+        return res.json({ success: true, migrated: false });
+      }
+
+      if (userEmail) {
+        const existingUserByEmail = await storage.getUserByEmail(userEmail);
+        
+        if (existingUserByEmail && existingUserByEmail.id !== id) {
+          console.log(`Migrating user from ${existingUserByEmail.id} to ${id}`);
+          await migrateUserToSupabaseId(existingUserByEmail.id, id);
+        }
       }
 
       await storage.upsertUser({
         id,
-        email: email || user.email,
+        email: userEmail,
         firstName,
         lastName,
         profileImageUrl,
       });
 
-      res.json({ success: true });
+      res.json({ success: true, migrated: true });
     } catch (error) {
       console.error("User sync error:", error);
       res.status(500).json({ message: "Failed to sync user" });
