@@ -3,11 +3,18 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut, Bot } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 import logoImage from "@assets/Logo5Nobackground1_1762920314202.png";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isAuthenticated, user } = useAuth();
+  const [, setLocation] = useLocation();
+  const { isAuthenticated, user, signOut } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut();
+    setLocation("/");
+  };
 
   return (
     <>
@@ -60,12 +67,10 @@ export function Header() {
                       Dashboard
                     </Button>
                   </Link>
-                  <a href="/api/logout">
-                    <Button variant="ghost" className="gap-2" data-testid="button-logout">
+                  <Button variant="ghost" className="gap-2" onClick={handleLogout} data-testid="button-logout">
                       <LogOut className="h-4 w-4" aria-hidden="true" />
                       Logout
                     </Button>
-                  </a>
                 </>
               ) : (
                 <>
@@ -129,12 +134,10 @@ export function Header() {
                       Dashboard
                     </Button>
                   </Link>
-                  <a href="/api/logout" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full gap-2 justify-center" data-testid="button-logout-mobile">
+                  <Button variant="ghost" className="w-full gap-2 justify-center" onClick={() => { handleLogout(); setMobileMenuOpen(false); }} data-testid="button-logout-mobile">
                       <LogOut className="h-4 w-4" aria-hidden="true" />
                       Logout
                     </Button>
-                  </a>
                 </>
               ) : (
                 <>

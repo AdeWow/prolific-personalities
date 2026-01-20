@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ExitIntentPopup } from "@/components/exit-intent-popup";
 import { InstallPrompt } from "@/components/install-prompt";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { initGA } from "./lib/analytics";
 import { initPostHog } from "./lib/posthog";
 import { useAnalytics } from "./hooks/use-analytics";
@@ -92,12 +93,14 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <ExitIntentPopup />
-        <InstallPrompt />
-        <Router />
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <ExitIntentPopup />
+          <InstallPrompt />
+          <Router />
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
