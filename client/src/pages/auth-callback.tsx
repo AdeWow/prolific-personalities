@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import logoImage from "@assets/Logo5Nobackground1_1762920314202.png";
 
@@ -10,6 +10,11 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
+      if (!isSupabaseConfigured) {
+        setError("Authentication is not configured");
+        return;
+      }
+
       try {
         const { data, error } = await supabase.auth.getSession();
         

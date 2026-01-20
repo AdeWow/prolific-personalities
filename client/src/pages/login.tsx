@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { Loader2, Mail, ArrowLeft } from "lucide-react";
 import { SiGoogle } from "react-icons/si";
 import logoImage from "@assets/Logo5Nobackground1_1762920314202.png";
