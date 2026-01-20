@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./supabaseAuth";
 import { insertQuizResultSchema, insertEmailCaptureSchema, insertWaitlistSchema, insertFeedbackSchema } from "@shared/schema";
 import { toolsData } from "./tools-data";
 import { z } from "zod";
@@ -217,23 +217,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Setup Replit Auth
   await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
-
   // Link quiz result to logged-in user
   app.post("/api/quiz/claim/:sessionId", writeLimiter, isAuthenticated, async (req: any, res) => {
     try {
       const { sessionId } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Check if result exists and is already claimed
       const existing = await storage.getQuizResultBySessionId(sessionId);
@@ -275,7 +263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all quiz results for logged-in user
   app.get("/api/dashboard/results", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const results = await storage.getQuizResultsByUserId(userId);
       res.json(results);
     } catch (error) {
@@ -910,7 +898,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user's orders
   app.get("/api/orders", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const orders = await storage.getOrdersByUserId(userId);
       res.json(orders);
     } catch (error) {
@@ -925,7 +913,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/download/:orderId", isAuthenticated, async (req: any, res) => {
     try {
       const { orderId } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
 
       const order = await storage.getOrderById(parseInt(orderId));
 
@@ -980,7 +968,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Middleware to check premium access for a specific archetype
   const hasPremiumAccess = async (req: any, res: any, next: any) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const archetype = req.params.archetype || req.body.archetype;
 
       if (!archetype) {
@@ -1016,7 +1004,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get playbook progress for user and archetype
   app.get("/api/playbook/:archetype/progress", isAuthenticated, hasPremiumAccess, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { archetype } = req.params;
       const progress = await storage.getPlaybookProgress(userId, archetype);
       res.json(progress);
@@ -1029,7 +1017,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update chapter completion
   app.post("/api/playbook/:archetype/progress/chapter", writeLimiter, isAuthenticated, hasPremiumAccess, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { archetype } = req.params;
       const { chapterId, completed } = req.body;
 
@@ -1049,7 +1037,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get action plan progress
   app.get("/api/playbook/:archetype/action-plan", isAuthenticated, hasPremiumAccess, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { archetype } = req.params;
       const progress = await storage.getActionPlanProgress(userId, archetype);
       res.json(progress);
@@ -1062,7 +1050,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update action plan task
   app.post("/api/playbook/:archetype/action-plan/task", writeLimiter, isAuthenticated, hasPremiumAccess, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { archetype } = req.params;
       const { dayNumber, taskId, completed } = req.body;
 
@@ -1082,7 +1070,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get tool tracking
   app.get("/api/playbook/:archetype/tools", isAuthenticated, hasPremiumAccess, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { archetype } = req.params;
       const tracking = await storage.getToolTracking(userId, archetype);
       res.json(tracking);
@@ -1095,7 +1083,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update tool tracking status
   app.post("/api/playbook/:archetype/tools/update", writeLimiter, isAuthenticated, hasPremiumAccess, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { archetype } = req.params;
       const { toolId, status, notes } = req.body;
 
@@ -1115,7 +1103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get playbook notes
   app.get("/api/playbook/:archetype/notes", isAuthenticated, hasPremiumAccess, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { archetype } = req.params;
       const { sectionId } = req.query;
       const notes = await storage.getPlaybookNotes(userId, archetype, sectionId as string | undefined);
@@ -1129,7 +1117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create playbook note
   app.post("/api/playbook/:archetype/notes", writeLimiter, isAuthenticated, hasPremiumAccess, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { archetype } = req.params;
       const { sectionId, content } = req.body;
 
@@ -1185,7 +1173,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Check if user has premium access to an archetype
   app.get("/api/playbook/:archetype/access", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { archetype } = req.params;
       const hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype);
       res.json({ hasAccess });
