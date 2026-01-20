@@ -74,11 +74,11 @@ export function Header() {
                       Take the Quiz
                     </Button>
                   </Link>
-                  <a href="/api/login">
+                  <Link href="/login">
                     <Button variant="outline" data-testid="button-login">
                       Login
                     </Button>
-                  </a>
+                  </Link>
                 </>
               )}
             </nav>
@@ -143,11 +143,11 @@ export function Header() {
                       Take the Quiz
                     </Button>
                   </Link>
-                  <a href="/api/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="outline" className="w-full" data-testid="button-login-mobile">
                       Login
                     </Button>
-                  </a>
+                  </Link>
                 </>
               )}
             </nav>
