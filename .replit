@@ -47,6 +47,10 @@ VITE_APP_URL = "https://prolificpersonalities.com"
 SITE_URL = "https://prolificpersonalities.com"
 VITE_API_URL = "https://prolificpersonalities.com/api"
 API_BASE_URL = "https://prolificpersonalities.com/api"
+SUPABASE_URL = "https://cunmkubhojdhbzhoedft.supabase.co"
+VITE_SUPABASE_URL = "https://cunmkubhojdhbzhoedft.supabase.co"
+VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1bm1rdWJob2pkaGJ6aG9lZGZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4NzUyNzUsImV4cCI6MjA4NDQ1MTI3NX0.HY3b3sKKPzkUx6YYj-Tv29HSKFQf0ZlRWzDuLntrBb8"
+SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1bm1rdWJob2pkaGJ6aG9lZGZ0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODg3NTI3NSwiZXhwIjoyMDg0NDUxMjc1fQ.CTK_anVN_eEPF6j7-q4dDwmQfm8XBTrFpnW8xgh-jUw"
 
 [userenv.production]
 STRIPE_SECRET_KEY = "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"
