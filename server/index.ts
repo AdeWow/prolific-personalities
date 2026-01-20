@@ -1,8 +1,46 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { registerRoutes, registerWebhookRoute } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// CORS configuration for mobile app and custom domains
+const allowedOrigins = [
+  'https://prolificpersonalities.com',
+  'https://www.prolificpersonalities.com',
+  // Development origins
+  ...(process.env.NODE_ENV === 'development' ? [
+    'http://localhost:5000',
+    'http://localhost:3000',
+    /\.replit\.dev$/,
+    /\.repl\.co$/
+  ] : [])
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin is in allowed list
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (typeof allowed === 'string') {
+        return origin === allowed;
+      }
+      return allowed.test(origin);
+    });
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 
 // Register Stripe webhook route BEFORE JSON middleware (needs raw body)
 registerWebhookRoute(app);
