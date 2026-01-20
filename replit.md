@@ -46,8 +46,8 @@ The application employs a monorepo structure, separating the React-based fronten
 
 **Server Framework**: Express.js on Node.js.
 **API Design**: RESTful API for quiz results, authentication, email capture, productivity tools, and sitemap generation. Zod schemas for validation.
-**Security**: API rate limiting.
-**Authentication**: Replit Auth for user login (Google/GitHub/email) with support for anonymous quiz taking.
+**Security**: API rate limiting, Supabase JWT token validation.
+**Authentication**: Supabase Auth for user login (Google OAuth, Email magic links) with support for anonymous quiz taking. Email-based user migration automatically links existing user data when signing in with a matching email address.
 
 ### Data Storage
 
