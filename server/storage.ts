@@ -124,7 +124,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getQuizResultsByUserId(userId: string): Promise<QuizResult[]> {
-    const results = await db.select().from(quizResults).where(eq(quizResults.userId, userId));
+    const results = await db.select().from(quizResults).where(eq(quizResults.userId, userId)).orderBy(desc(quizResults.completedAt));
     return results;
   }
 

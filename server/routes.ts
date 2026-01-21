@@ -2647,6 +2647,161 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ============================================
+  // MOBILE APP API v1 (Supabase JWT Auth)
+  // ============================================
+  // These endpoints use Supabase JWT tokens directly
+  // Mobile app sends: Authorization: Bearer <supabase_access_token>
+
+  // GET /api/v1/mobile/user - Get current user's profile
+  app.get("/api/v1/mobile/user", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const userEmail = req.user.email;
+
+      // Get or create user in our database
+      let user = await storage.getUser(userId);
+      
+      if (!user && userEmail) {
+        // Check if user exists by email (migration case)
+        const existingByEmail = await storage.getUserByEmail(userEmail);
+        if (existingByEmail) {
+          // User exists with different ID, use that record
+          user = existingByEmail;
+        } else {
+          // Create new user
+          user = await storage.upsertUser({
+            id: userId,
+            email: userEmail,
+            firstName: null,
+            lastName: null,
+            profileImageUrl: null,
+          });
+        }
+      }
+
+      // Get latest quiz result
+      const quizResults = await storage.getQuizResultsByUserId(userId);
+      const latestQuizResult = quizResults.length > 0 ? quizResults[0] : null;
+
+      // Check premium status
+      const isPremium = await storage.isPremiumUser(userId);
+
+      res.json({
+        success: true,
+        user: {
+          id: userId,
+          email: userEmail,
+          firstName: user?.firstName || null,
+          lastName: user?.lastName || null,
+          profileImageUrl: user?.profileImageUrl || null,
+        },
+        latestAssessment: latestQuizResult ? {
+          archetype: latestQuizResult.archetype,
+          scores: latestQuizResult.scores,
+          completedAt: latestQuizResult.completedAt,
+        } : null,
+        isPremium,
+      });
+    } catch (error) {
+      console.error("Error getting mobile user:", error);
+      res.status(500).json({ success: false, error: "Failed to get user profile" });
+    }
+  });
+
+  // POST /api/v1/mobile/assessment - Save assessment results
+  app.post("/api/v1/mobile/assessment", isAuthenticated, writeLimiter, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { vispiCategory, answers, timestamp, scores } = req.body;
+
+      // Validate required fields
+      if (!vispiCategory) {
+        return res.status(400).json({ success: false, error: "vispiCategory is required" });
+      }
+
+      // Generate a unique session ID for this assessment
+      const sessionId = `mobile-${userId}-${Date.now()}`;
+
+      // Save the quiz result
+      const result = await storage.saveQuizResult({
+        sessionId,
+        archetype: vispiCategory,
+        scores: scores || {},
+        answers: answers || [],
+        userId,
+      });
+
+      res.json({
+        success: true,
+        assessment: {
+          id: result.id,
+          archetype: result.archetype,
+          scores: result.scores,
+          completedAt: result.completedAt,
+        },
+      });
+    } catch (error) {
+      console.error("Error saving mobile assessment:", error);
+      res.status(500).json({ success: false, error: "Failed to save assessment" });
+    }
+  });
+
+  // GET /api/v1/mobile/assessment - Get user's latest assessment
+  app.get("/api/v1/mobile/assessment", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+
+      // Get all quiz results for user, ordered by date (newest first)
+      const quizResults = await storage.getQuizResultsByUserId(userId);
+
+      if (quizResults.length === 0) {
+        return res.json({
+          success: true,
+          assessment: null,
+          message: "No assessment found",
+        });
+      }
+
+      const latest = quizResults[0];
+
+      res.json({
+        success: true,
+        assessment: {
+          id: latest.id,
+          archetype: latest.archetype,
+          scores: latest.scores,
+          answers: latest.answers,
+          completedAt: latest.completedAt,
+        },
+      });
+    } catch (error) {
+      console.error("Error getting mobile assessment:", error);
+      res.status(500).json({ success: false, error: "Failed to get assessment" });
+    }
+  });
+
+  // GET /api/v1/mobile/assessment/history - Get all user's assessments
+  app.get("/api/v1/mobile/assessment/history", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const quizResults = await storage.getQuizResultsByUserId(userId);
+
+      res.json({
+        success: true,
+        assessments: quizResults.map(result => ({
+          id: result.id,
+          archetype: result.archetype,
+          scores: result.scores,
+          completedAt: result.completedAt,
+        })),
+      });
+    } catch (error) {
+      console.error("Error getting mobile assessment history:", error);
+      res.status(500).json({ success: false, error: "Failed to get assessment history" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
