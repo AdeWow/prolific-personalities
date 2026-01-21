@@ -90,6 +90,14 @@ The application employs a monorepo structure, separating the React-based fronten
 ### Mobile API Endpoints
 
 The backend exposes mobile-ready API endpoints:
+
+**Mobile App API v1 (Supabase JWT Auth)**:
+-   `GET /api/v1/mobile/user` - Get user profile, latest assessment, and premium status
+-   `POST /api/v1/mobile/assessment` - Save assessment results (expects { vispiCategory, answers, scores })
+-   `GET /api/v1/mobile/assessment` - Get user's latest assessment
+-   `GET /api/v1/mobile/assessment/history` - Get all user's assessments
+
+**Legacy Mobile Endpoints**:
 -   **AI Coach API**: `POST /api/ai-coach` (streaming SSE) and `POST /api/v1/ai-coach` (non-streaming JSON) - reserved for upcoming mobile app.
 -   **Quiz & Results API**: `GET /api/quiz/results/:sessionId`, `POST /api/quiz/submit`, `POST /api/quiz/claim/:sessionId`.
 -   **Tools API**: `GET /api/tools`, `GET /api/tools/archetype/:archetypeId`.
