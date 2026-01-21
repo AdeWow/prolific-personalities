@@ -85,12 +85,12 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **Refund Policy Page**: Comprehensive 30-day satisfaction guarantee.
 -   **Image Optimization**: Images compressed using sharp library.
 -   **Progressive Web App (PWA)**: Full PWA support with web app manifest, service worker, and install prompt.
--   **AI Productivity Coach**: Personalized AI coaching powered by OpenAI GPT-4o-mini. Dedicated coach page (`/coach`) with conversation history, archetype-specific prompts, personalization banner, enhanced system prompts, usage-based rate limiting, and chat history persistence.
+-   **Mobile App (Coming Soon)**: AI Productivity Coach feature is being developed as a dedicated mobile app for iOS and Android.
 
 ### Mobile API Endpoints
 
 The backend exposes mobile-ready API endpoints:
--   **AI Coach API**: `POST /api/ai-coach` (streaming SSE) and `POST /api/v1/ai-coach` (non-streaming JSON).
+-   **AI Coach API**: `POST /api/ai-coach` (streaming SSE) and `POST /api/v1/ai-coach` (non-streaming JSON) - reserved for upcoming mobile app.
 -   **Quiz & Results API**: `GET /api/quiz/results/:sessionId`, `POST /api/quiz/submit`, `POST /api/quiz/claim/:sessionId`.
 -   **Tools API**: `GET /api/tools`, `GET /api/tools/archetype/:archetypeId`.
 

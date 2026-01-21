@@ -30,7 +30,6 @@ import Playbook from "@/pages/playbook";
 import RefundPolicy from "@/pages/refund-policy";
 import Unsubscribe from "@/pages/unsubscribe";
 import DevTools from "@/pages/dev-tools";
-import Coach from "@/pages/coach";
 import Login from "@/pages/login";
 import AuthCallback from "@/pages/auth-callback";
 
@@ -66,7 +65,6 @@ function Router() {
       <Route path="/blog" component={Blog} />
       <Route path="/refund-policy" component={RefundPolicy} />
       <Route path="/unsubscribe" component={Unsubscribe} />
-      <Route path="/coach" component={Coach} />
       <Route path="/login" component={Login} />
       <Route path="/auth/callback" component={AuthCallback} />
       <Route path="/results/:sessionId" component={Results} />

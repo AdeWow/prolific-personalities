@@ -288,7 +288,6 @@ export default function Home() {
                 <ul className="space-y-3 text-gray-400 text-base">
                   <li><Link href="/blog" className="hover:text-white transition-colors" data-testid="link-footer-blog">Blog</Link></li>
                   <li><Link href="/resources" className="hover:text-white transition-colors">Tools</Link></li>
-                  <li><Link href="/coach" className="hover:text-white transition-colors">AI Coach</Link></li>
                 </ul>
               </div>
               

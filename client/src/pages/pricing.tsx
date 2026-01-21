@@ -60,17 +60,15 @@ export default function Pricing() {
       name: "Productivity Partner",
       price: "$7",
       priceNote: "/month or $75/year",
-      description: "Premium coaching with AI support",
+      description: "Premium support with exclusive access",
       icon: Crown,
       features: [
         "Everything in Complete Playbook, plus:",
-        "AI-powered productivity coach (unlimited)",
-        "Personalized coaching based on your archetype",
-        "Chat history & progress tracking",
         "Weekly check-ins & accountability nudges",
         "Priority email support",
         "Early access to new features",
         "Private community access",
+        "Access to upcoming mobile app features",
       ],
       cta: "Get Premium Access",
       ctaLink: "/quiz",
@@ -89,9 +87,8 @@ export default function Pricing() {
     { name: "Tool Recommendations", discovery: "Top 10", playbook: "20+ with guides", partner: "20+ with guides" },
     { name: "Implementation Guides", discovery: false, playbook: true, partner: true },
     { name: "90-Day Action Plan", discovery: false, playbook: true, partner: true },
-    { name: "AI Productivity Coach", discovery: "10/day limit", playbook: "10/day limit", partner: "Unlimited" },
-    { name: "Chat History", discovery: false, playbook: false, partner: true },
     { name: "Priority Support", discovery: false, playbook: false, partner: true },
+    { name: "Early Access to Mobile App", discovery: false, playbook: false, partner: true },
   ];
 
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://prolificpersonalities.com';
@@ -128,7 +125,7 @@ export default function Pricing() {
         "price": "7",
         "priceCurrency": "USD",
         "availability": "https://schema.org/InStock",
-        "description": "Unlimited AI productivity coaching with chat history and priority support"
+        "description": "Premium support with weekly check-ins, early access to new features, and upcoming mobile app access"
       }
     ]
   };
@@ -137,8 +134,8 @@ export default function Pricing() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Pricing - Free Productivity Test + Premium Playbooks | Prolific Personalities"
-        description="Take our free productivity test and quiz. Upgrade to Complete Playbook ($19) for 35+ pages of personalized strategies, or Productivity Partner ($7/month) for unlimited AI coaching."
-        keywords="free productivity test, productivity quiz pricing, productivity assessment cost, AI productivity coach, personalized productivity strategies, productivity playbook"
+        description="Take our free productivity test and quiz. Upgrade to Complete Playbook ($19) for 35+ pages of personalized strategies, or Productivity Partner ($7/month) for premium support and early access."
+        keywords="free productivity test, productivity quiz pricing, productivity assessment cost, personalized productivity strategies, productivity playbook"
         canonicalUrl={`${origin}/pricing`}
         structuredData={structuredData}
       />
@@ -378,11 +375,11 @@ export default function Pricing() {
 
             <div className="text-center">
               <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🤖</span>
+                <span className="text-3xl">📱</span>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-2">AI Coach</h3>
+              <h3 className="text-xl font-bold text-foreground mb-2">Mobile App</h3>
               <p className="text-muted-foreground">
-                Get personalized advice from an AI coach that understands your specific archetype
+                Coming soon: Get coaching on-the-go with our upcoming mobile app for iOS and Android
               </p>
             </div>
 
@@ -412,16 +409,16 @@ export default function Pricing() {
                 <h3 className="font-bold text-foreground mb-2">What's the difference between Complete Playbook and Productivity Partner?</h3>
                 <p className="text-muted-foreground">
                   Complete Playbook gives you the full personalized guide with all strategies and action plans. 
-                  Productivity Partner adds unlimited AI coaching, chat history, and premium support—perfect for ongoing accountability.
+                  Productivity Partner adds premium support, early access to new features, and first access to our upcoming mobile app.
                 </p>
               </CardContent>
             </Card>
 
             <Card className="bg-white shadow-lg">
               <CardContent className="p-6">
-                <h3 className="font-bold text-foreground mb-2">Can I try the AI Coach before upgrading?</h3>
+                <h3 className="font-bold text-foreground mb-2">Is there a mobile app coming?</h3>
                 <p className="text-muted-foreground">
-                  Yes! Free and Playbook users get 10 AI coach messages per day. Upgrade to Productivity Partner for unlimited coaching.
+                  Yes! We're building a mobile app with AI coaching features. Productivity Partner subscribers will get early access when it launches.
                 </p>
               </CardContent>
             </Card>

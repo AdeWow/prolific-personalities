@@ -14,7 +14,6 @@ import { trackEvent } from "@/lib/analytics";
 import { trackResultsView, trackPaywallView, trackPaywallTierClick, trackCheckoutStart } from "@/lib/posthog";
 import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle, Info } from "lucide-react";
 import { TestimonialsSection } from "@/components/testimonials-section";
-import { AICoachChat } from "@/components/ai-coach-chat";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
   DropdownMenu,
@@ -352,7 +351,6 @@ export default function Results() {
             </Link>
           </CardContent>
         </Card>
-        <AICoachChat />
       </div>
     );
   }
@@ -1170,13 +1168,6 @@ export default function Results() {
         </div>
       </div>
       </main>
-
-      {/* AI Coach Chat Widget */}
-      <AICoachChat 
-        archetype={archetype?.id}
-        archetypeName={archetype?.name}
-        scores={result?.scores as QuizScores | undefined}
-      />
     </div>
   );
 }
