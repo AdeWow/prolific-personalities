@@ -20,6 +20,15 @@ export default function Login() {
   const [emailSent, setEmailSent] = useState(false);
 
   const handleGoogleSignIn = async () => {
+    if (!isSupabaseConfigured) {
+      toast({
+        title: "Configuration error",
+        description: "Authentication is not configured. Please contact support.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsLoadingGoogle(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -41,6 +50,15 @@ export default function Login() {
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isSupabaseConfigured) {
+      toast({
+        title: "Configuration error",
+        description: "Authentication is not configured. Please contact support.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (!email) {
       toast({
         title: "Email required",
