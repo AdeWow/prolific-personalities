@@ -2,6 +2,7 @@ import { supabaseAuth } from "./supabaseAuth";
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./supabaseAuth";
 import {
   insertQuizResultSchema,
   insertEmailCaptureSchema,
@@ -256,15 +257,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Apply general rate limiting to all API routes
   app.use("/api/", apiLimiter);
 
+  // Setup Replit Auth
+  await setupAuth(app);
+
   // Link quiz result to logged-in user
   app.post(
     "/api/quiz/claim/:sessionId",
     writeLimiter,
-    supabaseAuth,
+    isAuthenticated,
     async (req: any, res) => {
       try {
         const { sessionId } = req.params;
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
 
         // Check if result exists and is already claimed
         const existing = await storage.getQuizResultBySessionId(sessionId);
@@ -311,9 +315,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   );
 
   // Get all quiz results for logged-in user
-  app.get("/api/dashboard/results", supabaseAuth, async (req: any, res) => {
+  app.get("/api/dashboard/results", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.supabaseUser.id;
+      const userId = req.user.id;
       const results = await storage.getQuizResultsByUserId(userId);
       res.json(results);
     } catch (error) {
@@ -1052,9 +1056,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Stripe webhook is registered separately in registerWebhookRoute() before JSON middleware
 
   // Get user's orders
-  app.get("/api/orders", supabaseAuth, async (req: any, res) => {
+  app.get("/api/orders", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.supabaseUser.id;
+      const userId = req.user.id;
       const orders = await storage.getOrdersByUserId(userId);
       res.json(orders);
     } catch (error) {
@@ -1066,10 +1070,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Removed unauthenticated order check endpoint - security risk
 
   // Download premium PDF
-  app.get("/api/download/:orderId", supabaseAuth, async (req: any, res) => {
+  app.get("/api/download/:orderId", isAuthenticated, async (req: any, res) => {
     try {
       const { orderId } = req.params;
-      const userId = req.supabaseUser.id;
+      const userId = req.user.id;
 
       const order = await storage.getOrderById(parseInt(orderId));
 
@@ -1128,7 +1132,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Middleware to check premium access for a specific archetype
   const hasPremiumAccess = async (req: any, res: any, next: any) => {
     try {
-      const userId = req.supabaseUser.id;
+      const userId = req.user.id;
       const archetype = req.params.archetype || req.body.archetype;
 
       if (!archetype) {
@@ -1172,11 +1176,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get playbook progress for user and archetype
   app.get(
     "/api/playbook/:archetype/progress",
-    supabaseAuth,
+    isAuthenticated,
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const { archetype } = req.params;
         const progress = await storage.getPlaybookProgress(userId, archetype);
         res.json(progress);
@@ -1191,11 +1195,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post(
     "/api/playbook/:archetype/progress/chapter",
     writeLimiter,
-    supabaseAuth,
+    isAuthenticated,
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const { archetype } = req.params;
         const { chapterId, completed } = req.body;
 
@@ -1221,11 +1225,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get action plan progress
   app.get(
     "/api/playbook/:archetype/action-plan",
-    supabaseAuth,
+    isAuthenticated,
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const { archetype } = req.params;
         const progress = await storage.getActionPlanProgress(userId, archetype);
         res.json(progress);
@@ -1240,11 +1244,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post(
     "/api/playbook/:archetype/action-plan/task",
     writeLimiter,
-    supabaseAuth,
+    isAuthenticated,
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const { archetype } = req.params;
         const { dayNumber, taskId, completed } = req.body;
 
@@ -1271,11 +1275,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get tool tracking
   app.get(
     "/api/playbook/:archetype/tools",
-    supabaseAuth,
+    isAuthenticated,
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const { archetype } = req.params;
         const tracking = await storage.getToolTracking(userId, archetype);
         res.json(tracking);
@@ -1290,11 +1294,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post(
     "/api/playbook/:archetype/tools/update",
     writeLimiter,
-    supabaseAuth,
+    isAuthenticated,
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const { archetype } = req.params;
         const { toolId, status, notes } = req.body;
 
@@ -1321,11 +1325,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get playbook notes
   app.get(
     "/api/playbook/:archetype/notes",
-    supabaseAuth,
+    isAuthenticated,
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const { archetype } = req.params;
         const { sectionId } = req.query;
         const notes = await storage.getPlaybookNotes(
@@ -1345,11 +1349,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post(
     "/api/playbook/:archetype/notes",
     writeLimiter,
-    supabaseAuth,
+    isAuthenticated,
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const { archetype } = req.params;
         const { sectionId, content } = req.body;
 
@@ -1378,7 +1382,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put(
     "/api/playbook/notes/:noteId",
     writeLimiter,
-    supabaseAuth,
+    isAuthenticated,
     async (req: any, res) => {
       try {
         const { noteId } = req.params;
@@ -1410,7 +1414,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete(
     "/api/playbook/notes/:noteId",
     writeLimiter,
-    supabaseAuth,
+    isAuthenticated,
     async (req: any, res) => {
       try {
         const { noteId } = req.params;
@@ -1426,10 +1430,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Check if user has premium access to an archetype
   app.get(
     "/api/playbook/:archetype/access",
-    supabaseAuth,
+    isAuthenticated,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const { archetype } = req.params;
         const hasAccess = await storage.hasUserPurchasedPlaybook(
           userId,
@@ -2753,7 +2757,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get usage status endpoint
   app.get("/api/ai-coach/usage", async (req: any, res) => {
     try {
-      const userId = req.supabaseUser?.claims?.sub || null;
+      const userId = req.user?.claims?.sub || null;
       const sessionId = (req.query.sessionId as string) || null;
 
       const { allowed, remaining, isPremium } = await checkChatRateLimit(
@@ -2787,7 +2791,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Message is required" });
       }
 
-      const userId = req.supabaseUser?.claims?.sub || null;
+      const userId = req.user?.claims?.sub || null;
       const sessionId = clientSessionId || null;
 
       // Check rate limit
@@ -2915,7 +2919,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Message is required" });
       }
 
-      const userId = req.supabaseUser?.claims?.sub || null;
+      const userId = req.user?.claims?.sub || null;
       const sessionId = clientSessionId || null;
 
       // Check rate limit
@@ -3000,7 +3004,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Chat history endpoints
   app.get("/api/chat/conversations", async (req: any, res) => {
     try {
-      const userId = req.supabaseUser?.claims?.sub;
+      const userId = req.user?.claims?.sub;
       const sessionId = req.query.sessionId as string;
 
       if (!userId && !sessionId) {
@@ -3022,7 +3026,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/chat/conversations", writeLimiter, async (req: any, res) => {
     try {
-      const userId = req.supabaseUser?.claims?.sub || null;
+      const userId = req.user?.claims?.sub || null;
       const { sessionId, archetype, title } = req.body;
 
       if (!userId && !sessionId) {
@@ -3104,10 +3108,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // GET /api/v1/mobile/user - Get current user's profile
-  app.get("/api/v1/mobile/user", supabaseAuth, async (req: any, res) => {
+  app.get("/api/v1/mobile/user", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.supabaseUser.id;
-      const userEmail = req.supabaseUser.email;
+      const userId = req.user.id;
+      const userEmail = req.user.email;
 
       // Get or create user in our database
       let user = await storage.getUser(userId);
@@ -3166,11 +3170,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // POST /api/v1/mobile/assessment - Save assessment results
   app.post(
     "/api/v1/mobile/assessment",
-    supabaseAuth,
+    isAuthenticated,
     writeLimiter,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const { vispiCategory, answers, timestamp, scores } = req.body;
 
         // Validate required fields
@@ -3213,10 +3217,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // GET /api/v1/mobile/assessment - Get user's latest assessment
   app.get(
     "/api/v1/mobile/assessment",
-    supabaseAuth,
+    isAuthenticated,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
 
         // Get all quiz results for user, ordered by date (newest first)
         const quizResults = await storage.getQuizResultsByUserId(userId);
@@ -3253,10 +3257,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // GET /api/v1/mobile/assessment/history - Get all user's assessments
   app.get(
     "/api/v1/mobile/assessment/history",
-    supabaseAuth,
+    isAuthenticated,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.user.id;
         const quizResults = await storage.getQuizResultsByUserId(userId);
 
         res.json({
@@ -3276,43 +3280,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     },
   );
-
-  // ==========================================
-  // MOBILE API ENDPOINTS (without v1 prefix)
-  // ==========================================
-
-  app.post("/api/mobile/quiz/submit", supabaseAuth, async (req: any, res) => {
-    try {
-      const user = req.supabaseUser;
-      const { responses, archetype, scores } = req.body;
-
-      if (!responses || !archetype || !scores) {
-        return res.status(400).json({ success: false, error: 'Missing fields' });
-      }
-
-      const result = await storage.saveQuizResult({
-        sessionId: `mobile_${user.id}_${Date.now()}`,
-        archetype,
-        answers: responses,
-        scores,
-        userId: user.id,
-      });
-
-      return res.json({ success: true, archetype, sessionId: result.sessionId });
-    } catch (error) {
-      console.error('Mobile quiz error:', error);
-      return res.status(500).json({ success: false, error: 'Server error' });
-    }
-  });
-
-  app.get("/api/mobile/user/profile", supabaseAuth, async (req: any, res) => {
-    try {
-      const user = req.supabaseUser;
-      return res.json({ success: true, user: { id: user.id, email: user.email } });
-    } catch (error) {
-      return res.status(500).json({ success: false, error: 'Server error' });
-    }
-  });
 
   const httpServer = createServer(app);
   return httpServer;
