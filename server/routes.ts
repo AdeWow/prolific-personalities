@@ -2653,6 +2653,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // These endpoints use Supabase JWT tokens directly
   // Mobile app sends: Authorization: Bearer <supabase_access_token>
 
+  // GET /api/v1/mobile/health - Health check (no auth required)
+  app.get("/api/v1/mobile/health", (_req, res) => {
+    res.json({ status: "ok", timestamp: Date.now() });
+  });
+
   // GET /api/v1/mobile/user - Get current user's profile
   app.get("/api/v1/mobile/user", isAuthenticated, async (req: any, res) => {
     try {
