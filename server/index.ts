@@ -5,6 +5,9 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
+// Trust proxy for correct client IP detection (required for rate limiting behind reverse proxies)
+app.set('trust proxy', 1);
+
 // CORS configuration for mobile app and custom domains
 const allowedOrigins = [
   'https://prolificpersonalities.com',
