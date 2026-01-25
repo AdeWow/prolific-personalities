@@ -1,17 +1,30 @@
 // Hook to automatically claim pending quiz results after login
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "./useAuth";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { queryClient } from "@/lib/queryClient";
 import { useToast } from "./use-toast";
 
 export function useClaimPendingQuiz() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, session } = useAuthContext();
   const { toast } = useToast();
 
   const claimMutation = useMutation({
     mutationFn: async (sessionId: string) => {
-      const response = await apiRequest('POST', `/api/quiz/claim/${sessionId}`);
+      if (!session?.access_token) {
+        throw new Error("No auth session");
+      }
+      const response = await fetch(`/api/quiz/claim/${sessionId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`${response.status}: ${text}`);
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -37,8 +50,8 @@ export function useClaimPendingQuiz() {
   });
 
   useEffect(() => {
-    // Only run when auth state is loaded and user is authenticated
-    if (isLoading || !isAuthenticated) {
+    // Only run when auth state is loaded, user is authenticated, and session is available
+    if (isLoading || !isAuthenticated || !session?.access_token) {
       return;
     }
 
@@ -48,7 +61,7 @@ export function useClaimPendingQuiz() {
       // Automatically claim it
       claimMutation.mutate(pendingSessionId);
     }
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated, isLoading, session]);
 
   return {
     isClaimingQuiz: claimMutation.isPending,
