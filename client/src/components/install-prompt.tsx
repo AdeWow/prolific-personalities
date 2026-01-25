@@ -93,7 +93,7 @@ export function InstallPrompt() {
           <p className="text-sm text-muted-foreground mb-3">
             {isIOS 
               ? "Tap the share button, then 'Add to Home Screen'" 
-              : "Get quick access to your productivity coach"
+              : "Get quick access to your productivity insights"
             }
           </p>
           

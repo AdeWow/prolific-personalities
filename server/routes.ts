@@ -790,6 +790,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
           archetype,
         });
 
+        // Send email with PDF if email is provided
+        if (resend && email) {
+          try {
+            const archetypeInfo = getArchetypeInfo(archetype);
+            const pdfAsset = getPremiumAssetForArchetype(archetype);
+
+            if (archetypeInfo && pdfAsset) {
+              const pdfPath = path.join(
+                process.cwd(),
+                "attached_assets",
+                pdfAsset.pdfFilename,
+              );
+
+              if (fs.existsSync(pdfPath)) {
+                const pdfBuffer = fs.readFileSync(pdfPath);
+                const pdfBase64 = pdfBuffer.toString("base64");
+
+                const baseUrl =
+                  process.env.APP_URL ||
+                  (process.env.NODE_ENV === "production"
+                    ? "https://prolificpersonalities.com"
+                    : "http://localhost:5000");
+                const resultsUrl = `${baseUrl}/results/${sessionId}`;
+
+                const { subject, html } = generatePremiumPlaybookEmail({
+                  recipientEmail: email,
+                  archetype: archetypeInfo,
+                  resultsUrl,
+                });
+
+                const emailResponse = await resend.emails.send({
+                  from: "Prolific Personalities <support@prolificpersonalities.com>",
+                  to: email,
+                  subject,
+                  html,
+                  attachments: [
+                    {
+                      filename: pdfAsset.pdfFilename,
+                      content: pdfBase64,
+                    },
+                  ],
+                });
+
+                if (emailResponse.error) {
+                  console.error("❌ Error sending promo PDF email:", emailResponse.error);
+                } else {
+                  console.log(`✅ Promo PDF emailed to ${email}`);
+                }
+              }
+            }
+          } catch (emailError) {
+            console.error("❌ Error in promo PDF email flow:", emailError);
+          }
+        }
+
         res.json({
           success: true,
           message:
@@ -1439,6 +1494,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } catch (error) {
         console.error("Error checking access:", error);
         res.status(500).json({ message: "Failed to check access" });
+      }
+    },
+  );
+
+  // Download playbook PDF
+  app.get(
+    "/api/playbook/:archetype/pdf",
+    supabaseAuth,
+    async (req: any, res) => {
+      try {
+        const userId = req.supabaseUser.id;
+        const { archetype } = req.params;
+
+        // Check if user has access
+        const hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype);
+        if (!hasAccess) {
+          res.status(403).json({ message: "You don't have access to this playbook" });
+          return;
+        }
+
+        // Get PDF asset for archetype
+        const asset = getPremiumAssetForArchetype(archetype);
+        if (!asset) {
+          res.status(404).json({ message: "PDF not found for this archetype" });
+          return;
+        }
+
+        // Safely resolve PDF path
+        const pdfPath = path.join(
+          process.cwd(),
+          "attached_assets",
+          asset.pdfFilename,
+        );
+
+        // Check if file exists
+        if (!fs.existsSync(pdfPath)) {
+          console.error(`PDF file not found: ${pdfPath}`);
+          res.status(404).json({ message: "PDF file not available" });
+          return;
+        }
+
+        // Serve the PDF file with download headers
+        res.download(pdfPath, asset.pdfFilename, (err) => {
+          if (err) {
+            console.error("Error sending PDF file:", err);
+            if (!res.headersSent) {
+              res.status(500).json({ message: "Error downloading file" });
+            }
+          }
+        });
+      } catch (error) {
+        console.error("Error downloading playbook PDF:", error);
+        res.status(500).json({ message: "Failed to download PDF" });
       }
     },
   );

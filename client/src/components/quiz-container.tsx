@@ -408,23 +408,41 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
         </Button>
 
         <div className="flex gap-1.5">
-          {Array.from({ length: totalPages }).map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setCurrentPage(idx);
-                setActiveQuestionIndex(0);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className={cn(
-                "w-2.5 h-2.5 rounded-full transition-all",
-                idx === currentPage
-                  ? "bg-primary w-6"
-                  : "bg-muted dark:bg-muted hover:bg-primary"
-              )}
-              data-testid={`page-indicator-${idx}`}
-            />
-          ))}
+          {Array.from({ length: totalPages }).map((_, idx) => {
+            const pageStartIndex = idx * QUESTIONS_PER_PAGE;
+            const pageEndIndex = Math.min(pageStartIndex + QUESTIONS_PER_PAGE, questions.length);
+            const pageQuestions = questions.slice(pageStartIndex, pageEndIndex);
+            const pageHasUnanswered = pageQuestions.some(q => answers[q.id] === undefined);
+            
+            return (
+              <button
+                key={idx}
+                onClick={() => {
+                  if (idx > currentPage && !pageQuestionsAnswered) {
+                    toast({
+                      title: "Please complete this page",
+                      description: "Answer all questions on this page before moving forward.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  setCurrentPage(idx);
+                  setActiveQuestionIndex(0);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={cn(
+                  "w-2.5 h-2.5 rounded-full transition-all",
+                  idx === currentPage
+                    ? "bg-primary w-6"
+                    : pageHasUnanswered
+                    ? "bg-orange-300 dark:bg-orange-600 hover:bg-orange-400"
+                    : "bg-green-400 dark:bg-green-600 hover:bg-green-500"
+                )}
+                data-testid={`page-indicator-${idx}`}
+                title={pageHasUnanswered ? `Page ${idx + 1}: Has unanswered questions` : `Page ${idx + 1}: Complete`}
+              />
+            );
+          })}
         </div>
 
         <Button

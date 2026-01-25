@@ -89,12 +89,12 @@ export function FourAxisVisual({ scores }: FourAxisVisualProps) {
                   className={`absolute top-0 left-0 h-full bg-gradient-to-r ${axis.color} opacity-80`}
                 />
 
-                {/* Marker dot */}
+                {/* Marker dot - ensure minimum visibility with calc() */}
                 <motion.div
-                  initial={{ left: "0%" }}
-                  animate={{ left: `${percentage}%` }}
+                  initial={{ left: "12px" }}
+                  animate={{ left: `calc(${percentage}% - 12px + 24px * ${percentage / 100})` }}
                   transition={{ delay: index * 0.1 + 0.2, duration: 0.8, ease: "easeOut" }}
-                  className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-6 bg-white rounded-full shadow-lg border-4 ${
+                  className={`absolute top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-4 ${
                     axis.color.includes('primary') ? 'border-primary' : 
                     axis.color.includes('secondary') ? 'border-secondary' : 
                     axis.color.includes('support') ? 'border-support' : 

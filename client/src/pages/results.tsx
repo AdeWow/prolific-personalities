@@ -1088,7 +1088,7 @@ export default function Results() {
                   onClick={handleUpgradeToPremium}
                   disabled={checkoutMutation.isPending}
                 >
-                  {checkoutMutation.isPending ? 'Processing...' : 'Get My Full Report - $27'}
+                  {checkoutMutation.isPending ? 'Processing...' : 'Get My Full Report - $19'}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <p className="text-center text-muted-foreground text-sm mt-4">
