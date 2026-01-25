@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ExitIntentPopup } from "@/components/exit-intent-popup";
 import { InstallPrompt } from "@/components/install-prompt";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { useClaimPendingQuiz } from "@/hooks/useClaimPendingQuiz";
 import { initGA } from "./lib/analytics";
 import { initPostHog } from "./lib/posthog";
 import { useAnalytics } from "./hooks/use-analytics";
@@ -73,6 +74,12 @@ function Router() {
   );
 }
 
+// Component to handle quiz claiming globally when user is authenticated
+function QuizClaimHandler() {
+  useClaimPendingQuiz();
+  return null;
+}
+
 function App() {
   // Initialize analytics when app loads
   useEffect(() => {
@@ -92,6 +99,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <QuizClaimHandler />
         <TooltipProvider>
           <Toaster />
           <ExitIntentPopup />
