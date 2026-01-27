@@ -127,6 +127,7 @@ export const waitlist = pgTable("waitlist", {
   id: serial("id").primaryKey(),
   email: text("email").notNull(),
   sessionId: text("session_id").notNull(),
+  source: text("source").default("general"), // 'general', 'app_waitlist', etc.
   capturedAt: timestamp("captured_at").defaultNow().notNull(),
 });
 

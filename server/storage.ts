@@ -417,6 +417,26 @@ export class DatabaseStorage implements IStorage {
     return false;
   }
 
+  async getPlaybookPurchaseCount(): Promise<number> {
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(orders)
+      .where(
+        and(
+          eq(orders.status, 'completed'),
+          eq(orders.productType, 'playbook')
+        )
+      );
+    return Number(result[0]?.count || 0);
+  }
+
+  async addToWaitlist(email: string, sessionId: string, source: string = 'general'): Promise<void> {
+    await db
+      .insert(waitlist)
+      .values({ email, sessionId, source })
+      .onConflictDoNothing();
+  }
+
   // Playbook Progress Methods
   async getPlaybookProgress(userId: string, archetype: string): Promise<PlaybookProgress[]> {
     const progress = await db

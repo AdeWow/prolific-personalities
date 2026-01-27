@@ -12,7 +12,7 @@ import { determineArchetypeEnhanced } from "@/lib/quiz-logic";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { trackResultsView, trackPaywallView, trackPaywallTierClick, trackCheckoutStart } from "@/lib/posthog";
-import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle, Info, CreditCard, Zap } from "lucide-react";
+import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle, Info, CreditCard, Zap, Smartphone } from "lucide-react";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
@@ -47,6 +47,8 @@ export default function Results() {
   const [promoCodeValid, setPromoCodeValid] = useState<boolean | null>(null);
   const [promoCodeMessage, setPromoCodeMessage] = useState("");
   const [showPromoInput, setShowPromoInput] = useState(false);
+  const [appWaitlistEmail, setAppWaitlistEmail] = useState("");
+  const [appWaitlistJoined, setAppWaitlistJoined] = useState(false);
   const { toast } = useToast();
 
   // Check for payment status in URL
@@ -221,6 +223,35 @@ export default function Results() {
       });
     },
   });
+
+  const appWaitlistMutation = useMutation({
+    mutationFn: async (data: { email: string; sessionId: string }) => {
+      const response = await apiRequest('POST', '/api/app-waitlist', data);
+      return response.json();
+    },
+    onSuccess: () => {
+      setAppWaitlistJoined(true);
+      trackEvent('app_waitlist_joined', 'Engagement', archetype?.name || 'Unknown');
+      toast({
+        title: "You're on the list!",
+        description: "We'll email you when the app is ready.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to join waitlist. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleAppWaitlist = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (sessionId && appWaitlistEmail) {
+      appWaitlistMutation.mutate({ email: appWaitlistEmail, sessionId });
+    }
+  };
 
   const validatePromoCode = async () => {
     if (!promoCode.trim()) {
@@ -658,6 +689,54 @@ export default function Results() {
                 {/* 4-Axis Visualization */}
                 <div className="max-w-3xl mx-auto pt-8">
                   <FourAxisVisual scores={transformedScores} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Mobile App Waitlist CTA */}
+          <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 shadow-lg mt-8" data-testid="app-waitlist-card">
+            <CardContent className="p-8">
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center">
+                    <Smartphone className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+                <div className="flex-1 text-center md:text-left">
+                  <h3 className="text-xl font-bold text-foreground mb-2">The app is coming.</h3>
+                  <p className="text-muted-foreground">
+                    Daily tips. Focus modes. Progress tracking—all personalized to your archetype. Get early access.
+                  </p>
+                </div>
+                <div className="flex-shrink-0 w-full md:w-auto">
+                  {!appWaitlistJoined ? (
+                    <form onSubmit={handleAppWaitlist} className="flex flex-col sm:flex-row gap-2">
+                      <Input
+                        type="email"
+                        placeholder="your@email.com"
+                        value={appWaitlistEmail}
+                        onChange={(e) => setAppWaitlistEmail(e.target.value)}
+                        required
+                        disabled={appWaitlistMutation.isPending}
+                        className="w-full sm:w-64"
+                        data-testid="input-app-waitlist-email"
+                      />
+                      <Button 
+                        type="submit" 
+                        className="gradient-primary text-white"
+                        disabled={appWaitlistMutation.isPending}
+                        data-testid="button-app-waitlist-submit"
+                      >
+                        {appWaitlistMutation.isPending ? "Joining..." : "Get Early Access"}
+                      </Button>
+                    </form>
+                  ) : (
+                    <div className="flex items-center gap-2 text-green-600">
+                      <CheckCircle2 className="w-5 h-5" />
+                      <span className="font-medium">You're on the list!</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>

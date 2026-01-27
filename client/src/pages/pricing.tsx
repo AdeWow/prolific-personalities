@@ -1,15 +1,26 @@
 import { useEffect } from "react";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
-import { CheckCircle2, Sparkles, Lock, Zap, Bot, Users, Crown, Target, Smartphone } from "lucide-react";
+import { CheckCircle2, Sparkles, Lock, Zap, Target, Smartphone } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
-import { trackPaywallView, trackPaywallTierClick } from "@/lib/posthog";
+import { trackPaywallView } from "@/lib/posthog";
+
+const EARLY_BIRD_LIMIT = 100;
 
 export default function Pricing() {
+  const { data: purchaseCount } = useQuery<{ count: number }>({
+    queryKey: ['/api/playbook-purchase-count'],
+  });
+
+  const isEarlyBird = !purchaseCount || purchaseCount.count < EARLY_BIRD_LIMIT;
+  const currentPrice = isEarlyBird ? "$19" : "$29";
+  const originalPrice = isEarlyBird ? "$29" : null;
+
   useEffect(() => {
     trackEvent('pricing_page_view', 'Navigation', 'Pricing Page');
     trackPaywallView('no_archetype', 'pricing_page');
@@ -37,7 +48,8 @@ export default function Pricing() {
     },
     playbook: {
       name: "Complete Playbook",
-      price: "$19",
+      price: currentPrice,
+      originalPrice: originalPrice,
       priceNote: "one-time",
       description: "Your complete productivity transformation",
       icon: Lock,
@@ -50,46 +62,27 @@ export default function Pricing() {
         "Implementation worksheets & templates",
         "90-day action plan",
         "Lifetime access + future updates",
+        "Early access to mobile app when it launches",
       ],
-      cta: "Start with Free Assessment",
+      cta: `Get Your Playbook — ${currentPrice}`,
       ctaLink: "/quiz",
       highlight: true,
       badge: "Most Popular",
-    },
-    partner: {
-      name: "Productivity Partner",
-      price: "$7",
-      priceNote: "/month or $75/year",
-      description: "Premium support with exclusive access",
-      icon: Crown,
-      features: [
-        "Everything in Complete Playbook, plus:",
-        "Weekly accountability emails",
-        "Priority email support",
-        "Early access to new features",
-        "Private community access (Coming Q2 2026)",
-        "Mobile app access (Coming Q2 2026)",
-      ],
-      cta: "Get Premium Access",
-      ctaLink: "/quiz",
-      highlight: false,
-      badge: "Best Value",
+      isEarlyBird: isEarlyBird,
     },
   };
 
   const comparisonFeatures = [
-    { name: "28-Question Assessment", discovery: true, playbook: true, partner: true },
-    { name: "Archetype Results", discovery: true, playbook: true, partner: true },
-    { name: "Summary Report", discovery: true, playbook: true, partner: true },
-    { name: "Quick-Win Tactics", discovery: "3 tactics", playbook: "20+ strategies", partner: "20+ strategies" },
-    { name: "Full Personalized Playbook", discovery: false, playbook: true, partner: true },
-    { name: "Research Citations", discovery: false, playbook: true, partner: true },
-    { name: "Tool Recommendations", discovery: "Top 10", playbook: "20+ with guides", partner: "20+ with guides" },
-    { name: "Implementation Guides", discovery: false, playbook: true, partner: true },
-    { name: "90-Day Action Plan", discovery: false, playbook: true, partner: true },
-    { name: "Weekly Accountability Emails", discovery: false, playbook: false, partner: true },
-    { name: "Priority Support", discovery: false, playbook: false, partner: true },
-    { name: "Mobile App Access", discovery: false, playbook: false, partner: "Coming Q2" },
+    { name: "28-Question Assessment", discovery: true, playbook: true },
+    { name: "Archetype Results", discovery: true, playbook: true },
+    { name: "Summary Report", discovery: true, playbook: true },
+    { name: "Quick-Win Tactics", discovery: "3 tactics", playbook: "20+ strategies" },
+    { name: "Full Personalized Playbook", discovery: false, playbook: true },
+    { name: "Research Citations", discovery: false, playbook: true },
+    { name: "Tool Recommendations", discovery: "Top 10", playbook: "20+ with guides" },
+    { name: "Implementation Guides", discovery: false, playbook: true },
+    { name: "90-Day Action Plan", discovery: false, playbook: true },
+    { name: "Early Mobile App Access", discovery: false, playbook: true },
   ];
 
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://prolificpersonalities.com';
@@ -115,18 +108,10 @@ export default function Pricing() {
       {
         "@type": "Offer",
         "name": "Complete Playbook",
-        "price": "19",
+        "price": isEarlyBird ? "19" : "29",
         "priceCurrency": "USD",
         "availability": "https://schema.org/InStock",
         "description": "35+ page personalized playbook with evidence-based strategies and implementation guides"
-      },
-      {
-        "@type": "Offer",
-        "name": "Productivity Partner Monthly",
-        "price": "7",
-        "priceCurrency": "USD",
-        "availability": "https://schema.org/InStock",
-        "description": "Premium support with weekly check-ins, early access to new features, and upcoming mobile app access"
       }
     ]
   };
@@ -134,8 +119,8 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Pricing - Free Productivity Test + Premium Playbooks | Prolific Personalities"
-        description="Take our free productivity test and quiz. Upgrade to Complete Playbook ($19) for 35+ pages of personalized strategies, or Productivity Partner ($7/month) for premium support and early access."
+        title="Pricing - Free Productivity Test + Premium Playbook | Prolific Personalities"
+        description={`Take our free productivity test and quiz. Upgrade to Complete Playbook (${currentPrice}) for 35+ pages of personalized strategies, implementation guides, and lifetime access.`}
         keywords="free productivity test, productivity quiz pricing, productivity assessment cost, personalized productivity strategies, productivity playbook"
         canonicalUrl={`${origin}/pricing`}
         structuredData={structuredData}
@@ -162,8 +147,8 @@ export default function Pricing() {
 
       {/* Pricing Cards */}
       <section className="pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-8">
             {/* Discovery Plan */}
             <Card className="bg-white shadow-lg border-2 border-muted hover:border-primary/50 transition-all duration-300" data-testid="card-discovery-plan">
               <CardContent className="p-8">
@@ -207,10 +192,19 @@ export default function Pricing() {
                     <tiers.playbook.icon className="w-6 h-6 text-primary" />
                     <h3 className="text-2xl font-bold text-foreground">{tiers.playbook.name}</h3>
                   </div>
-                  <div className="flex items-baseline gap-2 mb-4">
+                  <div className="flex items-baseline gap-2 mb-2">
+                    {tiers.playbook.originalPrice && (
+                      <span className="text-2xl text-muted-foreground line-through">{tiers.playbook.originalPrice}</span>
+                    )}
                     <span className="text-5xl font-bold text-foreground">{tiers.playbook.price}</span>
                     <span className="text-muted-foreground">{tiers.playbook.priceNote}</span>
                   </div>
+                  {tiers.playbook.isEarlyBird && (
+                    <div className="mb-4">
+                      <Badge className="bg-green-100 text-green-700 border-green-300">Launch Price</Badge>
+                      <p className="text-sm text-green-600 mt-1">Early-bird pricing for first 100 customers</p>
+                    </div>
+                  )}
                   <p className="text-muted-foreground font-medium">{tiers.playbook.description}</p>
                 </div>
 
@@ -225,14 +219,9 @@ export default function Pricing() {
 
                 <Link href={tiers.playbook.ctaLink}>
                   <Button className="w-full gradient-primary text-white py-6 text-lg font-semibold hover:shadow-lg transition-all" data-testid="button-start-playbook">
-                    <Lock className="w-5 h-5 mr-2" />
                     {tiers.playbook.cta}
                   </Button>
                 </Link>
-
-                <p className="text-sm text-muted-foreground text-center mt-4">
-                  Take the free assessment first, then upgrade
-                </p>
 
                 <p className="text-xs text-muted-foreground text-center mt-4">
                   30-day satisfaction guarantee.{" "}
@@ -243,60 +232,13 @@ export default function Pricing() {
               </CardContent>
             </Card>
 
-            {/* Productivity Partner Plan */}
-            <Card className="bg-white shadow-lg border-2 border-accent hover:border-accent/80 transition-all duration-300 relative overflow-hidden" data-testid="card-partner-plan">
-              <div className="absolute top-0 right-0 bg-accent text-accent-foreground px-6 py-2 text-sm font-semibold">
-                {tiers.partner.badge}
-              </div>
-
-              <CardContent className="p-8 pt-12">
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-2">
-                    <tiers.partner.icon className="w-6 h-6 text-accent" />
-                    <h3 className="text-2xl font-bold text-foreground">{tiers.partner.name}</h3>
-                  </div>
-                  <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-5xl font-bold text-foreground">{tiers.partner.price}</span>
-                    <span className="text-muted-foreground">{tiers.partner.priceNote}</span>
-                  </div>
-                  <p className="text-muted-foreground font-medium">{tiers.partner.description}</p>
-                </div>
-
-                <ul className="space-y-3 mb-8">
-                  {tiers.partner.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <Bot className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                      <span className="text-muted-foreground font-medium">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link href={tiers.partner.ctaLink}>
-                  <Button className="w-full bg-secondary text-secondary-foreground py-6 text-lg font-semibold hover:bg-secondary/90 hover:shadow-lg transition-all" data-testid="button-start-partner">
-                    <Crown className="w-5 h-5 mr-2" />
-                    {tiers.partner.cta}
-                  </Button>
-                </Link>
-
-                <p className="text-sm text-muted-foreground text-center mt-4">
-                  Save $9 with yearly subscription vs. monthly
-                </p>
-
-                <p className="text-xs text-muted-foreground text-center mt-4">
-                  30-day satisfaction guarantee.{" "}
-                  <Link href="/refund-policy" className="text-primary hover:underline">
-                    View refund policy
-                  </Link>
-                </p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
 
       {/* Comparison Table */}
       <section className="py-16 bg-white/50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-foreground text-center mb-12">
             Compare Plans
           </h2>
@@ -307,8 +249,7 @@ export default function Pricing() {
                 <tr className="border-b border-muted">
                   <th className="text-left py-4 px-4 font-semibold text-muted-foreground">Feature</th>
                   <th className="text-center py-4 px-4 font-semibold text-muted-foreground">Discovery<br /><span className="text-primary font-normal">Free</span></th>
-                  <th className="text-center py-4 px-4 font-semibold text-primary bg-primary/5">Complete Playbook<br /><span className="font-normal">$19</span></th>
-                  <th className="text-center py-4 px-4 font-semibold text-accent">Partner<br /><span className="font-normal">$7/mo</span></th>
+                  <th className="text-center py-4 px-4 font-semibold text-primary bg-primary/5">Complete Playbook<br /><span className="font-normal">{currentPrice}</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -335,17 +276,6 @@ export default function Pricing() {
                         )
                       ) : (
                         <span className="text-sm text-primary font-medium">{feature.playbook}</span>
-                      )}
-                    </td>
-                    <td className="text-center py-4 px-4">
-                      {typeof feature.partner === 'boolean' ? (
-                        feature.partner ? (
-                          <CheckCircle2 className="w-5 h-5 text-green-500 mx-auto" />
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )
-                      ) : (
-                        <span className="text-sm text-accent font-medium">{feature.partner}</span>
                       )}
                     </td>
                   </tr>
@@ -407,10 +337,10 @@ export default function Pricing() {
           <div className="space-y-6">
             <Card className="bg-white shadow-lg">
               <CardContent className="p-6">
-                <h3 className="font-bold text-foreground mb-2">What's the difference between Complete Playbook and Productivity Partner?</h3>
+                <h3 className="font-bold text-foreground mb-2">What do I get with the Complete Playbook?</h3>
                 <p className="text-muted-foreground">
-                  Complete Playbook gives you the full personalized guide with all strategies and action plans. 
-                  Productivity Partner adds premium support, early access to new features, and first access to our upcoming mobile app.
+                  You get a 35+ page personalized guide with evidence-based strategies tailored to your archetype, 
+                  implementation worksheets, a 90-day action plan, curated tool recommendations, and early access to our upcoming mobile app.
                 </p>
               </CardContent>
             </Card>
@@ -419,7 +349,7 @@ export default function Pricing() {
               <CardContent className="p-6">
                 <h3 className="font-bold text-foreground mb-2">Is there a mobile app coming?</h3>
                 <p className="text-muted-foreground">
-                  Yes! We're building a mobile app with AI coaching features. Productivity Partner subscribers will get early access when it launches.
+                  Yes! We're building a mobile app with AI coaching features. Complete Playbook customers will get early access when it launches.
                 </p>
               </CardContent>
             </Card>

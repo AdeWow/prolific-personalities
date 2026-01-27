@@ -456,6 +456,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get playbook purchase count (for early-bird pricing)
+  app.get("/api/playbook-purchase-count", async (req, res) => {
+    try {
+      const count = await storage.getPlaybookPurchaseCount();
+      res.json({ count });
+    } catch (error) {
+      console.error("Error getting playbook purchase count:", error);
+      res.status(500).json({ message: "Failed to get purchase count" });
+    }
+  });
+
+  // Add to mobile app waitlist
+  app.post("/api/app-waitlist", emailLimiter, async (req, res) => {
+    try {
+      const { email, sessionId } = req.body;
+      
+      if (!email || !sessionId) {
+        res.status(400).json({ message: "Email and sessionId are required" });
+        return;
+      }
+      
+      await storage.addToWaitlist(email, sessionId, 'app_waitlist');
+      res.json({ success: true, message: "You're on the list!" });
+    } catch (error) {
+      console.error("Error adding to app waitlist:", error);
+      res.status(500).json({ message: "Failed to join waitlist" });
+    }
+  });
+
   // Get all tools
   app.get("/api/tools", async (req, res) => {
     try {
