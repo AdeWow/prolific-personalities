@@ -391,7 +391,7 @@ export function generatePremiumPlaybookEmail(data: PremiumPlaybookEmailData): { 
           
           <div class="message-box">
             <h2>Thank You for Your Purchase!</h2>
-            <p>Your payment of $27 has been processed successfully. Your premium ${archetype.title} playbook is attached to this email.</p>
+            <p>Your payment has been processed successfully. Your premium ${archetype.title} playbook is attached to this email.</p>
           </div>
 
           <div class="attachment-info">
