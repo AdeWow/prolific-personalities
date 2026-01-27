@@ -8,6 +8,10 @@ Prolific Personalities is a web application designed to help users identify thei
 
 Preferred communication style: Simple, everyday language.
 
+**Blog Management**:
+- Do NOT pin blogs unless explicitly requested
+- Keep "Confessions of an Imperfect Founder: I Procrastinated on My Anti-Procrastination Platform" as the first blog until told otherwise
+
 ## System Architecture
 
 ### Application Structure
