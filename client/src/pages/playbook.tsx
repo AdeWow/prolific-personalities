@@ -304,13 +304,14 @@ export default function Playbook() {
                 </p>
               </div>
               <div className="space-y-3">
-                <Button 
-                  onClick={() => window.location.href = '/api/login'}
-                  className="w-full"
-                  data-testid="button-login"
-                >
-                  Log In
-                </Button>
+                <Link href="/login">
+                  <Button 
+                    className="w-full"
+                    data-testid="button-login"
+                  >
+                    Log In
+                  </Button>
+                </Link>
                 <Link href="/">
                   <Button variant="ghost" className="w-full" data-testid="button-back-home">
                     Back to Home
