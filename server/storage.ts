@@ -31,6 +31,7 @@ export interface IStorage {
   markCheckoutCompleted(sessionId: string, archetype: string): Promise<void>;
   getAbandonedCheckouts(): Promise<CheckoutAttempt[]>;
   markAbandonedEmailSent(id: number): Promise<void>;
+  updateCheckoutAttemptEmail(id: number, email: string): Promise<void>;
   // Unsubscribe feedback
   saveUnsubscribeFeedback(feedback: InsertUnsubscribeFeedback): Promise<UnsubscribeFeedback>;
   // Waitlist
@@ -281,6 +282,13 @@ export class DatabaseStorage implements IStorage {
     await db
       .update(checkoutAttempts)
       .set({ abandonedEmailSent: 1 })
+      .where(eq(checkoutAttempts.id, id));
+  }
+
+  async updateCheckoutAttemptEmail(id: number, email: string): Promise<void> {
+    await db
+      .update(checkoutAttempts)
+      .set({ email })
       .where(eq(checkoutAttempts.id, id));
   }
 

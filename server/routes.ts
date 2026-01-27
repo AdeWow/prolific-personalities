@@ -239,8 +239,9 @@ export function registerWebhookRoute(app: Express) {
         if (event.type === "invoice.paid") {
           const invoice = event.data.object as Stripe.Invoice;
           // Only process subscription invoices (not one-time payments)
-          if (invoice.subscription) {
-            const subscriptionId = invoice.subscription as string;
+          const invoiceSubscription = (invoice as any).subscription;
+          if (invoiceSubscription) {
+            const subscriptionId = invoiceSubscription as string;
             console.log(`✅ Subscription ${subscriptionId} renewed - invoice ${invoice.id} paid`);
             
             // If payment previously failed and now succeeds, restore order to completed
@@ -259,8 +260,9 @@ export function registerWebhookRoute(app: Express) {
         // Handle subscription payment failure
         if (event.type === "invoice.payment_failed") {
           const invoice = event.data.object as Stripe.Invoice;
-          if (invoice.subscription) {
-            const subscriptionId = invoice.subscription as string;
+          const failedInvoiceSubscription = (invoice as any).subscription;
+          if (failedInvoiceSubscription) {
+            const subscriptionId = failedInvoiceSubscription as string;
             const customerEmail = invoice.customer_email;
             
             console.log(`⚠️ Subscription ${subscriptionId} payment failed - invoice ${invoice.id}`);
@@ -1110,21 +1112,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         status: "pending",
       });
 
-      // Track checkout attempt for abandoned cart emails
-      // Look up any previously captured email for this session
-      try {
-        const emailCapture =
-          await storage.getEmailCaptureBySessionId(sessionId);
-        await storage.createCheckoutAttempt({
-          sessionId,
-          archetype,
-          email: emailCapture?.email || null,
-        });
-      } catch (err) {
-        console.error("Failed to track checkout attempt:", err);
-        // Don't block checkout if tracking fails
-      }
-
       // Create Stripe Checkout Session
       const checkoutSession = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -1154,6 +1141,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
           sessionId,
         },
       });
+
+      // Track checkout attempt for abandoned cart emails (after we have Stripe session ID)
+      try {
+        const emailCapture =
+          await storage.getEmailCaptureBySessionId(sessionId);
+        await storage.createCheckoutAttempt({
+          sessionId,
+          archetype,
+          email: emailCapture?.email || null,
+          stripeCheckoutSessionId: checkoutSession.id,
+        });
+      } catch (err) {
+        console.error("Failed to track checkout attempt:", err);
+        // Don't block checkout if tracking fails
+      }
 
       res.json({ sessionId: checkoutSession.id, url: checkoutSession.url });
     } catch (error: any) {
@@ -1227,19 +1229,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           billingPeriod,
         });
 
-        // Track checkout attempt for abandoned cart emails
-        try {
-          const emailCapture =
-            await storage.getEmailCaptureBySessionId(sessionId);
-          await storage.createCheckoutAttempt({
-            sessionId,
-            archetype,
-            email: emailCapture?.email || null,
-          });
-        } catch (err) {
-          console.error("Failed to track checkout attempt:", err);
-        }
-
         // Create Stripe Checkout Session for subscription
         const checkoutSession = await stripe.checkout.sessions.create({
           payment_method_types: ["card"],
@@ -1271,6 +1260,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
             billingPeriod,
           },
         });
+
+        // Track checkout attempt for abandoned cart emails (after we have Stripe session ID)
+        try {
+          const emailCapture =
+            await storage.getEmailCaptureBySessionId(sessionId);
+          await storage.createCheckoutAttempt({
+            sessionId,
+            archetype,
+            email: emailCapture?.email || null,
+            stripeCheckoutSessionId: checkoutSession.id,
+          });
+        } catch (err) {
+          console.error("Failed to track checkout attempt:", err);
+        }
 
         res.json({ sessionId: checkoutSession.id, url: checkoutSession.url });
       } catch (error: any) {
@@ -1983,11 +1986,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const results = [];
 
       for (const checkout of abandonedCheckouts) {
-        if (!checkout.email) {
+        let email = checkout.email;
+        
+        // If no email, try to get it from Stripe checkout session
+        if (!email && checkout.stripeCheckoutSessionId && stripe) {
+          try {
+            const stripeSession = await stripe.checkout.sessions.retrieve(checkout.stripeCheckoutSessionId);
+            if (stripeSession.customer_details?.email) {
+              email = stripeSession.customer_details.email;
+              // Update the checkout attempt with the email for future use
+              await storage.updateCheckoutAttemptEmail(checkout.id, email);
+            }
+          } catch (stripeError) {
+            console.error(`Failed to fetch email from Stripe for checkout ${checkout.id}:`, stripeError);
+          }
+        }
+        
+        if (!email) {
           results.push({
             id: checkout.id,
             status: "skipped",
-            reason: "No email",
+            reason: "No email available",
           });
           continue;
         }
@@ -2011,29 +2030,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
           // Generate abandoned cart email
           const { subject, html } = generateAbandonedCartEmail({
-            recipientEmail: checkout.email,
+            recipientEmail: email,
             archetype: {
               id: checkout.archetype,
               title: archetypeInfo.title,
             },
             checkoutUrl: `${baseUrl}/results/${checkout.sessionId}#premium`,
-            unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(checkout.email)}`,
+            unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
           });
 
           // Send the email
           const { data, error } = await resend.emails.send({
             from: "Prolific Personalities <support@prolificpersonalities.com>",
-            to: checkout.email,
+            to: email,
             subject,
             html,
           });
 
           // Check for Resend errors before marking as sent
           if (error) {
-            console.error(`Resend error for ${checkout.email}:`, error);
+            console.error(`Resend error for ${email}:`, error);
             results.push({
               id: checkout.id,
-              email: checkout.email,
+              email: email,
               status: "failed",
               error: error.message,
             });
@@ -2044,21 +2063,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
           await storage.markAbandonedEmailSent(checkout.id);
           results.push({
             id: checkout.id,
-            email: checkout.email,
+            email: email,
             status: "sent",
             resendId: data?.id,
           });
           console.log(
-            `✅ Abandoned cart email sent to ${checkout.email} (${data?.id})`,
+            `✅ Abandoned cart email sent to ${email} (${data?.id})`,
           );
         } catch (err) {
           console.error(
-            `Failed to send abandoned cart email to ${checkout.email}:`,
+            `Failed to send abandoned cart email to ${email}:`,
             err,
           );
           results.push({
             id: checkout.id,
-            email: checkout.email,
+            email: email,
             status: "failed",
             error: String(err),
           });

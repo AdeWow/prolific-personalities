@@ -107,6 +107,7 @@ export const checkoutAttempts = pgTable("checkout_attempts", {
   email: text("email"),
   sessionId: text("session_id").notNull(),
   archetype: text("archetype").notNull(),
+  stripeCheckoutSessionId: text("stripe_checkout_session_id"),
   startedAt: timestamp("started_at").defaultNow().notNull(),
   completedAt: timestamp("completed_at"),
   abandonedEmailSent: integer("abandoned_email_sent").notNull().default(0), // 0 = not sent, 1 = sent
