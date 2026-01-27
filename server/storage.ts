@@ -104,11 +104,24 @@ export class DatabaseStorage implements IStorage {
     if (userData.email) {
       const existingByEmail = await this.getUserByEmail(userData.email);
       if (existingByEmail && existingByEmail.id !== userData.id) {
-        // User exists with same email but different ID - update their ID to the new Supabase ID
+        const oldId = existingByEmail.id;
+        const newId = userData.id;
+        
+        // Migrate all foreign key references to the new ID
+        await db.update(quizResults).set({ userId: newId }).where(eq(quizResults.userId, oldId));
+        await db.update(orders).set({ userId: newId }).where(eq(orders.userId, oldId));
+        await db.update(playbookProgress).set({ userId: newId }).where(eq(playbookProgress.userId, oldId));
+        await db.update(actionPlanProgress).set({ userId: newId }).where(eq(actionPlanProgress.userId, oldId));
+        await db.update(toolTracking).set({ userId: newId }).where(eq(toolTracking.userId, oldId));
+        await db.update(playbookNotes).set({ userId: newId }).where(eq(playbookNotes.userId, oldId));
+        await db.update(chatConversations).set({ userId: newId }).where(eq(chatConversations.userId, oldId));
+        await db.update(chatUsage).set({ userId: newId }).where(eq(chatUsage.userId, oldId));
+        
+        // Now update the user ID
         const [updated] = await db
           .update(users)
           .set({
-            id: userData.id,
+            id: newId,
             firstName: userData.firstName,
             lastName: userData.lastName,
             profileImageUrl: userData.profileImageUrl,
