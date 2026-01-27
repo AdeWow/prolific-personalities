@@ -2,22 +2,17 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface MilestoneCelebrationProps {
-  milestone: 1 | 2 | 3;
+  milestone: 1 | 2;
   onComplete: () => void;
 }
 
 const milestoneData = {
   1: {
-    title: "Nice work! You're 1/3 done",
-    message: "Fun fact: The fact that you're still here shows solid focus! (Or procrastination from real work?)",
-    progress: 33
-  },
-  2: {
     title: "Halfway there!",
     message: "You're doing great! Most people give up by now. Not you though.",
-    progress: 67
+    progress: 50
   },
-  3: {
+  2: {
     title: "Almost done! Just 3 more",
     message: "You're 89% done! Your future productive self thanks you.",
     progress: 89
@@ -73,7 +68,7 @@ export function MilestoneCelebration({ milestone, onComplete }: MilestoneCelebra
         
         <div className="flex items-center justify-center gap-3 mb-6">
           <div className="flex gap-1.5">
-            {[1, 2, 3, 4].map((segment) => (
+            {[1, 2, 3].map((segment) => (
               <div
                 key={segment}
                 className={cn(

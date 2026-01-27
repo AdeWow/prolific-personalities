@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { Switch } from "@/components/ui/switch";
 import { questions } from "@/data/questions";
 import { calculateScores, determineArchetype, generateSessionId, getProgressPercentage, validateAnswer } from "@/lib/quiz-logic";
 import { apiRequest } from "@/lib/queryClient";
@@ -15,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { trackEvent } from "@/lib/analytics";
 import { trackQuizStart, trackQuizPageView, trackQuizQuestionAnswered, trackQuizComplete } from "@/lib/posthog";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Loader2, Zap, Lightbulb } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Lightbulb } from "lucide-react";
 import { MilestoneCelebration } from "@/components/milestone-celebration";
 import type { QuizAnswers } from "@shared/schema";
 import type { Question } from "@/data/questions";
@@ -34,8 +33,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   const [sessionId] = useState(() => generateSessionId());
   const [quizStarted, setQuizStarted] = useState(false);
   const [milestonesTracked, setMilestonesTracked] = useState<Set<number>>(new Set());
-  const [quickMode, setQuickMode] = useState(false);
-  const [showCelebration, setShowCelebration] = useState<1 | 2 | 3 | null>(null);
+  const [showCelebration, setShowCelebration] = useState<1 | 2 | null>(null);
   const [celebrationsShown, setCelebrationsShown] = useState<Set<number>>(new Set());
   const [pendingPageAdvance, setPendingPageAdvance] = useState(false);
   const [, setLocation] = useLocation();
@@ -101,13 +99,13 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     },
   });
 
-  const checkForPageMilestoneCelebration = useCallback((completedPage: number): 1 | 2 | 3 | null => {
-    if (quickMode) return null;
-    if (completedPage === 2 && !celebrationsShown.has(1)) return 1;
-    if (completedPage === 4 && !celebrationsShown.has(2)) return 2;
-    if (completedPage === 5 && !celebrationsShown.has(3)) return 3;
+  const checkForPageMilestoneCelebration = useCallback((completedPage: number): 1 | 2 | null => {
+    // Milestone 1: After page 3 (15 questions = ~54% through 28 questions) - "Halfway there!"
+    if (completedPage === 3 && !celebrationsShown.has(1)) return 1;
+    // Milestone 2: After page 5 (25 questions = ~89% through 28 questions) - "Almost done!"
+    if (completedPage === 5 && !celebrationsShown.has(2)) return 2;
     return null;
-  }, [quickMode, celebrationsShown]);
+  }, [celebrationsShown]);
 
   const handleCelebrationComplete = useCallback(() => {
     if (showCelebration) {
@@ -320,22 +318,6 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
           <p className="text-base text-muted-foreground dark:text-muted-foreground">
             Answer honestly for the most accurate results
           </p>
-          
-          <div className="flex items-center justify-center gap-2 pt-2">
-            <Switch
-              id="quick-mode"
-              checked={quickMode}
-              onCheckedChange={setQuickMode}
-              aria-label="Quick mode - skip milestone celebrations"
-            />
-            <Label 
-              htmlFor="quick-mode" 
-              className="text-sm text-muted-foreground dark:text-muted-foreground cursor-pointer flex items-center gap-1.5"
-            >
-              <Zap className="h-4 w-4" />
-              Quick Mode
-            </Label>
-          </div>
         </div>
       )}
 
