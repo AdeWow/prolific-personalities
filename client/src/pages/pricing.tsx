@@ -64,11 +64,11 @@ export default function Pricing() {
       icon: Crown,
       features: [
         "Everything in Complete Playbook, plus:",
-        "Weekly check-ins & accountability nudges",
+        "Weekly accountability emails",
         "Priority email support",
         "Early access to new features",
-        "Private community access",
-        "Access to upcoming mobile app features",
+        "Private community access (Coming Q2 2026)",
+        "Mobile app access (Coming Q2 2026)",
       ],
       cta: "Get Premium Access",
       ctaLink: "/quiz",
@@ -87,8 +87,9 @@ export default function Pricing() {
     { name: "Tool Recommendations", discovery: "Top 10", playbook: "20+ with guides", partner: "20+ with guides" },
     { name: "Implementation Guides", discovery: false, playbook: true, partner: true },
     { name: "90-Day Action Plan", discovery: false, playbook: true, partner: true },
+    { name: "Weekly Accountability Emails", discovery: false, playbook: false, partner: true },
     { name: "Priority Support", discovery: false, playbook: false, partner: true },
-    { name: "Early Access to Mobile App", discovery: false, playbook: false, partner: true },
+    { name: "Mobile App Access", discovery: false, playbook: false, partner: "Coming Q2" },
   ];
 
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://prolificpersonalities.com';

@@ -189,15 +189,28 @@ export default function Results() {
       return response.json();
     },
     onSuccess: (data) => {
-      if (data.success && data.redirectUrl) {
-        trackEvent('promo_code_redeemed', 'Conversion', archetype?.name || 'Unknown', 0);
-        toast({
-          title: "Promo code applied!",
-          description: "You now have premium access. Redirecting...",
-        });
-        setTimeout(() => {
-          window.location.href = data.redirectUrl;
-        }, 1000);
+      if (data.success) {
+        trackEvent('promo_code_redeemed', 'Conversion', archetype?.name || 'Unknown', data.discountPercent || 100);
+        
+        if (data.checkoutUrl) {
+          // Partial discount - redirect to Stripe checkout
+          toast({
+            title: `${data.discountPercent}% discount applied!`,
+            description: `Pay only $${data.discountedPrice} (was $${data.originalPrice}). Redirecting to checkout...`,
+          });
+          setTimeout(() => {
+            window.location.href = data.checkoutUrl;
+          }, 1500);
+        } else if (data.redirectUrl) {
+          // 100% discount - direct access
+          toast({
+            title: "Promo code applied!",
+            description: "You now have premium access. Redirecting...",
+          });
+          setTimeout(() => {
+            window.location.href = data.redirectUrl;
+          }, 1000);
+        }
       }
     },
     onError: () => {

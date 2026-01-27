@@ -42,6 +42,7 @@ export interface IStorage {
   getOrderById(id: number): Promise<Order | undefined>;
   getOrdersByUserId(userId: string): Promise<Order[]>;
   getOrderBySessionId(sessionId: string): Promise<Order | undefined>;
+  getOrderBySubscriptionId(subscriptionId: string): Promise<Order | undefined>;
   updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string | null, customerEmail?: string, stripeSubscriptionId?: string): Promise<Order | undefined>;
   claimOrdersBySession(sessionId: string, userId: string): Promise<void>;
   hasUserPurchasedPlaybook(userId: string, archetype: string): Promise<boolean>;
@@ -327,6 +328,11 @@ export class DatabaseStorage implements IStorage {
 
   async getOrderBySessionId(sessionId: string): Promise<Order | undefined> {
     const [order] = await db.select().from(orders).where(eq(orders.sessionId, sessionId));
+    return order || undefined;
+  }
+
+  async getOrderBySubscriptionId(subscriptionId: string): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(eq(orders.stripeSubscriptionId, subscriptionId));
     return order || undefined;
   }
 
@@ -733,6 +739,28 @@ export class DatabaseStorage implements IStorage {
         )
       );
     return !!existing;
+  }
+
+  // Get active Partner subscribers for weekly emails
+  async getActivePartnerSubscribers(): Promise<{ userId: string; email: string; archetype: string; firstName: string | null }[]> {
+    const results = await db
+      .select({
+        userId: orders.userId,
+        email: orders.customerEmail,
+        archetype: orders.archetype,
+        firstName: users.firstName,
+      })
+      .from(orders)
+      .leftJoin(users, eq(orders.userId, users.id))
+      .where(
+        and(
+          eq(orders.productType, 'productivity_partner'),
+          eq(orders.status, 'completed')
+        )
+      );
+    
+    // Filter to only include valid entries with email
+    return results.filter(r => r.userId && r.email) as { userId: string; email: string; archetype: string; firstName: string | null }[];
   }
 }
 

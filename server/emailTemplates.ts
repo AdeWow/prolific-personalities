@@ -918,3 +918,265 @@ export function generateAbandonedCartEmail(data: AbandonedCartEmailData): { subj
 
   return { subject, html };
 }
+
+// Weekly accountability email for Partner subscribers
+export interface WeeklyAccountabilityEmailData {
+  firstName: string | null;
+  archetype: string;
+  weekNumber: number;
+}
+
+const weeklyTips: { [key: string]: string[] } = {
+  'the-dynamo': [
+    "This week, try timeboxing your most ambitious project into 25-minute sprints. Dynamos thrive with focused bursts followed by quick wins.",
+    "Challenge yourself: delegate one task you normally do yourself. Your visionary energy is needed for the big picture.",
+    "Schedule your most creative work for the first 2 hours of your day—that's when your energy signature peaks.",
+    "Try the 'two-list' method: keep your main goals list short (3 items max) and a separate 'parking lot' for ideas that excite you but aren't priorities.",
+  ],
+  'the-catalyst': [
+    "This week, experiment with 'energy matching'—tackle collaborative tasks when you're feeling social, solo work when you need to recharge.",
+    "Set up three quick check-ins with teammates this week. Your collaborative nature drives team momentum.",
+    "Try documenting your decision-making process this week. It'll help you understand your intuitive leaps.",
+    "Schedule a 'creative collision' meeting—bring together two people who don't usually work together for fresh ideas.",
+  ],
+  'the-architect': [
+    "Focus on optimizing one system this week. Small process improvements compound over time for Architects.",
+    "Schedule 90-minute deep work blocks for your most complex projects. Protect these times fiercely.",
+    "This week, document a process you've mastered. Your systematic approach helps others level up.",
+    "Try 'pre-mortem' thinking: before starting a project, imagine what could go wrong and plan around it.",
+  ],
+  'the-harmonizer': [
+    "This week, prioritize relationship-building alongside your tasks. Your strength is in connection.",
+    "Try batch-processing your communication—dedicate specific times for emails and messages to stay focused.",
+    "Schedule a 'listening tour'—have coffee with three colleagues to understand their challenges better.",
+    "This week, practice saying 'let me think about it' before committing to new requests.",
+  ],
+  'the-explorer': [
+    "Embrace your curiosity this week: allocate 30 minutes daily to explore a topic tangent to your main work.",
+    "Try connecting two unrelated ideas from different projects. Your exploratory mind finds unexpected solutions.",
+    "This week, start documenting your exploration journey—future you will thank you for the breadcrumbs.",
+    "Schedule 'wandering time' in your calendar. Explorers need space to discover unexpected connections.",
+  ],
+  'the-anchor': [
+    "This week, reflect on how your consistent approach has helped your team. Stability is a superpower.",
+    "Try introducing one small change to your routine. Anchors grow by expanding comfort zones gradually.",
+    "Mentor someone this week—your reliable presence helps others feel grounded.",
+    "Create a 'consistency playbook' for a recurring task. Others can benefit from your systematic approach.",
+  ],
+};
+
+const motivationalQuotes = [
+  { quote: "Progress, not perfection, is the goal.", author: "Unknown" },
+  { quote: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { quote: "Small daily improvements over time lead to stunning results.", author: "Robin Sharma" },
+  { quote: "Productivity is never an accident. It is always the result of commitment to excellence.", author: "Paul J. Meyer" },
+  { quote: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+  { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+];
+
+export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmailData): { subject: string; html: string } {
+  const { firstName, archetype, weekNumber } = data;
+  const archetypeKey = archetype.toLowerCase().replace(/ /g, '-');
+  const tips = weeklyTips[archetypeKey] || weeklyTips['the-architect'];
+  const weeklyTip = tips[weekNumber % tips.length];
+  const quote = motivationalQuotes[weekNumber % motivationalQuotes.length];
+  
+  const greeting = firstName ? `Hi ${firstName}` : "Hey there";
+  const subject = `Week ${weekNumber}: Your ${archetype} Productivity Check-in`;
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+          line-height: 1.6;
+          color: #1e293b;
+          background-color: #f8fafc;
+          margin: 0;
+          padding: 0;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background-color: #ffffff;
+        }
+        .header {
+          background: linear-gradient(135deg, #4f9a94 0%, #d4a574 100%);
+          color: white;
+          padding: 40px 30px;
+          text-align: center;
+        }
+        .header h1 {
+          margin: 0 0 10px 0;
+          font-size: 28px;
+          font-weight: 700;
+        }
+        .header .week-badge {
+          display: inline-block;
+          background: rgba(255,255,255,0.2);
+          padding: 4px 16px;
+          border-radius: 20px;
+          font-size: 14px;
+        }
+        .content {
+          padding: 40px 30px;
+        }
+        .greeting {
+          font-size: 18px;
+          margin-bottom: 20px;
+        }
+        .tip-card {
+          background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 100%);
+          border-left: 4px solid #4f9a94;
+          padding: 20px;
+          margin: 24px 0;
+          border-radius: 0 8px 8px 0;
+        }
+        .tip-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #4f9a94;
+          margin: 0 0 12px 0;
+        }
+        .tip-text {
+          color: #334155;
+          margin: 0;
+          font-size: 15px;
+        }
+        .quote-section {
+          text-align: center;
+          padding: 24px;
+          background: #fef3c7;
+          border-radius: 8px;
+          margin: 24px 0;
+        }
+        .quote-text {
+          font-style: italic;
+          font-size: 18px;
+          color: #92400e;
+          margin: 0 0 8px 0;
+        }
+        .quote-author {
+          color: #b45309;
+          font-size: 14px;
+        }
+        .checklist {
+          background: #f8fafc;
+          padding: 20px;
+          border-radius: 8px;
+          margin: 24px 0;
+        }
+        .checklist-title {
+          font-weight: 600;
+          margin: 0 0 12px 0;
+          color: #1e293b;
+        }
+        .checklist-item {
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: 8px;
+          color: #475569;
+        }
+        .checkbox {
+          width: 20px;
+          height: 20px;
+          border: 2px solid #4f9a94;
+          border-radius: 4px;
+          margin-right: 12px;
+          flex-shrink: 0;
+        }
+        .cta-button {
+          display: inline-block;
+          background: linear-gradient(135deg, #4f9a94 0%, #3d8b85 100%);
+          color: white !important;
+          text-decoration: none;
+          padding: 14px 32px;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 16px;
+          margin-top: 20px;
+        }
+        .footer {
+          text-align: center;
+          padding: 30px;
+          background: #f1f5f9;
+          color: #64748b;
+          font-size: 14px;
+        }
+        .footer a {
+          color: #4f9a94;
+        }
+        .unsubscribe {
+          margin-top: 16px;
+          font-size: 12px;
+        }
+        .unsubscribe a {
+          color: #94a3b8;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <span class="week-badge">Week ${weekNumber}</span>
+          <h1>Your Weekly Check-in</h1>
+        </div>
+        
+        <div class="content">
+          <p class="greeting">${greeting},</p>
+          
+          <p>Welcome to your weekly productivity check-in as a <strong>${archetype}</strong>. Let's make this week count!</p>
+          
+          <div class="tip-card">
+            <h3 class="tip-title">This Week's Focus</h3>
+            <p class="tip-text">${weeklyTip}</p>
+          </div>
+          
+          <div class="quote-section">
+            <p class="quote-text">"${quote.quote}"</p>
+            <span class="quote-author">— ${quote.author}</span>
+          </div>
+          
+          <div class="checklist">
+            <h3 class="checklist-title">Quick Weekly Reflection</h3>
+            <div class="checklist-item">
+              <div class="checkbox"></div>
+              <span>What was your biggest win last week?</span>
+            </div>
+            <div class="checklist-item">
+              <div class="checkbox"></div>
+              <span>What challenge slowed you down?</span>
+            </div>
+            <div class="checklist-item">
+              <div class="checkbox"></div>
+              <span>What's your #1 priority this week?</span>
+            </div>
+          </div>
+          
+          <p>Remember: small, consistent progress beats sporadic bursts of productivity. You've got this!</p>
+          
+          <div style="text-align: center;">
+            <a href="https://prolificpersonalities.com/dashboard" class="cta-button">View Your Progress</a>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p><strong>Prolific Personalities</strong></p>
+          <p>Your Partner in Productivity</p>
+          <p class="unsubscribe">
+            You're receiving this as a Partner subscriber.<br>
+            <a href="https://prolificpersonalities.com/settings">Manage email preferences</a>
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return { subject, html };
+}

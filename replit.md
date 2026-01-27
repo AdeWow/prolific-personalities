@@ -86,6 +86,10 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **Image Optimization**: Images compressed using sharp library.
 -   **Progressive Web App (PWA)**: Full PWA support with web app manifest, service worker, and install prompt.
 -   **Mobile App (Coming Soon)**: AI Productivity Coach feature is being developed as a dedicated mobile app for iOS and Android.
+-   **Promo Code System**: Supports both 100% discount codes (direct access) and partial discounts (10%, 25%, 50%) via Stripe coupon integration. Active codes: FRIEND1019, BETATESTER2026! (valid until Feb 28, 2026).
+-   **Weekly Accountability Emails**: Partner subscribers receive archetype-specific productivity tips and motivational content weekly via `/api/cron/weekly-accountability` endpoint.
+-   **Abandoned Cart Automation**: Daily cron job sends follow-up emails to users who started but didn't complete checkout via `/api/cron/abandoned-cart` endpoint.
+-   **Subscription Lifecycle Webhooks**: Full Stripe webhook handling for subscription events (checkout.session.completed, customer.subscription.deleted, invoice.paid, invoice.payment_failed) with automatic order status updates and email notifications.
 
 ### Mobile API Endpoints
 

@@ -22,6 +22,7 @@ import {
   generatePremiumPlaybookEmail,
   generateWelcomeEmail,
   generateAbandonedCartEmail,
+  generateWeeklyAccountabilityEmail,
 } from "./emailTemplates";
 import { getArchetypeInfo } from "./archetypeData";
 import {
@@ -90,6 +91,7 @@ export function registerWebhookRoute(app: Express) {
           event = JSON.parse(req.body.toString());
         }
 
+        // Handle checkout completion
         if (event.type === "checkout.session.completed") {
           const session = event.data.object as Stripe.Checkout.Session;
           const orderId = session.metadata?.orderId;
@@ -210,6 +212,89 @@ export function registerWebhookRoute(app: Express) {
                 console.warn("⚠️ No archetype metadata - skipping email");
               if (!sessionId)
                 console.warn("⚠️ No sessionId metadata - skipping email");
+            }
+          }
+        }
+
+        // Handle subscription cancellation
+        if (event.type === "customer.subscription.deleted") {
+          const subscription = event.data.object as Stripe.Subscription;
+          const subscriptionId = subscription.id;
+          
+          // Find and update order with this subscription ID
+          try {
+            const order = await storage.getOrderBySubscriptionId(subscriptionId);
+            if (order) {
+              await storage.updateOrderStatus(order.id, "cancelled");
+              console.log(`✅ Subscription ${subscriptionId} cancelled - order ${order.id} updated`);
+            } else {
+              console.warn(`⚠️ No order found for cancelled subscription ${subscriptionId}`);
+            }
+          } catch (err) {
+            console.error("Failed to handle subscription cancellation:", err);
+          }
+        }
+
+        // Handle subscription renewal (invoice paid)
+        if (event.type === "invoice.paid") {
+          const invoice = event.data.object as Stripe.Invoice;
+          // Only process subscription invoices (not one-time payments)
+          if (invoice.subscription) {
+            const subscriptionId = invoice.subscription as string;
+            console.log(`✅ Subscription ${subscriptionId} renewed - invoice ${invoice.id} paid`);
+            
+            // If payment previously failed and now succeeds, restore order to completed
+            try {
+              const order = await storage.getOrderBySubscriptionId(subscriptionId);
+              if (order && order.status === "failed") {
+                await storage.updateOrderStatus(order.id, "completed");
+                console.log(`✅ Order ${order.id} restored to completed after successful renewal`);
+              }
+            } catch (err) {
+              console.error("Failed to update order on renewal:", err);
+            }
+          }
+        }
+
+        // Handle subscription payment failure
+        if (event.type === "invoice.payment_failed") {
+          const invoice = event.data.object as Stripe.Invoice;
+          if (invoice.subscription) {
+            const subscriptionId = invoice.subscription as string;
+            const customerEmail = invoice.customer_email;
+            
+            console.log(`⚠️ Subscription ${subscriptionId} payment failed - invoice ${invoice.id}`);
+            
+            // Find order and update status to 'failed'
+            try {
+              const order = await storage.getOrderBySubscriptionId(subscriptionId);
+              if (order) {
+                // Mark order as failed to indicate payment issue
+                await storage.updateOrderStatus(order.id, "failed");
+                console.log(`⚠️ Order ${order.id} marked as failed due to payment failure`);
+                
+                // Send payment failure notification email
+                if (resend && customerEmail) {
+                  try {
+                    await resend.emails.send({
+                      from: "Prolific Personalities <support@prolificpersonalities.com>",
+                      to: customerEmail,
+                      subject: "Action Required: Payment Failed for Your Productivity Partner Subscription",
+                      html: `
+                        <h2>Payment Failed</h2>
+                        <p>We were unable to process your subscription payment. Please update your payment method to continue your Productivity Partner benefits.</p>
+                        <p><a href="https://prolificpersonalities.com/dashboard">Update Payment Method</a></p>
+                        <p>If you have questions, reply to this email.</p>
+                      `,
+                    });
+                    console.log(`✅ Payment failure notification sent to ${customerEmail}`);
+                  } catch (emailErr) {
+                    console.error("Failed to send payment failure email:", emailErr);
+                  }
+                }
+              }
+            } catch (err) {
+              console.error("Failed to handle payment failure:", err);
             }
           }
         }
@@ -853,11 +938,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
           redirectUrl: `/purchase-success?session_id=${sessionId}&archetype=${archetype}&promo=true`,
         });
       } else {
-        // For partial discounts, would integrate with Stripe coupon - not implemented yet
-        res.status(400).json({
-          success: false,
-          message: "Partial discount promo codes are not yet supported",
-        });
+        // For partial discounts, redirect to Stripe checkout with coupon
+        if (!stripe) {
+          res.status(503).json({
+            success: false,
+            message: "Payment service not configured",
+          });
+          return;
+        }
+
+        try {
+          // Create or get Stripe coupon for this discount percentage
+          const couponId = `PROMO_${promoCode.discountPercent}_OFF`;
+          let stripeCoupon;
+          
+          try {
+            stripeCoupon = await stripe.coupons.retrieve(couponId);
+          } catch {
+            // Coupon doesn't exist, create it
+            stripeCoupon = await stripe.coupons.create({
+              id: couponId,
+              percent_off: promoCode.discountPercent,
+              duration: 'once',
+              name: `${promoCode.discountPercent}% Off`,
+            });
+          }
+
+          // Calculate discounted amount
+          const originalAmount = 1900; // $19.00 in cents
+          const discountedAmount = Math.round(originalAmount * (1 - promoCode.discountPercent / 100));
+
+          // Create pending order
+          const order = await storage.createOrder({
+            userId: quizResult.userId || null,
+            sessionId,
+            archetype,
+            amount: discountedAmount,
+            status: "pending",
+            productType: promoCode.productType,
+            customerEmail: email || null,
+          });
+
+          const baseUrl =
+            process.env.APP_URL ||
+            (process.env.NODE_ENV === "production"
+              ? "https://prolificpersonalities.com"
+              : "http://localhost:5000");
+
+          // Create Stripe checkout session with coupon
+          const checkoutSession = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            line_items: [
+              {
+                price_data: {
+                  currency: "usd",
+                  product_data: {
+                    name: `Premium ${archetype.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Playbook`,
+                    description: "Interactive web playbook with progress tracking, 30-day action plan, tool guides, and downloadable PDF",
+                  },
+                  unit_amount: originalAmount,
+                },
+                quantity: 1,
+              },
+            ],
+            discounts: [{ coupon: couponId }],
+            mode: "payment",
+            success_url: `${baseUrl}/purchase-success?session_id=${sessionId}&archetype=${archetype}`,
+            cancel_url: `${baseUrl}/results/${sessionId}`,
+            customer_email: email || undefined,
+            metadata: {
+              orderId: order.id.toString(),
+              sessionId,
+              archetype,
+              productType: promoCode.productType,
+              promoCodeId: promoCode.id.toString(),
+            },
+          });
+
+          // Record the redemption (pending until payment completes)
+          await storage.redeemPromoCode(promoCode.id, {
+            sessionId,
+            userId: quizResult.userId || null,
+            email: email || null,
+            archetype,
+          });
+
+          res.json({
+            success: true,
+            message: `${promoCode.discountPercent}% discount applied! Redirecting to checkout...`,
+            checkoutUrl: checkoutSession.url,
+            discountPercent: promoCode.discountPercent,
+            originalPrice: 19,
+            discountedPrice: discountedAmount / 100,
+          });
+        } catch (stripeError: any) {
+          console.error("Stripe coupon error:", stripeError);
+          res.status(500).json({
+            success: false,
+            message: "Error applying discount. Please try again.",
+          });
+        }
       }
     } catch (error: any) {
       console.error("Error redeeming promo code:", error);
@@ -1899,6 +2079,96 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Abandoned cart cron error:", error);
       res.status(500).json({ error: "Failed to process abandoned carts" });
+    }
+  });
+
+  // Weekly Accountability Email Cron Job - Call this endpoint weekly via external cron service
+  // Example: Use cron-job.org to hit this endpoint every Monday at 9 AM with the CRON_SECRET header
+  app.post("/api/cron/weekly-accountability", async (req, res) => {
+    // Verify cron secret for security
+    const cronSecret = process.env.CRON_SECRET;
+    const providedSecret =
+      req.headers["x-cron-secret"] ||
+      req.headers.authorization?.replace("Bearer ", "");
+
+    if (cronSecret && providedSecret !== cronSecret) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+
+    if (!resend) {
+      res.status(503).json({ error: "Email service not configured" });
+      return;
+    }
+
+    try {
+      // Get active Partner subscribers
+      const partnerSubscribers = await storage.getActivePartnerSubscribers();
+
+      // Calculate week number (weeks since epoch, for consistent weekly tips)
+      const weekNumber = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
+      
+      const results = [];
+
+      for (const subscriber of partnerSubscribers) {
+        try {
+          // Generate weekly accountability email
+          const { subject, html } = generateWeeklyAccountabilityEmail({
+            firstName: subscriber.firstName,
+            archetype: subscriber.archetype,
+            weekNumber,
+          });
+
+          const { data, error } = await resend.emails.send({
+            from: "Prolific Personalities <hello@prolificpersonalities.com>",
+            to: [subscriber.email],
+            subject,
+            html,
+          });
+
+          if (error) {
+            console.error(`Failed to send weekly email to ${subscriber.email}:`, error);
+            results.push({
+              userId: subscriber.userId,
+              email: subscriber.email,
+              status: "failed",
+              error: error.message,
+            });
+            continue;
+          }
+
+          results.push({
+            userId: subscriber.userId,
+            email: subscriber.email,
+            status: "sent",
+            resendId: data?.id,
+          });
+          console.log(`✅ Weekly accountability email sent to ${subscriber.email} (${data?.id})`);
+        } catch (err) {
+          console.error(`Failed to send weekly email to ${subscriber.email}:`, err);
+          results.push({
+            userId: subscriber.userId,
+            email: subscriber.email,
+            status: "failed",
+            error: String(err),
+          });
+        }
+      }
+
+      console.log(
+        `📧 Weekly accountability cron completed: ${results.filter((r) => r.status === "sent").length} sent, ${results.filter((r) => r.status === "failed").length} failed`
+      );
+      res.json({
+        success: true,
+        weekNumber,
+        processed: partnerSubscribers.length,
+        sent: results.filter((r) => r.status === "sent").length,
+        failed: results.filter((r) => r.status === "failed").length,
+        results,
+      });
+    } catch (error) {
+      console.error("Weekly accountability cron error:", error);
+      res.status(500).json({ error: "Failed to send weekly accountability emails" });
     }
   });
 
