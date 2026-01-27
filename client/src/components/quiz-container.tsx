@@ -205,6 +205,33 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   };
 
   const handleNextPage = () => {
+    // Check if all questions on current page are answered
+    const unansweredQuestions = currentQuestions.filter(q => answers[q.id] === undefined);
+    
+    if (unansweredQuestions.length > 0) {
+      // Find the first unanswered question and scroll to it
+      const firstUnanswered = unansweredQuestions[0];
+      const questionIndex = currentQuestions.findIndex(q => q.id === firstUnanswered.id);
+      setActiveQuestionIndex(questionIndex);
+      
+      // Scroll to the unanswered question
+      const questionElement = questionRefs.current[questionIndex];
+      if (questionElement) {
+        questionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        questionElement.classList.add('ring-2', 'ring-red-500', 'ring-offset-2');
+        setTimeout(() => {
+          questionElement.classList.remove('ring-2', 'ring-red-500', 'ring-offset-2');
+        }, 2000);
+      }
+      
+      toast({
+        title: "Please answer all questions",
+        description: `You missed ${unansweredQuestions.length} question${unansweredQuestions.length > 1 ? 's' : ''} on this page. We've highlighted the first one.`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (isLastPage && allQuestionsAnswered) {
       const scores = calculateScores(answers);
       const archetype = determineArchetype(scores);
