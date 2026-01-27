@@ -1368,14 +1368,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.supabaseUser.id;
       const archetype = req.params.archetype || req.body.archetype;
+      const sessionId = req.query.sessionId || req.body.sessionId;
 
       if (!archetype) {
         res.status(400).json({ message: "Archetype is required" });
         return;
       }
 
-      // Check direct access to the requested archetype
-      let hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype);
+      // Check direct access to the requested archetype (also checks by sessionId if provided)
+      let hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype, sessionId);
 
       // Special case: Adaptive Generalist purchasers also get access to Flexible Improviser playbook
       // (since Flexible Improviser is included as a baseline in the Adaptive Generalist package)
@@ -1383,6 +1384,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         hasAccess = await storage.hasUserPurchasedPlaybook(
           userId,
           "adaptive-generalist",
+          sessionId,
         );
       }
 
@@ -1669,9 +1671,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const userId = req.supabaseUser.id;
         const { archetype } = req.params;
+        const sessionId = req.query.sessionId as string | undefined;
         const hasAccess = await storage.hasUserPurchasedPlaybook(
           userId,
           archetype,
+          sessionId,
         );
         res.json({ hasAccess });
       } catch (error) {

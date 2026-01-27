@@ -46,7 +46,7 @@ export interface IStorage {
   getOrderBySubscriptionId(subscriptionId: string): Promise<Order | undefined>;
   updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string | null, customerEmail?: string, stripeSubscriptionId?: string): Promise<Order | undefined>;
   claimOrdersBySession(sessionId: string, userId: string): Promise<void>;
-  hasUserPurchasedPlaybook(userId: string, archetype: string): Promise<boolean>;
+  hasUserPurchasedPlaybook(userId: string, archetype: string, sessionId?: string): Promise<boolean>;
   // Playbook Progress
   getPlaybookProgress(userId: string, archetype: string): Promise<PlaybookProgress[]>;
   updateChapterProgress(userId: string, archetype: string, chapterId: string, completed: boolean): Promise<PlaybookProgress>;
@@ -378,8 +378,9 @@ export class DatabaseStorage implements IStorage {
       .where(eq(orders.sessionId, sessionId));
   }
 
-  async hasUserPurchasedPlaybook(userId: string, archetype: string): Promise<boolean> {
-    const [order] = await db
+  async hasUserPurchasedPlaybook(userId: string, archetype: string, sessionId?: string): Promise<boolean> {
+    // First check by userId
+    const [orderByUser] = await db
       .select()
       .from(orders)
       .where(
@@ -389,7 +390,31 @@ export class DatabaseStorage implements IStorage {
           eq(orders.status, 'completed')
         )
       );
-    return !!order;
+    if (orderByUser) return true;
+
+    // If sessionId provided, also check by sessionId (for promo code orders before claim)
+    if (sessionId) {
+      const [orderBySession] = await db
+        .select()
+        .from(orders)
+        .where(
+          and(
+            eq(orders.sessionId, sessionId),
+            eq(orders.archetype, archetype),
+            eq(orders.status, 'completed')
+          )
+        );
+      if (orderBySession) {
+        // Claim the order for the user if found by session
+        await db
+          .update(orders)
+          .set({ userId })
+          .where(eq(orders.id, orderBySession.id));
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // Playbook Progress Methods

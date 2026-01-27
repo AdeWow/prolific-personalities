@@ -40,6 +40,9 @@ export default function Playbook() {
   const { toast } = useToast();
   const archetype = params?.archetype || "";
 
+  // Get sessionId from localStorage for access verification (promo code orders)
+  const [sessionId] = useState(() => localStorage.getItem('pendingQuizSessionId') || '');
+
   // Get playbook content - must be before any hooks that depend on it
   const playbook = playbookContentMap[archetype];
 
@@ -78,9 +81,12 @@ export default function Playbook() {
     }
   }, [playbook]);
 
-  // Check if user has premium access
+  // Check if user has premium access (include sessionId for promo code orders)
+  const accessQueryUrl = sessionId 
+    ? `/api/playbook/${archetype}/access?sessionId=${sessionId}` 
+    : `/api/playbook/${archetype}/access`;
   const { data: accessData, isLoading: isAccessLoading, isError: isAccessError } = useQuery<{ hasAccess: boolean }>({
-    queryKey: [`/api/playbook/${archetype}/access`],
+    queryKey: [accessQueryUrl],
     enabled: !!user && !!archetype,
     retry: 1,
   });
