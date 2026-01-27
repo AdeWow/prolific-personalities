@@ -11,6 +11,7 @@ import { questions } from "@/data/questions";
 import { calculateScores, determineArchetype, generateSessionId, getProgressPercentage, validateAnswer } from "@/lib/quiz-logic";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { trackEvent } from "@/lib/analytics";
 import { trackQuizStart, trackQuizPageView, trackQuizQuestionAnswered, trackQuizComplete } from "@/lib/posthog";
 import { cn } from "@/lib/utils";
@@ -39,6 +40,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   const [pendingPageAdvance, setPendingPageAdvance] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
@@ -81,7 +83,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   }, [progressPercentage, milestonesTracked]);
 
   const saveResultsMutation = useMutation({
-    mutationFn: async (data: { sessionId: string; answers: QuizAnswers; scores: any; archetype: string }) => {
+    mutationFn: async (data: { sessionId: string; answers: QuizAnswers; scores: any; archetype: string; userId?: string }) => {
       const response = await apiRequest("POST", "/api/quiz/results", data);
       return response.json();
     },
@@ -171,7 +173,8 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
         sessionId,
         answers,
         scores,
-        archetype: archetype.id
+        archetype: archetype.id,
+        userId: user?.id
       });
     } else if (!isLastPage) {
       setCurrentPage(prev => prev + 1);
