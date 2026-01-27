@@ -1,0 +1,61 @@
+I need to validate 4 critical flows before my marketer starts Monday. My stack:
+- PostgreSQL (Neon serverless) via Replit
+- Drizzle ORM
+- Supabase (auth only: Google login, magic links)
+- Resend (email)
+- Domain: prolificpersonalities.com
+
+DO NOT suggest improvements or new features. Only test and fix these 4 flows.
+
+## FLOW 1: Quiz Completion + Save
+User completes quiz → results save to PostgreSQL → archetype displays
+
+Test checklist:
+- [ ] Complete quiz as new user
+- [ ] Verify quiz_results (or equivalent table) receives new row via Drizzle
+- [ ] Confirm archetype result renders correctly
+- [ ] Test with both Google login AND magic link auth
+
+Known issue: Quiz results sometimes don't save. Check:
+- Drizzle insert operation
+- Database connection handling (Neon can drop idle connections)
+- Any race conditions between auth and save
+
+## FLOW 2: Email Capture
+User enters email → saves to PostgreSQL → Resend triggers welcome/confirmation
+
+Test checklist:
+- [ ] Submit email on landing page
+- [ ] Verify email appears in correct PostgreSQL table
+- [ ] Check Resend dashboard for sent email
+- [ ] Verify Resend API call returns 200
+- [ ] Check for duplicate email handling
+
+## FLOW 3: Payment → Premium Access
+User pays → Stripe processes → premium flag updates → content unlocks
+
+Test checklist:
+- [ ] Use Stripe test card (4242 4242 4242 4242)
+- [ ] Verify Stripe webhook updates user record in PostgreSQL
+- [ ] Confirm premium content gate checks user's payment status
+- [ ] Test that access persists on page refresh/new session
+
+## FLOW 4: PDF Delivery (Post-Payment)
+Payment success → Resend sends email with PDF → download link works
+
+Test checklist:
+- [ ] Complete test purchase
+- [ ] Check Resend dashboard for triggered email
+- [ ] Verify PDF attached or download link included
+- [ ] Test direct download from app
+- [ ] Check Resend logs if email fails (API errors, attachment size)
+
+---
+
+For each flow:
+1. Run the test
+2. If it fails, show me the error + relevant code
+3. Provide the fix
+4. Confirm it passes after fix
+
+Start with Flow 1. Show me exactly how to test the quiz save issue.
