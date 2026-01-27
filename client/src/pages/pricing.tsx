@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -6,13 +6,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
-import { CheckCircle2, Sparkles, Lock, Zap, Target, Smartphone } from "lucide-react";
+import { CheckCircle2, Sparkles, Lock, Zap, Target, Smartphone, Loader2 } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { trackPaywallView } from "@/lib/posthog";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 const EARLY_BIRD_LIMIT = 100;
 
 export default function Pricing() {
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const { toast } = useToast();
+  
   const { data: purchaseCount } = useQuery<{ count: number }>({
     queryKey: ['/api/playbook-purchase-count'],
   });
@@ -25,6 +30,28 @@ export default function Pricing() {
     trackEvent('pricing_page_view', 'Navigation', 'Pricing Page');
     trackPaywallView('no_archetype', 'pricing_page');
   }, []);
+
+  const handlePlaybookPurchase = async () => {
+    setIsCheckingOut(true);
+    try {
+      trackEvent('pricing_playbook_click', 'Purchase', 'Playbook Pre-Purchase');
+      const response = await apiRequest('POST', '/api/create-prepurchase-session', {});
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
+    } catch (error: any) {
+      console.error('Checkout error:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to start checkout. Please try again.",
+        variant: "destructive",
+      });
+      setIsCheckingOut(false);
+    }
+  };
 
   const tiers = {
     discovery: {
@@ -217,11 +244,21 @@ export default function Pricing() {
                   ))}
                 </ul>
 
-                <Link href={tiers.playbook.ctaLink}>
-                  <Button className="w-full gradient-primary text-white py-6 text-lg font-semibold hover:shadow-lg transition-all" data-testid="button-start-playbook">
-                    {tiers.playbook.cta}
-                  </Button>
-                </Link>
+                <Button 
+                  onClick={handlePlaybookPurchase}
+                  disabled={isCheckingOut}
+                  className="w-full gradient-primary text-white py-6 text-lg font-semibold hover:shadow-lg transition-all" 
+                  data-testid="button-start-playbook"
+                >
+                  {isCheckingOut ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    tiers.playbook.cta
+                  )}
+                </Button>
 
                 <p className="text-xs text-muted-foreground text-center mt-4">
                   30-day satisfaction guarantee.{" "}

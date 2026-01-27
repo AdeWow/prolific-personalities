@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useLocation } from "wouter";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useLocation, useSearch } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,9 +37,19 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   const [celebrationsShown, setCelebrationsShown] = useState<Set<number>>(new Set());
   const [pendingPageAdvance, setPendingPageAdvance] = useState(false);
   const [, setLocation] = useLocation();
+  const searchString = useSearch();
   const { toast } = useToast();
   const { user } = useAuth();
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Check for prepaid purchase from pricing page
+  const prepaidInfo = useMemo(() => {
+    const params = new URLSearchParams(searchString);
+    const prepaid = params.get('prepaid') === 'true';
+    const orderId = params.get('orderId');
+    const token = params.get('token');
+    return prepaid && orderId && token ? { prepaid: true, orderId, token } : null;
+  }, [searchString]);
 
   const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
   const startIndex = currentPage * QUESTIONS_PER_PAGE;
@@ -83,11 +93,30 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   const saveResultsMutation = useMutation({
     mutationFn: async (data: { sessionId: string; answers: QuizAnswers; scores: any; archetype: string; userId?: string }) => {
       const response = await apiRequest("POST", "/api/quiz/results", data);
-      return response.json();
+      return response;
     },
-    onSuccess: () => {
+    onSuccess: async (_, variables) => {
       localStorage.setItem('pendingQuizSessionId', sessionId);
-      setLocation(`/results/${sessionId}`);
+      
+      // If prepaid, link the order to quiz and go straight to playbook
+      if (prepaidInfo) {
+        try {
+          await apiRequest("POST", "/api/link-prepurchase-order", {
+            orderId: prepaidInfo.orderId,
+            sessionId: sessionId,
+            archetype: variables.archetype,
+            token: prepaidInfo.token,
+          });
+          // Go directly to playbook
+          setLocation(`/playbook/${variables.archetype}?session=${sessionId}`);
+        } catch (error) {
+          console.error("Failed to link prepurchase order:", error);
+          // Fallback to results page if linking fails
+          setLocation(`/results/${sessionId}`);
+        }
+      } else {
+        setLocation(`/results/${sessionId}`);
+      }
     },
     onError: (error) => {
       toast({

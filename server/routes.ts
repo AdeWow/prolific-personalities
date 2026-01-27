@@ -1229,6 +1229,155 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Pre-purchase checkout - Pay first, then take quiz
+  app.post("/api/create-prepurchase-session", writeLimiter, async (req, res) => {
+    try {
+      // Block checkout if email delivery is not configured
+      if (!resend) {
+        res.status(503).json({
+          message:
+            "Premium purchases are temporarily unavailable. Email delivery service is not configured.",
+        });
+        return;
+      }
+
+      const { email } = req.body;
+
+      const baseUrl =
+        process.env.NODE_ENV === "production"
+          ? "https://prolificpersonalities.com"
+          : `${req.protocol}://${req.get("host")}`;
+
+      // Check current purchase count to determine price
+      const purchaseCount = await storage.getPlaybookPurchaseCount();
+      const isEarlyBird = purchaseCount < 100;
+      const amount = isEarlyBird ? 1900 : 2900;
+
+      // Generate a temporary prepurchase session ID and verification token
+      const prepurchaseSessionId = `prepurchase-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+      const verificationToken = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}`;
+
+      // Create order record with temporary sessionId (will be linked to quiz after)
+      const order = await storage.createOrder({
+        userId: null,
+        sessionId: prepurchaseSessionId,
+        archetype: "pending", // Will be updated after quiz
+        amount,
+        status: "pending",
+        customerEmail: email || null,
+      });
+
+      // Create Stripe Checkout Session with verification token in metadata
+      const checkoutSession = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        customer_email: email || undefined,
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: "Complete Productivity Playbook",
+                description:
+                  "Interactive web playbook with progress tracking, 30-day action plan, tool guides, and downloadable PDF. Take the quiz after purchase to get your personalized results.",
+              },
+              unit_amount: amount,
+            },
+            quantity: 1,
+          },
+        ],
+        mode: "payment",
+        success_url: `${baseUrl}/quiz?prepaid=true&orderId=${order.id}&token=${verificationToken}`,
+        cancel_url: `${baseUrl}/pricing?payment=cancelled`,
+        metadata: {
+          orderId: order.id.toString(),
+          productType: "prepurchase",
+          verificationToken, // Store token for validation
+        },
+      });
+
+      // Store the Stripe checkout session ID for token verification later
+      await storage.updateOrderStripeSessionId(order.id, checkoutSession.id);
+
+      res.json({ sessionId: checkoutSession.id, url: checkoutSession.url });
+    } catch (error: any) {
+      console.error("Error creating prepurchase session:", error);
+      res
+        .status(500)
+        .json({ message: "Error creating checkout session: " + error.message });
+    }
+  });
+
+  // Link a prepurchase order to a quiz session after quiz completion
+  app.post("/api/link-prepurchase-order", writeLimiter, async (req, res) => {
+    try {
+      const { orderId, sessionId, archetype, token } = req.body;
+
+      if (!orderId || !sessionId || !archetype || !token) {
+        res.status(400).json({ message: "Missing required fields" });
+        return;
+      }
+
+      // Verify the order exists and is completed
+      const order = await storage.getOrderById(parseInt(orderId));
+      if (!order) {
+        res.status(404).json({ message: "Order not found" });
+        return;
+      }
+
+      if (order.status !== "completed") {
+        res.status(400).json({ message: "Order is not completed" });
+        return;
+      }
+
+      // Prevent relinking if order already has a real quiz session
+      if (order.archetype !== "pending") {
+        res.status(400).json({ message: "Order already linked to a quiz session" });
+        return;
+      }
+
+      // Verify this is a prepurchase order
+      if (!order.sessionId?.startsWith('prepurchase-')) {
+        res.status(403).json({ message: "Invalid order type" });
+        return;
+      }
+
+      // Verify the token by retrieving the Stripe checkout session and checking metadata
+      if (!order.stripeSessionId) {
+        res.status(400).json({ message: "Order missing Stripe session" });
+        return;
+      }
+
+      try {
+        const stripeSession = await stripe.checkout.sessions.retrieve(order.stripeSessionId);
+        const storedToken = stripeSession.metadata?.verificationToken;
+        if (!storedToken || storedToken !== token) {
+          res.status(403).json({ message: "Invalid verification token" });
+          return;
+        }
+      } catch (stripeError) {
+        console.error("Failed to verify token with Stripe:", stripeError);
+        res.status(500).json({ message: "Failed to verify purchase" });
+        return;
+      }
+
+      // Verify quiz result exists
+      const quizResult = await storage.getQuizResultBySessionId(sessionId);
+      if (!quizResult) {
+        res.status(404).json({ message: "Quiz result not found" });
+        return;
+      }
+
+      // Update the order with the quiz session and archetype
+      await storage.linkOrderToQuizSession(parseInt(orderId), sessionId, archetype);
+      console.log(`✅ Linked prepurchase order ${orderId} to quiz session ${sessionId} with archetype ${archetype}`);
+
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error linking prepurchase order:", error);
+      res.status(500).json({ message: "Failed to link order: " + error.message });
+    }
+  });
+
   // Stripe Checkout Session - Create subscription for Productivity Partner
   app.post(
     "/api/create-subscription-session",

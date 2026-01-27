@@ -46,6 +46,8 @@ export interface IStorage {
   getOrderBySubscriptionId(subscriptionId: string): Promise<Order | undefined>;
   updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string | null, customerEmail?: string, stripeSubscriptionId?: string): Promise<Order | undefined>;
   claimOrdersBySession(sessionId: string, userId: string): Promise<void>;
+  linkOrderToQuizSession(orderId: number, sessionId: string, archetype: string): Promise<Order | undefined>;
+  updateOrderStripeSessionId(orderId: number, stripeSessionId: string): Promise<void>;
   hasUserPurchasedPlaybook(userId: string, archetype: string, sessionId?: string): Promise<boolean>;
   // Playbook Progress
   getPlaybookProgress(userId: string, archetype: string): Promise<PlaybookProgress[]>;
@@ -376,6 +378,23 @@ export class DatabaseStorage implements IStorage {
       .update(orders)
       .set({ userId })
       .where(eq(orders.sessionId, sessionId));
+  }
+
+  async linkOrderToQuizSession(orderId: number, sessionId: string, archetype: string): Promise<Order | undefined> {
+    // Link a prepurchase order to a quiz session and update the archetype
+    const [order] = await db
+      .update(orders)
+      .set({ sessionId, archetype })
+      .where(eq(orders.id, orderId))
+      .returning();
+    return order;
+  }
+
+  async updateOrderStripeSessionId(orderId: number, stripeSessionId: string): Promise<void> {
+    await db
+      .update(orders)
+      .set({ stripeSessionId })
+      .where(eq(orders.id, orderId));
   }
 
   async hasUserPurchasedPlaybook(userId: string, archetype: string, sessionId?: string): Promise<boolean> {
