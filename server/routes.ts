@@ -343,6 +343,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Apply general rate limiting to all API routes
   app.use("/api/", apiLimiter);
 
+  // Sync Supabase user to local database (called on login)
+  app.post("/api/auth/sync", supabaseAuth, async (req: any, res) => {
+    try {
+      const supabaseUser = req.supabaseUser;
+      const { firstName, lastName, profileImageUrl } = req.body;
+
+      await storage.upsertUser({
+        id: supabaseUser.id,
+        email: supabaseUser.email || null,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        profileImageUrl: profileImageUrl || null,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error syncing user:", error);
+      res.status(500).json({ message: "Failed to sync user" });
+    }
+  });
+
   // Link quiz result to logged-in user
   app.post(
     "/api/quiz/claim/:sessionId",
