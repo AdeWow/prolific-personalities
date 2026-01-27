@@ -351,7 +351,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     async (req: any, res) => {
       try {
         const { sessionId } = req.params;
-        const userId = req.supabaseUser.id;
+        const supabaseUser = req.supabaseUser;
+        const userId = supabaseUser.id;
+
+        console.log(`🔍 Claim request for session ${sessionId} by user ${userId}`);
+
+        // Ensure user exists in local users table (for FK constraints on orders)
+        await storage.upsertUser({
+          id: userId,
+          email: supabaseUser.email || null,
+          firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+          lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+          profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+        });
+        console.log(`✅ User upserted: ${userId}`);
 
         // Check if result exists and is already claimed
         const existing = await storage.getQuizResultBySessionId(sessionId);
@@ -1669,9 +1682,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     supabaseAuth,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const supabaseUser = req.supabaseUser;
+        const userId = supabaseUser.id;
         const { archetype } = req.params;
         const sessionId = req.query.sessionId as string | undefined;
+
+        // Ensure user exists in local users table (needed for claiming orders by sessionId)
+        await storage.upsertUser({
+          id: userId,
+          email: supabaseUser.email || null,
+          firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+          lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+          profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+        });
+
         const hasAccess = await storage.hasUserPurchasedPlaybook(
           userId,
           archetype,

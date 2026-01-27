@@ -1,0 +1,136 @@
+I need to redesign the 4-Axis Productivity Profile visualization in my results page. The current design is too complex and doesn't provide enough context for users to understand their scores.
+
+CURRENT PROBLEMS:
+- Too much text per axis (axis name + score + 2 endpoint labels = cognitive overload)
+- Scores lack context (is 35 good? bad? average?)
+- Gradient bars are pretty but not functional
+- All axes treated equally (no visual hierarchy)
+- Feels clinical, not engaging
+
+GOALS:
+1. Make it scannable in 10 seconds
+2. Add context so users understand what their scores mean
+3. Make it shareable/screenshot-worthy
+4. Reduce cognitive load by 50%
+5. Make it feel validating and insightful, not clinical
+
+NEW DESIGN REQUIREMENTS:
+
+═══════════════════════════════════════
+LAYOUT: Simplified Progress Bars
+═══════════════════════════════════════
+
+For each axis, show:
+
+┌─────────────────────────────────────────────────┐
+│ STRUCTURE ORIENTATION                     35    │
+│ ────────────────────────────────────────────    │
+│ ■■■■■■■■■■■■■■□□□□□□□□□□□□□□□□□□□□□□□□□□□    │
+│                                                 │
+│ 💡 You thrive with flexibility and spontaneity  │
+│ 📊 72% of people have more structure preference │
+└─────────────────────────────────────────────────┘
+
+COMPONENTS:
+1. **Axis Name** (top left, medium weight font)
+2. **Score** (top right, large, bold)
+3. **Progress Bar** (filled based on score, single solid color)
+4. **Insight** (💡 icon + one sentence explaining what this score means for them)
+5. **Context** (📊 icon + percentile or comparison)
+
+REMOVE:
+- Endpoint labels (Flexible Improviser ↔ System-Driven Planner)
+- Gradient fills
+- Circle indicators on bars
+- "Low" label in the middle
+
+═══════════════════════════════════════
+COLOR CODING (Keep it simple)
+═══════════════════════════════════════
+
+Use a single color per axis (no gradients):
+- Structure Orientation: Teal (#14B8A6)
+- Motivation Style: Rose (#F43F5E)  
+- Cognitive Focus: Amber (#F59E0B)
+- Task Relationship: Purple (#A855F7)
+
+Bar fill should be solid color, background should be light gray
+
+═══════════════════════════════════════
+INSIGHTS & CONTEXT (Critical Addition)
+═══════════════════════════════════════
+
+For each score range, show appropriate insight:
+
+**Structure Orientation:**
+- 0-30: "You thrive with flexibility and spontaneity"
+- 31-70: "You balance structure with adaptability"
+- 71-100: "You excel with clear systems and routines"
+
+**Motivation Style:**
+- 0-30: "You're driven by intrinsic meaning and purpose"
+- 31-70: "You balance internal drive with external goals"
+- 71-100: "You excel with clear goals and accountability"
+
+**Cognitive Focus:**
+- 0-30: "Your strength is expansive, creative thinking"
+- 31-70: "You balance big-picture vision with execution"
+- 71-100: "You excel at focused, detail-oriented work"
+
+**Task Relationship:**
+- 0-30: "You perform best under pressure and urgency"
+- 31-70: "You balance quick wins with deep immersion"
+- 71-100: "You thrive with extended focus time"
+
+Add percentile context:
+- Calculate: (score / 100) → "X% of people score higher/lower"
+- Example: Score of 35 → "65% of people score lower - you're in the flexible camp"
+
+═══════════════════════════════════════
+MOBILE OPTIMIZATION
+═══════════════════════════════════════
+
+- Stack all 4 axes vertically
+- Each axis card should be easy to tap/read on mobile
+- Bar should be thick enough to see clearly on small screens (min 24px height)
+- Use responsive text sizing
+
+═══════════════════════════════════════
+OPTIONAL ENHANCEMENT (Phase 2)
+═══════════════════════════════════════
+
+Add expandable details:
+- Click/tap on an axis → Opens modal with:
+  - Detailed explanation of what this axis measures
+  - What your score means for productivity
+  - Specific strategies for your score range
+  - Tool recommendations aligned with this trait
+
+═══════════════════════════════════════
+SECTION HEADER UPDATE
+═══════════════════════════════════════
+
+Change from:
+"Your 4-Axis Productivity Profile
+Each axis reveals how your brain naturally approaches work"
+
+To:
+"Your Productivity DNA
+These four traits shape how you work best"
+
+More approachable, less clinical.
+
+═══════════════════════════════════════
+TECHNICAL REQUIREMENTS
+═══════════════════════════════════════
+
+- Keep existing data structure (scores are 0-100 for each axis)
+- Maintain responsive design
+- Use Tailwind for styling
+- Add smooth loading animation (fade in)
+- Ensure accessibility (proper contrast ratios, screen reader support)
+
+DELIVERABLE:
+Update the FourAxisVisual component (or whatever it's called) in the results.tsx file with this new simplified design.
+
+Generate the complete updated component code.
