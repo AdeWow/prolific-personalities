@@ -100,14 +100,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
-    // First check if a user with this email already exists
+    // First check if a user with this email already exists with a different ID
     if (userData.email) {
       const existingByEmail = await this.getUserByEmail(userData.email);
       if (existingByEmail && existingByEmail.id !== userData.id) {
         const oldId = existingByEmail.id;
         const newId = userData.id;
         
-        // Migrate all foreign key references to the new ID
+        // Step 1: Create the new user first (so foreign keys can reference it)
+        await db.insert(users).values({
+          id: newId,
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          profileImageUrl: userData.profileImageUrl,
+        }).onConflictDoNothing();
+        
+        // Step 2: Migrate all foreign key references to the new ID
         await db.update(quizResults).set({ userId: newId }).where(eq(quizResults.userId, oldId));
         await db.update(orders).set({ userId: newId }).where(eq(orders.userId, oldId));
         await db.update(playbookProgress).set({ userId: newId }).where(eq(playbookProgress.userId, oldId));
@@ -117,19 +126,12 @@ export class DatabaseStorage implements IStorage {
         await db.update(chatConversations).set({ userId: newId }).where(eq(chatConversations.userId, oldId));
         await db.update(chatUsage).set({ userId: newId }).where(eq(chatUsage.userId, oldId));
         
-        // Now update the user ID
-        const [updated] = await db
-          .update(users)
-          .set({
-            id: newId,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            profileImageUrl: userData.profileImageUrl,
-            updatedAt: new Date(),
-          })
-          .where(eq(users.email, userData.email))
-          .returning();
-        return updated;
+        // Step 3: Delete the old user record
+        await db.delete(users).where(eq(users.id, oldId));
+        
+        // Step 4: Return the new user
+        const [newUser] = await db.select().from(users).where(eq(users.id, newId));
+        return newUser;
       }
     }
 
