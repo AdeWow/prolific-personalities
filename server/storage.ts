@@ -100,6 +100,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
+    // First check if a user with this email already exists
+    if (userData.email) {
+      const existingByEmail = await this.getUserByEmail(userData.email);
+      if (existingByEmail && existingByEmail.id !== userData.id) {
+        // User exists with same email but different ID - update their ID to the new Supabase ID
+        const [updated] = await db
+          .update(users)
+          .set({
+            id: userData.id,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            profileImageUrl: userData.profileImageUrl,
+            updatedAt: new Date(),
+          })
+          .where(eq(users.email, userData.email))
+          .returning();
+        return updated;
+      }
+    }
+
+    // Normal upsert by ID
     const [user] = await db
       .insert(users)
       .values(userData)
