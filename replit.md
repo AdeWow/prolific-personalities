@@ -77,7 +77,7 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **Social Sharing**: Multi-platform sharing on results page.
 -   **Analytics Integration**: Google Analytics 4 with automatic page view and event tracking.
 -   **Email Results Feature**: Users can email their complete assessment results to themselves.
--   **Stripe Premium Payment Integration**: E-commerce system with 3-tier pricing (Discovery, Complete Playbook, Productivity Partner) including guest purchase flow, subscriptions, and secure webhooks.
+-   **Stripe Premium Payment Integration**: E-commerce system with 2-tier pricing (Discovery free, Complete Playbook $19-$29) featuring early-bird pricing (first 100 customers get $19, then $29), guest purchase flow, and secure webhooks.
 -   **Premium Playbook System**: Interactive web-based playbooks with chapter progress tracking, 30-Day Action Plan, Tool Implementation Tracker, and Personal Notes System (CRUD). Premium access middleware ensures paid access. PDF download available.
 -   **Progress Tracking Database Schema**: `playbook_progress`, `action_plan_progress`, `tool_tracking`, `playbook_notes`.
 -   **Resources Page**: Curated productivity tools.
@@ -85,7 +85,7 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **Refund Policy Page**: Comprehensive 30-day satisfaction guarantee.
 -   **Image Optimization**: Images compressed using sharp library.
 -   **Progressive Web App (PWA)**: Full PWA support with web app manifest, service worker, and install prompt.
--   **Mobile App (Coming Soon)**: AI Productivity Coach feature is being developed as a dedicated mobile app for iOS and Android.
+-   **Mobile App (Coming Soon)**: AI Productivity Coach feature is being developed as a dedicated mobile app for iOS and Android. Results page includes waitlist CTA with email capture and source tracking.
 -   **Promo Code System**: Supports both 100% discount codes (direct access) and partial discounts (10%, 25%, 50%) via Stripe coupon integration. Active codes: FRIEND1019, BETATESTER2026! (valid until Feb 28, 2026).
 -   **Weekly Accountability Emails**: Partner subscribers receive archetype-specific productivity tips and motivational content weekly via `/api/cron/weekly-accountability` endpoint.
 -   **Abandoned Cart Automation**: Daily cron job sends follow-up emails to users who started but didn't complete checkout via `/api/cron/abandoned-cart` endpoint.
