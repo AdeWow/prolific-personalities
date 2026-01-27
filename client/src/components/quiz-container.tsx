@@ -196,7 +196,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
             setPendingPageAdvance(true);
           } else {
             setTimeout(() => {
-              handleNextPage();
+              handleNextPage(true); // Auto-advance, skip validation
             }, 300);
           }
         }
@@ -204,32 +204,34 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     }
   };
 
-  const handleNextPage = () => {
-    // Check if all questions on current page are answered
-    const unansweredQuestions = currentQuestions.filter(q => answers[q.id] === undefined);
-    
-    if (unansweredQuestions.length > 0) {
-      // Find the first unanswered question and scroll to it
-      const firstUnanswered = unansweredQuestions[0];
-      const questionIndex = currentQuestions.findIndex(q => q.id === firstUnanswered.id);
-      setActiveQuestionIndex(questionIndex);
+  const handleNextPage = (isAutoAdvance = false) => {
+    // Only validate on manual button clicks, not auto-advance (state might not be updated yet)
+    if (!isAutoAdvance) {
+      const unansweredQuestions = currentQuestions.filter(q => answers[q.id] === undefined);
       
-      // Scroll to the unanswered question
-      const questionElement = questionRefs.current[questionIndex];
-      if (questionElement) {
-        questionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        questionElement.classList.add('ring-2', 'ring-red-500', 'ring-offset-2');
-        setTimeout(() => {
-          questionElement.classList.remove('ring-2', 'ring-red-500', 'ring-offset-2');
-        }, 2000);
+      if (unansweredQuestions.length > 0) {
+        // Find the first unanswered question and scroll to it
+        const firstUnanswered = unansweredQuestions[0];
+        const questionIndex = currentQuestions.findIndex(q => q.id === firstUnanswered.id);
+        setActiveQuestionIndex(questionIndex);
+        
+        // Scroll to the unanswered question
+        const questionElement = questionRefs.current[questionIndex];
+        if (questionElement) {
+          questionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          questionElement.classList.add('ring-2', 'ring-red-500', 'ring-offset-2');
+          setTimeout(() => {
+            questionElement.classList.remove('ring-2', 'ring-red-500', 'ring-offset-2');
+          }, 2000);
+        }
+        
+        toast({
+          title: "Please answer all questions",
+          description: `You missed ${unansweredQuestions.length} question${unansweredQuestions.length > 1 ? 's' : ''} on this page. We've highlighted the first one.`,
+          variant: "destructive",
+        });
+        return;
       }
-      
-      toast({
-        title: "Please answer all questions",
-        description: `You missed ${unansweredQuestions.length} question${unansweredQuestions.length > 1 ? 's' : ''} on this page. We've highlighted the first one.`,
-        variant: "destructive",
-      });
-      return;
     }
     
     if (isLastPage && allQuestionsAnswered) {
@@ -501,7 +503,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
         </div>
 
         <Button
-          onClick={handleNextPage}
+          onClick={() => handleNextPage(false)}
           disabled={(!pageQuestionsAnswered && !isLastPage) || (isLastPage && !allQuestionsAnswered) || saveResultsMutation.isPending || showCelebration !== null}
           className={cn(
             "flex items-center gap-2 px-6 py-5 text-base font-medium",

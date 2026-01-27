@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useLocation, useRoute, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -37,8 +38,22 @@ export default function Playbook() {
   const [, params] = useRoute("/playbook/:archetype");
   const [, setLocation] = useLocation();
   const { user, isLoading: isAuthLoading } = useAuth();
+  const { session } = useAuthContext();
   const { toast } = useToast();
   const archetype = params?.archetype || "";
+
+  // Create authenticated fetch function
+  const authFetch = useCallback(async (url: string) => {
+    const headers: Record<string, string> = {};
+    if (session?.access_token) {
+      headers["Authorization"] = `Bearer ${session.access_token}`;
+    }
+    const res = await fetch(url, { headers });
+    if (!res.ok) {
+      throw new Error(`${res.status}: ${await res.text()}`);
+    }
+    return res.json();
+  }, [session?.access_token]);
 
   // Get sessionId from localStorage for access verification (promo code orders)
   const [sessionId] = useState(() => localStorage.getItem('pendingQuizSessionId') || '');
@@ -86,30 +101,35 @@ export default function Playbook() {
     ? `/api/playbook/${archetype}/access?sessionId=${sessionId}` 
     : `/api/playbook/${archetype}/access`;
   const { data: accessData, isLoading: isAccessLoading, isError: isAccessError } = useQuery<{ hasAccess: boolean }>({
-    queryKey: [accessQueryUrl],
-    enabled: !!user && !!archetype,
+    queryKey: [accessQueryUrl, session?.access_token],
+    queryFn: () => authFetch(accessQueryUrl),
+    enabled: !!user && !!archetype && !!session?.access_token,
     retry: 1,
   });
 
   // Fetch progress data - always call these hooks but they'll only fetch when enabled
   const { data: progressData } = useQuery<{ chapterId: string; completed: number; completedAt: string | null }[]>({
-    queryKey: [`/api/playbook/${archetype}/progress`],
-    enabled: !!user && !!archetype && !!accessData?.hasAccess,
+    queryKey: [`/api/playbook/${archetype}/progress`, session?.access_token],
+    queryFn: () => authFetch(`/api/playbook/${archetype}/progress`),
+    enabled: !!user && !!archetype && !!accessData?.hasAccess && !!session?.access_token,
   });
 
   const { data: actionPlanData } = useQuery<{ dayNumber: number; taskId: string; completedAt: string }[]>({
-    queryKey: [`/api/playbook/${archetype}/action-plan`],
-    enabled: !!user && !!archetype && !!accessData?.hasAccess,
+    queryKey: [`/api/playbook/${archetype}/action-plan`, session?.access_token],
+    queryFn: () => authFetch(`/api/playbook/${archetype}/action-plan`),
+    enabled: !!user && !!archetype && !!accessData?.hasAccess && !!session?.access_token,
   });
 
   const { data: toolsData } = useQuery<{ toolId: string; status: string; notes: string }[]>({
-    queryKey: [`/api/playbook/${archetype}/tools`],
-    enabled: !!user && !!archetype && !!accessData?.hasAccess,
+    queryKey: [`/api/playbook/${archetype}/tools`, session?.access_token],
+    queryFn: () => authFetch(`/api/playbook/${archetype}/tools`),
+    enabled: !!user && !!archetype && !!accessData?.hasAccess && !!session?.access_token,
   });
 
   const { data: notesData } = useQuery<{ id: number; sectionId: string; content: string }[]>({
-    queryKey: [`/api/playbook/${archetype}/notes`],
-    enabled: !!user && !!archetype && !!accessData?.hasAccess,
+    queryKey: [`/api/playbook/${archetype}/notes`, session?.access_token],
+    queryFn: () => authFetch(`/api/playbook/${archetype}/notes`),
+    enabled: !!user && !!archetype && !!accessData?.hasAccess && !!session?.access_token,
   });
 
   // Mutations - always declare these

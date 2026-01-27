@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,11 +13,26 @@ import { archetypes } from "@/data/archetypes";
 import { Clock, TrendingUp, BarChart3, ArrowUpRight, ArrowDownRight, Minus, Download, Lock, BookOpen, Target } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
 import type { QuizResult, Order } from "@shared/schema";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function Dashboard() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading: authLoading, user } = useAuth();
+  const { session } = useAuthContext();
   const { isClaimingQuiz } = useClaimPendingQuiz();
+
+  // Create authenticated fetch function
+  const authFetch = useCallback(async (url: string) => {
+    const headers: Record<string, string> = {};
+    if (session?.access_token) {
+      headers["Authorization"] = `Bearer ${session.access_token}`;
+    }
+    const res = await fetch(url, { headers });
+    if (!res.ok) {
+      throw new Error(`${res.status}: ${await res.text()}`);
+    }
+    return res.json();
+  }, [session?.access_token]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -35,14 +50,16 @@ export default function Dashboard() {
 
   // Fetch user's quiz results
   const { data: results, isLoading: resultsLoading } = useQuery<QuizResult[]>({
-    queryKey: ["/api/dashboard/results"],
-    enabled: isAuthenticated,
+    queryKey: ["/api/dashboard/results", session?.access_token],
+    queryFn: () => authFetch("/api/dashboard/results"),
+    enabled: isAuthenticated && !!session?.access_token,
   });
 
   // Fetch user's orders
   const { data: orders } = useQuery<Order[]>({
-    queryKey: ["/api/orders"],
-    enabled: isAuthenticated,
+    queryKey: ["/api/orders", session?.access_token],
+    queryFn: () => authFetch("/api/orders"),
+    enabled: isAuthenticated && !!session?.access_token,
   });
 
   if (authLoading || resultsLoading || isClaimingQuiz) {
