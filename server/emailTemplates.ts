@@ -163,40 +163,48 @@ export function generateResultsEmail(data: EmailResultsData): { subject: string;
             <h3 class="scores-title">Your 4-Axis Productivity Profile</h3>
             
             <div class="score-item">
-              <div class="score-label">
-                <span>Structure Orientation</span>
-                <span>${scores.structure}/35</span>
-              </div>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 6px;">
+                <tr>
+                  <td style="font-size: 14px; font-weight: 600; color: #475569; text-align: left;">Structure Orientation</td>
+                  <td style="font-size: 14px; font-weight: 600; color: #475569; text-align: right;">${scores.structure}/35</td>
+                </tr>
+              </table>
               <div class="score-bar-container">
                 <div class="score-bar" style="width: ${(scores.structure / 35) * 100}%"></div>
               </div>
             </div>
 
             <div class="score-item">
-              <div class="score-label">
-                <span>Motivation Style</span>
-                <span>${scores.motivation}/35</span>
-              </div>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 6px;">
+                <tr>
+                  <td style="font-size: 14px; font-weight: 600; color: #475569; text-align: left;">Motivation Style</td>
+                  <td style="font-size: 14px; font-weight: 600; color: #475569; text-align: right;">${scores.motivation}/35</td>
+                </tr>
+              </table>
               <div class="score-bar-container">
                 <div class="score-bar" style="width: ${(scores.motivation / 35) * 100}%"></div>
               </div>
             </div>
 
             <div class="score-item">
-              <div class="score-label">
-                <span>Cognitive Focus</span>
-                <span>${scores.cognitive}/35</span>
-              </div>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 6px;">
+                <tr>
+                  <td style="font-size: 14px; font-weight: 600; color: #475569; text-align: left;">Cognitive Focus</td>
+                  <td style="font-size: 14px; font-weight: 600; color: #475569; text-align: right;">${scores.cognitive}/35</td>
+                </tr>
+              </table>
               <div class="score-bar-container">
                 <div class="score-bar" style="width: ${(scores.cognitive / 35) * 100}%"></div>
               </div>
             </div>
 
             <div class="score-item">
-              <div class="score-label">
-                <span>Task Relationship</span>
-                <span>${scores.task}/35</span>
-              </div>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 6px;">
+                <tr>
+                  <td style="font-size: 14px; font-weight: 600; color: #475569; text-align: left;">Task Relationship</td>
+                  <td style="font-size: 14px; font-weight: 600; color: #475569; text-align: right;">${scores.task}/35</td>
+                </tr>
+              </table>
               <div class="score-bar-container">
                 <div class="score-bar" style="width: ${(scores.task / 35) * 100}%"></div>
               </div>
