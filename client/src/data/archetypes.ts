@@ -54,7 +54,7 @@ export const archetypes: Archetype[] = [
     name: 'The Structured Achiever',
     title: 'Organized Goal-Crusher',
     tagline: 'You thrive on systems, accountability, and clear goals. Structure is your superpower.',
-    icon: '📊',
+    icon: '',
     image: structuredAchieverImage,
     color: 'blue',
     gradientFrom: 'from-blue-400',
@@ -112,7 +112,7 @@ export const archetypes: Archetype[] = [
     name: 'The Chaotic Creative',
     title: 'Free-Spirited Innovator',
     tagline: 'Your mind is a fireworks show of ideas. The challenge? Turning sparks into finished projects.',
-    icon: '🎨',
+    icon: '',
     image: chaoticCreativeImage,
     color: 'purple',
     gradientFrom: 'from-purple-400',
@@ -170,7 +170,7 @@ export const archetypes: Archetype[] = [
     name: 'The Anxious Perfectionist',
     title: 'Detail-Obsessed Procrastinator',
     tagline: 'High standards drive your excellence—but perfectionism is sabotaging your progress.',
-    icon: '🎯',
+    icon: '',
     image: anxiousPerfectionistImage,
     color: 'teal',
     gradientFrom: 'from-teal-400',
@@ -207,7 +207,7 @@ export const archetypes: Archetype[] = [
       }
     ],
     framework: {
-      name: '📝 Implementation Intentions + Self-Compassion',
+      name: 'Implementation Intentions + Self-Compassion',
       why: 'Removes decision paralysis. Pre-commits to "good enough." Breaks the perfectionism-shame cycle with research-backed self-compassion practices.'
     },
     premiumIncludes: {
@@ -228,7 +228,7 @@ export const archetypes: Archetype[] = [
     name: 'The Novelty Seeker',
     title: 'Stimulus-Driven Explorer',
     tagline: 'You\'re powered by excitement and new challenges. The routine? That\'s your kryptonite.',
-    icon: '🚀',
+    icon: '',
     image: noveltySeekerImage,
     color: 'red',
     gradientFrom: 'from-red-400',
@@ -323,7 +323,7 @@ export const archetypes: Archetype[] = [
       }
     ],
     framework: {
-      name: '📊 Time Blocking + Strategic Reviews',
+      name: 'Time Blocking + Strategic Reviews',
       why: 'Aligns daily execution with long-term vision. Weekly reviews keep you connected to the big picture while daily time blocks ensure follow-through.'
     },
     premiumIncludes: {
@@ -381,7 +381,7 @@ export const archetypes: Archetype[] = [
       }
     ],
     framework: {
-      name: '🎯 North Star + Daily Anchor',
+      name: 'North Star + Daily Anchor',
       why: 'Gives you just enough direction (one clear priority) without killing your spontaneity. Weekly reviews keep you aligned without daily rigidity.'
     },
     premiumIncludes: {
@@ -402,7 +402,7 @@ export const archetypes: Archetype[] = [
     name: 'The Adaptive Generalist',
     title: 'Context-Shifting Polymath',
     tagline: 'You don\'t have one productivity style—you have many. Your superpower is matching approach to context.',
-    icon: '🔄',
+    icon: '',
     image: adaptiveGeneralistImage,
     color: 'teal',
     gradientFrom: 'from-teal-400',
@@ -439,7 +439,7 @@ export const archetypes: Archetype[] = [
       }
     ],
     framework: {
-      name: '🔄 Context-Mode Matching',
+      name: 'Context-Mode Matching',
       why: 'Instead of forcing one approach everywhere, you explicitly match your approach to what each task actually needs. This turns your adaptability from a liability into a superpower.'
     },
     premiumIncludes: {

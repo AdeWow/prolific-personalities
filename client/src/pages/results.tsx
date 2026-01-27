@@ -12,7 +12,7 @@ import { determineArchetypeEnhanced } from "@/lib/quiz-logic";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { trackResultsView, trackPaywallView, trackPaywallTierClick, trackCheckoutStart } from "@/lib/posthog";
-import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle, Info } from "lucide-react";
+import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle, Info, CreditCard, Zap } from "lucide-react";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
@@ -289,7 +289,7 @@ export default function Results() {
   };
 
   const handleShareTwitter = () => {
-    const text = `I just discovered I'm ${archetype?.name}! 🎯 Take the Prolific Personalities assessment to find your productivity archetype.`;
+    const text = `I just discovered I'm ${archetype?.name}! Take the Prolific Personalities assessment to find your productivity archetype.`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
     trackEvent('share_twitter', 'Social', archetype?.name || 'Unknown');
     window.open(url, '_blank', 'width=550,height=420');
@@ -393,7 +393,7 @@ export default function Results() {
                 <CheckCircle2 className="w-12 h-12 text-white" />
               </div>
             </div>
-            <DialogTitle className="text-center text-2xl">Payment Successful! 🎉</DialogTitle>
+            <DialogTitle className="text-center text-2xl">Payment Successful!</DialogTitle>
             <DialogDescription className="text-center text-base">
               Your premium productivity playbook has been purchased successfully.
             </DialogDescription>
@@ -551,9 +551,8 @@ export default function Results() {
           <Card className="bg-white shadow-xl border-0" data-testid="results-hero">
             <CardContent className="p-8 lg:p-12">
               <div className="text-center space-y-6">
-                {/* Archetype Icon & Name */}
+                {/* Archetype Name */}
                 <div>
-                  <div className="text-7xl mb-4">{archetype.icon}</div>
                   <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-2" data-testid="archetype-name">
                     {archetype.name}
                   </h1>
@@ -611,7 +610,7 @@ export default function Results() {
                               className="px-3 py-2 bg-white border-accent/30 text-accent hover:bg-accent/10 cursor-pointer transition-colors"
                               data-testid={`secondary-archetype-${secondaryArchetype.id}`}
                             >
-                              {secondaryArchetype.icon} {secondaryArchetype.name}
+                              {secondaryArchetype.name}
                             </Badge>
                           </Link>
                         ))}
@@ -678,8 +677,7 @@ export default function Results() {
           {/* Why You Struggle */}
           <Card className="bg-white shadow-lg" data-testid="struggle-section">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center">
-                <span className="text-3xl mr-3">💡</span>
+              <h3 className="text-2xl font-bold text-foreground mb-6">
                 Why You Struggle
               </h3>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
@@ -693,8 +691,7 @@ export default function Results() {
           {/* Your Superpowers */}
           <Card className="bg-gradient-to-br from-primary/5 to-accent/5 shadow-lg" data-testid="superpowers-section">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center">
-                <span className="text-3xl mr-3">✨</span>
+              <h3 className="text-2xl font-bold text-foreground mb-6">
                 Your Superpowers
               </h3>
               <div className="grid md:grid-cols-2 gap-6">
@@ -1118,15 +1115,15 @@ export default function Results() {
                 <div className="mt-6 pt-4 border-t border-neutral-100">
                   <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1">
-                      <span className="text-lg">🔒</span>
+                      <Lock className="h-4 w-4" />
                       <span>Secure Checkout</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="text-lg">💳</span>
+                      <CreditCard className="h-4 w-4" />
                       <span>Powered by Stripe</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="text-lg">✨</span>
+                      <Zap className="h-4 w-4" />
                       <span>Instant Access</span>
                     </div>
                   </div>

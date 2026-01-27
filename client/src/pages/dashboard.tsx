@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { archetypes } from "@/data/archetypes";
-import { Clock, TrendingUp, BarChart3, ArrowUpRight, ArrowDownRight, Minus, Download, Lock, BookOpen } from "lucide-react";
+import { Clock, TrendingUp, BarChart3, ArrowUpRight, ArrowDownRight, Minus, Download, Lock, BookOpen, Target } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
 import type { QuizResult, Order } from "@shared/schema";
 
@@ -285,7 +285,9 @@ export default function Dashboard() {
                       <div key={order.id} className="bg-white rounded-lg p-4 shadow-sm">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                           <div className="flex items-center gap-4">
-                            <div className="text-3xl">{archetype?.icon || '🎯'}</div>
+                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                              <BookOpen className="w-5 h-5 text-primary" />
+                            </div>
                             <div>
                               <h3 className="font-bold text-foreground">
                                 {archetype?.name || order.archetype} Premium Playbook
@@ -347,7 +349,9 @@ export default function Dashboard() {
                       <CardContent className="p-6">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                           <div className="flex items-start gap-4">
-                            <div className="text-4xl">{archetype?.icon || '🎯'}</div>
+                            <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
+                              <Target className="w-6 h-6 text-accent" />
+                            </div>
                             <div>
                               <h3 className="text-xl font-bold text-foreground mb-1">
                                 {archetype?.name || 'Unknown Archetype'}

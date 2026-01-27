@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { trackQuizStart, trackQuizPageView, trackQuizQuestionAnswered, trackQuizComplete } from "@/lib/posthog";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Loader2, Zap } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Zap, Lightbulb } from "lucide-react";
 import { MilestoneCelebration } from "@/components/milestone-celebration";
 import type { QuizAnswers } from "@shared/schema";
 import type { Question } from "@/data/questions";
@@ -479,7 +479,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0">
-                <span className="text-xl">💡</span>
+                <Lightbulb className="w-5 h-5 text-primary" />
               </div>
               <p className="text-sm text-muted-foreground dark:text-muted-foreground">
                 <span className="font-medium text-foreground dark:text-muted-foreground">Tip:</span> Select an answer to automatically move to the next question. Take your time and answer honestly.

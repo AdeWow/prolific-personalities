@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormDescription, FormErrorSummary, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -62,7 +63,7 @@ export default function About() {
     onSuccess: () => {
       toast({
         title: "You're on the list!",
-        description: "We'll notify you first when new features launch, plus you'll get exclusive early access. 🎉",
+        description: "We'll notify you first when new features launch, plus you'll get exclusive early access.",
       });
       waitlistForm.reset();
     },

@@ -8,19 +8,16 @@ interface MilestoneCelebrationProps {
 
 const milestoneData = {
   1: {
-    emoji: "🎯",
     title: "Nice work! You're 1/3 done",
-    message: "Fun fact: The fact that you're still here shows solid focus! (Or procrastination from real work? 😉)",
+    message: "Fun fact: The fact that you're still here shows solid focus! (Or procrastination from real work?)",
     progress: 33
   },
   2: {
-    emoji: "🔥",
     title: "Halfway there!",
     message: "You're doing great! Most people give up by now. Not you though.",
     progress: 67
   },
   3: {
-    emoji: "🚀",
     title: "Almost done! Just 3 more",
     message: "You're 89% done! Your future productive self thanks you.",
     progress: 89
@@ -66,11 +63,7 @@ export function MilestoneCelebration({ milestone, onComplete }: MilestoneCelebra
         "relative z-10 text-center px-8 py-12 max-w-md mx-4 transition-transform duration-300",
         isVisible && !isFadingOut ? "scale-100" : "scale-95"
       )}>
-        <div className="text-7xl mb-6 animate-bounce">
-          {data.emoji}
-        </div>
-        
-        <h2 className="text-3xl font-bold text-white mb-4">
+        <h2 className="text-3xl font-bold text-white mb-4 animate-bounce">
           {data.title}
         </h2>
         

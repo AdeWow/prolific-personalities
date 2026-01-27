@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
-import { CheckCircle2, Sparkles, Lock, Zap, Bot, Users, Crown } from "lucide-react";
+import { CheckCircle2, Sparkles, Lock, Zap, Bot, Users, Crown, Target, Smartphone } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { trackPaywallView, trackPaywallTierClick } from "@/lib/posthog";
 
@@ -366,7 +366,7 @@ export default function Pricing() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🎯</span>
+                <Target className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2">Actionable Plans</h3>
               <p className="text-muted-foreground">
@@ -376,7 +376,7 @@ export default function Pricing() {
 
             <div className="text-center">
               <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">📱</span>
+                <Smartphone className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2">Mobile App</h3>
               <p className="text-muted-foreground">
@@ -386,7 +386,7 @@ export default function Pricing() {
 
             <div className="text-center">
               <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">⚡</span>
+                <Zap className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2">Faster Results</h3>
               <p className="text-muted-foreground">

@@ -25,7 +25,7 @@ export default function PaymentSuccess() {
   }, []);
 
   const shareOnTwitter = () => {
-    const text = "Just discovered my productivity archetype with @ProlificPersonalities! 🚀 Finally understand why some methods work for me and others don't.";
+    const text = "Just discovered my productivity archetype with @ProlificPersonalities! Finally understand why some methods work for me and others don't.";
     const url = "https://prolificpersonalities.com/quiz";
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
     trackEvent('share_purchase_twitter', 'Social', 'Payment Success');
@@ -54,7 +54,7 @@ export default function PaymentSuccess() {
               </div>
 
               <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Payment Successful! 🎉
+                Payment Successful!
               </h1>
 
               <p className="text-lg text-muted-foreground mb-8">

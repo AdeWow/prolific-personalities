@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { SEOHead } from '@/components/seo-head';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Star } from 'lucide-react';
 
 export default function FounderPage() {
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function FounderPage() {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
-                    <div className="text-yellow-500">⭐⭐⭐⭐⭐</div>
+                    <div className="flex text-yellow-500"><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /></div>
                     <span className="font-semibold text-foreground">Sarah M.</span>
                     <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-semibold">
                       The Structured Achiever
@@ -83,7 +83,7 @@ export default function FounderPage() {
 
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
-                    <div className="text-yellow-500">⭐⭐⭐⭐⭐</div>
+                    <div className="flex text-yellow-500"><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /></div>
                     <span className="font-semibold text-foreground">David K.</span>
                     <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-semibold">
                       The Chaotic Creative
@@ -96,7 +96,7 @@ export default function FounderPage() {
 
                 <div className="space-y-3">
                   <div className="flex items-center space-x-2">
-                    <div className="text-yellow-500">⭐⭐⭐⭐⭐</div>
+                    <div className="flex text-yellow-500"><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /><Star className="w-4 h-4 fill-current" /></div>
                     <span className="font-semibold text-foreground">Lisa R.</span>
                     <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-semibold">
                       The Strategic Planner

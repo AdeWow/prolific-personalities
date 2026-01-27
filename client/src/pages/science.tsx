@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { PDFPreview } from "@/components/pdf-preview";
-import { Brain, Target, Zap, BookOpen, Download, TrendingUp } from "lucide-react";
+import { Brain, Target, Zap, BookOpen, Download, TrendingUp, BarChart3, CheckCircle } from "lucide-react";
 
 export default function Science() {
   return (
@@ -277,14 +277,18 @@ export default function Science() {
                 <h3 className="font-bold text-gray-900 dark:text-white mb-4">Results:</h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="flex items-start gap-3">
-                    <div className="text-2xl">📊</div>
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <BarChart3 className="w-4 h-4 text-green-600" />
+                    </div>
                     <div>
                       <div className="font-bold text-gray-900 dark:text-white">40% Greater Improvement</div>
                       <div className="text-gray-700 dark:text-gray-300">in self-reported productivity vs. control group</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="text-2xl">✅</div>
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                    </div>
                     <div>
                       <div className="font-bold text-gray-900 dark:text-white">25% Higher Adherence</div>
                       <div className="text-gray-700 dark:text-gray-300">to recommended strategies</div>
