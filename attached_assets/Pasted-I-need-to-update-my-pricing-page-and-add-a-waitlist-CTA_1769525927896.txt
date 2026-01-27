@@ -1,0 +1,71 @@
+I need to update my pricing page and add a waitlist CTA. Here are the specific changes:
+
+## CHANGE 1: Simplify to 2 Tiers
+
+Remove the "Productivity Partner" subscription tier entirely. Keep only:
+
+**Tier 1: Discovery (Free)**
+- Complete 28-question assessment
+- Your unique productivity archetype revealed
+- 2-3 page summary of struggles & strengths
+- 3 quick-win tactics (teaser content)
+- 4-axis score visualization
+- Email results to yourself
+- Access to newsletter & community updates
+
+Button: "Start Free Assessment"
+
+**Tier 2: Complete Playbook (Paid)**
+- Show crossed-out price: ~~$29~~ 
+- Show current price: $19
+- Add label: "Launch Price"
+- Add urgency text below price: "Early-bird pricing for first 100 customers"
+
+Features:
+- Everything in Discovery, plus:
+- Full 35+ page personalized playbook
+- Research citations & psychological frameworks
+- 20+ evidence-based strategies for your archetype
+- Curated tool stack with recommendations
+- Implementation worksheets & templates
+- 90-day action plan
+- Lifetime access + future updates
+- Early access to mobile app when it launches
+
+Button: "Get Your Playbook — $19"
+Below button: "30-day satisfaction guarantee. View refund policy"
+
+Keep "Most Popular" badge on this tier.
+
+## CHANGE 2: Update Stripe Price
+
+Update the Stripe integration to charge $19 instead of current price.
+
+## CHANGE 3: Add Waitlist CTA
+
+Add a waitlist section that appears AFTER someone completes the free assessment and sees their results. Place it below their archetype reveal.
+
+Copy:
+"The app is coming. Daily tips. Focus modes. Progress tracking—all personalized to your archetype. Get early access."
+
+Button: "Get Early Access"
+
+On click:
+- Show email input field (or use their existing email if logged in)
+- On submit: save to database with flag "app_waitlist = true"
+- Show confirmation: "You're on the list. We'll email you when it's ready."
+
+## CHANGE 4: Track Early-Bird Count
+
+Add a counter that tracks how many Complete Playbook purchases have been made.
+- Store purchase count in database
+- When count reaches 100, automatically update displayed price to $29 (remove strikethrough and "Launch Price" label)
+- Or: just track it manually for now and I'll update when we hit 100
+
+## DO NOT:
+- Add any new features
+- Change the quiz flow
+- Redesign the page layout
+- Add the subscription tier back
+
+Show me each change and confirm before implementing.
