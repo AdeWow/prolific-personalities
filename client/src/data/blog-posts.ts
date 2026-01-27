@@ -45,7 +45,6 @@ export const blogPosts: BlogPost[] = [
     readTime: "12 min read",
     tags: ["Self-Assessment", "AI", "Productivity", "Strategic Planner", "Chaotic Creative", "Novelty Seeker"],
     image: aiBrutalAssessmentImage,
-    pinned: true,
     content: `I was listening to a podcast about honest self-assessment when the host said something that stopped me cold:
 
 "Most people don't actually know what they're good at. They know what they wish they were good at, what they think they should be good at, or what they've been told they're good at. But they don't know their actual skill set."
