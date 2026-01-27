@@ -90,9 +90,23 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     }
   }, [progressPercentage, milestonesTracked]);
 
+  const { session } = useAuth();
+  
   const saveResultsMutation = useMutation({
     mutationFn: async (data: { sessionId: string; answers: QuizAnswers; scores: any; archetype: string; userId?: string }) => {
-      const response = await apiRequest("POST", "/api/quiz/results", data);
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (session?.access_token) {
+        headers["Authorization"] = `Bearer ${session.access_token}`;
+      }
+      const response = await fetch("/api/quiz/results", {
+        method: "POST",
+        headers,
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to save quiz results");
+      }
       return response;
     },
     onSuccess: async (_, variables) => {

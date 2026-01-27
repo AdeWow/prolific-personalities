@@ -447,7 +447,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/quiz/results", writeLimiter, async (req, res) => {
     try {
       const validatedData = insertQuizResultSchema.parse(req.body);
-      const result = await storage.saveQuizResult(validatedData);
+      
+      // If userId is provided, verify it exists or look up by email from auth header
+      let finalUserId = validatedData.userId;
+      if (finalUserId) {
+        const existingUser = await storage.getUser(finalUserId);
+        if (!existingUser) {
+          // User ID doesn't exist in DB - try to get email from auth token and look up by email
+          const authHeader = req.headers.authorization;
+          if (authHeader?.startsWith('Bearer ')) {
+            try {
+              const token = authHeader.substring(7);
+              const { createClient } = await import('@supabase/supabase-js');
+              const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+              const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+              if (supabaseUrl && supabaseKey) {
+                const supabase = createClient(supabaseUrl, supabaseKey);
+                const { data } = await supabase.auth.getUser(token);
+                if (data?.user?.email) {
+                  const userByEmail = await storage.getUserByEmail(data.user.email);
+                  if (userByEmail) {
+                    finalUserId = userByEmail.id;
+                  }
+                }
+              }
+            } catch (e) {
+              console.error("Error looking up user by email:", e);
+            }
+          }
+          // If still no valid user, save without userId (anonymous)
+          if (!await storage.getUser(finalUserId || '')) {
+            finalUserId = undefined;
+          }
+        }
+      }
+      
+      const result = await storage.saveQuizResult({
+        ...validatedData,
+        userId: finalUserId,
+      });
       res.json(result);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -455,6 +493,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .status(400)
           .json({ message: "Invalid quiz data", errors: error.errors });
       } else {
+        console.error("Error saving quiz results:", error);
         res.status(500).json({ message: "Failed to save quiz results" });
       }
     }
