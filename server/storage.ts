@@ -119,19 +119,64 @@ export class DatabaseStorage implements IStorage {
       }
     }
 
-    // No existing user with this email - create new user
-    const [user] = await db
-      .insert(users)
-      .values(userData)
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
-          ...userData,
+    // Also check if user exists by ID
+    const existingById = await this.getUser(userData.id);
+    if (existingById) {
+      // User with this ID exists - update them
+      const [updated] = await db
+        .update(users)
+        .set({
+          email: userData.email || existingById.email,
+          firstName: userData.firstName || existingById.firstName,
+          lastName: userData.lastName || existingById.lastName,
+          profileImageUrl: userData.profileImageUrl || existingById.profileImageUrl,
           updatedAt: new Date(),
-        },
-      })
-      .returning();
-    return user;
+        })
+        .where(eq(users.id, existingById.id))
+        .returning();
+      return updated;
+    }
+
+    // No existing user - try to create, but use onConflictDoNothing to handle race conditions
+    try {
+      const [user] = await db
+        .insert(users)
+        .values(userData)
+        .onConflictDoNothing()
+        .returning();
+      
+      // If insert succeeded, return the new user
+      if (user) {
+        return user;
+      }
+      
+      // Insert was skipped due to conflict - fetch the existing user
+      if (userData.email) {
+        const existingUser = await this.getUserByEmail(userData.email);
+        if (existingUser) {
+          return existingUser;
+        }
+      }
+      const existingUser = await this.getUser(userData.id);
+      if (existingUser) {
+        return existingUser;
+      }
+      
+      throw new Error('Failed to upsert user - could not find or create user');
+    } catch (error) {
+      // If insert fails for any reason, try to fetch existing user
+      if (userData.email) {
+        const existingUser = await this.getUserByEmail(userData.email);
+        if (existingUser) {
+          return existingUser;
+        }
+      }
+      const existingUser = await this.getUser(userData.id);
+      if (existingUser) {
+        return existingUser;
+      }
+      throw error;
+    }
   }
 
   async saveQuizResult(insertResult: InsertQuizResult): Promise<QuizResult> {
