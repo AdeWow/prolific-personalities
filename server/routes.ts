@@ -434,8 +434,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all quiz results for logged-in user
   app.get("/api/dashboard/results", supabaseAuth, async (req: any, res) => {
     try {
-      const userId = req.supabaseUser.id;
-      const results = await storage.getQuizResultsByUserId(userId);
+      const supabaseUser = req.supabaseUser;
+      
+      // Get the local user ID (may differ from Supabase ID for legacy users)
+      const localUser = await storage.upsertUser({
+        id: supabaseUser.id,
+        email: supabaseUser.email || null,
+        firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+        lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+        profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+      });
+      
+      const results = await storage.getQuizResultsByUserId(localUser.id);
       res.json(results);
     } catch (error) {
       console.error("Error fetching user results:", error);
@@ -1617,7 +1627,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Middleware to check premium access for a specific archetype
   const hasPremiumAccess = async (req: any, res: any, next: any) => {
     try {
-      const userId = req.supabaseUser.id;
+      const supabaseUser = req.supabaseUser;
       const archetype = req.params.archetype || req.body.archetype;
       const sessionId = req.query.sessionId || req.body.sessionId;
 
@@ -1625,6 +1635,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.status(400).json({ message: "Archetype is required" });
         return;
       }
+
+      // Get the local user ID (may differ from Supabase ID for legacy users)
+      const localUser = await storage.upsertUser({
+        id: supabaseUser.id,
+        email: supabaseUser.email || null,
+        firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+        lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+        profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+      });
+      const userId = localUser.id;
 
       // Check direct access to the requested archetype (also checks by sessionId if provided)
       let hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype, sessionId);
@@ -1649,6 +1669,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return;
       }
 
+      // Store local user ID in request for downstream use
+      req.localUserId = userId;
       next();
     } catch (error) {
       console.error("Error checking premium access:", error);
@@ -1921,24 +1943,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     async (req: any, res) => {
       try {
         const supabaseUser = req.supabaseUser;
-        const userId = supabaseUser.id;
         const { archetype } = req.params;
         const sessionId = req.query.sessionId as string | undefined;
 
         // Ensure user exists in local users table (needed for claiming orders by sessionId)
-        await storage.upsertUser({
-          id: userId,
+        // IMPORTANT: upsertUser may return an existing user with a different ID (email-based matching)
+        const localUser = await storage.upsertUser({
+          id: supabaseUser.id,
           email: supabaseUser.email || null,
           firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
           lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
           profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
         });
+        
+        // Use the local user's ID (which may differ from Supabase ID if user existed before)
+        const userId = localUser.id;
+        console.log('[Playbook Access Debug] supabaseId:', supabaseUser.id, '| localUserId:', userId, '| archetype:', archetype, '| sessionId:', sessionId);
 
         const hasAccess = await storage.hasUserPurchasedPlaybook(
           userId,
           archetype,
           sessionId,
         );
+        console.log('[Playbook Access Debug] hasAccess:', hasAccess);
         res.json({ hasAccess });
       } catch (error) {
         console.error("Error checking access:", error);

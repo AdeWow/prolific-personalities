@@ -59,7 +59,10 @@ export default function Playbook() {
   const [sessionId] = useState(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const urlSessionId = urlParams.get('sessionId');
-    return urlSessionId || localStorage.getItem('pendingQuizSessionId') || '';
+    const storedSessionId = localStorage.getItem('pendingQuizSessionId') || '';
+    const finalSessionId = urlSessionId || storedSessionId;
+    console.log('[Playbook Debug] URL sessionId:', urlSessionId, '| localStorage:', storedSessionId, '| Using:', finalSessionId);
+    return finalSessionId;
   });
 
   // Get playbook content - must be before any hooks that depend on it
@@ -104,9 +107,20 @@ export default function Playbook() {
   const accessQueryUrl = sessionId 
     ? `/api/playbook/${archetype}/access?sessionId=${sessionId}` 
     : `/api/playbook/${archetype}/access`;
-  const { data: accessData, isLoading: isAccessLoading, isError: isAccessError } = useQuery<{ hasAccess: boolean }>({
+  console.log('[Playbook Debug] Access query URL:', accessQueryUrl, '| user:', !!user, '| archetype:', archetype, '| token:', !!session?.access_token);
+  const { data: accessData, isLoading: isAccessLoading, isError: isAccessError, error: accessError } = useQuery<{ hasAccess: boolean }>({
     queryKey: [accessQueryUrl, session?.access_token],
-    queryFn: () => authFetch(accessQueryUrl),
+    queryFn: async () => {
+      console.log('[Playbook Debug] Fetching access...');
+      try {
+        const result = await authFetch(accessQueryUrl);
+        console.log('[Playbook Debug] Access result:', result);
+        return result;
+      } catch (err) {
+        console.error('[Playbook Debug] Access error:', err);
+        throw err;
+      }
+    },
     enabled: !!user && !!archetype && !!session?.access_token,
     retry: 1,
   });
