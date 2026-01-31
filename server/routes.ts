@@ -2086,6 +2086,107 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   );
 
+  // Resend playbook email
+  app.post(
+    "/api/playbook/:archetype/resend-email",
+    supabaseAuth,
+    async (req: any, res) => {
+      try {
+        if (!resend) {
+          res.status(503).json({ message: "Email service not configured" });
+          return;
+        }
+
+        const supabaseUser = req.supabaseUser;
+        const { archetype } = req.params;
+        const { sessionId } = req.body;
+
+        if (!supabaseUser.email) {
+          res.status(400).json({ message: "No email address found for your account" });
+          return;
+        }
+
+        // Get the local user ID
+        const localUser = await storage.upsertUser({
+          id: supabaseUser.id,
+          email: supabaseUser.email || null,
+          firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+          lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+          profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+        });
+        const userId = localUser.id;
+
+        // Check if user has premium access
+        const hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype, sessionId);
+        if (!hasAccess) {
+          res.status(403).json({ message: "You don't have access to this playbook" });
+          return;
+        }
+
+        // Get archetype info
+        const archetypeInfo = getArchetypeInfo(archetype);
+        if (!archetypeInfo) {
+          res.status(400).json({ message: "Invalid archetype" });
+          return;
+        }
+
+        // Get PDF for archetype
+        const pdfAsset = getPremiumAssetForArchetype(archetype);
+        if (!pdfAsset) {
+          res.status(404).json({ message: "Playbook PDF not found" });
+          return;
+        }
+
+        const pdfPath = path.join(process.cwd(), "attached_assets", pdfAsset.pdfFilename);
+        if (!fs.existsSync(pdfPath)) {
+          res.status(404).json({ message: "Playbook PDF file not found" });
+          return;
+        }
+
+        // Read and encode PDF
+        const pdfBuffer = fs.readFileSync(pdfPath);
+        const pdfBase64 = pdfBuffer.toString("base64");
+
+        // Generate results URL
+        const baseUrl = process.env.APP_URL || 
+          (process.env.NODE_ENV === "production" ? "https://prolificpersonalities.com" : "http://localhost:5000");
+        const resultsUrl = sessionId ? `${baseUrl}/results/${sessionId}` : `${baseUrl}/dashboard`;
+
+        // Generate and send email
+        const { subject, html } = generatePremiumPlaybookEmail({
+          recipientEmail: supabaseUser.email,
+          archetype: archetypeInfo,
+          resultsUrl,
+        });
+
+        const emailResponse = await resend.emails.send({
+          from: "Prolific Personalities <support@prolificpersonalities.com>",
+          to: supabaseUser.email,
+          subject: `[Resend] ${subject}`,
+          html,
+          attachments: [
+            {
+              filename: pdfAsset.pdfFilename,
+              content: pdfBase64,
+            },
+          ],
+        });
+
+        if (emailResponse.error) {
+          console.error("Error resending playbook email:", emailResponse.error);
+          res.status(500).json({ message: "Failed to send email" });
+          return;
+        }
+
+        console.log(`✅ Playbook email resent to ${supabaseUser.email}`);
+        res.json({ message: "Email sent successfully" });
+      } catch (error) {
+        console.error("Error resending playbook email:", error);
+        res.status(500).json({ message: "Failed to resend email" });
+      }
+    },
+  );
+
   // Download playbook PDF
   app.get(
     "/api/playbook/:archetype/pdf",

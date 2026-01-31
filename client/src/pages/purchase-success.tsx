@@ -1,32 +1,65 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, Mail, BookOpen, Download, ArrowRight } from "lucide-react";
+import { CheckCircle2, Mail, BookOpen, ArrowRight, RefreshCw, AlertCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function PurchaseSuccess() {
   const [, setLocation] = useLocation();
   const [searchParams] = useState(() => new URLSearchParams(window.location.search));
   const sessionId = searchParams.get('session_id');
   const archetype = searchParams.get('archetype');
+  const { toast } = useToast();
+  const { session, isLoading: isAuthLoading } = useAuthContext();
 
-  // Set page title
   useEffect(() => {
     document.title = "Purchase Successful - Prolific Personalities";
   }, []);
 
-  // Redirect if missing required parameters
   useEffect(() => {
     if (!sessionId || !archetype) {
       setLocation('/');
     }
   }, [sessionId, archetype, setLocation]);
 
-  // Fetch quiz result to get user info
   const { data: quizResult, isLoading } = useQuery({
     queryKey: [`/api/quiz/results/${sessionId}`],
     enabled: !!sessionId,
+  });
+
+  const resendEmailMutation = useMutation({
+    mutationFn: async () => {
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (session?.access_token) {
+        headers["Authorization"] = `Bearer ${session.access_token}`;
+      }
+      const res = await fetch(`/api/playbook/${archetype}/resend-email`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ sessionId }),
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || res.statusText);
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Email Sent",
+        description: "Your playbook has been resent to your email address.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to resend email. Please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   if (!sessionId || !archetype) {
@@ -51,147 +84,106 @@ export default function PurchaseSuccess() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:bg-background">
-        <div className="container mx-auto px-4 py-16 max-w-4xl">
-          {/* Success Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full mb-6">
-              <CheckCircle2 className="w-12 h-12 text-green-600 dark:text-green-400" />
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Payment Successful!
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Welcome to your {archetypeName} Premium Playbook
+      <div className="container mx-auto px-4 py-16 max-w-2xl">
+        {/* Success Header */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full mb-6">
+            <CheckCircle2 className="w-12 h-12 text-green-600 dark:text-green-400" />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+            You're In!
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Your {archetypeName} Playbook is ready
+          </p>
+        </div>
+
+        {/* Primary CTA Card */}
+        <Card data-testid="card-primary-cta" className="border-2 border-primary shadow-lg mb-8">
+          <CardContent className="pt-8 pb-8 px-6 text-center">
+            <BookOpen className="w-12 h-12 text-primary mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              Start Your Playbook
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Unlock personalized strategies, your 30-day action plan, and track your progress.
             </p>
-          </div>
+            <Button 
+              size="lg" 
+              className="w-full text-lg py-6"
+              onClick={() => setLocation(`/playbook/${archetype}?sessionId=${sessionId}`)}
+              data-testid="button-access-playbook"
+            >
+              Access Your Playbook
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </CardContent>
+        </Card>
 
-          {/* Main Content Cards */}
-          <div className="space-y-6">
-            {/* Email Confirmation Card */}
-            <Card data-testid="card-email-confirmation">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                    <Mail className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <CardTitle>Check Your Email</CardTitle>
-                    <CardDescription>Your playbook PDF has been sent</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 dark:text-gray-300">
-                  We've sent a copy of your premium playbook PDF to your email. Check your inbox (and spam folder) 
-                  for a message from Prolific Personalities.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Interactive Playbook Card */}
-            <Card data-testid="card-interactive-playbook" className="border-2 border-primary/20 dark:border-primary/30">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 dark:bg-primary/20 rounded-lg">
-                    <BookOpen className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle>Access Your Interactive Playbook</CardTitle>
-                    <CardDescription>Your personalized web-based playbook with progress tracking</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-600 dark:text-gray-300">
-                  Get started with your interactive playbook featuring:
-                </p>
-                <ul className="space-y-2 text-gray-600 dark:text-gray-300">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong>Progress Tracking:</strong> Mark chapters as complete and track your journey</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong>30-Day Action Plan:</strong> Interactive daily tasks with streak tracking</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong>Tool Implementation Tracker:</strong> Monitor your productivity tool adoption</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong>Personal Notes:</strong> Add reflections and insights as you learn</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
-                    <span><strong>PDF Download:</strong> Access your playbook offline anytime</span>
-                  </li>
-                </ul>
-                <Button 
-                  size="lg" 
-                  className="w-full mt-4"
-                  onClick={() => setLocation(`/playbook/${archetype}?sessionId=${sessionId}`)}
-                  data-testid="button-access-playbook"
-                >
-                  <BookOpen className="w-5 h-5 mr-2" />
-                  Access Your Playbook Now
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Download PDF Card */}
-            <Card data-testid="card-download-pdf">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-accent/10 dark:bg-accent/20 rounded-lg">
-                    <Download className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <CardTitle>Prefer the PDF?</CardTitle>
-                    <CardDescription>Download your playbook for offline reading</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  You can also download the PDF version of your playbook from the interactive playbook page.
-                </p>
-                <Link href={`/playbook/${archetype}?sessionId=${sessionId}`}>
-                  <Button variant="outline" className="w-full" data-testid="button-view-download-options">
-                    View Download Options
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Footer Actions */}
-          <div className="mt-8 text-center space-y-4">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Need help? Contact us at{' '}
-              <a 
-                href="mailto:support@prolificpersonalities.com" 
-                className="text-primary hover:underline"
-                data-testid="link-support-email"
+        {/* Email Confirmation Card - Secondary */}
+        <Card data-testid="card-email-confirmation" className="bg-muted/50">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-3">
+              <Mail className="w-5 h-5 text-primary" />
+              <CardTitle className="text-base">Check Your Email</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              We've also sent a PDF copy to your email. Check your inbox (and spam folder).
+            </p>
+            {session?.access_token ? (
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => resendEmailMutation.mutate()}
+                disabled={resendEmailMutation.isPending}
+                className="text-primary hover:text-primary/80 p-0 h-auto font-normal"
+                data-testid="button-resend-email"
               >
-                support@prolificpersonalities.com
-              </a>
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Link href={`/results/${sessionId}`}>
-                <Button variant="ghost" data-testid="button-back-to-results">
-                  Back to Results
-                </Button>
-              </Link>
-              <Link href="/dashboard">
-                <Button variant="ghost" data-testid="button-view-dashboard">
-                  View Dashboard
-                </Button>
-              </Link>
-            </div>
+                {resendEmailMutation.isPending ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  "Didn't receive it? Resend email"
+                )}
+              </Button>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Log in to resend the email if needed.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Footer Links */}
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Questions?{' '}
+            <a 
+              href="mailto:support@prolificpersonalities.com" 
+              className="text-primary hover:underline"
+              data-testid="link-support-email"
+            >
+              support@prolificpersonalities.com
+            </a>
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Link href={`/results/${sessionId}`}>
+              <Button variant="ghost" size="sm" data-testid="button-back-to-results">
+                Back to Results
+              </Button>
+            </Link>
+            <Link href="/dashboard">
+              <Button variant="ghost" size="sm" data-testid="button-view-dashboard">
+                Dashboard
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
+    </div>
   );
 }
