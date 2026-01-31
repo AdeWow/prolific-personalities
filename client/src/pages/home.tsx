@@ -107,11 +107,11 @@ export default function Home() {
             <div className="flex flex-wrap justify-center items-center gap-10 text-foreground text-lg font-medium">
               <div className="flex items-center gap-3">
                 <CheckCircle className="h-6 w-6 text-primary" aria-hidden="true" />
-                <span>10,000+ assessments taken</span>
+                <span>Research-backed methodology</span>
               </div>
               <div className="flex items-center gap-3">
                 <CheckCircle className="h-6 w-6 text-primary" aria-hidden="true" />
-                <span>Research-backed methodology</span>
+                <span>5-minute assessment</span>
               </div>
               <div className="flex items-center gap-3">
                 <CheckCircle className="h-6 w-6 text-primary" aria-hidden="true" />
