@@ -272,13 +272,13 @@ export default function Results() {
     }
   };
 
-  const handleApplyPromoCode = () => {
+  const handleApplyPromoCode = (promoEmail?: string) => {
     if (promoCodeValid && sessionId && archetype) {
       promoCodeMutation.mutate({ 
         code: promoCode.trim(), 
         archetype: archetype.id, 
         sessionId,
-        email: email || emailResultsInput || undefined
+        email: promoEmail || email || emailResultsInput || undefined
       });
     }
   };
@@ -665,6 +665,7 @@ export default function Results() {
           onValidatePromo={validatePromoCode}
           onApplyPromo={handleApplyPromoCode}
           isApplyingPromo={promoCodeMutation.isPending}
+          defaultEmail={email || emailResultsInput}
         />
 
         {/* E) Testimonials */}

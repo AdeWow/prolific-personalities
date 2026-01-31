@@ -130,7 +130,7 @@ export default function PurchaseSuccess() {
                 <Button 
                   size="lg" 
                   className="w-full mt-4"
-                  onClick={() => setLocation(`/playbook/${archetype}`)}
+                  onClick={() => setLocation(`/playbook/${archetype}?sessionId=${sessionId}`)}
                   data-testid="button-access-playbook"
                 >
                   <BookOpen className="w-5 h-5 mr-2" />
@@ -157,7 +157,7 @@ export default function PurchaseSuccess() {
                 <p className="text-gray-600 dark:text-gray-300 mb-4">
                   You can also download the PDF version of your playbook from the interactive playbook page.
                 </p>
-                <Link href={`/playbook/${archetype}`}>
+                <Link href={`/playbook/${archetype}?sessionId=${sessionId}`}>
                   <Button variant="outline" className="w-full" data-testid="button-view-download-options">
                     View Download Options
                   </Button>

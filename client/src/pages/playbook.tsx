@@ -55,8 +55,12 @@ export default function Playbook() {
     return res.json();
   }, [session?.access_token]);
 
-  // Get sessionId from localStorage for access verification (promo code orders)
-  const [sessionId] = useState(() => localStorage.getItem('pendingQuizSessionId') || '');
+  // Get sessionId from URL query param or localStorage for access verification (promo code orders)
+  const [sessionId] = useState(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlSessionId = urlParams.get('sessionId');
+    return urlSessionId || localStorage.getItem('pendingQuizSessionId') || '';
+  });
 
   // Get playbook content - must be before any hooks that depend on it
   const playbook = playbookContentMap[archetype];

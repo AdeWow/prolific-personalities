@@ -16,8 +16,9 @@ interface UpsellSectionProps {
   promoCodeValid: boolean | null;
   promoCodeMessage: string;
   onValidatePromo: () => void;
-  onApplyPromo: () => void;
+  onApplyPromo: (email?: string) => void;
   isApplyingPromo: boolean;
+  defaultEmail?: string;
 }
 
 export function UpsellSection({
@@ -31,8 +32,10 @@ export function UpsellSection({
   onValidatePromo,
   onApplyPromo,
   isApplyingPromo,
+  defaultEmail = "",
 }: UpsellSectionProps) {
   const [showPromoInput, setShowPromoInput] = useState(false);
+  const [promoEmail, setPromoEmail] = useState(defaultEmail);
 
   return (
     <section id="upsell" className="py-16 gradient-primary scroll-mt-16">
@@ -142,14 +145,24 @@ export function UpsellSection({
                       </p>
                     )}
                     {promoCodeValid && (
-                      <Button
-                        className="w-full gradient-primary text-white"
-                        onClick={onApplyPromo}
-                        disabled={isApplyingPromo}
-                        data-testid="button-apply-promo"
-                      >
-                        {isApplyingPromo ? 'Applying...' : 'Apply Promo Code & Get Access'}
-                      </Button>
+                      <>
+                        <Input
+                          type="email"
+                          value={promoEmail}
+                          onChange={(e) => setPromoEmail(e.target.value)}
+                          placeholder="Enter your email for the PDF"
+                          className="w-full"
+                          data-testid="input-promo-email"
+                        />
+                        <Button
+                          className="w-full gradient-primary text-white"
+                          onClick={() => onApplyPromo(promoEmail)}
+                          disabled={isApplyingPromo || !promoEmail.trim()}
+                          data-testid="button-apply-promo"
+                        >
+                          {isApplyingPromo ? 'Applying...' : 'Apply Promo Code & Get Access'}
+                        </Button>
+                      </>
                     )}
                   </div>
                 )}
