@@ -51,6 +51,7 @@ export interface IStorage {
   linkOrderToQuizSession(orderId: number, sessionId: string, archetype: string): Promise<Order | undefined>;
   updateOrderStripeSessionId(orderId: number, stripeSessionId: string): Promise<void>;
   hasUserPurchasedPlaybook(userId: string, archetype: string, sessionId?: string): Promise<boolean>;
+  hasAnyPremiumAccess(userId: string, sessionId?: string): Promise<boolean>;
   // Playbook Progress
   getPlaybookProgress(userId: string, archetype: string): Promise<PlaybookProgress[]>;
   updateChapterProgress(userId: string, archetype: string, chapterId: string, completed: boolean): Promise<PlaybookProgress>;
@@ -501,6 +502,43 @@ export class DatabaseStorage implements IStorage {
           and(
             eq(orders.sessionId, sessionId),
             eq(orders.archetype, archetype),
+            eq(orders.status, 'completed')
+          )
+        );
+      if (orderBySession) {
+        // Claim the order for the user if found by session
+        await db
+          .update(orders)
+          .set({ userId })
+          .where(eq(orders.id, orderBySession.id));
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  async hasAnyPremiumAccess(userId: string, sessionId?: string): Promise<boolean> {
+    // Check if user has ANY completed order (pay once, lifetime access)
+    const [orderByUser] = await db
+      .select()
+      .from(orders)
+      .where(
+        and(
+          eq(orders.userId, userId),
+          eq(orders.status, 'completed')
+        )
+      );
+    if (orderByUser) return true;
+
+    // If sessionId provided, also check by sessionId
+    if (sessionId) {
+      const [orderBySession] = await db
+        .select()
+        .from(orders)
+        .where(
+          and(
+            eq(orders.sessionId, sessionId),
             eq(orders.status, 'completed')
           )
         );

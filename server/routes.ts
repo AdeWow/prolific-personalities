@@ -1861,7 +1861,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Middleware to check premium access for a specific archetype
+  // Middleware to check premium access (pay once, lifetime access to ALL archetypes)
   const hasPremiumAccess = async (req: any, res: any, next: any) => {
     try {
       const supabaseUser = req.supabaseUser;
@@ -1883,25 +1883,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       const userId = localUser.id;
 
-      // Check direct access to the requested archetype (also checks by sessionId if provided)
-      let hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype, sessionId);
-
-      // Special case: Adaptive Generalist purchasers also get access to Flexible Improviser playbook
-      // (since Flexible Improviser is included as a baseline in the Adaptive Generalist package)
-      if (!hasAccess && archetype === "flexible-improviser") {
-        hasAccess = await storage.hasUserPurchasedPlaybook(
-          userId,
-          "adaptive-generalist",
-          sessionId,
-        );
-      }
+      // Pay once, lifetime access: Check if user has ANY completed purchase
+      const hasAccess = await storage.hasAnyPremiumAccess(userId, sessionId);
 
       if (!hasAccess) {
         res
           .status(403)
           .json({
             message:
-              "Premium access required. Please purchase the playbook for this archetype.",
+              "Premium access required. Please purchase a playbook to unlock lifetime access.",
           });
         return;
       }
@@ -2197,11 +2187,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const userId = localUser.id;
         console.log('[Playbook Access Debug] supabaseId:', supabaseUser.id, '| localUserId:', userId, '| archetype:', archetype, '| sessionId:', sessionId);
 
-        const hasAccess = await storage.hasUserPurchasedPlaybook(
-          userId,
-          archetype,
-          sessionId,
-        );
+        // Pay once, lifetime access: Check if user has ANY completed purchase
+        const hasAccess = await storage.hasAnyPremiumAccess(userId, sessionId);
         console.log('[Playbook Access Debug] hasAccess:', hasAccess);
         res.json({ hasAccess });
       } catch (error) {
@@ -2241,8 +2228,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         const userId = localUser.id;
 
-        // Check if user has premium access
-        const hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype, sessionId);
+        // Pay once, lifetime access: Check if user has ANY completed purchase
+        const hasAccess = await storage.hasAnyPremiumAccess(userId, sessionId);
         if (!hasAccess) {
           res.status(403).json({ message: "You don't have access to this playbook" });
           return;
@@ -2331,8 +2318,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         const userId = localUser.id;
 
-        // Check if user has access
-        const hasAccess = await storage.hasUserPurchasedPlaybook(userId, archetype);
+        // Pay once, lifetime access: Check if user has ANY completed purchase
+        const hasAccess = await storage.hasAnyPremiumAccess(userId);
         if (!hasAccess) {
           res.status(403).json({ message: "You don't have access to this playbook" });
           return;

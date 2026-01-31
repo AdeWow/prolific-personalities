@@ -282,8 +282,8 @@ export default function Dashboard() {
             </Card>
           )}
 
-          {/* Premium Downloads */}
-          {orders && orders.filter(o => o.status === 'completed').length > 0 && (
+          {/* Premium Reports - Pay once, lifetime access to ALL archetypes with results */}
+          {orders && orders.filter(o => o.status === 'completed').length > 0 && results && results.length > 0 && (
             <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3 mb-6">
@@ -291,15 +291,18 @@ export default function Dashboard() {
                     <Download className="w-6 h-6 text-white" />
                   </div>
                   <h2 className="text-2xl font-bold text-foreground">
-                    Your Premium Reports
+                    Your Premium Playbooks
                   </h2>
+                  <span className="text-sm text-muted-foreground">(Lifetime Access)</span>
                 </div>
 
                 <div className="space-y-3">
-                  {orders.filter(o => o.status === 'completed').map((order) => {
-                    const archetype = archetypes.find(a => a.id === order.archetype);
+                  {/* Get unique archetypes from quiz results */}
+                  {Array.from(new Set(results.map(r => r.archetype))).map((archetypeId) => {
+                    const archetype = archetypes.find(a => a.id === archetypeId);
+                    const latestResult = results.find(r => r.archetype === archetypeId);
                     return (
-                      <div key={order.id} className="bg-white rounded-lg p-4 shadow-sm">
+                      <div key={archetypeId} className="bg-white rounded-lg p-4 shadow-sm">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -307,22 +310,22 @@ export default function Dashboard() {
                             </div>
                             <div>
                               <h3 className="font-bold text-foreground">
-                                {archetype?.name || order.archetype} Premium Playbook
+                                {archetype?.name || archetypeId} Premium Playbook
                               </h3>
                               <p className="text-sm text-muted-foreground">
-                                Purchased {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
+                                {latestResult && `Last assessed ${formatDistanceToNow(new Date(latestResult.completedAt), { addSuffix: true })}`}
                               </p>
                             </div>
                           </div>
                           <div className="flex flex-col sm:flex-row gap-2">
-                            <Link href={`/playbook/${order.archetype}`}>
-                              <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white" data-testid={`button-playbook-${order.id}`}>
+                            <Link href={`/playbook/${archetypeId}`}>
+                              <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white" data-testid={`button-playbook-${archetypeId}`}>
                                 <BookOpen className="w-4 h-4 mr-2" />
                                 Open Playbook
                               </Button>
                             </Link>
-                            <a href={`/api/download/${order.id}`} download>
-                              <Button variant="outline" className="w-full sm:w-auto" data-testid={`button-download-${order.id}`}>
+                            <a href={`/api/playbook/${archetypeId}/pdf`} download>
+                              <Button variant="outline" className="w-full sm:w-auto" data-testid={`button-download-${archetypeId}`}>
                                 <Download className="w-4 h-4 mr-2" />
                                 Download PDF
                               </Button>
