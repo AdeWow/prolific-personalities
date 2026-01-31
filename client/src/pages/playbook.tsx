@@ -619,34 +619,52 @@ export default function Playbook() {
               {selectedSection && (
                 <Card>
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-2xl">{selectedSection.title}</CardTitle>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                          {selectedChapter?.title}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">Mark complete</span>
-                        <Checkbox
-                          checked={isChapterComplete(selectedChapterId)}
-                          onCheckedChange={(checked) => {
-                            toggleChapterMutation.mutate({ 
-                              chapterId: selectedChapterId, 
-                              completed: !!checked 
-                            });
-                          }}
-                          disabled={toggleChapterMutation.isPending}
-                          data-testid="checkbox-complete-chapter"
-                        />
-                      </div>
+                    <div>
+                      <CardTitle className="text-2xl">{selectedSection.title}</CardTitle>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        {selectedChapter?.title}
+                      </p>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-6">
                     <ContentRenderer 
                       content={selectedSection.content}
                       sectionId={selectedSectionId}
                     />
+                    
+                    {/* Mark Complete Button - More prominent at bottom of content */}
+                    <div className="pt-6 border-t border-muted">
+                      <Button
+                        variant={isChapterComplete(selectedChapterId) ? "outline" : "default"}
+                        className={`w-full h-12 text-base font-medium transition-all ${
+                          isChapterComplete(selectedChapterId) 
+                            ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900" 
+                            : "bg-primary hover:bg-primary/90"
+                        }`}
+                        onClick={() => {
+                          toggleChapterMutation.mutate({ 
+                            chapterId: selectedChapterId, 
+                            completed: !isChapterComplete(selectedChapterId) 
+                          });
+                        }}
+                        disabled={toggleChapterMutation.isPending}
+                        data-testid="button-complete-chapter"
+                      >
+                        {toggleChapterMutation.isPending ? (
+                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                        ) : isChapterComplete(selectedChapterId) ? (
+                          <CheckCircle2 className="h-5 w-5 mr-2" />
+                        ) : (
+                          <Circle className="h-5 w-5 mr-2" />
+                        )}
+                        {isChapterComplete(selectedChapterId) 
+                          ? "Completed! Click to undo" 
+                          : "Mark this section complete"}
+                      </Button>
+                      <p className="text-xs text-center text-muted-foreground mt-2">
+                        Track your progress through the playbook
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
               )}
