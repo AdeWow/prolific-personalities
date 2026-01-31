@@ -1160,6 +1160,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin test page - get user state (protected by email check)
+  const ADMIN_EMAIL = "adeola1994@gmail.com";
+  
+  app.get("/api/admin/test-state", supabaseAuth, async (req: any, res) => {
+    try {
+      const supabaseUser = req.supabaseUser;
+      const userEmail = supabaseUser.email?.toLowerCase();
+      
+      if (userEmail !== ADMIN_EMAIL) {
+        res.status(403).json({ message: "Access denied" });
+        return;
+      }
+
+      // Get the local user ID
+      const localUser = await storage.upsertUser({
+        id: supabaseUser.id,
+        email: supabaseUser.email || null,
+        firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+        lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+        profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+      });
+
+      const quizResults = await storage.getQuizResultsByUserId(localUser.id);
+      const orders = await storage.getOrdersByUserId(localUser.id);
+      const isPremium = await storage.isPremiumUser(localUser.id);
+
+      res.json({
+        supabaseId: supabaseUser.id,
+        localUserId: localUser.id,
+        user: localUser,
+        quizResults,
+        orders,
+        isPremium,
+      });
+    } catch (error) {
+      console.error("Error fetching admin test state:", error);
+      res.status(500).json({ message: "Failed to fetch test state" });
+    }
+  });
+
+  // Admin test page - reset user state (protected by email check)
+  app.post("/api/admin/reset-state", supabaseAuth, async (req: any, res) => {
+    try {
+      const supabaseUser = req.supabaseUser;
+      const userEmail = supabaseUser.email?.toLowerCase();
+      
+      if (userEmail !== ADMIN_EMAIL) {
+        res.status(403).json({ message: "Access denied" });
+        return;
+      }
+
+      const { resetType } = req.body;
+      
+      // Get the local user ID
+      const localUser = await storage.upsertUser({
+        id: supabaseUser.id,
+        email: supabaseUser.email || null,
+        firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+        lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+        profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+      });
+
+      let deletedOrders = 0;
+      let deletedQuizResults = 0;
+      let deletedProgress = 0;
+
+      if (resetType === "orders" || resetType === "all") {
+        deletedOrders = await storage.deleteOrdersByUserId(localUser.id);
+        await storage.deletePromoCodeRedemptionsByUserId(localUser.id);
+      }
+
+      if (resetType === "quiz_results" || resetType === "all") {
+        deletedQuizResults = await storage.deleteQuizResultsByUserId(localUser.id);
+      }
+
+      if (resetType === "all") {
+        deletedProgress += await storage.deletePlaybookProgressByUserId(localUser.id);
+        deletedProgress += await storage.deleteActionPlanProgressByUserId(localUser.id);
+        deletedProgress += await storage.deleteToolTrackingByUserId(localUser.id);
+        deletedProgress += await storage.deletePlaybookNotesByUserId(localUser.id);
+      }
+
+      res.json({
+        success: true,
+        message: `Reset complete. Deleted: ${deletedOrders} orders, ${deletedQuizResults} quiz results, ${deletedProgress} progress records.`,
+        deletedOrders,
+        deletedQuizResults,
+        deletedProgress,
+      });
+    } catch (error) {
+      console.error("Error resetting admin test state:", error);
+      res.status(500).json({ message: "Failed to reset test state" });
+    }
+  });
+
   // Get all promo codes (admin endpoint)
   app.get("/api/admin/promo-codes", async (req, res) => {
     try {

@@ -31,6 +31,7 @@ import Playbook from "@/pages/playbook";
 import RefundPolicy from "@/pages/refund-policy";
 import Unsubscribe from "@/pages/unsubscribe";
 import DevTools from "@/pages/dev-tools";
+import AdminTestFlows from "@/pages/admin-test-flows";
 import Login from "@/pages/login";
 import AuthCallback from "@/pages/auth-callback";
 
@@ -49,6 +50,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/dev" component={DevTools} />
+      <Route path="/admin/test-flows" component={AdminTestFlows} />
       <Route path="/quiz" component={Quiz} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/dashboard" component={Dashboard} />

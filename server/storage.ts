@@ -899,6 +899,48 @@ export class DatabaseStorage implements IStorage {
     // Filter to only include valid entries with email
     return results.filter(r => r.userId && r.email) as { userId: string; email: string; archetype: string; firstName: string | null }[];
   }
+
+  // Admin test functions - delete user's orders
+  async deleteOrdersByUserId(userId: string): Promise<number> {
+    const result = await db.delete(orders).where(eq(orders.userId, userId));
+    return result.rowCount || 0;
+  }
+
+  // Admin test functions - delete user's quiz results
+  async deleteQuizResultsByUserId(userId: string): Promise<number> {
+    const result = await db.delete(quizResults).where(eq(quizResults.userId, userId));
+    return result.rowCount || 0;
+  }
+
+  // Admin test functions - delete user's playbook progress
+  async deletePlaybookProgressByUserId(userId: string): Promise<number> {
+    const result = await db.delete(playbookProgress).where(eq(playbookProgress.userId, userId));
+    return result.rowCount || 0;
+  }
+
+  // Admin test functions - delete user's action plan progress
+  async deleteActionPlanProgressByUserId(userId: string): Promise<number> {
+    const result = await db.delete(actionPlanProgress).where(eq(actionPlanProgress.userId, userId));
+    return result.rowCount || 0;
+  }
+
+  // Admin test functions - delete user's tool tracking
+  async deleteToolTrackingByUserId(userId: string): Promise<number> {
+    const result = await db.delete(toolTracking).where(eq(toolTracking.userId, userId));
+    return result.rowCount || 0;
+  }
+
+  // Admin test functions - delete user's playbook notes
+  async deletePlaybookNotesByUserId(userId: string): Promise<number> {
+    const result = await db.delete(playbookNotes).where(eq(playbookNotes.userId, userId));
+    return result.rowCount || 0;
+  }
+
+  // Admin test functions - delete user's promo code redemptions
+  async deletePromoCodeRedemptionsByUserId(userId: string): Promise<number> {
+    const result = await db.delete(promoCodeRedemptions).where(eq(promoCodeRedemptions.userId, userId));
+    return result.rowCount || 0;
+  }
 }
 
 export const storage = new DatabaseStorage();
