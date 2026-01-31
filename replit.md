@@ -69,6 +69,7 @@ The application employs a monorepo structure, separating the React-based fronten
 
 ### UI/UX Decisions and Features
 
+-   **Results Page Architecture (Jan 2026 Refactor)**: Modular component structure in `client/src/components/results/` for maintainability. Sections in order: ResultsHero (simplified "You're a {archetype}" format with confidence badge), 4-Axis Visualization, Mobile App Waitlist, ShowsUpSection (merged strengths/friction points), FastestWinCard (single highlighted action with scroll-to-upsell), UpsellSection (id="upsell" anchor, moved earlier for conversion), TestimonialsSection, EmailFallbackSection (secondary "Not ready yet?" capture), ToolsAccordion (collapsed by default), RetakeSection, MobileStickyCTA (sticky bottom bar on mobile after scrolling past hero).
 -   **Modern 4-Axis Visualization**: Dynamic, animated horizontal bar chart for score visualization.
 -   **Enhanced Homepage**: Research-backed messaging, trust badges, founder story, social proof.
 -   **Mobile Navigation**: Responsive hamburger menu.
