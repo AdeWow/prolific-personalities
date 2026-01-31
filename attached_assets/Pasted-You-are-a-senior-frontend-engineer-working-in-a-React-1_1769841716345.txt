@@ -1,0 +1,168 @@
+You are a senior frontend engineer working in a React 18 + TypeScript + Vite app using Tailwind + shadcn/ui, Wouter routing, TanStack Query for data, React Hook Form + Zod for forms.
+Refactor the Results page of my “Prolific Personalities” productivity archetype quiz to reduce cognitive load and increase conversion.
+Do NOT change backend contracts or database schemas. Keep all existing data bindings working.
+
+1) Locate and Understand Current Implementation
+
+Find the route used by Wouter for the results page (e.g., /results/:id or similar).
+
+Identify the main Results page component file and any child components it renders (charts, sections, tool cards, email capture, upsell).
+
+Identify the current data source (likely TanStack Query fetching results by assessmentId or userId).
+
+Preserve the existing result object shape and all computed fields.
+
+2) New Results Page Flow (Top → Bottom)
+
+Reorder and refactor the page into this exact structure:
+
+A) Results Hero (keep existing visual style)
+
+Big title: “You’re a {primaryArchetype}”
+
+Short subhead: “You see the big picture — and execute best when the vision is clear.”
+
+Keep the match confidence pill if it exists
+
+Add a single line under the hero:
+“You also show traits of: {secondaryArchetype}”
+
+Remove the full “Archetype Fit Breakdown” ranked bar chart section entirely.
+
+B) “How This Shows Up in Your Work” (merged section)
+
+Replace separate “Why You Struggle”, “Superpowers”, and “Top 3 Productivity Blockers” with ONE section:
+
+Two-column layout on desktop, stacked on mobile
+
+Left: Strengths (3 bullets)
+
+Right: Friction Points (3 bullets)
+Reuse content from existing sections, but compress into bullet format. No long paragraphs.
+
+C) “Your Fastest Win Today” (single action)
+
+Replace the “Your Quick Wins” 3-card grid with one highlighted card:
+
+Title: “Your fastest win today”
+
+One actionable step (use the prior “80/20 Planning Rule” but condensed)
+
+Include a small secondary button/link: “See more strategies in the full playbook →”
+
+Clicking this scrolls smoothly to the Upsell section anchor.
+
+D) Paid Upsell Section (move earlier + keep Stripe trust)
+
+Move “Unlock Your Complete {Archetype} Playbook” section immediately after Fastest Win.
+
+Keep all value bullets, price CTA (“Get My Full Report — $19”), promo code link, trust badges
+
+Ensure it’s clearly the primary CTA of the page (visual emphasis)
+
+Add id="upsell" anchor for scroll-to behavior
+
+E) Testimonials (move below upsell)
+
+Move “What Our Users Say” below the Upsell section.
+
+F) Email Capture becomes secondary fallback (below testimonials)
+
+Replace heading/copy to:
+
+Heading: “Not ready yet?”
+
+Subhead: “Get a free quick-start guide for your archetype.”
+Keep the existing Resend email capture mechanics, React Hook Form + Zod validation, etc.
+Make it feel secondary (less prominent than paid CTA).
+
+G) Tool Recommendations (remove from main flow; progressive disclosure)
+
+Remove the big “Top Tools for The {Archetype}” grid from the main scroll.
+Replace it with a collapsed shadcn/ui Accordion or Collapsible:
+
+Trigger text: “Explore recommended tools (optional)”
+
+Default collapsed
+
+When expanded, show the existing tool cards/grid as-is
+
+H) Retake Assessment stays at bottom
+
+Keep the “Want to try again?” retake CTA at the very bottom.
+
+3) Content Rules
+
+Remove all percentile comparisons (e.g., “72% of people score higher”) anywhere on this page.
+
+Avoid overwhelming users with too many sections; keep each section short.
+
+4) Interaction Requirements
+Scroll to Upsell
+
+Implement smooth scroll to #upsell when user clicks “See more strategies in the full playbook →”
+
+Use document.getElementById("upsell")?.scrollIntoView({ behavior: "smooth" })
+
+Tools Accordion
+
+Use shadcn/ui Accordion or Collapsible.
+
+Ensure content mounts correctly and remains accessible.
+
+Mobile Sticky CTA (mobile only)
+
+Implement a sticky bottom bar on small screens:
+
+Appears after the user scrolls past the hero section (use IntersectionObserver or a simple scroll threshold)
+
+Button text: “Get Full Playbook — $19”
+
+Clicking scrolls to #upsell
+
+On desktop, this sticky CTA should not show.
+
+5) Componentization Requirements (Create/Refactor)
+
+Create or refactor into these components (in a /components/results/ folder if appropriate):
+
+ResultsHero
+
+ShowsUpSection
+
+FastestWinCard
+
+UpsellSection
+
+TestimonialsSection
+
+EmailFallbackSection
+
+ToolsAccordion
+
+RetakeSection
+
+MobileStickyCTA
+Use shadcn/ui primitives where helpful (Card, Button, Badge, Accordion, etc.)
+
+6) Styling Requirements (Tailwind + shadcn)
+
+Maintain current design language (spacing, rounded corners, soft shadows)
+
+Keep primary CTA visually dominant
+
+Ensure mobile layouts are clean: stacked sections, full-width CTA buttons
+
+7) Final Checks
+
+Ensure TypeScript builds without errors
+
+Ensure existing TanStack Query result fetching still works
+
+Ensure forms still validate (RHF + Zod)
+
+Ensure Wouter navigation still works
+
+Don’t remove Stripe checkout functionality; only move its section earlier
+
+Implement now by editing the existing Results page and extracting components as needed. Output the updated code with file-level changes.
