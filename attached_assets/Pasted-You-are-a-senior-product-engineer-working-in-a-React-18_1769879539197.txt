@@ -1,0 +1,209 @@
+You are a senior product engineer working in a React 18 + TypeScript + Vite app using Tailwind CSS, shadcn/ui components, and Wouter routing.
+
+I need you to refactor the Interactive Playbook web experience (the page titled things like “The Flexible Improviser Playbook”) to be more interactive, visually engaging, and action-driven, without changing backend schemas or breaking existing data.
+
+I do not know the component/file names. Find them automatically first.
+
+STEP 1 — LOCATE THE PLAYBOOK PAGE (REQUIRED)
+
+Search the repo for these strings:
+
+"Playbook"
+
+"Overall Progress"
+
+"30-Day Plan"
+
+"Recommended Tools"
+
+"Your Core Traits"
+
+"Understanding Your Archetype"
+
+Identify the main Playbook page component and its child sections (Content, 30-Day Plan, Tools, Notes, PDF).
+
+Identify how progress, sections, and tabs are currently rendered.
+
+Do not change routing or data fetching logic.
+
+STEP 2 — FIX BROKEN MARKDOWN & VISUAL GRAMMAR
+
+Replace raw markdown remnants (**, -) with structured UI components.
+
+Replace markdown with these block types:
+
+Create reusable components:
+
+InsightBlock (💡)
+
+ActionBlock (⚡)
+
+WhyItMattersBlock (🧠)
+
+CommonMistakeBlock (⚠️)
+
+Example transformation:
+
+**Your Core Problem:** → Section header
+
+- Structure: LOW → Bullet row inside a Card
+
+Paragraphs → chunked blocks (max 3–4 lines each)
+
+Use shadcn Card, Badge, and subtle icons.
+
+STEP 3 — RESTRUCTURE CONTENT FOR MOMENTUM (CRITICAL)
+A) “Understanding Your Archetype”
+
+Replace long text with:
+
+4 Core Trait Cards
+
+Title
+
+1-sentence explanation
+
+“What this means for your day”
+
+No long paragraphs.
+
+B) Add “Do This Now” Everywhere
+
+Each content section must include:
+
+One immediate action that takes ≤5 minutes
+
+Example:
+
+⚡ Do this now (2 minutes)
+Circle one time today when your energy feels highest.
+
+These actions are not optional — they are the product.
+
+C) 30-Day Plan → Game Loop
+
+Refactor the 30-Day Plan UI to:
+
+Emphasize Today’s Task at the top
+
+Collapse future days by default
+
+Show:
+
+Goal
+
+Time estimate
+
+Why this day exists
+
+Example:
+
+Today (Day 3): Track and Observe
+🎯 Goal: Notice patterns
+⏱️ Time: 5 minutes
+🧠 Why: Awareness precedes optimization
+
+When a task is completed:
+
+Show subtle success animation
+
+Copy change: “Momentum unlocked”
+
+STEP 4 — PROGRESS THAT FEELS MEANINGFUL
+
+Refactor the progress bar to include named milestones:
+
+Clarity
+
+Momentum
+
+System Installed
+
+Do not show percentage alone.
+
+STEP 5 — TOOLS TAB (REDUCE OVERWHELM)
+
+Change “Recommended Tools” from:
+
+“Here are many tools”
+
+To:
+
+“Pick one tool to try this week”
+
+Implementation:
+
+Highlight ONE recommended tool
+
+Hide others behind “See alternatives”
+
+Add copy:
+
+“Trying one tool beats configuring five.”
+
+STEP 6 — NOTES SHOULD BE GUIDED (NOT BLANK)
+
+Replace empty notes textarea with pre-seeded prompts, e.g.:
+
+“Right now, I notice my energy is highest when…”
+
+“The idea that surprised me most here was…”
+
+Notes auto-save as before.
+
+STEP 7 — WEB → MOBILE ASPIRATION (IMPORTANT)
+
+Add a subtle, persistent banner or callout:
+
+📱 Coming soon: Daily check-ins, streaks, and reminders in the Prolific Personalities mobile app
+→ Get notified when it launches
+
+This should feel aspirational, not upsell-y.
+
+STEP 8 — FIRST-TIME USER GUIDANCE
+
+On first playbook load only:
+
+Dim the UI slightly
+
+Highlight:
+
+Core Traits
+
+Today’s Task
+
+Progress bar
+
+Show copy:
+
+“You’re not meant to read everything today.”
+
+Dismissible, shown once.
+
+IMPLEMENTATION CONSTRAINTS
+
+Use shadcn/ui components where possible
+
+Keep Tailwind design language consistent
+
+Do not remove existing data bindings
+
+Do not change backend APIs
+
+Ensure mobile layouts stack cleanly
+
+Ensure TypeScript builds without errors
+
+DELIVERABLES
+
+Updated Playbook UI with structured content blocks
+
+Reduced cognitive load
+
+Clear daily actions
+
+More engaging 30-Day Plan
+
+Better perceived progress
+
+Summary of files/components changed

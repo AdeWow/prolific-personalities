@@ -7,16 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { playbookContentMap } from "@shared/playbookContent";
 import { PDFPreview } from "@/components/pdf-preview";
+import { ProgressMilestones } from "@/components/playbook/ProgressMilestones";
+import { ActionPlanGame } from "@/components/playbook/ActionPlanGame";
+import { ToolsFocused } from "@/components/playbook/ToolsFocused";
+import { GuidedNotes } from "@/components/playbook/GuidedNotes";
+import { MobileAppBanner } from "@/components/playbook/MobileAppBanner";
+import { FirstTimeOverlay, useFirstTimeOverlay } from "@/components/playbook/FirstTimeOverlay";
+import { ContentRenderer } from "@/components/playbook/ContentParser";
 import { 
   Loader2, 
   Lock, 
@@ -289,6 +292,9 @@ export default function Playbook() {
     window.open(`/api/playbook/${archetype}/pdf`, '_blank');
   };
 
+  // First-time user onboarding
+  const { showOverlay, dismissOverlay } = useFirstTimeOverlay(archetype);
+
   // CONDITIONAL RENDERING SECTION
 
   // Loading state
@@ -474,15 +480,22 @@ export default function Playbook() {
               </Link>
             </div>
           </div>
-          <div className="mt-3">
-            <div className="flex items-center justify-between text-sm mb-1">
-              <span className="text-gray-600 dark:text-gray-400">Overall Progress</span>
-              <span className="font-semibold text-gray-900 dark:text-white">{progressPercentage}%</span>
-            </div>
-            <Progress value={progressPercentage} className="h-2" />
+          <div className="mt-4">
+            <ProgressMilestones 
+              completedChapters={completedChapters}
+              totalChapters={totalChapters}
+            />
           </div>
         </div>
       </div>
+
+      {/* First-time user overlay */}
+      {showOverlay && (
+        <FirstTimeOverlay 
+          archetype={archetype}
+          onDismiss={dismissOverlay}
+        />
+      )}
 
       <div className="flex max-w-7xl mx-auto">
         {/* Sidebar */}
@@ -570,6 +583,9 @@ export default function Playbook() {
             </TabsList>
 
             <TabsContent value="content" className="space-y-6">
+              {/* Mobile App Banner */}
+              <MobileAppBanner className="lg:hidden" />
+              
               {selectedSection && (
                 <Card>
                   <CardHeader>
@@ -580,156 +596,77 @@ export default function Playbook() {
                           {selectedChapter?.title}
                         </p>
                       </div>
-                      <Checkbox
-                        checked={isChapterComplete(selectedChapterId)}
-                        onCheckedChange={(checked) => {
-                          toggleChapterMutation.mutate({ 
-                            chapterId: selectedChapterId, 
-                            completed: !!checked 
-                          });
-                        }}
-                        disabled={toggleChapterMutation.isPending}
-                        data-testid="checkbox-complete-chapter"
-                      />
-                    </div>
-                  </CardHeader>
-                  <CardContent className="prose dark:prose-invert max-w-none">
-                    {selectedSection.content.split('\n\n').map((paragraph, idx) => (
-                      <p key={idx} className="text-gray-700 dark:text-gray-300 mb-4 whitespace-pre-wrap">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-
-            <TabsContent value="action-plan" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>30-Day Action Plan</CardTitle>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Track your daily progress and build momentum
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {playbook?.actionPlan.map(task => {
-                    const isComplete = isTaskComplete(task.day, task.id);
-                    return (
-                      <div
-                        key={task.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
-                        data-testid={`task-day-${task.day}`}
-                      >
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">Mark complete</span>
                         <Checkbox
-                          checked={isComplete}
+                          checked={isChapterComplete(selectedChapterId)}
                           onCheckedChange={(checked) => {
-                            toggleActionPlanMutation.mutate({ 
-                              dayNumber: task.day, 
-                              taskId: task.id, 
+                            toggleChapterMutation.mutate({ 
+                              chapterId: selectedChapterId, 
                               completed: !!checked 
                             });
                           }}
-                          disabled={toggleActionPlanMutation.isPending}
-                          className="mt-1"
+                          disabled={toggleChapterMutation.isPending}
+                          data-testid="checkbox-complete-chapter"
                         />
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2">
-                            <Badge variant="outline">Day {task.day}</Badge>
-                            <span className={`font-medium ${isComplete ? 'line-through text-gray-500' : 'text-gray-900 dark:text-white'}`}>
-                              {task.task}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                            {task.description}
-                          </p>
-                        </div>
                       </div>
-                    );
-                  })}
-                </CardContent>
-              </Card>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <ContentRenderer 
+                      content={selectedSection.content}
+                      sectionId={selectedSectionId}
+                    />
+                  </CardContent>
+                </Card>
+              )}
+              
+              {/* Desktop Mobile App Banner */}
+              <div className="hidden lg:block">
+                <MobileAppBanner />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="action-plan" className="space-y-4">
+              <ActionPlanGame
+                tasks={playbook?.actionPlan || []}
+                completedTasks={(actionPlanData || []).map(t => ({ 
+                  dayNumber: t.dayNumber, 
+                  taskId: t.taskId 
+                }))}
+                onToggleTask={(dayNumber, taskId, completed) => {
+                  toggleActionPlanMutation.mutate({ dayNumber, taskId, completed });
+                }}
+                isPending={toggleActionPlanMutation.isPending}
+              />
             </TabsContent>
 
             <TabsContent value="tools" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recommended Tools</CardTitle>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Track which productivity tools you're implementing
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {playbook?.recommendedTools.map(toolId => {
-                    const status = getToolStatus(toolId);
-                    const toolNotes = toolsData?.find(t => t.toolId === toolId)?.notes || "";
-                    return (
-                      <div key={toolId} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-semibold text-gray-900 dark:text-white capitalize">
-                            {toolId.replace(/-/g, ' ')}
-                          </h3>
-                          <Select
-                            value={status}
-                            onValueChange={(value) => updateToolMutation.mutate({ toolId, status: value, notes: toolNotes })}
-                            disabled={updateToolMutation.isPending}
-                          >
-                            <SelectTrigger className="w-40" data-testid={`select-tool-${toolId}`}>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Not Started">Not Started</SelectItem>
-                              <SelectItem value="Testing">Testing</SelectItem>
-                              <SelectItem value="Using Daily">Using Daily</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <Textarea
-                          placeholder="Add notes about this tool..."
-                          defaultValue={toolNotes}
-                          onBlur={(e) => {
-                            if (e.target.value !== toolNotes) {
-                              updateToolMutation.mutate({ toolId, status, notes: e.target.value });
-                            }
-                          }}
-                          disabled={updateToolMutation.isPending}
-                          className="mt-2"
-                          data-testid={`textarea-tool-notes-${toolId}`}
-                        />
-                      </div>
-                    );
-                  })}
-                </CardContent>
-              </Card>
+              <ToolsFocused
+                recommendedTools={playbook?.recommendedTools || []}
+                toolsData={(toolsData || []).map(t => ({
+                  toolId: t.toolId,
+                  status: t.status,
+                  notes: t.notes || ""
+                }))}
+                onUpdateTool={(toolId, status, notes) => {
+                  updateToolMutation.mutate({ toolId, status, notes });
+                }}
+                isPending={updateToolMutation.isPending}
+              />
             </TabsContent>
 
             <TabsContent value="notes" className="space-y-4">
               <Card>
-                <CardHeader>
-                  <CardTitle>Personal Notes</CardTitle>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Add your reflections and insights for: {selectedSection?.title}
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <Textarea
-                    placeholder="Write your notes here..."
-                    defaultValue={getSectionNote(selectedSectionId)?.content || ""}
-                    onChange={(e) => {
-                      handleNoteSave(selectedSectionId, e.target.value);
-                    }}
+                <CardContent className="pt-6">
+                  <GuidedNotes
+                    sectionId={selectedSectionId}
+                    sectionTitle={selectedSection?.title || ""}
+                    existingNote={getSectionNote(selectedSectionId)?.content}
+                    onSave={handleNoteSave}
+                    saveStatus={noteSaveStatus}
                     disabled={saveNoteMutation.isPending}
-                    className="min-h-[200px]"
-                    data-testid="textarea-section-notes"
                   />
-                  <div className="flex items-center justify-between mt-2">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {noteSaveStatus === 'saving' && 'Saving...'}
-                      {noteSaveStatus === 'saved' && '✓ Saved'}
-                      {noteSaveStatus === 'error' && '✗ Error saving'}
-                      {noteSaveStatus === 'idle' && 'Your notes are automatically saved'}
-                    </p>
-                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
