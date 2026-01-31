@@ -147,6 +147,24 @@ export default function Playbook() {
     retry: 1,
   });
 
+  // Check session-based access for unauthenticated users (prepaid flow)
+  const sessionAccessUrl = sessionId ? `/api/playbook/${archetype}/session-access?sessionId=${sessionId}` : null;
+  const { data: sessionAccessData, isLoading: isSessionAccessLoading } = useQuery<{ hasAccess: boolean; orderEmail?: string }>({
+    queryKey: ['session-access', sessionAccessUrl],
+    queryFn: async () => {
+      if (!sessionAccessUrl) return { hasAccess: false };
+      const res = await fetch(sessionAccessUrl);
+      if (!res.ok) throw new Error('Failed to check session access');
+      return res.json();
+    },
+    enabled: !user && !!sessionId && !!archetype && !isAuthLoading,
+    retry: 1,
+  });
+
+  // Combined access check: user is authenticated with access OR has session-based access
+  const hasAnyAccess = accessData?.hasAccess === true || sessionAccessData?.hasAccess === true;
+  const isAnyAccessLoading = (user ? isAccessLoading : isSessionAccessLoading);
+
   // Fetch progress data - always call these hooks but they'll only fetch when enabled
   const { data: progressData } = useQuery<{ chapterId: string; completed: number; completedAt: string | null }[]>({
     queryKey: [`/api/playbook/${archetype}/progress`, session?.access_token],
@@ -348,8 +366,20 @@ export default function Playbook() {
     );
   }
 
-  // Not logged in
-  if (!user) {
+  // Show loading while checking session-based access for unauthenticated users
+  if (!user && !isAuthLoading && sessionId && isSessionAccessLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400">Verifying your access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Not logged in and no session-based access
+  if (!user && !sessionAccessData?.hasAccess) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
@@ -388,8 +418,8 @@ export default function Playbook() {
     );
   }
 
-  // No premium access
-  if (!accessData?.hasAccess) {
+  // No premium access (logged in but no access, or unauthenticated without session access)
+  if (!hasAnyAccess) {
     const archetypeName = archetype
       .split('-')
       .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))

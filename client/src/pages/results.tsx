@@ -148,7 +148,22 @@ export default function Results() {
     },
     enabled: !!user && !!archetype && !!session?.access_token,
   });
-  const hasPremiumAccess = accessData?.hasAccess === true;
+
+  // Check session-based access for unauthenticated users (prepaid flow)
+  const sessionAccessUrl = archetype && sessionId ? `/api/playbook/${archetype.id}/session-access?sessionId=${sessionId}` : null;
+  const { data: sessionAccessData } = useQuery<{ hasAccess: boolean }>({
+    queryKey: ['session-access-results', sessionAccessUrl],
+    queryFn: async () => {
+      if (!sessionAccessUrl) return { hasAccess: false };
+      const res = await fetch(sessionAccessUrl);
+      if (!res.ok) return { hasAccess: false };
+      return res.json();
+    },
+    enabled: !user && !!archetype && !!sessionId,
+  });
+
+  // Combined access check
+  const hasPremiumAccess = accessData?.hasAccess === true || sessionAccessData?.hasAccess === true;
 
   const emailCaptureMutation = useMutation({
     mutationFn: async (emailData: { email: string; sessionId: string; archetype?: string }) => {

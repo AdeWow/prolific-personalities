@@ -2190,6 +2190,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   );
 
+  // Check if sessionId has premium access (no auth required - for prepaid anonymous users)
+  app.get("/api/playbook/:archetype/session-access", async (req, res) => {
+    try {
+      const { archetype } = req.params;
+      const sessionId = req.query.sessionId as string | undefined;
+
+      if (!sessionId) {
+        res.json({ hasAccess: false });
+        return;
+      }
+
+      // Check if there's a completed order for this sessionId
+      const order = await storage.getOrderBySessionId(sessionId);
+      const hasAccess = order?.status === 'completed';
+      
+      console.log('[Session Access Debug] sessionId:', sessionId, '| archetype:', archetype, '| order:', order?.id, '| hasAccess:', hasAccess);
+      res.json({ hasAccess, orderEmail: hasAccess ? order?.customerEmail : null });
+    } catch (error) {
+      console.error("Error checking session access:", error);
+      res.status(500).json({ message: "Failed to check access" });
+    }
+  });
+
   // Check if user has premium access to an archetype
   app.get(
     "/api/playbook/:archetype/access",
