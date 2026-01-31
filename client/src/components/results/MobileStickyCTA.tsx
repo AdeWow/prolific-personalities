@@ -17,6 +17,7 @@ export function MobileStickyCTA({ heroRef }: MobileStickyCTAProps) {
       }
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [heroRef]);
