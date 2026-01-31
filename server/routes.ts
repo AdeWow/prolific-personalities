@@ -551,14 +551,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Add to mobile app waitlist
   app.post("/api/app-waitlist", emailLimiter, async (req, res) => {
     try {
-      const { email, sessionId } = req.body;
+      const { email, sessionId, source } = req.body;
       
-      if (!email || !sessionId) {
-        res.status(400).json({ message: "Email and sessionId are required" });
+      if (!email) {
+        res.status(400).json({ message: "Email is required" });
         return;
       }
       
-      await storage.addToWaitlist(email, sessionId, 'app_waitlist');
+      // Use source as sessionId if sessionId not provided (for playbook banner etc)
+      const entrySource = source || 'app_waitlist';
+      await storage.addToWaitlist(email, sessionId || entrySource, 'app_waitlist');
       res.json({ success: true, message: "You're on the list!" });
     } catch (error) {
       console.error("Error adding to app waitlist:", error);

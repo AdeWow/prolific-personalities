@@ -24,7 +24,7 @@ export function MobileAppBanner({ onDismiss, className = "" }: MobileAppBannerPr
 
     setIsSubmitting(true);
     try {
-      await apiRequest("POST", "/api/waitlist/mobile-app", { 
+      await apiRequest("POST", "/api/app-waitlist", { 
         email,
         source: "playbook_banner"
       });
