@@ -373,19 +373,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const { sessionId } = req.params;
         const supabaseUser = req.supabaseUser;
-        const userId = supabaseUser.id;
 
-        console.log(`🔍 Claim request for session ${sessionId} by user ${userId}`);
-
-        // Ensure user exists in local users table (for FK constraints on orders)
-        await storage.upsertUser({
-          id: userId,
+        // Get the local user ID (may differ from Supabase ID for legacy users)
+        const localUser = await storage.upsertUser({
+          id: supabaseUser.id,
           email: supabaseUser.email || null,
           firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
           lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
           profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
         });
-        console.log(`✅ User upserted: ${userId}`);
+        const userId = localUser.id;
+
+        console.log(`🔍 Claim request for session ${sessionId} by user ${userId} (supabase: ${supabaseUser.id})`);
 
         // Check if result exists and is already claimed
         const existing = await storage.getQuizResultBySessionId(sessionId);
@@ -1553,8 +1552,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user's orders
   app.get("/api/orders", supabaseAuth, async (req: any, res) => {
     try {
-      const userId = req.supabaseUser.id;
-      const orders = await storage.getOrdersByUserId(userId);
+      const supabaseUser = req.supabaseUser;
+      // Get the local user ID (may differ from Supabase ID for legacy users)
+      const localUser = await storage.upsertUser({
+        id: supabaseUser.id,
+        email: supabaseUser.email || null,
+        firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+        lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+        profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+      });
+      const orders = await storage.getOrdersByUserId(localUser.id);
       res.json(orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -1568,7 +1575,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/download/:orderId", supabaseAuth, async (req: any, res) => {
     try {
       const { orderId } = req.params;
-      const userId = req.supabaseUser.id;
+      const supabaseUser = req.supabaseUser;
+      
+      // Get the local user ID (may differ from Supabase ID for legacy users)
+      const localUser = await storage.upsertUser({
+        id: supabaseUser.id,
+        email: supabaseUser.email || null,
+        firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+        lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+        profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+      });
+      const userId = localUser.id;
 
       const order = await storage.getOrderById(parseInt(orderId));
 
@@ -1689,7 +1706,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.localUserId; // Set by hasPremiumAccess middleware
         const { archetype } = req.params;
         const progress = await storage.getPlaybookProgress(userId, archetype);
         res.json(progress);
@@ -1708,7 +1725,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.localUserId; // Set by hasPremiumAccess middleware
         const { archetype } = req.params;
         const { chapterId, completed } = req.body;
 
@@ -1738,7 +1755,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.localUserId; // Set by hasPremiumAccess middleware
         const { archetype } = req.params;
         const progress = await storage.getActionPlanProgress(userId, archetype);
         res.json(progress);
@@ -1757,7 +1774,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.localUserId; // Set by hasPremiumAccess middleware
         const { archetype } = req.params;
         const { dayNumber, taskId, completed } = req.body;
 
@@ -1788,7 +1805,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.localUserId; // Set by hasPremiumAccess middleware
         const { archetype } = req.params;
         const tracking = await storage.getToolTracking(userId, archetype);
         res.json(tracking);
@@ -1807,7 +1824,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.localUserId; // Set by hasPremiumAccess middleware
         const { archetype } = req.params;
         const { toolId, status, notes } = req.body;
 
@@ -1838,7 +1855,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.localUserId; // Set by hasPremiumAccess middleware
         const { archetype } = req.params;
         const { sectionId } = req.query;
         const notes = await storage.getPlaybookNotes(
@@ -1862,7 +1879,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     hasPremiumAccess,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const userId = req.localUserId; // Set by hasPremiumAccess middleware
         const { archetype } = req.params;
         const { sectionId, content } = req.body;
 
@@ -3806,35 +3823,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // GET /api/v1/mobile/user - Get current user's profile
   app.get("/api/v1/mobile/user", supabaseAuth, async (req: any, res) => {
     try {
-      const userId = req.supabaseUser.id;
-      const userEmail = req.supabaseUser.email;
+      const supabaseUser = req.supabaseUser;
+      const userEmail = supabaseUser.email;
 
-      // Get or create user in our database
-      let user = await storage.getUser(userId);
+      // Get the local user ID (may differ from Supabase ID for legacy users)
+      const localUser = await storage.upsertUser({
+        id: supabaseUser.id,
+        email: userEmail || null,
+        firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+        lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+        profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+      });
+      const userId = localUser.id;
 
-      if (!user && userEmail) {
-        // Check if user exists by email (migration case)
-        const existingByEmail = await storage.getUserByEmail(userEmail);
-        if (existingByEmail) {
-          // User exists with different ID, use that record
-          user = existingByEmail;
-        } else {
-          // Create new user
-          user = await storage.upsertUser({
-            id: userId,
-            email: userEmail,
-            firstName: null,
-            lastName: null,
-            profileImageUrl: null,
-          });
-        }
-      }
-
-      // Get latest quiz result
+      // Get latest quiz result using local user ID
       const quizResults = await storage.getQuizResultsByUserId(userId);
       const latestQuizResult = quizResults.length > 0 ? quizResults[0] : null;
 
-      // Check premium status
+      // Check premium status using local user ID
       const isPremium = await storage.isPremiumUser(userId);
 
       res.json({
@@ -3842,9 +3848,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         user: {
           id: userId,
           email: userEmail,
-          firstName: user?.firstName || null,
-          lastName: user?.lastName || null,
-          profileImageUrl: user?.profileImageUrl || null,
+          firstName: localUser.firstName || null,
+          lastName: localUser.lastName || null,
+          profileImageUrl: localUser.profileImageUrl || null,
         },
         latestAssessment: latestQuizResult
           ? {
@@ -3870,8 +3876,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     writeLimiter,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const supabaseUser = req.supabaseUser;
         const { vispiCategory, answers, timestamp, scores } = req.body;
+
+        // Get the local user ID (may differ from Supabase ID for legacy users)
+        const localUser = await storage.upsertUser({
+          id: supabaseUser.id,
+          email: supabaseUser.email || null,
+          firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+          lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+          profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+        });
+        const userId = localUser.id;
 
         // Validate required fields
         if (!vispiCategory) {
