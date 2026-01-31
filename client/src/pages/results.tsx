@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { determineArchetypeEnhanced } from "@/lib/quiz-logic";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { trackResultsView, trackPaywallView, trackPaywallTierClick, trackCheckoutStart } from "@/lib/posthog";
-import { CheckCircle2, Mail, Download, Share2, Copy, Smartphone } from "lucide-react";
+import { CheckCircle2, Mail, Download, Share2, Copy, Smartphone, ArrowRight } from "lucide-react";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
@@ -28,6 +28,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
+import { useAuthContext } from "@/contexts/AuthContext";
 import type { QuizResult, ToolWithFitScore, QuizScores } from "@shared/schema";
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
@@ -59,6 +61,21 @@ export default function Results() {
   const [appWaitlistEmail, setAppWaitlistEmail] = useState("");
   const [appWaitlistJoined, setAppWaitlistJoined] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { session } = useAuthContext();
+
+  // Create authenticated fetch function
+  const authFetch = useCallback(async (url: string) => {
+    const headers: Record<string, string> = {};
+    if (session?.access_token) {
+      headers["Authorization"] = `Bearer ${session.access_token}`;
+    }
+    const res = await fetch(url, { headers });
+    if (!res.ok) {
+      throw new Error(`${res.status}: ${await res.text()}`);
+    }
+    return res.json();
+  }, [session?.access_token]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -120,6 +137,18 @@ export default function Results() {
     },
     enabled: !!archetype,
   });
+
+  // Check if logged-in user has premium access
+  const accessQueryUrl = archetype ? `/api/playbook/${archetype.id}/access?sessionId=${sessionId}` : null;
+  const { data: accessData } = useQuery<{ hasAccess: boolean }>({
+    queryKey: [accessQueryUrl, session?.access_token],
+    queryFn: async () => {
+      if (!accessQueryUrl) return { hasAccess: false };
+      return authFetch(accessQueryUrl);
+    },
+    enabled: !!user && !!archetype && !!session?.access_token,
+  });
+  const hasPremiumAccess = accessData?.hasAccess === true;
 
   const emailCaptureMutation = useMutation({
     mutationFn: async (emailData: { email: string; sessionId: string; archetype?: string }) => {
@@ -652,21 +681,47 @@ export default function Results() {
         {/* C) Your Fastest Win Today */}
         <FastestWinCard archetype={archetype} />
 
-        {/* D) Paid Upsell Section */}
-        <UpsellSection
-          archetype={archetype}
-          sessionId={sessionId || ''}
-          onUpgrade={handleUpgradeToPremium}
-          isUpgrading={checkoutMutation.isPending}
-          promoCode={promoCode}
-          setPromoCode={handlePromoCodeChange}
-          promoCodeValid={promoCodeValid}
-          promoCodeMessage={promoCodeMessage}
-          onValidatePromo={validatePromoCode}
-          onApplyPromo={handleApplyPromoCode}
-          isApplyingPromo={promoCodeMutation.isPending}
-          defaultEmail={email || emailResultsInput}
-        />
+        {/* D) Paid Upsell Section or Access Button */}
+        {hasPremiumAccess ? (
+          <section id="upsell" className="py-16 gradient-primary scroll-mt-16">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Card className="bg-white shadow-2xl">
+                <CardContent className="p-8 lg:p-12 text-center">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 mb-4">
+                    <CheckCircle2 className="w-8 h-8 text-white" />
+                  </div>
+                  <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-3">
+                    Your {archetype.title} Playbook is Ready!
+                  </h2>
+                  <p className="text-lg text-muted-foreground mb-8">
+                    You have full access to your personalized productivity playbook with frameworks, tools, and a 30-day action plan.
+                  </p>
+                  <Link href={`/playbook/${archetype.id}?sessionId=${sessionId}`}>
+                    <Button size="lg" className="gradient-primary text-white text-lg px-8 py-6">
+                      <ArrowRight className="w-5 h-5 mr-2" />
+                      Access Your Playbook Now
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+        ) : (
+          <UpsellSection
+            archetype={archetype}
+            sessionId={sessionId || ''}
+            onUpgrade={handleUpgradeToPremium}
+            isUpgrading={checkoutMutation.isPending}
+            promoCode={promoCode}
+            setPromoCode={handlePromoCodeChange}
+            promoCodeValid={promoCodeValid}
+            promoCodeMessage={promoCodeMessage}
+            onValidatePromo={validatePromoCode}
+            onApplyPromo={handleApplyPromoCode}
+            isApplyingPromo={promoCodeMutation.isPending}
+            defaultEmail={email || emailResultsInput}
+          />
+        )}
 
         {/* E) Testimonials */}
         <TestimonialsSection variant="compact" showTitle={true} maxItems={3} />
