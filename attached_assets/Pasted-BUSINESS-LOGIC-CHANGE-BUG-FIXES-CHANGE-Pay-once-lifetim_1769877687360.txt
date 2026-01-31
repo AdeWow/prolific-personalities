@@ -1,0 +1,53 @@
+BUSINESS LOGIC CHANGE + BUG FIXES
+
+## CHANGE: Pay once, lifetime access model
+
+Current logic checks: "Did user purchase THIS specific archetype's playbook?"
+New logic should be: "Does user have ANY completed purchase?"
+
+Implementation:
+1. Check if user has ANY completed order (regardless of archetype)
+2. If yes, user is "premium" and can access playbook for ANY of their assessment results
+3. No need to match archetype to purchase
+
+Update these locations:
+- hasUserPurchasedPlaybook function → rename or change to hasPremiumAccess
+- Playbook access check → just check for any completed order
+- Remove archetype-specific purchase validation
+
+## UI CHANGE: Assessment History with playbook access
+
+In "Your Assessment History" section:
+- Each row currently shows: Archetype name, date, "View Results" button
+- For premium users: ADD "Open Playbook" button next to "View Results" on EVERY assessment
+- Non-premium users: Show "View Results" only (or "View Results" + "Upgrade to unlock playbook")
+
+This means a premium user with 7 assessments can open the playbook for any of them.
+
+Remove or simplify the "Your Premium Reports" section since it's now redundant - all access flows through Assessment History.
+
+## BUG FIXES:
+
+### BUG 1: Stripe payment not sending email
+- Check Stripe webhook handler (checkout.session.completed)
+- Apply user ID fix (use local user ID from upsertUser)
+- Ensure Resend email triggers after payment
+
+### BUG 2: Stripe purchase not linking to user
+- Same user ID mismatch in webhook
+- Order created with wrong user ID
+- Fix: look up local user by email in webhook handler
+
+### BUG 3: Score progress showing zeros
+- "Your Progress Over Time" shows 0 for all axes
+- Archetype Evolution shows 7 real assessments exist
+- Check how axis scores are stored and queried
+- Likely the scores aren't being saved or the query field names don't match
+
+---
+
+Summary of user experience after changes:
+1. User takes quiz → sees result → can "View Results" free
+2. User pays $19 → becomes premium forever
+3. Premium user sees "Open Playbook" on ALL their past and future assessment results
+4. User retakes quiz → gets new archetype → can immediately open that playbook (no new payment)

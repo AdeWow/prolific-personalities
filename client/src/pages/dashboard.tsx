@@ -56,11 +56,14 @@ export default function Dashboard() {
   });
 
   // Fetch user's orders
-  const { data: orders } = useQuery<Order[]>({
+  const { data: orders, isLoading: ordersLoading } = useQuery<Order[]>({
     queryKey: ["/api/orders", session?.access_token],
     queryFn: () => authFetch("/api/orders"),
     enabled: isAuthenticated && !!session?.access_token,
   });
+
+  // Compute premium access status - user has any completed order
+  const hasPremiumAccess = orders && orders.some(o => o.status === 'completed');
 
   if (authLoading || resultsLoading || isClaimingQuiz) {
     return (
@@ -282,64 +285,6 @@ export default function Dashboard() {
             </Card>
           )}
 
-          {/* Premium Reports - Pay once, lifetime access to ALL archetypes with results */}
-          {orders && orders.filter(o => o.status === 'completed').length > 0 && results && results.length > 0 && (
-            <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 bg-primary rounded-lg">
-                    <Download className="w-6 h-6 text-white" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-foreground">
-                    Your Premium Playbooks
-                  </h2>
-                  <span className="text-sm text-muted-foreground">(Lifetime Access)</span>
-                </div>
-
-                <div className="space-y-3">
-                  {/* Get unique archetypes from quiz results */}
-                  {Array.from(new Set(results.map(r => r.archetype))).map((archetypeId) => {
-                    const archetype = archetypes.find(a => a.id === archetypeId);
-                    const latestResult = results.find(r => r.archetype === archetypeId);
-                    return (
-                      <div key={archetypeId} className="bg-white rounded-lg p-4 shadow-sm">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                              <BookOpen className="w-5 h-5 text-primary" />
-                            </div>
-                            <div>
-                              <h3 className="font-bold text-foreground">
-                                {archetype?.name || archetypeId} Premium Playbook
-                              </h3>
-                              <p className="text-sm text-muted-foreground">
-                                {latestResult && `Last assessed ${formatDistanceToNow(new Date(latestResult.completedAt), { addSuffix: true })}`}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex flex-col sm:flex-row gap-2">
-                            <Link href={`/playbook/${archetypeId}`}>
-                              <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white" data-testid={`button-playbook-${archetypeId}`}>
-                                <BookOpen className="w-4 h-4 mr-2" />
-                                Open Playbook
-                              </Button>
-                            </Link>
-                            <a href={`/api/playbook/${archetypeId}/pdf`} download>
-                              <Button variant="outline" className="w-full sm:w-auto" data-testid={`button-download-${archetypeId}`}>
-                                <Download className="w-4 h-4 mr-2" />
-                                Download PDF
-                              </Button>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
           {/* Results List */}
           <div>
             <h2 className="text-2xl font-bold text-foreground mb-6">
@@ -386,12 +331,32 @@ export default function Dashboard() {
                               </div>
                             </div>
                           </div>
-                          <div>
+                          <div className="flex gap-2 flex-wrap">
                             <Link href={`/results/${result.sessionId}`}>
                               <Button variant="outline" data-testid={`button-view-${result.id}`}>
                                 View Results
                               </Button>
                             </Link>
+                            {ordersLoading ? (
+                              <Button variant="secondary" disabled>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
+                                Loading...
+                              </Button>
+                            ) : hasPremiumAccess ? (
+                              <Link href={`/playbook/${result.archetype}`}>
+                                <Button data-testid={`button-playbook-${result.id}`}>
+                                  <BookOpen className="w-4 h-4 mr-2" />
+                                  Open Playbook
+                                </Button>
+                              </Link>
+                            ) : (
+                              <Link href={`/results/${result.sessionId}#upsell`}>
+                                <Button variant="secondary" data-testid={`button-unlock-${result.id}`}>
+                                  <Lock className="w-4 h-4 mr-2" />
+                                  Unlock Playbook
+                                </Button>
+                              </Link>
+                            )}
                           </div>
                         </div>
                       </CardContent>

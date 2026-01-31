@@ -101,7 +101,18 @@ export function registerWebhookRoute(app: Express) {
           const customerEmail = session.customer_details?.email;
 
           if (orderId) {
-            // Update order status and customer email
+            // Look up local user by email to link the order correctly
+            // This handles legacy users with numeric IDs
+            let userId: string | undefined;
+            if (customerEmail) {
+              const existingUser = await storage.getUserByEmail(customerEmail);
+              if (existingUser) {
+                userId = existingUser.id;
+                console.log(`✅ Linking order to existing user ${userId} via email ${customerEmail}`);
+              }
+            }
+
+            // Update order status, customer email, and link to user
             // For subscriptions, store the subscription ID instead of payment_intent
             const isSubscription = session.mode === "subscription";
             await storage.updateOrderStatus(
@@ -110,6 +121,7 @@ export function registerWebhookRoute(app: Express) {
               isSubscription ? null : (session.payment_intent as string),
               customerEmail || undefined,
               isSubscription ? (session.subscription as string) : undefined,
+              userId,
             );
             console.log(
               `✅ Order ${orderId} marked as completed via webhook (${isSubscription ? "subscription" : "one-time"})`,
@@ -1432,12 +1444,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const customerEmail = stripeSession.customer_details?.email;
 
-      // Update order status to completed
+      // Look up local user by email to link the order correctly
+      // This handles legacy users with numeric IDs
+      let userId: string | undefined;
+      if (customerEmail) {
+        const existingUser = await storage.getUserByEmail(customerEmail);
+        if (existingUser) {
+          userId = existingUser.id;
+          console.log(`✅ Linking order to existing user ${userId} via email ${customerEmail}`);
+        }
+      }
+
+      // Update order status to completed and link to user
       await storage.updateOrderStatus(
         existingOrders.id,
         "completed",
         stripeSession.payment_intent as string || null,
         customerEmail || undefined,
+        undefined, // stripeSubscriptionId
+        userId,
       );
 
       console.log(`✅ Order ${existingOrders.id} marked as completed via verify-payment fallback`);

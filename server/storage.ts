@@ -46,7 +46,7 @@ export interface IStorage {
   getOrderBySessionAndArchetype(sessionId: string, archetype: string): Promise<Order | undefined>;
   getOrderBySubscriptionId(subscriptionId: string): Promise<Order | undefined>;
   getCheckoutAttemptBySessionArchetype(sessionId: string, archetype: string): Promise<CheckoutAttempt | undefined>;
-  updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string | null, customerEmail?: string, stripeSubscriptionId?: string): Promise<Order | undefined>;
+  updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string | null, customerEmail?: string, stripeSubscriptionId?: string, userId?: string): Promise<Order | undefined>;
   claimOrdersBySession(sessionId: string, userId: string): Promise<void>;
   linkOrderToQuizSession(orderId: number, sessionId: string, archetype: string): Promise<Order | undefined>;
   updateOrderStripeSessionId(orderId: number, stripeSessionId: string): Promise<void>;
@@ -428,7 +428,7 @@ export class DatabaseStorage implements IStorage {
     return order || undefined;
   }
 
-  async updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string | null, customerEmail?: string, stripeSubscriptionId?: string): Promise<Order | undefined> {
+  async updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string | null, customerEmail?: string, stripeSubscriptionId?: string, userId?: string): Promise<Order | undefined> {
     const updateData: any = { 
       status,
       completedAt: status === 'completed' ? new Date() : undefined
@@ -444,6 +444,10 @@ export class DatabaseStorage implements IStorage {
     
     if (stripeSubscriptionId) {
       updateData.stripeSubscriptionId = stripeSubscriptionId;
+    }
+    
+    if (userId) {
+      updateData.userId = userId;
     }
     
     const [order] = await db
