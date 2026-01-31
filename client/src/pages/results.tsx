@@ -1,18 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { FourAxisVisual } from "@/components/four-axis-visual";
-import { ToolCard } from "@/components/tool-card";
 import { archetypes } from "@/data/archetypes";
 import { determineArchetypeEnhanced } from "@/lib/quiz-logic";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { trackResultsView, trackPaywallView, trackPaywallTierClick, trackCheckoutStart } from "@/lib/posthog";
-import { Sparkles, Lock, CheckCircle2, ArrowRight, Mail, Download, Share2, Copy, MessageCircle, Info, CreditCard, Zap, Smartphone } from "lucide-react";
+import { CheckCircle2, Mail, Download, Share2, Copy, Smartphone } from "lucide-react";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
@@ -33,9 +31,21 @@ import { apiRequest } from "@/lib/queryClient";
 import type { QuizResult, ToolWithFitScore, QuizScores } from "@shared/schema";
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
+import {
+  ResultsHero,
+  ShowsUpSection,
+  FastestWinCard,
+  UpsellSection,
+  EmailFallbackSection,
+  ToolsAccordion,
+  RetakeSection,
+  MobileStickyCTA,
+} from "@/components/results";
+
 export default function Results() {
   const params = useParams();
   const sessionId = params.sessionId;
+  const heroRef = useRef<HTMLElement>(null);
   const [shareUrl, setShareUrl] = useState("");
   const [email, setEmail] = useState("");
   const [emailSaved, setEmailSaved] = useState(false);
@@ -46,12 +56,10 @@ export default function Results() {
   const [promoCode, setPromoCode] = useState("");
   const [promoCodeValid, setPromoCodeValid] = useState<boolean | null>(null);
   const [promoCodeMessage, setPromoCodeMessage] = useState("");
-  const [showPromoInput, setShowPromoInput] = useState(false);
   const [appWaitlistEmail, setAppWaitlistEmail] = useState("");
   const [appWaitlistJoined, setAppWaitlistJoined] = useState(false);
   const { toast } = useToast();
 
-  // Check for payment status in URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const payment = urlParams.get('payment');
@@ -67,7 +75,6 @@ export default function Results() {
           variant: "destructive",
         });
       }
-      // Clean URL
       window.history.replaceState({}, '', `/results/${sessionId}`);
     }
   }, [sessionId, toast]);
@@ -95,7 +102,6 @@ export default function Results() {
       ? determineArchetypeEnhanced(result.scores as QuizScores) 
       : null;
   
-  // Track result page view
   useEffect(() => {
     if (archetype) {
       trackEvent('result_viewed', 'Results', archetype.name);
@@ -114,9 +120,6 @@ export default function Results() {
     },
     enabled: !!archetype,
   });
-
-  // Note: We don't need to poll for order status since the webhook handles everything
-  // The success modal shows immediately after payment redirect
 
   const emailCaptureMutation = useMutation({
     mutationFn: async (emailData: { email: string; sessionId: string; archetype?: string }) => {
@@ -148,7 +151,7 @@ export default function Results() {
     },
     onSuccess: () => {
       setEmailResultsSent(true);
-      setEmailSaved(true); // Also mark as saved since email was sent
+      setEmailSaved(true);
       localStorage.setItem('emailCaptured', 'true');
       trackEvent('email_results_sent', 'Engagement', archetype?.name || 'Unknown');
       toast({
@@ -195,7 +198,6 @@ export default function Results() {
         trackEvent('promo_code_redeemed', 'Conversion', archetype?.name || 'Unknown', data.discountPercent || 100);
         
         if (data.checkoutUrl) {
-          // Partial discount - redirect to Stripe checkout
           toast({
             title: `${data.discountPercent}% discount applied!`,
             description: `Pay only $${data.discountedPrice} (was $${data.originalPrice}). Redirecting to checkout...`,
@@ -204,7 +206,6 @@ export default function Results() {
             window.location.href = data.checkoutUrl;
           }, 1500);
         } else if (data.redirectUrl) {
-          // 100% discount - direct access
           toast({
             title: "Promo code applied!",
             description: "You now have premium access. Redirecting...",
@@ -282,6 +283,12 @@ export default function Results() {
     }
   };
 
+  const handlePromoCodeChange = (value: string) => {
+    setPromoCode(value);
+    setPromoCodeValid(null);
+    setPromoCodeMessage("");
+  };
+
   const handleUpgradeToPremium = () => {
     if (sessionId && archetype) {
       trackPaywallTierClick('playbook', archetype.id, 19);
@@ -296,7 +303,6 @@ export default function Results() {
     }
   }, [sessionId]);
 
-  // Transform database scores to match FourAxisVisual component expectations
   const scores = result?.scores as any;
   const transformedScores = scores ? {
     structureOrientation: scores.structure ?? 50,
@@ -348,9 +354,7 @@ export default function Results() {
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email && sessionId) {
-      // Use emailResultsMutation to actually send the email (not just capture)
       emailResultsMutation.mutate({ email, sessionId });
-      // Also store to localStorage so exit-intent popup knows email was captured
       localStorage.setItem('emailCaptured', 'true');
     }
   };
@@ -398,6 +402,10 @@ export default function Results() {
       </div>
     );
   }
+
+  const secondaryArchetype = enhancedResult?.secondary && enhancedResult.secondary.length > 0 
+    ? enhancedResult.secondary[0] 
+    : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
@@ -463,800 +471,324 @@ export default function Results() {
       </Dialog>
 
       <main id="main-content" role="main">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
-              <h1 className="text-xl font-bold text-foreground">Prolific Personalities</h1>
-            </Link>
-            <div className="flex gap-3 no-print">
-              <Button onClick={handlePDFExport} variant="outline" size="sm" data-testid="button-export-pdf">
-                <Download className="w-4 h-4 mr-2" />
-                Export PDF
-              </Button>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" data-testid="button-email-results">
-                    <Mail className="w-4 h-4 mr-2" />
-                    Email Results
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Email Your Results</DialogTitle>
-                    <DialogDescription>
-                      Get your complete assessment results sent to your inbox, including your archetype breakdown and personalized insights.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <form onSubmit={handleEmailResults} className="space-y-4">
-                    <div className="space-y-2">
-                      <Input
-                        type="email"
-                        placeholder="your.email@example.com"
-                        value={emailResultsInput}
-                        onChange={(e) => setEmailResultsInput(e.target.value)}
-                        required
-                        disabled={emailResultsSent || emailResultsMutation.isPending}
-                        data-testid="input-email-results"
-                        className="w-full"
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      className="w-full gradient-primary text-white"
-                      disabled={emailResultsSent || emailResultsMutation.isPending}
-                      data-testid="button-send-email"
-                    >
-                      {emailResultsMutation.isPending ? (
-                        <>
-                          <Mail className="w-4 h-4 mr-2 animate-pulse" />
-                          Sending...
-                        </>
-                      ) : emailResultsSent ? (
-                        <>
-                          <CheckCircle2 className="w-4 h-4 mr-2" />
-                          Sent!
-                        </>
-                      ) : (
-                        <>
-                          <Mail className="w-4 h-4 mr-2" />
-                          Send Results
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </DialogContent>
-              </Dialog>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" data-testid="button-share">
-                    <Share2 className="w-4 h-4 mr-2" />
-                    Share Results
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem onClick={handleCopyLink} data-testid="share-copy-link">
-                    <Copy className="w-4 h-4 mr-2" />
-                    Copy Link
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleShareTwitter} data-testid="share-twitter">
-                    <FaTwitter className="w-4 h-4 mr-2" />
-                    Share on Twitter
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleShareFacebook} data-testid="share-facebook">
-                    <FaFacebook className="w-4 h-4 mr-2" />
-                    Share on Facebook
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleShareLinkedIn} data-testid="share-linkedin">
-                    <FaLinkedin className="w-4 h-4 mr-2" />
-                    Share on LinkedIn
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleShareWhatsApp} data-testid="share-whatsapp">
-                    <FaWhatsapp className="w-4 h-4 mr-2" />
-                    Share on WhatsApp
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  Home
-                </Button>
+        {/* Header */}
+        <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />
+                <h1 className="text-xl font-bold text-foreground">Prolific Personalities</h1>
               </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="py-12 bg-gradient-to-b from-white to-transparent">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-8">
-            <Badge className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-100 to-blue-100 text-green-700 font-semibold border-0">
-              <Sparkles className="w-4 h-4 mr-2" />
-              Assessment Complete!
-            </Badge>
-          </div>
-
-          <Card className="bg-white shadow-xl border-0" data-testid="results-hero">
-            <CardContent className="p-8 lg:p-12">
-              <div className="text-center space-y-6">
-                {/* Archetype Name */}
-                <div>
-                  <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-2" data-testid="archetype-name">
-                    {archetype.name}
-                  </h1>
-                  <p className="text-xl lg:text-2xl text-muted-foreground font-medium" data-testid="archetype-tagline">
-                    {archetype.tagline}
-                  </p>
-                  
-                  {/* Confidence Badge */}
-                  {enhancedResult && (
-                    <div className="flex items-center justify-center gap-2 mt-4">
-                      <Badge 
-                        className={`px-4 py-2 text-sm font-semibold ${
-                          enhancedResult.confidenceLevel === 'exact' 
-                            ? 'bg-green-100 text-green-700 border-green-300' 
-                            : enhancedResult.confidenceLevel === 'strong'
-                            ? 'bg-blue-100 text-blue-700 border-blue-300'
-                            : enhancedResult.confidenceLevel === 'moderate'
-                            ? 'bg-yellow-100 text-yellow-700 border-yellow-300'
-                            : 'bg-accent/10 text-accent border-accent/30'
-                        }`}
-                        data-testid="confidence-badge"
+              <div className="flex gap-3 no-print">
+                <Button onClick={handlePDFExport} variant="outline" size="sm" data-testid="button-export-pdf">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export PDF
+                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" data-testid="button-email-results">
+                      <Mail className="w-4 h-4 mr-2" />
+                      Email Results
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Email Your Results</DialogTitle>
+                      <DialogDescription>
+                        Get your complete assessment results sent to your inbox, including your archetype breakdown and personalized insights.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleEmailResults} className="space-y-4">
+                      <div className="space-y-2">
+                        <Input
+                          type="email"
+                          placeholder="your.email@example.com"
+                          value={emailResultsInput}
+                          onChange={(e) => setEmailResultsInput(e.target.value)}
+                          required
+                          disabled={emailResultsSent || emailResultsMutation.isPending}
+                          data-testid="input-email-results"
+                          className="w-full"
+                        />
+                      </div>
+                      <Button
+                        type="submit"
+                        className="w-full gradient-primary text-white"
+                        disabled={emailResultsSent || emailResultsMutation.isPending}
+                        data-testid="button-send-email"
                       >
-                        {enhancedResult.confidence}% Match Confidence
-                      </Badge>
-                    </div>
-                  )}
-                </div>
-
-                {/* Profile Notes */}
-                {enhancedResult && enhancedResult.notes.length > 0 && (
-                  <Card className="bg-primary/5 border-primary/20 text-left max-w-2xl mx-auto" data-testid="profile-notes">
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-3">
-                        <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                        <div className="space-y-2">
-                          <h4 className="font-semibold text-foreground">Your Unique Profile</h4>
-                          {enhancedResult.notes.map((note, idx) => (
-                            <p key={idx} className="text-sm text-muted-foreground">{note}</p>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Secondary Archetypes */}
-                {enhancedResult && enhancedResult.secondary && enhancedResult.secondary.length > 0 && (
-                  <Card className="bg-accent/5 border-accent/20 text-left max-w-2xl mx-auto" data-testid="secondary-archetypes">
-                    <CardContent className="p-6">
-                      <h4 className="font-semibold text-foreground mb-3">You also share traits with:</h4>
-                      <div className="flex flex-wrap gap-3">
-                        {enhancedResult.secondary.map((secondaryArchetype) => (
-                          <Link key={secondaryArchetype.id} href={`/archetypes#${secondaryArchetype.id}`}>
-                            <Badge 
-                              className="px-3 py-2 bg-white border-accent/30 text-accent hover:bg-accent/10 cursor-pointer transition-colors"
-                              data-testid={`secondary-archetype-${secondaryArchetype.id}`}
-                            >
-                              {secondaryArchetype.name}
-                            </Badge>
-                          </Link>
-                        ))}
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-3">
-                        Your balanced profile means you can adapt your working style based on the situation.
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Archetype Breakdown */}
-                {enhancedResult && enhancedResult.allFitScores && enhancedResult.allFitScores.length > 0 && (
-                  <Card className="bg-background border-neutral-200 text-left max-w-3xl mx-auto" data-testid="archetype-breakdown">
-                    <CardContent className="p-6">
-                      <h4 className="font-semibold text-foreground mb-4">Archetype Fit Breakdown</h4>
-                      <div className="space-y-3">
-                        {enhancedResult.allFitScores.map((fitScore, index) => (
-                          <div key={fitScore.archetype.id} className="space-y-1">
-                            <div className="flex justify-between items-center text-sm">
-                              <span className={`font-medium ${index === 0 ? 'text-foreground' : 'text-muted-foreground'}`}>
-                                {index + 1}. {fitScore.archetype.name}
-                              </span>
-                              <span className={`font-bold ${index === 0 ? 'text-primary' : 'text-muted-foreground'}`}>
-                                {fitScore.fitPercentage}%
-                              </span>
-                            </div>
-                            <div className="relative h-2 bg-muted rounded-full overflow-hidden">
-                              <div 
-                                className={`absolute top-0 left-0 h-full ${index === 0 ? 'bg-primary' : 'bg-muted-foreground'} transition-all`}
-                                style={{ width: `${fitScore.fitPercentage}%` }}
-                                data-testid={`fit-bar-${fitScore.archetype.id}`}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-4">
-                        Fit percentage shows how closely your scores match each archetype's ideal profile.
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* 4-Axis Visualization */}
-                <div className="max-w-3xl mx-auto pt-8">
-                  <FourAxisVisual scores={transformedScores} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Mobile App Waitlist CTA */}
-          <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 shadow-lg mt-8" data-testid="app-waitlist-card">
-            <CardContent className="p-8">
-              <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center">
-                    <Smartphone className="w-8 h-8 text-white" />
-                  </div>
-                </div>
-                <div className="flex-1 text-center md:text-left">
-                  <h3 className="text-xl font-bold text-foreground mb-2">The app is coming.</h3>
-                  <p className="text-muted-foreground">
-                    Daily tips. Focus modes. Progress tracking—all personalized to your archetype. Get early access.
-                  </p>
-                </div>
-                <div className="flex-shrink-0 w-full md:w-auto">
-                  {!appWaitlistJoined ? (
-                    <form onSubmit={handleAppWaitlist} className="flex flex-col sm:flex-row gap-2">
-                      <Input
-                        type="email"
-                        placeholder="your@email.com"
-                        value={appWaitlistEmail}
-                        onChange={(e) => setAppWaitlistEmail(e.target.value)}
-                        required
-                        disabled={appWaitlistMutation.isPending}
-                        className="w-full sm:w-64"
-                        data-testid="input-app-waitlist-email"
-                      />
-                      <Button 
-                        type="submit" 
-                        className="gradient-primary text-white"
-                        disabled={appWaitlistMutation.isPending}
-                        data-testid="button-app-waitlist-submit"
-                      >
-                        {appWaitlistMutation.isPending ? "Joining..." : "Get Early Access"}
+                        {emailResultsMutation.isPending ? (
+                          <>
+                            <Mail className="w-4 h-4 mr-2 animate-pulse" />
+                            Sending...
+                          </>
+                        ) : emailResultsSent ? (
+                          <>
+                            <CheckCircle2 className="w-4 h-4 mr-2" />
+                            Sent!
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="w-4 h-4 mr-2" />
+                            Send Results
+                          </>
+                        )}
                       </Button>
                     </form>
-                  ) : (
-                    <div className="flex items-center gap-2 text-green-600">
-                      <CheckCircle2 className="w-5 h-5" />
-                      <span className="font-medium">You're on the list!</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Your Productivity Profile */}
-      <section className="py-12">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Your Productivity Profile
-            </h2>
-          </div>
-
-          {/* Why You Struggle */}
-          <Card className="bg-white shadow-lg" data-testid="struggle-section">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground mb-6">
-                Why You Struggle
-              </h3>
-              <div className="space-y-4 text-muted-foreground leading-relaxed">
-                {archetype.struggle.map((paragraph, index) => (
-                  <p key={index} className="text-lg">{paragraph}</p>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Your Superpowers */}
-          <Card className="bg-gradient-to-br from-primary/5 to-accent/5 shadow-lg" data-testid="superpowers-section">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground mb-6">
-                Your Superpowers
-              </h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                {archetype.superpowers.map((power, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0 mt-1" />
-                    <div>
-                      <h4 className="font-bold text-foreground mb-1">{power.title}</h4>
-                      <p className="text-muted-foreground">{power.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Top 3 Productivity Blockers */}
-          <Card className="bg-white shadow-lg" data-testid="blockers-section">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center">
-                <span className="text-3xl mr-3">🚫</span>
-                Top 3 Productivity Blockers
-              </h3>
-              <div className="space-y-4">
-                {archetype.blockers.map((blocker, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-foreground">{blocker.title}</h4>
-                      <p className="text-muted-foreground text-sm">→ {blocker.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Quick Wins Section - FREE TIER */}
-      <section className="py-12 bg-white/50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-2">
-              Your Quick Wins
-            </h2>
-            <p className="text-lg text-muted-foreground">Immediate actions you can take today</p>
-          </div>
-
-          {/* Quick Win Cards */}
-          <div className="grid md:grid-cols-3 gap-6" data-testid="quick-wins">
-            {archetype.quickWins.map((win, index) => (
-              <Card key={index} className="bg-white shadow-lg hover:shadow-xl transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary text-xl font-bold mb-4">
-                    {index + 1}
-                  </div>
-                  <h4 className="font-bold text-foreground text-lg mb-3">{win.title}</h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{win.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Framework Preview */}
-          <Card className="bg-gradient-to-br from-teal-50 to-blue-50 shadow-lg border-2 border-teal-200" data-testid="framework-preview">
-            <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-foreground mb-3">
-                Your Top Matched Framework (Preview)
-              </h3>
-              <div className="bg-white rounded-lg p-6">
-                <h4 className="text-2xl font-bold text-foreground mb-2">{archetype.framework.name}</h4>
-                <p className="text-muted-foreground mb-4">
-                  <strong>Why it works for you:</strong> {archetype.framework.why}
-                </p>
-                <button 
-                  onClick={handleUpgradeToPremium}
-                  disabled={checkoutMutation.isPending}
-                  className="flex items-center text-primary font-semibold hover:text-primary/80 transition-colors cursor-pointer disabled:opacity-50"
-                  data-testid="link-unlock-framework"
-                >
-                  <Lock className="w-5 h-5 mr-2" />
-                  {checkoutMutation.isPending ? 'Processing...' : 'Unlock full implementation guide, common pitfalls, and tools →'}
-                </button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Email Capture Section - Enhanced with Lead Magnet */}
-      <section className="py-12 bg-muted">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="bg-white shadow-xl border-2 border-primary/10" data-testid="email-capture-card">
-            <CardContent className="p-8">
-              <div className="text-center mb-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary mb-4">
-                  <Mail className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2">
-                  Get Your Free {archetype?.name || 'Productivity'} Quick-Start Guide
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  Receive your complete results plus a personalized mini-guide with your top 3 strategies
-                </p>
-                
-                {/* Value Props */}
-                <div className="bg-primary/5 rounded-lg p-4 text-left mb-6">
-                  <p className="text-sm font-semibold text-primary mb-2">You'll receive:</p>
-                  <ul className="space-y-2 text-sm text-primary/80">
-                    <li className="flex items-center">
-                      <CheckCircle2 className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                      Your complete assessment results (PDF)
-                    </li>
-                    <li className="flex items-center">
-                      <CheckCircle2 className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                      3 quick wins tailored to {archetype?.name || 'your archetype'}s
-                    </li>
-                    <li className="flex items-center">
-                      <CheckCircle2 className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                      Weekly productivity tips for your archetype
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {!emailSaved ? (
-                <form onSubmit={handleEmailSubmit} className="space-y-4">
-                  <div>
-                    <Input
-                      type="email"
-                      placeholder="Enter your email address"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="w-full text-base py-5"
-                      data-testid="input-email"
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full gradient-primary text-white text-lg py-6 hover:shadow-lg transition-all"
-                    disabled={emailResultsMutation.isPending || emailSaved}
-                    data-testid="button-submit-email"
-                  >
-                    {emailResultsMutation.isPending ? "Sending..." : "Get My Free Guide"}
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </DialogContent>
+                </Dialog>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" data-testid="button-share">
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Share Results
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem onClick={handleCopyLink} data-testid="share-copy-link">
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copy Link
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleShareTwitter} data-testid="share-twitter">
+                      <FaTwitter className="w-4 h-4 mr-2" />
+                      Share on Twitter
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleShareFacebook} data-testid="share-facebook">
+                      <FaFacebook className="w-4 h-4 mr-2" />
+                      Share on Facebook
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleShareLinkedIn} data-testid="share-linkedin">
+                      <FaLinkedin className="w-4 h-4 mr-2" />
+                      Share on LinkedIn
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleShareWhatsApp} data-testid="share-whatsapp">
+                      <FaWhatsapp className="w-4 h-4 mr-2" />
+                      Share on WhatsApp
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Link href="/">
+                  <Button variant="outline" size="sm">
+                    Home
                   </Button>
-                  <p className="text-xs text-muted-foreground text-center">
-                    Free forever. Unsubscribe anytime. We respect your privacy.
-                  </p>
-                </form>
-              ) : (
-                <div className="text-center py-4" data-testid="email-success-message">
-                  <CheckCircle2 className="w-16 h-16 mx-auto mb-4 text-green-600" />
-                  <p className="text-lg font-semibold text-green-700">Your guide is on the way!</p>
-                  <p className="text-muted-foreground mt-2">Check your inbox for your complete results and quick-start guide.</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Top Productivity Tools Section */}
-      {tools && tools.length > 0 && (
-        <section className="py-12 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Top Tools for {archetype.name}
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Based on your archetype, these are the productivity tools that match your working style
-              </p>
+                </Link>
+              </div>
             </div>
+          </div>
+        </header>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="tools-grid">
-              {tools.slice(0, 9).map((tool) => (
-                <ToolCard key={tool.id} tool={tool} archetypeName={archetype.name} />
-              ))}
-            </div>
+        {/* A) Results Hero */}
+        <section ref={heroRef}>
+          <ResultsHero 
+            archetype={archetype}
+            confidence={enhancedResult?.confidence}
+            confidenceLevel={enhancedResult?.confidenceLevel}
+            secondaryArchetype={secondaryArchetype}
+          />
+        </section>
+
+        {/* 4-Axis Visualization (keeping as requested for visual value) */}
+        <section className="pb-8 -mt-4">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <FourAxisVisual scores={transformedScores} />
           </div>
         </section>
-      )}
 
-      {/* Print-Only Detailed Analysis Section */}
-      <div className="hidden print-only py-12">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-foreground mb-6 border-b-2 border-neutral-300 pb-2">
-            Detailed Score Analysis
-          </h2>
-          
-          <div className="space-y-6">
-            {/* Structure Orientation */}
-            <div className="border border-neutral-300 p-4">
-              <h3 className="text-lg font-bold text-foreground mb-2">Structure Orientation</h3>
-              <p className="text-sm text-muted-foreground mb-2">
-                Score: {scores?.structureOrientation}/100
-              </p>
-              <p className="text-sm text-muted-foreground">
-                This dimension measures your preference for structured routines versus spontaneous flexibility. 
-                A higher score indicates a strong preference for planning and organization, while a lower score 
-                suggests comfort with improvisation and adaptability.
-              </p>
-            </div>
-
-            {/* Motivation Style */}
-            <div className="border border-neutral-300 p-4">
-              <h3 className="text-lg font-bold text-foreground mb-2">Motivation Style</h3>
-              <p className="text-sm text-muted-foreground mb-2">
-                Score: {scores?.motivationStyle}/100
-              </p>
-              <p className="text-sm text-muted-foreground">
-                This dimension assesses your primary sources of motivation. Higher scores indicate responsiveness 
-                to external accountability and deadlines, while lower scores reflect stronger intrinsic motivation 
-                and self-direction.
-              </p>
-            </div>
-
-            {/* Cognitive Focus */}
-            <div className="border border-neutral-300 p-4">
-              <h3 className="text-lg font-bold text-foreground mb-2">Cognitive Focus</h3>
-              <p className="text-sm text-muted-foreground mb-2">
-                Score: {scores?.cognitiveFocus}/100
-              </p>
-              <p className="text-sm text-muted-foreground">
-                This dimension evaluates your attention patterns and working memory preferences. Higher scores 
-                suggest a preference for deep focus on single tasks, while lower scores indicate comfort with 
-                multitasking and task-switching.
-              </p>
-            </div>
-
-            {/* Task Relationship */}
-            <div className="border border-neutral-300 p-4">
-              <h3 className="text-lg font-bold text-foreground mb-2">Task Relationship</h3>
-              <p className="text-sm text-muted-foreground mb-2">
-                Score: {scores?.taskRelationship}/100
-              </p>
-              <p className="text-sm text-muted-foreground">
-                This dimension captures how you initiate and engage with tasks. Higher scores reflect ease 
-                in starting tasks and maintaining momentum, while lower scores indicate patterns of procrastination 
-                or delayed initiation that may stem from anxiety or perfectionism.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-8 border-t-2 border-neutral-300 pt-6">
-            <h3 className="text-lg font-bold text-foreground mb-4">About This Assessment</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              This assessment is grounded in established psychological research, including Executive Function Theory 
-              (Barkley), Cognitive Load Theory (Sweller), Self-Determination Theory (Deci & Ryan), procrastination 
-              research (Pychyl, Ferrari), and Flow theory (Csikszentmihalyi).
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Your archetype represents a unique combination of these four dimensions. Understanding your productivity 
-              profile can help you choose strategies, tools, and environments that align with your natural working style 
-              rather than fighting against it.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Social Proof - Compact Testimonials */}
-      <TestimonialsSection variant="compact" showTitle={true} maxItems={3} />
-
-      {/* Premium Preview Section */}
-      <section className="py-16 gradient-primary">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="bg-white shadow-2xl" data-testid="premium-preview">
-            <CardContent className="p-8 lg:p-12">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 mb-4">
-                  <Lock className="w-8 h-8 text-white" />
-                </div>
-                <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-3">
-                  Unlock Your Complete {archetype.title} Playbook
-                </h2>
-                <p className="text-lg text-muted-foreground">
-                  Transform insight into action with your personalized productivity system
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8 mb-8">
-                {/* Frameworks */}
-                <div>
-                  <h4 className="font-bold text-foreground mb-3 flex items-center">
-                    <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
-                    3 Full Framework Guides
-                  </h4>
-                  <ul className="space-y-2 text-muted-foreground text-sm">
-                    {archetype.premiumIncludes.frameworks.map((item, index) => (
-                      <li key={index} className="pl-7">• {item}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Tools */}
-                <div>
-                  <h4 className="font-bold text-foreground mb-3 flex items-center">
-                    <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
-                    Tool Recommendations
-                  </h4>
-                  <ul className="space-y-2 text-muted-foreground text-sm">
-                    {archetype.premiumIncludes.tools.map((item, index) => (
-                      <li key={index} className="pl-7">• {item}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Implementation Plan */}
-                <div>
-                  <h4 className="font-bold text-foreground mb-3 flex items-center">
-                    <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
-                    30-Day Implementation Plan
-                  </h4>
-                  <ul className="space-y-2 text-muted-foreground text-sm">
-                    {archetype.premiumIncludes.plan.map((item, index) => (
-                      <li key={index} className="pl-7">• {item}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Special Content */}
-                <div>
-                  <h4 className="font-bold text-foreground mb-3 flex items-center">
-                    <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
-                    Common Failure Modes
-                  </h4>
-                  <ul className="space-y-2 text-muted-foreground text-sm">
-                    {archetype.premiumIncludes.special.map((item, index) => (
-                      <li key={index} className="pl-7">• {item}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <div className="border-t pt-8">
-                {/* Recent Activity Badge */}
-                <div className="flex items-center justify-center gap-2 mb-4 text-sm text-muted-foreground">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-                  <span>12 people purchased in the last 24 hours</span>
-                </div>
-
-                {/* Promo Code Section */}
-                <div className="mb-6">
-                  {!showPromoInput ? (
-                    <button
-                      type="button"
-                      onClick={() => setShowPromoInput(true)}
-                      className="text-sm text-primary hover:underline"
-                      data-testid="button-show-promo"
-                    >
-                      Have a promo code?
-                    </button>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="flex gap-2">
-                        <Input
-                          value={promoCode}
-                          onChange={(e) => {
-                            setPromoCode(e.target.value);
-                            setPromoCodeValid(null);
-                            setPromoCodeMessage("");
-                          }}
-                          placeholder="Enter promo code"
-                          className="flex-1"
-                          data-testid="input-promo-code"
-                        />
-                        <Button
-                          variant="outline"
-                          onClick={validatePromoCode}
-                          disabled={!promoCode.trim()}
-                          data-testid="button-validate-promo"
-                        >
-                          Check
-                        </Button>
-                      </div>
-                      {promoCodeMessage && (
-                        <p className={`text-sm ${promoCodeValid ? 'text-green-600' : 'text-red-500'}`}>
-                          {promoCodeMessage}
-                        </p>
-                      )}
-                      {promoCodeValid && (
-                        <Button
-                          className="w-full gradient-primary text-white"
-                          onClick={handleApplyPromoCode}
-                          disabled={promoCodeMutation.isPending}
-                          data-testid="button-apply-promo"
-                        >
-                          {promoCodeMutation.isPending ? 'Applying...' : 'Apply Promo Code & Get Access'}
-                        </Button>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                <Button 
-                  size="lg" 
-                  className="w-full gradient-primary text-white text-lg py-6 hover:shadow-xl transition-all"
-                  data-testid="button-get-premium"
-                  onClick={handleUpgradeToPremium}
-                  disabled={checkoutMutation.isPending}
-                >
-                  {checkoutMutation.isPending ? 'Processing...' : 'Get My Full Report - $19'}
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-                <p className="text-center text-muted-foreground text-sm mt-4">
-                  One-time payment • Instant download • 100+ page personalized playbook
-                </p>
-                <p className="text-center text-muted-foreground text-xs mt-2">
-                  30-day satisfaction guarantee.{" "}
-                  <Link href="/refund-policy" className="text-primary hover:underline" data-testid="link-refund-policy">
-                    View refund policy
-                  </Link>
-                </p>
-
-                {/* Trust Badges */}
-                <div className="mt-6 pt-4 border-t border-neutral-100">
-                  <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Lock className="h-4 w-4" />
-                      <span>Secure Checkout</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <CreditCard className="h-4 w-4" />
-                      <span>Powered by Stripe</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Zap className="h-4 w-4" />
-                      <span>Instant Access</span>
+        {/* Mobile App Waitlist CTA */}
+        <section className="pb-12">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 shadow-lg" data-testid="app-waitlist-card">
+              <CardContent className="p-8">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center">
+                      <Smartphone className="w-8 h-8 text-white" />
                     </div>
                   </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <h3 className="text-xl font-bold text-foreground mb-2">The app is coming.</h3>
+                    <p className="text-muted-foreground">
+                      Daily tips. Focus modes. Progress tracking—all personalized to your archetype. Get early access.
+                    </p>
+                  </div>
+                  <div className="flex-shrink-0 w-full md:w-auto">
+                    {!appWaitlistJoined ? (
+                      <form onSubmit={handleAppWaitlist} className="flex flex-col sm:flex-row gap-2">
+                        <Input
+                          type="email"
+                          placeholder="your@email.com"
+                          value={appWaitlistEmail}
+                          onChange={(e) => setAppWaitlistEmail(e.target.value)}
+                          required
+                          disabled={appWaitlistMutation.isPending}
+                          className="w-full sm:w-64"
+                          data-testid="input-app-waitlist-email"
+                        />
+                        <Button 
+                          type="submit" 
+                          className="gradient-primary text-white"
+                          disabled={appWaitlistMutation.isPending}
+                          data-testid="button-app-waitlist-submit"
+                        >
+                          {appWaitlistMutation.isPending ? "Joining..." : "Get Early Access"}
+                        </Button>
+                      </form>
+                    ) : (
+                      <div className="flex items-center gap-2 text-green-600">
+                        <CheckCircle2 className="w-5 h-5" />
+                        <span className="font-medium">You're on the list!</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
-      {/* Retake Section */}
-      <section className="py-12 no-print">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="bg-white shadow-lg">
-            <CardContent className="p-8 text-center">
-              <h3 className="text-2xl font-bold text-foreground mb-2">Want to try again?</h3>
-              <p className="text-muted-foreground mb-6">
-                Your results are saved, but you can retake the assessment anytime to see if your archetype has evolved.
-              </p>
-              <Link href="/quiz">
-                <Button className="gradient-primary text-white px-8 py-6 text-lg hover:shadow-lg transition-shadow">
-                  Retake Assessment
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+        {/* B) How This Shows Up in Your Work */}
+        <ShowsUpSection archetype={archetype} />
 
-      {/* Print-Only Footer */}
-      <div className="hidden print-only mt-12 pt-8 border-t-2 border-neutral-800">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-bold text-foreground mb-2">Next Steps</h3>
-              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                <li>Start with one Quick Win from this report and implement it this week</li>
-                <li>Share your archetype with your team to improve collaboration</li>
-                <li>Revisit this assessment every 3-6 months to track your productivity evolution</li>
-                <li>Visit prolificpersonalities.com to access additional resources and tools</li>
-              </ul>
-            </div>
+        {/* C) Your Fastest Win Today */}
+        <FastestWinCard archetype={archetype} />
+
+        {/* D) Paid Upsell Section */}
+        <UpsellSection
+          archetype={archetype}
+          sessionId={sessionId || ''}
+          onUpgrade={handleUpgradeToPremium}
+          isUpgrading={checkoutMutation.isPending}
+          promoCode={promoCode}
+          setPromoCode={handlePromoCodeChange}
+          promoCodeValid={promoCodeValid}
+          promoCodeMessage={promoCodeMessage}
+          onValidatePromo={validatePromoCode}
+          onApplyPromo={handleApplyPromoCode}
+          isApplyingPromo={promoCodeMutation.isPending}
+        />
+
+        {/* E) Testimonials */}
+        <TestimonialsSection variant="compact" showTitle={true} maxItems={3} />
+
+        {/* F) Email Capture Fallback */}
+        <EmailFallbackSection
+          archetype={archetype}
+          email={email}
+          setEmail={setEmail}
+          onSubmit={handleEmailSubmit}
+          isSubmitting={emailResultsMutation.isPending}
+          emailSaved={emailSaved}
+        />
+
+        {/* G) Tool Recommendations (Accordion) */}
+        {tools && tools.length > 0 && (
+          <ToolsAccordion tools={tools} archetypeName={archetype.name} />
+        )}
+
+        {/* H) Retake Assessment */}
+        <RetakeSection />
+
+        {/* Print-Only Detailed Analysis Section */}
+        <div className="hidden print-only py-12">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-2xl font-bold text-foreground mb-6 border-b-2 border-neutral-300 pb-2">
+              Detailed Score Analysis
+            </h2>
             
-            <div className="pt-4 border-t border-neutral-300">
-              <p className="text-xs text-muted-foreground text-center">
-                © {new Date().getFullYear()} Prolific Personalities. All rights reserved. | 
-                This report is for personal use only. | 
-                For questions or support, visit our website.
+            <div className="space-y-6">
+              <div className="border border-neutral-300 p-4">
+                <h3 className="text-lg font-bold text-foreground mb-2">Structure Orientation</h3>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Score: {transformedScores.structureOrientation}/100
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  This dimension measures your preference for structured routines versus spontaneous flexibility. 
+                  A higher score indicates a strong preference for planning and organization, while a lower score 
+                  suggests comfort with improvisation and adaptability.
+                </p>
+              </div>
+
+              <div className="border border-neutral-300 p-4">
+                <h3 className="text-lg font-bold text-foreground mb-2">Motivation Style</h3>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Score: {transformedScores.motivationStyle}/100
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  This dimension assesses your primary sources of motivation. Higher scores indicate responsiveness 
+                  to external accountability and deadlines, while lower scores reflect stronger intrinsic motivation 
+                  and self-direction.
+                </p>
+              </div>
+
+              <div className="border border-neutral-300 p-4">
+                <h3 className="text-lg font-bold text-foreground mb-2">Cognitive Focus</h3>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Score: {transformedScores.cognitiveFocus}/100
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  This dimension evaluates your attention patterns and working memory preferences. Higher scores 
+                  suggest a preference for deep focus on single tasks, while lower scores indicate comfort with 
+                  multitasking and task-switching.
+                </p>
+              </div>
+
+              <div className="border border-neutral-300 p-4">
+                <h3 className="text-lg font-bold text-foreground mb-2">Task Relationship</h3>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Score: {transformedScores.taskRelationship}/100
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  This dimension captures how you initiate and engage with tasks. Higher scores reflect ease 
+                  in starting tasks and maintaining momentum, while lower scores indicate patterns of procrastination 
+                  or delayed initiation that may stem from anxiety or perfectionism.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-8 border-t-2 border-neutral-300 pt-6">
+              <h3 className="text-lg font-bold text-foreground mb-4">About This Assessment</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                This assessment is grounded in established psychological research, including Executive Function Theory 
+                (Barkley), Cognitive Load Theory (Sweller), Self-Determination Theory (Deci & Ryan), procrastination 
+                research (Pychyl, Ferrari), and Flow theory (Csikszentmihalyi).
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Your archetype represents a unique combination of these four dimensions. Understanding your productivity 
+                profile can help you choose strategies, tools, and environments that align with your natural working style 
+                rather than fighting against it.
               </p>
             </div>
           </div>
         </div>
-      </div>
+
+        {/* Print-Only Footer */}
+        <div className="hidden print-only mt-12 pt-8 border-t-2 border-neutral-800">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-2">Next Steps</h3>
+                <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                  <li>Start with one Quick Win from this report and implement it this week</li>
+                  <li>Share your archetype with your team to improve collaboration</li>
+                  <li>Revisit this assessment every 3-6 months to track your productivity evolution</li>
+                  <li>Visit prolificpersonalities.com to access additional resources and tools</li>
+                </ul>
+              </div>
+              
+              <div className="pt-4 border-t border-neutral-300">
+                <p className="text-xs text-muted-foreground text-center">
+                  © {new Date().getFullYear()} Prolific Personalities. All rights reserved. | 
+                  This report is for personal use only. | 
+                  For questions or support, visit our website.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
+
+      {/* Mobile Sticky CTA */}
+      <MobileStickyCTA heroRef={heroRef} />
     </div>
   );
 }

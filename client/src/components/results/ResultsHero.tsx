@@ -6,7 +6,7 @@ import type { Archetype } from "@/data/archetypes";
 interface ResultsHeroProps {
   archetype: Archetype;
   confidence?: number;
-  confidenceLevel?: 'exact' | 'strong' | 'moderate' | 'low';
+  confidenceLevel?: 'exact' | 'strong' | 'moderate' | 'weak';
   secondaryArchetype?: { id: string; name: string } | null;
 }
 
@@ -42,6 +42,8 @@ export function ResultsHero({ archetype, confidence, confidenceLevel, secondaryA
                           ? 'bg-blue-100 text-blue-700 border-blue-300'
                           : confidenceLevel === 'moderate'
                           ? 'bg-yellow-100 text-yellow-700 border-yellow-300'
+                          : confidenceLevel === 'weak'
+                          ? 'bg-accent/10 text-accent border-accent/30'
                           : 'bg-accent/10 text-accent border-accent/30'
                       }`}
                       data-testid="confidence-badge"
