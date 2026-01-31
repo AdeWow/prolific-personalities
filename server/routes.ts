@@ -3932,7 +3932,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     supabaseAuth,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const supabaseUser = req.supabaseUser;
+        // Get the local user ID (may differ from Supabase ID for legacy users)
+        const localUser = await storage.upsertUser({
+          id: supabaseUser.id,
+          email: supabaseUser.email || null,
+          firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+          lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+          profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+        });
+        const userId = localUser.id;
 
         // Get all quiz results for user, ordered by date (newest first)
         const quizResults = await storage.getQuizResultsByUserId(userId);
@@ -3972,7 +3981,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     supabaseAuth,
     async (req: any, res) => {
       try {
-        const userId = req.supabaseUser.id;
+        const supabaseUser = req.supabaseUser;
+        // Get the local user ID (may differ from Supabase ID for legacy users)
+        const localUser = await storage.upsertUser({
+          id: supabaseUser.id,
+          email: supabaseUser.email || null,
+          firstName: supabaseUser.user_metadata?.full_name?.split(' ')[0] || null,
+          lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
+          profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+        });
+        const userId = localUser.id;
         const quizResults = await storage.getQuizResultsByUserId(userId);
 
         res.json({
