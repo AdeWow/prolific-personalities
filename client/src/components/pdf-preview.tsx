@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, ExternalLink, FileText, ChevronDown, ChevronUp } from "lucide-react";
+import { Download, ExternalLink, FileText, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 
 interface PDFPreviewProps {
   src: string;
@@ -11,6 +11,7 @@ interface PDFPreviewProps {
   showDownloadButton?: boolean;
   collapsible?: boolean;
   defaultExpanded?: boolean;
+  authToken?: string;
 }
 
 export function PDFPreview({ 
@@ -20,22 +21,83 @@ export function PDFPreview({
   height = "600px",
   showDownloadButton = true,
   collapsible = false,
-  defaultExpanded = true
+  defaultExpanded = true,
+  authToken
 }: PDFPreviewProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!authToken) {
+      setBlobUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
+      return;
+    }
+
+    let isMounted = true;
+    let createdUrl: string | null = null;
+    setIsLoading(true);
+    setHasError(false);
+
+    const fetchPdf = async () => {
+      try {
+        const headers: Record<string, string> = {};
+        if (authToken) {
+          headers["Authorization"] = `Bearer ${authToken}`;
+        }
+        const res = await fetch(src, { headers });
+        
+        if (!res.ok) {
+          throw new Error(`Failed to fetch PDF: ${res.status}`);
+        }
+        
+        const blob = await res.blob();
+        if (isMounted) {
+          createdUrl = URL.createObjectURL(blob);
+          setBlobUrl((prev) => {
+            if (prev) URL.revokeObjectURL(prev);
+            return createdUrl;
+          });
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching PDF:", error);
+        if (isMounted) {
+          setHasError(true);
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchPdf();
+
+    return () => {
+      isMounted = false;
+      if (createdUrl) {
+        URL.revokeObjectURL(createdUrl);
+      }
+    };
+  }, [src, authToken]);
 
   const handleOpenInNewTab = () => {
-    window.open(src, '_blank');
+    if (blobUrl) {
+      window.open(blobUrl, '_blank');
+    }
   };
 
   const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = src;
-    link.download = downloadFilename || title.replace(/\s+/g, '-') + '.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (blobUrl) {
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = downloadFilename || title.replace(/\s+/g, '-') + '.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   return (
@@ -52,7 +114,7 @@ export function PDFPreview({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {showDownloadButton && (
+            {showDownloadButton && blobUrl && (
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -63,15 +125,17 @@ export function PDFPreview({
                 Download
               </Button>
             )}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleOpenInNewTab}
-              data-testid="button-pdf-fullscreen"
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Full Screen
-            </Button>
+            {blobUrl && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleOpenInNewTab}
+                data-testid="button-pdf-fullscreen"
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Full Screen
+              </Button>
+            )}
             {collapsible && (
               <Button 
                 variant="ghost" 
@@ -92,29 +156,24 @@ export function PDFPreview({
       
       {(!collapsible || isExpanded) && (
         <CardContent className="p-0">
-          {hasError ? (
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center p-12 bg-gray-50 dark:bg-gray-800 border-t">
+              <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
+              <p className="text-gray-600 dark:text-gray-400">Loading PDF...</p>
+            </div>
+          ) : hasError || !blobUrl ? (
             <div className="flex flex-col items-center justify-center p-12 bg-gray-50 dark:bg-gray-800 border-t">
               <FileText className="h-16 w-16 text-gray-400 mb-4" />
               <p className="text-gray-600 dark:text-gray-400 mb-4 text-center">
-                Unable to preview PDF in browser. Click below to view or download.
+                {!authToken 
+                  ? "Please log in to view the PDF." 
+                  : "Unable to preview PDF. Please try refreshing the page."}
               </p>
-              <div className="flex gap-3">
-                <Button onClick={handleOpenInNewTab} data-testid="button-pdf-open">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Open PDF
-                </Button>
-                {showDownloadButton && (
-                  <Button variant="outline" onClick={handleDownload} data-testid="button-pdf-download-fallback">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download
-                  </Button>
-                )}
-              </div>
             </div>
           ) : (
             <div className="border-t">
               <iframe
-                src={`${src}#toolbar=1&navpanes=1&scrollbar=1`}
+                src={`${blobUrl}#toolbar=1&navpanes=1&scrollbar=1`}
                 className="w-full"
                 style={{ height }}
                 title={title}

@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 import { playbookContentMap } from "@shared/playbookContent";
 import { PDFPreview } from "@/components/pdf-preview";
 import { 
@@ -42,13 +42,32 @@ export default function Playbook() {
   const { toast } = useToast();
   const archetype = params?.archetype || "";
 
-  // Create authenticated fetch function
+  // Create authenticated fetch function for GET requests
   const authFetch = useCallback(async (url: string) => {
     const headers: Record<string, string> = {};
     if (session?.access_token) {
       headers["Authorization"] = `Bearer ${session.access_token}`;
     }
     const res = await fetch(url, { headers });
+    if (!res.ok) {
+      throw new Error(`${res.status}: ${await res.text()}`);
+    }
+    return res.json();
+  }, [session?.access_token]);
+
+  // Create authenticated POST function for mutations
+  const authPost = useCallback(async (url: string, data: any) => {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (session?.access_token) {
+      headers["Authorization"] = `Bearer ${session.access_token}`;
+    }
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(data),
+    });
     if (!res.ok) {
       throw new Error(`${res.status}: ${await res.text()}`);
     }
@@ -153,7 +172,7 @@ export default function Playbook() {
   // Mutations - always declare these
   const toggleChapterMutation = useMutation({
     mutationFn: ({ chapterId, completed }: { chapterId: string; completed: boolean }) => 
-      apiRequest('POST', `/api/playbook/${archetype}/progress/chapter`, { chapterId, completed }),
+      authPost(`/api/playbook/${archetype}/progress/chapter`, { chapterId, completed }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/progress`] });
       toast({ description: "Progress updated!" });
@@ -169,7 +188,7 @@ export default function Playbook() {
 
   const toggleActionPlanMutation = useMutation({
     mutationFn: ({ dayNumber, taskId, completed }: { dayNumber: number; taskId: string; completed: boolean }) => 
-      apiRequest('POST', `/api/playbook/${archetype}/action-plan/task`, { dayNumber, taskId, completed }),
+      authPost(`/api/playbook/${archetype}/action-plan/task`, { dayNumber, taskId, completed }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/action-plan`] });
     },
@@ -184,7 +203,7 @@ export default function Playbook() {
 
   const updateToolMutation = useMutation({
     mutationFn: ({ toolId, status, notes }: { toolId: string; status: string; notes?: string }) => 
-      apiRequest('POST', `/api/playbook/${archetype}/tools/update`, { toolId, status: status.toLowerCase().replace(' ', '_'), notes }),
+      authPost(`/api/playbook/${archetype}/tools/update`, { toolId, status: status.toLowerCase().replace(' ', '_'), notes }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/tools`] });
       toast({ description: "Tool status updated!" });
@@ -201,7 +220,7 @@ export default function Playbook() {
   // Debounced note save
   const saveNoteMutation = useMutation({
     mutationFn: ({ sectionId, content }: { sectionId: string; content: string }) => 
-      apiRequest('POST', `/api/playbook/${archetype}/notes`, { sectionId, content }),
+      authPost(`/api/playbook/${archetype}/notes`, { sectionId, content }),
     onMutate: () => {
       setNoteSaveStatus('saving');
     },
@@ -723,6 +742,7 @@ export default function Playbook() {
                 height="700px"
                 showDownloadButton={true}
                 collapsible={false}
+                authToken={session?.access_token}
               />
               <Card className="bg-gray-50 dark:bg-gray-800">
                 <CardContent className="p-4">
