@@ -176,10 +176,10 @@ export default function Dashboard() {
                       const firstScores = first.scores as any;
 
                       const dimensions = [
-                        { key: 'structureOrientation', label: 'Structure Orientation' },
-                        { key: 'motivationStyle', label: 'Motivation Style' },
-                        { key: 'cognitiveFocus', label: 'Cognitive Focus' },
-                        { key: 'taskRelationship', label: 'Task Relationship' }
+                        { key: 'structure', label: 'Structure Orientation' },
+                        { key: 'motivation', label: 'Motivation Style' },
+                        { key: 'cognitive', label: 'Cognitive Focus' },
+                        { key: 'task', label: 'Task Relationship' }
                       ];
 
                       return (

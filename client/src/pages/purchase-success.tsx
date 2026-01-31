@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ export default function PurchaseSuccess() {
   const archetype = searchParams.get('archetype');
   const { toast } = useToast();
   const { session, isLoading: isAuthLoading } = useAuthContext();
+  const verifyAttempted = useRef(false);
 
   useEffect(() => {
     document.title = "Purchase Successful - Prolific Personalities";
@@ -24,6 +25,30 @@ export default function PurchaseSuccess() {
       setLocation('/');
     }
   }, [sessionId, archetype, setLocation]);
+
+  // Verify payment and complete order (fallback for when webhook doesn't fire)
+  useEffect(() => {
+    if (!sessionId || !archetype || verifyAttempted.current) return;
+    verifyAttempted.current = true;
+
+    const verifyPayment = async () => {
+      try {
+        const res = await fetch("/api/verify-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId, archetype }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          console.log("Payment verification result:", data.message);
+        }
+      } catch (err) {
+        console.error("Payment verification error:", err);
+      }
+    };
+
+    verifyPayment();
+  }, [sessionId, archetype]);
 
   const { data: quizResult, isLoading } = useQuery({
     queryKey: [`/api/quiz/results/${sessionId}`],

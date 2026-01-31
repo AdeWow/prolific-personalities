@@ -43,7 +43,9 @@ export interface IStorage {
   getOrderById(id: number): Promise<Order | undefined>;
   getOrdersByUserId(userId: string): Promise<Order[]>;
   getOrderBySessionId(sessionId: string): Promise<Order | undefined>;
+  getOrderBySessionAndArchetype(sessionId: string, archetype: string): Promise<Order | undefined>;
   getOrderBySubscriptionId(subscriptionId: string): Promise<Order | undefined>;
+  getCheckoutAttemptBySessionArchetype(sessionId: string, archetype: string): Promise<CheckoutAttempt | undefined>;
   updateOrderStatus(id: number, status: string, stripePaymentIntentId?: string | null, customerEmail?: string, stripeSubscriptionId?: string): Promise<Order | undefined>;
   claimOrdersBySession(sessionId: string, userId: string): Promise<void>;
   linkOrderToQuizSession(orderId: number, sessionId: string, archetype: string): Promise<Order | undefined>;
@@ -404,6 +406,20 @@ export class DatabaseStorage implements IStorage {
   async getOrderBySessionId(sessionId: string): Promise<Order | undefined> {
     const [order] = await db.select().from(orders).where(eq(orders.sessionId, sessionId));
     return order || undefined;
+  }
+
+  async getOrderBySessionAndArchetype(sessionId: string, archetype: string): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(
+      and(eq(orders.sessionId, sessionId), eq(orders.archetype, archetype))
+    );
+    return order || undefined;
+  }
+
+  async getCheckoutAttemptBySessionArchetype(sessionId: string, archetype: string): Promise<CheckoutAttempt | undefined> {
+    const [attempt] = await db.select().from(checkoutAttempts).where(
+      and(eq(checkoutAttempts.sessionId, sessionId), eq(checkoutAttempts.archetype, archetype))
+    );
+    return attempt || undefined;
   }
 
   async getOrderBySubscriptionId(subscriptionId: string): Promise<Order | undefined> {

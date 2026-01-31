@@ -1372,6 +1372,131 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Verify payment and complete order if webhook hasn't processed it
+  // This is a fallback for when webhooks don't fire (e.g., testing in development)
+  app.post("/api/verify-payment", writeLimiter, async (req, res) => {
+    try {
+      const { sessionId, archetype } = req.body;
+
+      if (!sessionId || !archetype) {
+        res.status(400).json({ message: "Missing sessionId or archetype" });
+        return;
+      }
+
+      // Find the order by sessionId and archetype
+      const existingOrders = await storage.getOrderBySessionAndArchetype(sessionId, archetype);
+      
+      if (!existingOrders) {
+        res.status(404).json({ message: "Order not found" });
+        return;
+      }
+
+      // If already completed, just return success
+      if (existingOrders.status === "completed") {
+        res.json({ success: true, message: "Order already completed", order: existingOrders });
+        return;
+      }
+
+      // Find the Stripe checkout session by looking at checkout_attempts
+      const checkoutAttempt = await storage.getCheckoutAttemptBySessionArchetype(sessionId, archetype);
+      
+      if (!checkoutAttempt?.stripeCheckoutSessionId) {
+        res.status(404).json({ message: "Stripe session not found" });
+        return;
+      }
+
+      // Retrieve the Stripe session to verify payment
+      const stripeSession = await stripe.checkout.sessions.retrieve(checkoutAttempt.stripeCheckoutSessionId);
+
+      if (stripeSession.payment_status !== "paid") {
+        res.status(400).json({ message: "Payment not completed" });
+        return;
+      }
+
+      // Security: Validate Stripe session metadata matches the order
+      const stripeOrderId = stripeSession.metadata?.orderId;
+      const stripeSessionId = stripeSession.metadata?.sessionId;
+      const stripeArchetype = stripeSession.metadata?.archetype;
+
+      if (stripeOrderId !== existingOrders.id.toString()) {
+        console.error(`❌ Order ID mismatch: Stripe ${stripeOrderId} vs DB ${existingOrders.id}`);
+        res.status(403).json({ message: "Order verification failed" });
+        return;
+      }
+
+      if (stripeSessionId !== sessionId || stripeArchetype !== archetype) {
+        console.error(`❌ Session/archetype mismatch in verify-payment`);
+        res.status(403).json({ message: "Order verification failed" });
+        return;
+      }
+
+      const customerEmail = stripeSession.customer_details?.email;
+
+      // Update order status to completed
+      await storage.updateOrderStatus(
+        existingOrders.id,
+        "completed",
+        stripeSession.payment_intent as string || null,
+        customerEmail || undefined,
+      );
+
+      console.log(`✅ Order ${existingOrders.id} marked as completed via verify-payment fallback`);
+
+      // Mark checkout attempt as completed
+      await storage.markCheckoutCompleted(sessionId, archetype);
+
+      // Only send email if we haven't already (check completedAt to avoid duplicate emails)
+      // If completedAt was null before this update, we're the first to complete it
+      const orderBeforeUpdate = existingOrders.completedAt;
+      if (resend && customerEmail && archetype && !orderBeforeUpdate) {
+        try {
+          const archetypeInfo = getArchetypeInfo(archetype);
+          const pdfAsset = getPremiumAssetForArchetype(archetype);
+
+          if (archetypeInfo && pdfAsset) {
+            const pdfPath = path.join(process.cwd(), "attached_assets", pdfAsset.pdfFilename);
+            
+            if (fs.existsSync(pdfPath)) {
+              const pdfBuffer = fs.readFileSync(pdfPath);
+              const pdfBase64 = pdfBuffer.toString("base64");
+
+              const baseUrl = process.env.APP_URL || 
+                (process.env.NODE_ENV === "production" ? "https://prolificpersonalities.com" : "http://localhost:5000");
+              const resultsUrl = `${baseUrl}/results/${sessionId}`;
+
+              const { subject, html } = generatePremiumPlaybookEmail({
+                recipientEmail: customerEmail,
+                archetype: archetypeInfo,
+                resultsUrl,
+              });
+
+              const emailResponse = await resend.emails.send({
+                from: "Prolific Personalities <support@prolificpersonalities.com>",
+                to: customerEmail,
+                subject,
+                html,
+                attachments: [{ filename: pdfAsset.pdfFilename, content: pdfBase64 }],
+              });
+
+              if (emailResponse.error) {
+                console.error("❌ Error sending email via verify-payment:", emailResponse.error);
+              } else {
+                console.log(`✅ Premium PDF emailed to ${customerEmail} via verify-payment fallback`);
+              }
+            }
+          }
+        } catch (emailError) {
+          console.error("❌ Error in verify-payment email flow:", emailError);
+        }
+      }
+
+      res.json({ success: true, message: "Payment verified and order completed", order: existingOrders });
+    } catch (error: any) {
+      console.error("Error verifying payment:", error);
+      res.status(500).json({ message: "Error verifying payment: " + error.message });
+    }
+  });
+
   // Pre-purchase checkout - Pay first, then take quiz
   app.post("/api/create-prepurchase-session", writeLimiter, async (req, res) => {
     try {
