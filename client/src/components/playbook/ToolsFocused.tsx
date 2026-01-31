@@ -73,16 +73,40 @@ const toolInfo: Record<string, { name: string; tagline: string; why: string }> =
   }
 };
 
+const STATUS_MAP: Record<string, string> = {
+  "not_started": "Not Started",
+  "Not Started": "Not Started",
+  "testing": "Testing",
+  "Testing": "Testing",
+  "using_daily": "Using Daily",
+  "Using Daily": "Using Daily"
+};
+
+const REVERSE_STATUS_MAP: Record<string, string> = {
+  "Not Started": "Not Started",
+  "Testing": "Testing",
+  "Using Daily": "Using Daily"
+};
+
 export function ToolsFocused({ recommendedTools, toolsData, onUpdateTool, isPending }: ToolsFocusedProps) {
   const [showAlternatives, setShowAlternatives] = useState(false);
   
-  const getToolStatus = (toolId: string) => {
-    const status = toolsData.find(t => t.toolId === toolId)?.status || "not_started";
-    return status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const getRawToolStatus = (toolId: string): string => {
+    return toolsData.find(t => t.toolId === toolId)?.status || "Not Started";
+  };
+
+  const getDisplayStatus = (toolId: string): string => {
+    const raw = getRawToolStatus(toolId);
+    return STATUS_MAP[raw] || "Not Started";
   };
 
   const getToolNotes = (toolId: string) => {
     return toolsData.find(t => t.toolId === toolId)?.notes || "";
+  };
+
+  const handleStatusChange = (toolId: string, displayValue: string) => {
+    const canonicalValue = REVERSE_STATUS_MAP[displayValue] || displayValue;
+    onUpdateTool(toolId, canonicalValue, getToolNotes(toolId));
   };
 
   const primaryTool = recommendedTools[0];
@@ -122,8 +146,8 @@ export function ToolsFocused({ recommendedTools, toolsData, onUpdateTool, isPend
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-foreground">Your status</span>
               <Select
-                value={getToolStatus(primaryTool)}
-                onValueChange={(value) => onUpdateTool(primaryTool, value, getToolNotes(primaryTool))}
+                value={getDisplayStatus(primaryTool)}
+                onValueChange={(value) => handleStatusChange(primaryTool, value)}
                 disabled={isPending}
               >
                 <SelectTrigger className="w-40" data-testid={`select-tool-${primaryTool}`}>
@@ -142,7 +166,7 @@ export function ToolsFocused({ recommendedTools, toolsData, onUpdateTool, isPend
               defaultValue={getToolNotes(primaryTool)}
               onBlur={(e) => {
                 if (e.target.value !== getToolNotes(primaryTool)) {
-                  onUpdateTool(primaryTool, getToolStatus(primaryTool), e.target.value);
+                  onUpdateTool(primaryTool, getRawToolStatus(primaryTool), e.target.value);
                 }
               }}
               disabled={isPending}
@@ -191,8 +215,8 @@ export function ToolsFocused({ recommendedTools, toolsData, onUpdateTool, isPend
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-semibold text-foreground">{info.name}</h4>
                         <Select
-                          value={getToolStatus(toolId)}
-                          onValueChange={(value) => onUpdateTool(toolId, value, getToolNotes(toolId))}
+                          value={getDisplayStatus(toolId)}
+                          onValueChange={(value) => handleStatusChange(toolId, value)}
                           disabled={isPending}
                         >
                           <SelectTrigger className="w-32 h-8 text-xs" data-testid={`select-tool-${toolId}`}>

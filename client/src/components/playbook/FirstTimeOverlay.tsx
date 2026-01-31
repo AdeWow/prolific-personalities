@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { X, Sparkles, Target, Calendar, TrendingUp } from "lucide-react";
@@ -12,6 +12,8 @@ interface FirstTimeOverlayProps {
 export function FirstTimeOverlay({ archetype, onDismiss }: FirstTimeOverlayProps) {
   const [step, setStep] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   const steps = [
     {
@@ -34,11 +36,16 @@ export function FirstTimeOverlay({ archetype, onDismiss }: FirstTimeOverlayProps
     }
   ];
 
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     setIsVisible(false);
     localStorage.setItem(`playbook-onboarded-${archetype}`, 'true');
-    setTimeout(onDismiss, 300);
-  };
+    setTimeout(() => {
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus();
+      }
+      onDismiss();
+    }, 300);
+  }, [archetype, onDismiss]);
 
   const handleNext = () => {
     if (step < steps.length - 1) {
@@ -48,17 +55,39 @@ export function FirstTimeOverlay({ archetype, onDismiss }: FirstTimeOverlayProps
     }
   };
 
+  useEffect(() => {
+    previousFocusRef.current = document.activeElement as HTMLElement;
+    dialogRef.current?.focus();
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleDismiss();
+      }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleDismiss]);
+
   if (!isVisible) return null;
 
   const currentStep = steps[step];
   const StepIcon = currentStep.icon;
 
   return (
-    <div className={cn(
-      "fixed inset-0 z-50 flex items-center justify-center p-4",
-      "bg-background/80 backdrop-blur-sm",
-      "animate-in fade-in duration-300"
-    )}>
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="onboarding-title"
+      tabIndex={-1}
+      className={cn(
+        "fixed inset-0 z-50 flex items-center justify-center p-4",
+        "bg-background/80 backdrop-blur-sm",
+        "animate-in fade-in duration-300",
+        "outline-none"
+      )}
+    >
       <Card className="max-w-md w-full shadow-2xl border-primary/20">
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
@@ -79,7 +108,7 @@ export function FirstTimeOverlay({ archetype, onDismiss }: FirstTimeOverlayProps
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <StepIcon className="w-8 h-8 text-primary" />
             </div>
-            <h3 className="text-xl font-bold text-foreground mb-2">
+            <h3 id="onboarding-title" className="text-xl font-bold text-foreground mb-2">
               {currentStep.title}
             </h3>
             <p className="text-muted-foreground">
