@@ -33,14 +33,13 @@ function getInsight(axis: string, score: number): string {
   }
 }
 
-function getPercentileContext(score: number): string {
-  const percentileBelow = score;
-  if (percentileBelow < 30) {
-    return `${100 - percentileBelow}% of people score higher`;
-  } else if (percentileBelow > 70) {
-    return `You're in the top ${100 - percentileBelow}% for this trait`;
+function getStyleContext(score: number): string {
+  if (score < 30) {
+    return `${score}% of people share this style`;
+  } else if (score > 70) {
+    return `${100 - score}% of people share this style`;
   } else {
-    return `You're in the middle 40% — a balanced approach`;
+    return `You have a balanced approach on this spectrum`;
   }
 }
 
@@ -83,8 +82,11 @@ export function FourAxisVisual({ scores }: FourAxisVisualProps) {
         <h3 className="text-2xl font-bold text-foreground mb-2">
           Your Productivity DNA
         </h3>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground mb-3">
           These four traits shape how you work best
+        </p>
+        <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg py-2 px-4 inline-block">
+          Scores show where you fall on each spectrum. Lower isn't worse—it's just a different style.
         </p>
       </motion.div>
 
@@ -93,7 +95,7 @@ export function FourAxisVisual({ scores }: FourAxisVisualProps) {
           const score = scores[axis.key as keyof typeof scores] ?? 50;
           const percentage = Math.max(0, Math.min(100, score));
           const insight = getInsight(axis.key, percentage);
-          const context = getPercentileContext(percentage);
+          const context = getStyleContext(percentage);
 
           return (
             <motion.div
