@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Lightbulb, BarChart3 } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 
 interface FourAxisVisualProps {
   scores: {
@@ -33,15 +33,6 @@ function getInsight(axis: string, score: number): string {
   }
 }
 
-function getStyleContext(score: number): string {
-  if (score < 30) {
-    return `${score}% of people share this style`;
-  } else if (score > 70) {
-    return `${100 - score}% of people share this style`;
-  } else {
-    return `You have a balanced approach on this spectrum`;
-  }
-}
 
 export function FourAxisVisual({ scores }: FourAxisVisualProps) {
   const axes = [
@@ -85,8 +76,8 @@ export function FourAxisVisual({ scores }: FourAxisVisualProps) {
         <p className="text-muted-foreground mb-3">
           These four traits shape how you work best
         </p>
-        <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg py-2 px-4 inline-block">
-          Scores show where you fall on each spectrum. Lower isn't worse—it's just a different style.
+        <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg py-2 px-4 inline-block max-w-xl">
+          Scores range from 0-100. This isn't a grade—lower scores mean you lean one direction, higher scores mean the other. Both are valid working styles.
         </p>
       </motion.div>
 
@@ -95,7 +86,6 @@ export function FourAxisVisual({ scores }: FourAxisVisualProps) {
           const score = scores[axis.key as keyof typeof scores] ?? 50;
           const percentage = Math.max(0, Math.min(100, score));
           const insight = getInsight(axis.key, percentage);
-          const context = getStyleContext(percentage);
 
           return (
             <motion.div
@@ -130,18 +120,10 @@ export function FourAxisVisual({ scores }: FourAxisVisualProps) {
               </div>
 
               {/* Insight */}
-              <div className="flex items-start gap-2 mb-2">
+              <div className="flex items-start gap-2">
                 <Lightbulb className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500" />
                 <p className="text-sm text-gray-700 font-medium">
                   {insight}
-                </p>
-              </div>
-
-              {/* Context */}
-              <div className="flex items-start gap-2">
-                <BarChart3 className="w-4 h-4 mt-0.5 flex-shrink-0 text-blue-500" />
-                <p className="text-sm text-gray-500">
-                  {context}
                 </p>
               </div>
             </motion.div>
