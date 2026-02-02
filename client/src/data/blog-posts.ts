@@ -1233,7 +1233,7 @@ Your failed time blocking attempts aren't the problem. The mismatch between your
     slug: "constant-stimulation-adhd-or-productivity-style",
     excerpt:
       "You can't work in silence. Your browser has 47 tabs open. You've Googled \"do I have ADHD\" more times than you can count. Here's the truth: Both ADHD and novelty-seeking are real. This article helps you understand the difference.",
-    publishDate: "2025-01-02",
+    publishDate: "2025-01-10",
     author: "Prolific Personalities Team",
     readTime: "20 min read",
     tags: [
@@ -1728,7 +1728,7 @@ Your need for stimulation isn't the problem. The mismatch between your needs and
     slug: "cant-stick-to-routine-what-to-do-instead",
     excerpt:
       "You've tried morning routines. Evening routines. Productivity routines. Day 1 is perfect. Day 7, you sleep through your alarm. Here's what the productivity industry won't tell you: Routines aren't universal. Some brains genuinely can't operate on fixed schedules.",
-    publishDate: "2024-12-28",
+    publishDate: "2025-01-04",
     author: "Prolific Personalities Team",
     readTime: "18 min read",
     tags: [
@@ -2186,7 +2186,7 @@ Your failed routines aren't the problem. The mismatch between your brain and one
     slug: "start-everything-finish-nothing-psychology",
     excerpt:
       "Your hard drive has a folder called \"Projects.\" Inside: A half-finished novel. A business idea with 60% of the landing page built. Three different online courses you started. The problem isn't your commitment. It's that your brain has a specific completion pattern.",
-    publishDate: "2024-12-23",
+    publishDate: "2025-01-03",
     author: "Prolific Personalities Team",
     readTime: "20 min read",
     tags: [
@@ -2613,7 +2613,7 @@ Your project graveyard isn't the problem. The mismatch between your brain and ge
     slug: "cant-focus-anymore-brain-wont-cooperate",
     excerpt:
       "You sit down to work. You have clear tasks. You want to focus. But your brain won't cooperate. Your inability to focus isn't a discipline problem. It's an executive function breakdown. And treating it like a character flaw makes it worse.",
-    publishDate: "2024-12-18",
+    publishDate: "2025-01-02",
     author: "Prolific Personalities Team",
     readTime: "18 min read",
     tags: [
@@ -3023,7 +3023,7 @@ Your focus problems aren't the problem. The mismatch between your brain and gene
     slug: "flexible-improvisers-energy-wont-follow-schedule",
     excerpt:
       "Monday at 10 AM: You're unstoppable. Wednesday at 10 AM: You can barely respond to emails. Everyone tells you to \"just be consistent.\" But here's what they don't understand: Your energy doesn't run on a schedule. And forcing consistency creates burnout.",
-    publishDate: "2024-12-13",
+    publishDate: "2025-01-01",
     author: "Prolific Personalities Team",
     readTime: "15 min read",
     tags: [
@@ -3428,7 +3428,7 @@ Your variable energy isn't the problem. The lack of energy-aligned strategy is t
     slug: "strategic-planners-brilliant-plans-never-reality",
     excerpt:
       "Your roadmap is comprehensive. Your strategy document is 47 pages of brilliance. Your actual execution? Nonexistent. Here's the uncomfortable truth: You're not a strategic thinker who struggles with execution. You're using strategic thinking to avoid the vulnerable act of doing.",
-    publishDate: "2024-12-08",
+    publishDate: "2025-01-05",
     author: "Prolific Personalities Team",
     readTime: "16 min read",
     tags: [
@@ -3823,7 +3823,7 @@ Your strategic thinking isn't the problem. The lack of execution constraints is 
     slug: "novelty-seekers-boredom-kills-projects",
     excerpt:
       "You have 10 side projects. Each one started with genuine excitement and big dreams. You made real progress—60%, maybe 70% done. Then... nothing. The problem isn't your commitment. It's that your brain is optimized for learning and exploration, not sustained execution.",
-    publishDate: "2024-12-03",
+    publishDate: "2025-01-07",
     author: "Prolific Personalities Team",
     readTime: "15 min read",
     tags: [
@@ -4184,7 +4184,7 @@ Your variety-seeking isn't the problem. The lack of strategic constraints is the
     slug: "structured-achiever-hidden-trap",
     excerpt:
       "Your Notion workspace is a work of art. Color-coded databases, linked properties, automated workflows. You've spent 6 hours this week perfecting it. Your actual work? Untouched. Here's the paradox: Your greatest strength has become your greatest weakness.",
-    publishDate: "2024-11-28",
+    publishDate: "2025-01-08",
     author: "Prolific Personalities Team",
     readTime: "16 min read",
     tags: [
