@@ -94,6 +94,11 @@ The application employs a monorepo structure, separating the React-based fronten
 -   **Promo Code System**: Supports both 100% discount codes (direct access) and partial discounts (10%, 25%, 50%) via Stripe coupon integration. Active codes: FRIEND1019, BETATESTER2026! (valid until Feb 28, 2026).
 -   **Weekly Accountability Emails**: Partner subscribers receive archetype-specific productivity tips and motivational content weekly via `/api/cron/weekly-accountability` endpoint.
 -   **Abandoned Cart Automation**: Daily cron job sends follow-up emails to users who started but didn't complete checkout via `/api/cron/abandoned-cart` endpoint.
+-   **Email Automation System (Feb 2026)**: Complete email nurture and onboarding sequences with archetype-specific personalization:
+    - **Nurture Sequence (Pre-purchase)**: 5 emails over 14 days (Day 3, 5, 7, 10, 14) sent to quiz-takers who haven't purchased. Cron: `/api/cron/nurture-sequence`
+    - **Onboarding Sequence (Post-purchase)**: 3 emails over 30 days (Day 3, 7, 30) sent to buyers. Cron: `/api/cron/onboarding-sequence`
+    - **Email Tracking**: `email_captures` table tracks nurture/onboarding email flags and purchase status. `email_log` table logs all sent emails with Resend IDs.
+    - **Archetype Content**: `server/email-content.ts` contains personalized content for each archetype (advantages, mistakes, fixes, tool recommendations).
 -   **Subscription Lifecycle Webhooks**: Full Stripe webhook handling for subscription events (checkout.session.completed, customer.subscription.deleted, invoice.paid, invoice.payment_failed) with automatic order status updates and email notifications.
 
 ### Mobile API Endpoints

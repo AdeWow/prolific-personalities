@@ -1,4 +1,4 @@
-import { users, quizResults, tools, emailCaptures, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, chatConversations, chatMessages, chatUsage, promoCodes, promoCodeRedemptions, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes, type ChatConversation, type InsertChatConversation, type ChatMessage, type InsertChatMessage, type ChatUsage, type InsertChatUsage, type PromoCode, type InsertPromoCode, type PromoCodeRedemption, type InsertPromoCodeRedemption } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, emailLog, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, chatConversations, chatMessages, chatUsage, promoCodes, promoCodeRedemptions, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes, type ChatConversation, type InsertChatConversation, type ChatMessage, type InsertChatMessage, type ChatUsage, type InsertChatUsage, type PromoCode, type InsertPromoCode, type PromoCodeRedemption, type InsertPromoCodeRedemption } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, sql, isNull } from "drizzle-orm";
 import memoize from "memoizee";
@@ -25,6 +25,12 @@ export interface IStorage {
   getEmailCaptureByEmail(email: string): Promise<EmailCapture | undefined>;
   getEmailCaptureBySessionId(sessionId: string): Promise<EmailCapture | undefined>;
   updateEmailCaptureWelcomeSent(id: number): Promise<void>;
+  markEmailCapturePurchased(email: string): Promise<void>;
+  getEmailCapturesForNurture(dayNumber: number): Promise<EmailCapture[]>;
+  getEmailCapturesForOnboarding(dayNumber: number): Promise<EmailCapture[]>;
+  markNurtureEmailSent(id: number, dayNumber: number): Promise<void>;
+  markOnboardingEmailSent(id: number, dayNumber: number): Promise<void>;
+  logEmail(email: string, emailType: string, archetype?: string, resendId?: string): Promise<void>;
   unsubscribeEmail(email: string): Promise<void>;
   // Checkout attempts (for abandoned cart)
   createCheckoutAttempt(attempt: InsertCheckoutAttempt): Promise<CheckoutAttempt>;
@@ -306,6 +312,110 @@ export class DatabaseStorage implements IStorage {
       .update(emailCaptures)
       .set({ welcomeEmailSent: 1 })
       .where(eq(emailCaptures.id, id));
+  }
+
+  async markEmailCapturePurchased(email: string): Promise<void> {
+    await db
+      .update(emailCaptures)
+      .set({ purchased: 1, purchaseDate: new Date() })
+      .where(eq(emailCaptures.email, email));
+  }
+
+  async getEmailCapturesForNurture(dayNumber: number): Promise<EmailCapture[]> {
+    const now = new Date();
+    const daysAgo = new Date(now.getTime() - dayNumber * 24 * 60 * 60 * 1000);
+    const dayBefore = new Date(daysAgo.getTime() - 24 * 60 * 60 * 1000);
+    
+    const columnMap: Record<number, keyof typeof emailCaptures> = {
+      3: 'day3NurtureSent',
+      5: 'day5NurtureSent',
+      7: 'day7NurtureSent',
+      10: 'day10NurtureSent',
+      14: 'day14NurtureSent',
+    };
+    
+    const column = columnMap[dayNumber];
+    if (!column) return [];
+    
+    const results = await db.select().from(emailCaptures);
+    return results.filter(row => {
+      const capturedAt = new Date(row.capturedAt);
+      return (
+        capturedAt <= daysAgo &&
+        capturedAt > dayBefore &&
+        row.subscribed === 1 &&
+        row.unsubscribed === 0 &&
+        row.purchased === 0 &&
+        (row as any)[column] === 0
+      );
+    });
+  }
+
+  async getEmailCapturesForOnboarding(dayNumber: number): Promise<EmailCapture[]> {
+    const now = new Date();
+    const daysAgo = new Date(now.getTime() - dayNumber * 24 * 60 * 60 * 1000);
+    const dayBefore = new Date(daysAgo.getTime() - 24 * 60 * 60 * 1000);
+    
+    const columnMap: Record<number, keyof typeof emailCaptures> = {
+      3: 'day3OnboardSent',
+      7: 'day7OnboardSent',
+      30: 'day30OnboardSent',
+    };
+    
+    const column = columnMap[dayNumber];
+    if (!column) return [];
+    
+    const results = await db.select().from(emailCaptures);
+    return results.filter(row => {
+      if (!row.purchaseDate) return false;
+      const purchaseDate = new Date(row.purchaseDate);
+      return (
+        purchaseDate <= daysAgo &&
+        purchaseDate > dayBefore &&
+        row.subscribed === 1 &&
+        row.unsubscribed === 0 &&
+        row.purchased === 1 &&
+        (row as any)[column] === 0
+      );
+    });
+  }
+
+  async markNurtureEmailSent(id: number, dayNumber: number): Promise<void> {
+    const columnMap: Record<number, any> = {
+      3: { day3NurtureSent: 1 },
+      5: { day5NurtureSent: 1 },
+      7: { day7NurtureSent: 1 },
+      10: { day10NurtureSent: 1 },
+      14: { day14NurtureSent: 1 },
+    };
+    
+    const update = columnMap[dayNumber];
+    if (!update) return;
+    
+    await db.update(emailCaptures).set(update).where(eq(emailCaptures.id, id));
+  }
+
+  async markOnboardingEmailSent(id: number, dayNumber: number): Promise<void> {
+    const columnMap: Record<number, any> = {
+      3: { day3OnboardSent: 1 },
+      7: { day7OnboardSent: 1 },
+      30: { day30OnboardSent: 1 },
+    };
+    
+    const update = columnMap[dayNumber];
+    if (!update) return;
+    
+    await db.update(emailCaptures).set(update).where(eq(emailCaptures.id, id));
+  }
+
+  async logEmail(email: string, emailType: string, archetype?: string, resendId?: string): Promise<void> {
+    await db.insert(emailLog).values({
+      email,
+      emailType,
+      archetype: archetype || null,
+      resendId: resendId || null,
+      status: 'sent',
+    });
   }
 
   async unsubscribeEmail(email: string): Promise<void> {

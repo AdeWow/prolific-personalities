@@ -1,0 +1,572 @@
+# Replit Prompt: Email Automation System for Prolific Personalities
+
+## Context
+
+I have a Next.js + Tailwind app using Replit's PostgreSQL database for data storage and Supabase for auth. I use Resend for sending emails with custom SMTP. I already have these emails working:
+- Welcome/results email (sent when user captures email after quiz)
+- Purchase confirmation/playbook delivery email (sent after Stripe webhook confirms payment)
+
+The email_captures table already exists in the Replit PostgreSQL database with these columns:
+- id (serial, PK)
+- email (text)
+- session_id (text)
+- captured_at (timestamp)
+- archetype (text)
+- subscribed (integer, 0/1)
+- welcome_email_sent (integer, 0/1)
+
+IMPORTANT: This database uses INTEGER (0/1) instead of BOOLEAN for true/false columns. ALL new columns and ALL code must follow this pattern. Use 0 for false, 1 for true. Never use BOOLEAN.
+
+I need to build a complete email automation system with 3 sequences:
+1. Abandoned cart recovery (1 email, triggered 24hrs after incomplete checkout)
+2. Post-quiz nurture for non-buyers (5 emails over 14 days)
+3. Post-purchase onboarding for buyers (3 emails over 30 days)
+
+---
+
+## STEP 1: Database Schema Changes
+
+These columns should already have been added to email_captures. Verify they exist, and if not, add them:
+
+```sql
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS day3_nurture_sent INTEGER DEFAULT 0;
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS day5_nurture_sent INTEGER DEFAULT 0;
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS day7_nurture_sent INTEGER DEFAULT 0;
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS day10_nurture_sent INTEGER DEFAULT 0;
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS day14_nurture_sent INTEGER DEFAULT 0;
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS purchased INTEGER DEFAULT 0;
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS purchase_date TIMESTAMP;
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS day3_onboard_sent INTEGER DEFAULT 0;
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS day7_onboard_sent INTEGER DEFAULT 0;
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS day30_onboard_sent INTEGER DEFAULT 0;
+ALTER TABLE email_captures ADD COLUMN IF NOT EXISTS unsubscribed INTEGER DEFAULT 0;
+```
+
+### Create `email_log` table if it doesn't exist:
+
+```sql
+CREATE TABLE IF NOT EXISTS email_log (
+  id SERIAL PRIMARY KEY,
+  email TEXT NOT NULL,
+  email_type TEXT NOT NULL,
+  archetype TEXT,
+  sent_at TIMESTAMP DEFAULT NOW(),
+  resend_id TEXT,
+  status TEXT DEFAULT 'sent'
+);
+```
+
+### The `checkout_attempts` table already exists. Verify it has these columns, add any that are missing:
+- id
+- email (text)
+- archetype (text)
+- started_at (timestamp)
+- completed (integer, 0/1)
+- abandoned_email_sent (integer, 0/1)
+
+---
+
+## STEP 2: Track Checkout Attempts
+
+When a user clicks the "Get Your Playbook" button or initiates Stripe checkout, record it in `checkout_attempts`. This may already be implemented — check first.
+
+In the existing checkout/payment initiation code (wherever the Stripe checkout session is created), ensure this happens:
+
+```javascript
+// Before or after creating the Stripe checkout session
+await db.query(
+  `INSERT INTO checkout_attempts (email, archetype, started_at, completed, abandoned_email_sent)
+   VALUES ($1, $2, NOW(), 0, 0)`,
+  [userEmail, userArchetype]
+);
+```
+
+When the Stripe webhook confirms successful payment, update BOTH tables:
+
+```javascript
+// In your existing Stripe webhook handler, add:
+
+// 1. Mark checkout as completed
+await db.query(
+  `UPDATE checkout_attempts SET completed = 1 WHERE email = $1`,
+  [customerEmail]
+);
+
+// 2. Mark user as purchased in email_captures
+await db.query(
+  `UPDATE email_captures SET purchased = 1, purchase_date = NOW() WHERE email = $1`,
+  [customerEmail]
+);
+```
+
+Use whatever database query method the app already uses (e.g., `db.query`, `pool.query`, `sql` tagged template, etc.). Match the existing pattern in the codebase.
+
+---
+
+## STEP 3: Archetype Content Map
+
+Create a file at `lib/email-content.js` (or `.ts`) that stores all archetype-specific content for email personalization:
+
+```javascript
+export const ARCHETYPE_CONTENT = {
+  "chaotic-creative": {
+    name: "Chaotic Creative",
+    keyStrength: "Explosive creative bursts that produce breakthrough ideas",
+    commonPitfall: "Starting 10 projects and finishing 2",
+    
+    // Day 3 email - archetype advantage paragraph
+    day3Advantage: `Research on divergent thinking shows that people with low structure preference and high novelty orientation — your exact profile — generate 40% more unique solutions in brainstorming tasks (Runco & Acar, 2012). The "chaos" isn't a bug. Your brain is designed to explore more possibilities before converging. The key is building a capture system so those ideas don't evaporate.`,
+    day3QuickTip: "Set a 2-minute timer right now and brain-dump every open idea/project into one list. Don't organize — just capture. You can triage later.",
+    
+    // Day 5 email - #1 mistake paragraph
+    day5Mistake: `You start 10 projects and finish 2. Not because you lack discipline — because your brain is wired to chase the dopamine of new ideas. Dr. Tim Pychyl's research at Carleton University shows this isn't a character flaw. It's an emotional regulation pattern. Your brain literally gets more reward from starting than from finishing. The fix isn't "just focus" — it's creating artificial novelty within existing projects. Rename tasks. Change your environment. Approach the same work from a different angle.`,
+    day5Fix: "Pick your most stalled project. Rename the next task on it to something that sounds interesting. Change where you'll work on it. Approach it from a completely different angle than you originally planned.",
+    
+    // Day 7 email - tool recommendation
+    day7Tool: `Start with a zero-friction capture tool. Your ideas come fast and they don't wait around. I recommend a voice-to-text note app (like Otter.ai or even your phone's voice memo) paired with a weekly 15-minute "idea triage" session. This matches research showing that creative types need to separate idea generation from idea evaluation (Osborn, 1953). Capture everything. Sort later.`,
+    
+    // Quick wins for welcome email
+    quickWins: [
+      { strategy: "The 2-Minute Brain Dump", description: "Set a timer and capture every open loop in your head. Don't organize — just get it out. Your brain needs to trust that ideas won't be lost." },
+      { strategy: "Novelty Rotation", description: "Rotate between 2-3 active projects daily instead of forcing yourself to finish one before starting another. This works WITH your wiring, not against it." },
+      { strategy: "The Ugly First Draft", description: "Give yourself permission to produce something terrible. Chaotic Creatives often stall because the vision in your head is so good that the messy reality feels wrong. Ship ugly. Polish later." }
+    ]
+  },
+  
+  "anxious-perfectionist": {
+    name: "Anxious Perfectionist",
+    keyStrength: "Exceptionally high-quality work that others trust and rely on",
+    commonPitfall: "Spending 3 hours perfecting something that needed 45 minutes",
+    
+    day3Advantage: `Studies on conscientiousness and performance show that your detail orientation produces measurably higher quality work (Barrick & Mount, 1991). The anxiety isn't weakness — it's your brain's quality control system running on overdrive. The trick isn't lowering your standards. It's building a "good enough" checkpoint so your quality control doesn't become a bottleneck.`,
+    day3QuickTip: "Before starting your next task, write down what 'done' looks like in one sentence. When you hit that definition, stop. Your 80% is most people's 100%.",
+    
+    day5Mistake: `You spend 3 hours perfecting something that needed 45 minutes. The research calls this "perfectionistic self-presentation" (Hewitt et al., 2003) — the fear that anything less than flawless reveals the "real" you. Here's what helped: set a timer. When it goes off, ship it. Not because the work doesn't matter — because your standards are already so high that your 80% is most people's 100%.`,
+    day5Fix: "Pick one task today and set a timer for 75% of the time you'd normally spend on it. When the timer goes off, submit/send/publish it as-is. Notice: the world doesn't end.",
+    
+    day7Tool: `Start with a visible progress tracker. Your brain needs proof that you're making progress even when it doesn't feel like it. A simple daily checklist (even a physical one — Todoist or a paper notebook) where you can check things off creates the "completion signal" that quiets the anxiety loop. Research on self-efficacy (Bandura, 1997) shows visible progress builds confidence that counteracts perfectionist paralysis.`,
+    
+    quickWins: [
+      { strategy: "The 'Done' Definition", description: "Before starting any task, write one sentence describing what 'done' looks like. When you hit it, stop. This prevents the infinite polishing loop." },
+      { strategy: "The 80% Rule", description: "Your 80% is most people's 100%. Set a timer for 75% of the time you'd normally spend, then ship when it rings. The quality will still be excellent." },
+      { strategy: "Progress Journaling", description: "End each day by writing 3 things you completed. Your brain discounts progress — give it written evidence that you're moving forward." }
+    ]
+  },
+  
+  "structured-achiever": {
+    name: "Structured Achiever",
+    keyStrength: "Consistency and systematic execution that builds compounding results",
+    commonPitfall: "Rigidity when plans change — resisting adaptation even when evidence says pivot",
+    
+    day3Advantage: `Meta-analyses of self-regulation show that people with high structure orientation complete 23% more of their planned tasks (de Ridder et al., 2012). Your consistency is rare and valuable. Where others burn out chasing novelty, you build compounding systems. The research suggests your biggest unlock is learning when to deliberately break your own rules.`,
+    day3QuickTip: "Schedule one 'wildcard hour' this week — time with no agenda where you explore something unplanned. Your systems are strong enough to handle one hour of chaos.",
+    
+    day5Mistake: `You resist changing plans even when the evidence says you should. Psychologists call this the "sunk cost fallacy" amplified by conscientiousness (Moon, 2001). Your loyalty to The Plan becomes the plan's biggest weakness. The fix: build "checkpoint reviews" into every project where you explicitly ask "should I keep going or pivot?"`,
+    day5Fix: "Add a 'checkpoint review' to your current biggest project. Ask yourself: 'If I were starting fresh today, would I still do it this way?' If not, give yourself permission to adjust.",
+    
+    day7Tool: `Start with an automation tool. You're already consistent — now multiply that consistency. Zapier or IFTTT can connect the systems you already use, handling the repetitive tasks so you can focus on high-value work. Research on cognitive load (Sweller, 1988) shows that automating routine decisions preserves mental energy for complex ones. You're the archetype most likely to actually set up automations and keep them running.`,
+    
+    quickWins: [
+      { strategy: "Checkpoint Reviews", description: "Add a midpoint review to every project: 'If I were starting today, would I still do it this way?' This prevents the sunk cost trap." },
+      { strategy: "Automate the Repeatable", description: "Identify 3 tasks you do every week that are identical. Automate or template them. Your consistency makes you the best archetype for building systems that run themselves." },
+      { strategy: "Planned Flexibility", description: "Block 2 hours per week as 'buffer time' in your schedule. This gives your structured system room to absorb surprises without derailing your plan." }
+    ]
+  },
+  
+  "novelty-seeker": {
+    name: "Novelty Seeker",
+    keyStrength: "Rapid skill acquisition, high energy, and thriving in new environments",
+    commonPitfall: "Getting bored with systems the moment they start working",
+    
+    day3Advantage: `Studies on openness to experience link your trait profile to faster skill acquisition and higher adaptability in changing environments (DeYoung, 2015). You're not "unfocused" — your brain is optimized for rapid learning and environmental scanning. The science shows you need rotation, not repetition.`,
+    day3QuickTip: "Instead of forcing yourself to use one system, set up 2-3 proven approaches and rotate between them weekly. Your brain needs variety — give it variety within a structure.",
+    
+    day5Mistake: `You get bored with a system the moment it starts working. Research on sensation seeking (Zuckerman, 1994) shows your brain requires more stimulation to maintain engagement — this is neurological, not laziness. The fix isn't sticking with one system. It's rotating between 2-3 proven systems on a schedule that matches your novelty curve.`,
+    day5Fix: "Write down the last 3 productivity systems you abandoned. Pick the one that worked best and bring it back for just this week. Rotation IS your system.",
+    
+    day7Tool: `Start with Habitica or a gamified task manager. Standard to-do lists bore you in 3 days — that's not a personal failing, it's neurology. Gamification provides the variable reward schedule your brain craves (Deterding et al., 2011). Points, levels, and visual progress create enough novelty to maintain engagement with routine tasks. Rotate between 2-3 gamified approaches if one gets stale.`,
+    
+    quickWins: [
+      { strategy: "The Rotation System", description: "Pick 2-3 productivity methods you've tried before. Rotate between them weekly. Novelty Seekers don't need one perfect system — they need a rotation of good ones." },
+      { strategy: "Gamify the Boring", description: "Turn routine tasks into challenges with points, streaks, or time trials. Your brain needs variable rewards — so create them deliberately." },
+      { strategy: "The 'New Angle' Trick", description: "When boredom hits, don't abandon the project — change HOW you're working on it. New location, new music, new approach. Same goal, fresh dopamine." }
+    ]
+  },
+  
+  "strategic-planner": {
+    name: "Strategic Planner",
+    keyStrength: "Long-range vision, systems thinking, and strategic prioritization",
+    commonPitfall: "Analysis paralysis — researching for weeks instead of starting",
+    
+    day3Advantage: `Research on metacognition shows that people with high structure and intrinsic motivation — your exact profile — excel at long-range planning and systems thinking (Flavell, 1979). Your ability to see three steps ahead is a genuine competitive advantage. The research-backed fix for your analysis paralysis isn't "just decide" — it's time-boxing decisions with pre-committed criteria.`,
+    day3QuickTip: "For your next decision, write down 3 criteria that matter most. Set a deadline. When the deadline hits, score your options against those 3 criteria and go with the winner. No more research.",
+    
+    day5Mistake: `You research for weeks instead of starting. Analysis paralysis isn't indecision — it's your brain trying to eliminate uncertainty before committing (Schwartz, 2004). The problem: uncertainty never reaches zero. The fix is pre-committing to a decision deadline with specific criteria. "I'll decide by Friday using these 3 factors." Remove the infinite loop.`,
+    day5Fix: "Identify one decision you've been postponing. Set a 48-hour deadline. Write down your top 3 criteria. When time's up, score and decide. Done.",
+    
+    day7Tool: `Start with a decision framework tool like Notion or a simple decision matrix template. Your strength is systems thinking, but you need guard rails against infinite research. Build a template that forces you to list criteria, weight them, score options, and commit within a defined timeframe. This channels your strategic thinking productively instead of letting it become a procrastination tool.`,
+    
+    quickWins: [
+      { strategy: "The Decision Deadline", description: "For every decision, set a hard deadline and 3 evaluation criteria BEFORE you start researching. When the deadline hits, score and commit." },
+      { strategy: "The 'Good Enough' Launch", description: "Ship at 80% and iterate. Your strategic mind wants to perfect the plan — but the best plans get refined by real-world feedback, not more thinking." },
+      { strategy: "Reverse Calendar Planning", description: "Start from your goal date and work backwards. This channels your planning strength into action timelines instead of endless contingency mapping." }
+    ]
+  },
+  
+  "flexible-improviser": {
+    name: "Flexible Improviser",
+    keyStrength: "Adaptability, real-time problem solving, and thriving in dynamic environments",
+    commonPitfall: "Working brilliantly in the moment but having nothing to show for it next month",
+    
+    day3Advantage: `Studies on adaptive performance show that low-structure, externally-motivated individuals excel in dynamic, unpredictable environments (Pulakos et al., 2000). Where rigid planners freeze, you thrive. Your challenge isn't learning to be structured — it's building the minimum viable structure that doesn't kill your adaptability.`,
+    day3QuickTip: "Set one weekly anchor: a 30-minute Sunday review where you pick your top 3 priorities for the week. That's it. Everything else stays flexible. One ritual, maximum adaptability.",
+    
+    day5Mistake: `You work brilliantly in the moment but have nothing to show for it next month. Without minimal structure, your adaptability becomes reactivity (Pulakos et al., 2000). The fix isn't a rigid schedule — it's one weekly anchor. A single 30-minute weekly review where you decide what matters most next week. That's it. One ritual. Everything else stays flexible.`,
+    day5Fix: "Right now, open your calendar and block 30 minutes this Sunday for a weekly review. Just three questions: What went well? What needs attention? What are my top 3 for next week?",
+    
+    day7Tool: `Start with a "minimal viable system" — specifically, a single weekly review template. Not a rigid planner. Not a complex system. One template with three questions: What went well? What needs attention? What are my top 3 priorities next week? Tools like a simple Google Doc or Notion template work best because they're flexible. The research on minimal structure (Langley, 1999) shows that too much system kills your adaptability, but too little leads to reactivity.`,
+    
+    quickWins: [
+      { strategy: "The Weekly Anchor", description: "One 30-minute weekly review. Three questions: What went well? What needs attention? Top 3 next week? That's your entire system. Everything else stays flexible." },
+      { strategy: "Energy-Based Scheduling", description: "Instead of time-blocking tasks, match tasks to energy levels. High energy? Deep work. Low energy? Admin. Your adaptability is a strength when pointed in the right direction." },
+      { strategy: "The 'Capture & Decide' Split", description: "When tasks come at you throughout the day, capture them in one place but don't act immediately. Decide once daily (or weekly) what actually matters. This prevents reactivity without adding rigidity." }
+    ]
+  }
+};
+```
+
+---
+
+## STEP 4: Email Templates
+
+Create email template functions in `lib/email-templates.js`. Each function takes a user object (with email, name, archetype) and returns { subject, html } for Resend.
+
+Use the content from `ARCHETYPE_CONTENT` to populate archetype-specific sections.
+
+### Template structure for each email:
+
+All emails should:
+- Use clean, minimal HTML (no heavy design — just well-formatted text)
+- Include the Prolific Personalities logo at the top (small, not overwhelming)
+- Use the brand font (or fallback to Arial/Helvetica)
+- Include an unsubscribe link at the bottom: `<a href="{{unsubscribeUrl}}">Unsubscribe</a>`
+- Include a footer: "Prolific Personalities | prolificpersonalities.com"
+- Be mobile-responsive (max-width: 600px centered container)
+
+### Create these 9 template functions:
+
+**1. `generateAbandonedCartEmail(user)`**
+Subject: "Still thinking it over? Here's what helped me decide"
+Body: Honest, no-pressure email. Frame it as "No worries at all — $19 is still a decision." Include a "This is for you if..." vs "This probably isn't for you if..." section. Mention 30-day money-back guarantee. NO discount code. NO fake urgency. End with a simple CTA button linking to checkout.
+
+**2. `generateDay3NurtureEmail(user)`** — "The [Archetype] Advantage"
+Subject: "The hidden advantage of being a [Archetype Name]"
+Body: Use `day3Advantage` from ARCHETYPE_CONTENT for the user's archetype. Validate their strengths with research. Include the `day3QuickTip` as one actionable takeaway. Soft mention of the full playbook at the end — not a hard sell.
+
+**3. `generateDay5NurtureEmail(user)`** — "The #1 Mistake"
+Subject: "The #1 mistake [Archetype Name]s make (and it's not what you think)"
+Body: Use `day5Mistake` from ARCHETYPE_CONTENT. Explain the neuroscience behind the common pitfall. Include `day5Fix` as the one concrete fix. Position the playbook as containing the complete system for solving this.
+
+**4. `generateDay7NurtureEmail(user)`** — "The Right Tool"
+Subject: "Stop using the wrong tools for your brain"
+Body: Open with the concept that tool effectiveness depends on cognitive profile (cite Kristof-Brown et al., 2005 on person-environment fit). Use `day7Tool` from ARCHETYPE_CONTENT for their specific recommendation. Mention the playbook contains the complete tool matching guide.
+
+**5. `generateDay10NurtureEmail(user)`** — "Real Transformation Story"
+Subject: "How a [Archetype Name] went from stuck to unstoppable"
+Body: Use a template testimonial/case study format. Since we may not have real stories yet for every archetype, create a compelling but realistic composite story for each archetype that matches their key strength and common pitfall. Mark clearly in code comments that these should be replaced with real testimonials once available.
+
+**6. `generateDay14NurtureEmail(user)`** — "Why I Built This" (Founder Story)
+Subject: "I procrastinated on building an anti-procrastination platform (true story)"
+Body: This is the same for all archetypes (just swap the archetype name). The founder's personal story:
+- "I procrastinated on launching a platform designed to help people stop procrastinating. For months."
+- Share the ADHD experience and emotional regulation struggle
+- Reference Dr. Tim Pychyl's research on procrastination as emotion regulation, not time management
+- "This is the thing I wished existed when I was struggling"
+- Close with: "No countdown timer. No 'limited spots.' Just research-backed strategies designed for the brain you actually have."
+- Final note: "This is the last email in this series. I won't keep filling your inbox."
+- Include CTA to playbook, but keep it low-pressure
+
+**7. `generateDay3OnboardEmail(user)`** — Post-Purchase Check-in
+Subject: "Quick question about your [Archetype Name] playbook"
+Body: "Have you tried one strategy yet?" Encourage starting with the least intimidating strategy. Cite implementation intentions research (Gollwitzer, 1999) — specificity beats motivation. Invite them to reply with what they tried.
+
+**8. `generateDay7OnboardEmail(user)`** — Week 1 Progress
+Subject: "One week in — here's what matters"
+Body: Normalize imperfect progress. "If you've implemented one strategy — even imperfectly — you're ahead of 90% of people who buy self-improvement resources." Three scenarios: if something worked (keep going, habit formation takes 66 days — Lally et al., 2010), if it didn't work (that's data, not failure), if they haven't started (start today, smallest possible action).
+
+**9. `generateDay30OnboardEmail(user)`** — Re-Assessment Invitation
+Subject: "30 days later — has your archetype shifted?"
+Body: Invite them to retake the quiz. Explain the 4-axis framework measures preferences, not fixed traits — preferences evolve as you grow. If same archetype = strategies reinforcing strengths. If different = growth + automatic access to new playbook (lifetime access). Also request a testimonial: biggest challenge before playbook, what shifted, would they recommend.
+
+Each function should return:
+```javascript
+{
+  subject: "The subject line string",
+  html: "<html>...</html>"  // Full HTML email body
+}
+```
+
+---
+
+## STEP 5: Email Sending Service
+
+Create `lib/email-service.js` that handles sending through Resend and logging to the Replit PostgreSQL database:
+
+```javascript
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function sendEmail({ to, subject, html, emailType, archetype, db }) {
+  try {
+    // Check if user is unsubscribed (uses INTEGER: 1 = unsubscribed)
+    const userResult = await db.query(
+      `SELECT unsubscribed FROM email_captures WHERE email = $1`,
+      [to]
+    );
+    
+    if (userResult.rows?.[0]?.unsubscribed === 1) {
+      console.log(`Skipping email to ${to} — unsubscribed`);
+      return null;
+    }
+
+    // Check if we already sent an email to this user today (max 1/day)
+    const today = new Date().toISOString().split('T')[0];
+    const sentTodayResult = await db.query(
+      `SELECT id FROM email_log WHERE email = $1 AND sent_at >= $2::date AND sent_at < ($2::date + interval '1 day')`,
+      [to, today]
+    );
+    
+    if (sentTodayResult.rows && sentTodayResult.rows.length > 0) {
+      console.log(`Skipping email to ${to} — already sent today`);
+      return null;
+    }
+
+    const result = await resend.emails.send({
+      from: 'Prolific Personalities <hello@prolificpersonalities.com>',
+      to,
+      subject,
+      html
+    });
+
+    // Log the send
+    await db.query(
+      `INSERT INTO email_log (email, email_type, archetype, resend_id, status) VALUES ($1, $2, $3, $4, $5)`,
+      [to, emailType, archetype, result?.id || null, 'sent']
+    );
+
+    return result;
+  } catch (error) {
+    console.error(`Failed to send ${emailType} to ${to}:`, error);
+    
+    // Log the failure
+    await db.query(
+      `INSERT INTO email_log (email, email_type, archetype, status) VALUES ($1, $2, $3, $4)`,
+      [to, emailType, archetype, 'failed']
+    );
+    
+    return null;
+  }
+}
+```
+
+IMPORTANT: Use whatever database query pattern the app already uses. The `db.query` above is a placeholder — match the existing codebase pattern (could be `pool.query`, `sql`, a Drizzle/Prisma client, etc.). Look at how other files in the project query the database and use that same approach.
+
+---
+
+## STEP 6: Scheduled Email Processor
+
+Create an API route at `api/cron/process-emails.js` (or `.ts`) that runs on a schedule. This is the core automation engine.
+
+Protect it with a secret key:
+
+```javascript
+const cronSecret = req.headers['x-cron-secret'] || req.query.secret;
+if (cronSecret !== process.env.CRON_SECRET) {
+  return res.status(401).json({ error: 'Unauthorized' });
+}
+```
+
+### The processor should run these checks IN ORDER:
+
+#### Check 1: Abandoned Cart Emails
+```
+Find all rows in checkout_attempts where:
+  - completed = 0
+  - abandoned_email_sent = 0
+  - started_at is more than 24 hours ago
+  - started_at is less than 48 hours ago (don't send for very old carts)
+
+For each match:
+  1. Double-check email_captures to confirm purchased = 0
+  2. Generate and send the abandoned cart email
+  3. SET abandoned_email_sent = 1
+```
+
+#### Check 2: Nurture Sequence (Non-Buyers)
+```
+For each day (3, 5, 7, 10, 14):
+  Find all rows in email_captures where:
+    - purchased = 0
+    - unsubscribed = 0
+    - The relevant dayX_nurture_sent = 0
+    - captured_at is at least X days ago
+    - All PREVIOUS nurture emails have been sent (= 1) (enforce sequence order)
+  
+  For each match:
+    1. Re-check purchased flag (might have purchased since query started)
+    2. Generate and send the appropriate day's email
+    3. SET the dayX_nurture_sent = 1
+```
+
+#### Check 3: Post-Purchase Onboarding
+```
+For each day (3, 7, 30):
+  Find all rows in email_captures where:
+    - purchased = 1
+    - unsubscribed = 0
+    - The relevant dayX_onboard_sent = 0
+    - purchase_date is at least X days ago
+    - All PREVIOUS onboard emails have been sent (= 1)
+  
+  For each match:
+    1. Generate and send the appropriate day's email
+    2. SET the dayX_onboard_sent = 1
+```
+
+CRITICAL RULES:
+- Never send more than 1 email per user per day across ALL sequences
+- Always check `purchased = 0` before sending nurture emails — if they bought, skip immediately
+- Always check `unsubscribed = 0` before any send
+- Log every send attempt (success or failure) in email_log
+- Process in batches of 50 max per run to avoid timeouts
+- All flag checks use INTEGER: 0 = false, 1 = true
+
+The endpoint should return a JSON summary:
+
+```javascript
+return res.status(200).json({
+  success: true,
+  timestamp: new Date().toISOString(),
+  results: {
+    abandonedCarts: { checked: 12, sent: 2 },
+    nurture: { checked: 45, sent: 8 },
+    onboarding: { checked: 15, sent: 3 }
+  }
+});
+```
+
+---
+
+## STEP 7: Unsubscribe Endpoint
+
+Create `api/unsubscribe.js`:
+- Accepts email as query parameter (e.g., `/api/unsubscribe?email=user@example.com&token=xxx`)
+- Generate a simple token (hash of email + secret) to prevent abuse
+- Sets `unsubscribed = 1` in email_captures (INTEGER, not BOOLEAN)
+- Returns a simple HTML page: "You've been unsubscribed. We're sorry to see you go."
+
+Every email template must include an unsubscribe link that points to this endpoint with the user's email and token.
+
+---
+
+## STEP 8: Connect to Existing Systems
+
+### When the quiz is completed and email is captured:
+Make sure the archetype is saved to `email_captures.archetype` at the same time the email is captured. This may already be working — verify it. The archetype value should match the keys in ARCHETYPE_CONTENT (e.g., "chaotic-creative", "anxious-perfectionist", "structured-achiever", "novelty-seeker", "strategic-planner", "flexible-improviser").
+
+### When Stripe webhook fires for successful payment:
+Add the two updates from Step 2 (mark checkout_attempts as completed = 1, mark email_captures as purchased = 1 with purchase_date = NOW()).
+
+### Update existing welcome email:
+Replace the current welcome email copy with the improved version from the email templates. Use the archetype-specific quick wins from ARCHETYPE_CONTENT.
+
+---
+
+## STEP 9: Cron Job Setup
+
+Set up the email processor to run automatically every hour.
+
+**Option A (preferred):** If Replit supports scheduled tasks, create one that hits `GET /api/cron/process-emails?secret=${CRON_SECRET}` every hour.
+
+**Option B (fallback):** Create a self-invoking scheduler in `lib/cron-scheduler.js`:
+
+```javascript
+if (process.env.NODE_ENV === 'production' && process.env.CRON_SECRET) {
+  const INTERVAL = 60 * 60 * 1000; // 1 hour
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || process.env.REPLIT_DEV_DOMAIN;
+  
+  setInterval(async () => {
+    try {
+      console.log(`[CRON] Running email processor at ${new Date().toISOString()}`);
+      const response = await fetch(`${BASE_URL}/api/cron/process-emails`, {
+        headers: { 'x-cron-secret': process.env.CRON_SECRET }
+      });
+      const result = await response.json();
+      console.log(`[CRON] Result:`, result);
+    } catch (error) {
+      console.error(`[CRON] Failed:`, error.message);
+    }
+  }, INTERVAL);
+
+  // Run once on startup after 30 second delay
+  setTimeout(async () => {
+    try {
+      console.log(`[CRON] Initial run at ${new Date().toISOString()}`);
+      const response = await fetch(`${BASE_URL}/api/cron/process-emails`, {
+        headers: { 'x-cron-secret': process.env.CRON_SECRET }
+      });
+      const result = await response.json();
+      console.log(`[CRON] Initial result:`, result);
+    } catch (error) {
+      console.error(`[CRON] Initial run failed:`, error.message);
+    }
+  }, 30000);
+
+  console.log('[CRON] Email processor scheduled to run every hour');
+}
+```
+
+Import this file in the app's main entry point so it starts when the app boots.
+
+---
+
+## STEP 10: Testing
+
+Create a test route at `api/test-emails.js` (ONLY accessible in development or with a secret) that:
+1. Accepts an email address and archetype as parameters
+2. Sends all 9 email templates to that address one at a time
+3. Returns the results
+
+This lets me preview every email before going live.
+
+---
+
+## Summary of files to create/modify:
+
+### NEW FILES:
+- `lib/email-content.js` — archetype content map (Step 3)
+- `lib/email-templates.js` — 9 template functions (Step 4)
+- `lib/email-service.js` — send + log helper (Step 5)
+- `api/cron/process-emails.js` — scheduled processor (Step 6)
+- `api/unsubscribe.js` — unsubscribe handler (Step 7)
+- `api/test-emails.js` — testing route, dev only (Step 10)
+- `lib/cron-scheduler.js` — scheduled task runner (Step 9)
+
+### MODIFIED FILES:
+- Stripe webhook handler — add checkout tracking updates (Step 2)
+- Quiz completion / email capture handler — ensure archetype is saved (Step 8)
+- Existing welcome email — update copy to use new templates (Step 8)
+- App entry point — import cron scheduler (Step 9)
+
+### ENVIRONMENT VARIABLES NEEDED:
+- `RESEND_API_KEY` (should already exist)
+- `CRON_SECRET` (new — generate a random string for securing the cron endpoint)
+
+### CRITICAL REMINDERS:
+- This database uses INTEGER (0/1), NOT BOOLEAN. All checks should use = 0 or = 1.
+- Use the same database query pattern already used in the codebase (look at existing files for the pattern).
+- The email_captures and checkout_attempts tables are in the REPLIT PostgreSQL database, not Supabase.
+- Auth is in Supabase, data is in Replit PostgreSQL. Don't mix them up.
+
+Tell me which cron option (A or B) you used and show me the logs from the first successful run.

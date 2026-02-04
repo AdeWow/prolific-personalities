@@ -1188,3 +1188,634 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
 
   return { subject, html };
 }
+
+import { getArchetypeContent, formatArchetypeName } from './email-content';
+
+const BASE_URL = process.env.APP_URL || 'https://prolificpersonalities.com';
+
+function getEmailBaseStyles(): string {
+  return `
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7;
+      color: #1e293b;
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+    }
+    .header {
+      padding: 30px 30px 20px;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .logo {
+      width: 180px;
+      height: auto;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .content p {
+      margin: 0 0 20px 0;
+      font-size: 16px;
+    }
+    .highlight-box {
+      background: #f0fdf4;
+      border-left: 4px solid #4f9a94;
+      padding: 20px;
+      margin: 24px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #4f9a94 0%, #3d8b85 100%);
+      color: white !important;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .cta-center {
+      text-align: center;
+      margin: 32px 0;
+    }
+    .footer {
+      text-align: center;
+      padding: 30px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: 14px;
+    }
+    .footer a {
+      color: #4f9a94;
+    }
+    .unsubscribe {
+      margin-top: 16px;
+      font-size: 12px;
+    }
+    .unsubscribe a {
+      color: #94a3b8;
+    }
+    .signature {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e2e8f0;
+    }
+  `;
+}
+
+function getEmailHeader(): string {
+  return `
+    <div class="header">
+      <img src="${BASE_URL}/logo.png" alt="Prolific Personalities" class="logo" style="width: 180px; height: auto;">
+    </div>
+  `;
+}
+
+function getEmailFooter(email: string): string {
+  const unsubscribeUrl = `${BASE_URL}/unsubscribe?email=${encodeURIComponent(email)}`;
+  return `
+    <div class="footer">
+      <p><strong>Prolific Personalities</strong></p>
+      <p>prolificpersonalities.com</p>
+      <p class="unsubscribe">
+        <a href="${unsubscribeUrl}">Unsubscribe</a>
+      </p>
+    </div>
+  `;
+}
+
+export interface NurtureEmailUser {
+  email: string;
+  archetype: string;
+}
+
+export function generateAbandonedCartEmailV2(user: NurtureEmailUser): { subject: string; html: string } {
+  const archetypeName = formatArchetypeName(user.archetype);
+  const checkoutUrl = `${BASE_URL}/results?archetype=${user.archetype}#upsell`;
+  
+  const subject = "Still thinking it over? Here's what helped me decide";
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>${getEmailBaseStyles()}</style>
+    </head>
+    <body>
+      <div class="container">
+        ${getEmailHeader()}
+        <div class="content">
+          <p>Hey,</p>
+          
+          <p>I noticed you started checking out the ${archetypeName} Playbook but didn't complete your purchase. No worries at all — $19 is still a decision worth thinking about.</p>
+          
+          <p>I want to be straight with you about what you're getting:</p>
+          
+          <div class="highlight-box">
+            <p style="margin: 0 0 16px 0;"><strong>This is for you if:</strong></p>
+            <ul style="margin: 0; padding-left: 20px;">
+              <li>You've taken the quiz and want a complete system designed for your specific archetype</li>
+              <li>You're ready to actually implement strategies, not just read about them</li>
+              <li>You want research-backed approaches, not generic productivity advice</li>
+            </ul>
+          </div>
+          
+          <div class="highlight-box" style="background: #fef2f2; border-color: #ef4444;">
+            <p style="margin: 0 0 16px 0;"><strong>This probably isn't for you if:</strong></p>
+            <ul style="margin: 0; padding-left: 20px;">
+              <li>You're looking for a magic fix — this requires your participation</li>
+              <li>You already have a productivity system that's working well</li>
+              <li>You're more interested in reading about productivity than changing your habits</li>
+            </ul>
+          </div>
+          
+          <p>Either way, there's a <strong>30-day money-back guarantee</strong>. If the strategies don't help, you get a full refund. No questions, no hassle.</p>
+          
+          <p>If you decide it's right for you, here's the link:</p>
+          
+          <div class="cta-center">
+            <a href="${checkoutUrl}" class="cta-button">Complete Your Purchase</a>
+          </div>
+          
+          <div class="signature">
+            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+          </div>
+        </div>
+        ${getEmailFooter(user.email)}
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return { subject, html };
+}
+
+export function generateDay3NurtureEmail(user: NurtureEmailUser): { subject: string; html: string } {
+  const content = getArchetypeContent(user.archetype);
+  const archetypeName = content?.name || formatArchetypeName(user.archetype);
+  
+  const subject = `The hidden advantage of being a ${archetypeName}`;
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>${getEmailBaseStyles()}</style>
+    </head>
+    <body>
+      <div class="container">
+        ${getEmailHeader()}
+        <div class="content">
+          <p>Hey,</p>
+          
+          <p>Three days ago you discovered you're a <strong>${archetypeName}</strong>. Let me tell you why that's actually a significant advantage.</p>
+          
+          <p>${content?.day3Advantage || "Your unique productivity profile gives you strengths that others don't have. The key is learning to work with your natural tendencies rather than against them."}</p>
+          
+          <div class="highlight-box">
+            <p style="margin: 0 0 8px 0;"><strong>Quick Win for Today:</strong></p>
+            <p style="margin: 0;">${content?.day3QuickTip || "Start by identifying one task you've been avoiding and approach it in a new way that matches your natural working style."}</p>
+          </div>
+          
+          <p>This is just scratching the surface. The full ${archetypeName} Playbook goes deep on how to turn these insights into daily systems that actually stick.</p>
+          
+          <p>More coming in a couple days.</p>
+          
+          <div class="signature">
+            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+          </div>
+        </div>
+        ${getEmailFooter(user.email)}
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return { subject, html };
+}
+
+export function generateDay5NurtureEmail(user: NurtureEmailUser): { subject: string; html: string } {
+  const content = getArchetypeContent(user.archetype);
+  const archetypeName = content?.name || formatArchetypeName(user.archetype);
+  const playbookUrl = `${BASE_URL}/results?archetype=${user.archetype}#upsell`;
+  
+  const subject = `The #1 mistake ${archetypeName}s make (and it's not what you think)`;
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>${getEmailBaseStyles()}</style>
+    </head>
+    <body>
+      <div class="container">
+        ${getEmailHeader()}
+        <div class="content">
+          <p>Hey,</p>
+          
+          <p>I've analyzed thousands of ${archetypeName} profiles. There's one mistake that shows up over and over — and it's probably not what you'd expect.</p>
+          
+          <p>${content?.day5Mistake || "The most common mistake isn't about willpower or discipline. It's about using strategies designed for a different type of brain."}</p>
+          
+          <div class="highlight-box">
+            <p style="margin: 0 0 8px 0;"><strong>The Fix:</strong></p>
+            <p style="margin: 0;">${content?.day5Fix || "Try one small experiment today: approach your biggest task in a completely different way than you normally would."}</p>
+          </div>
+          
+          <p>The ${archetypeName} Playbook has the complete system for avoiding this trap — including specific tools and workflows designed for your cognitive style.</p>
+          
+          <div class="cta-center">
+            <a href="${playbookUrl}" class="cta-button">See the Full System</a>
+          </div>
+          
+          <div class="signature">
+            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+          </div>
+        </div>
+        ${getEmailFooter(user.email)}
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return { subject, html };
+}
+
+export function generateDay7NurtureEmail(user: NurtureEmailUser): { subject: string; html: string } {
+  const content = getArchetypeContent(user.archetype);
+  const archetypeName = content?.name || formatArchetypeName(user.archetype);
+  const playbookUrl = `${BASE_URL}/results?archetype=${user.archetype}#upsell`;
+  
+  const subject = "Stop using the wrong tools for your brain";
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>${getEmailBaseStyles()}</style>
+    </head>
+    <body>
+      <div class="container">
+        ${getEmailHeader()}
+        <div class="content">
+          <p>Hey,</p>
+          
+          <p>Here's something most productivity advice gets wrong: tool effectiveness depends entirely on your cognitive profile.</p>
+          
+          <p>Research on person-environment fit (Kristof-Brown et al., 2005) shows that the same tool can be transformative for one person and useless for another. It's not about finding the "best" tool — it's about finding the right tool <em>for you</em>.</p>
+          
+          <p>As a ${archetypeName}, here's what the research suggests:</p>
+          
+          <div class="highlight-box">
+            <p style="margin: 0;">${content?.day7Tool || "Choose tools that match your natural working style. The best productivity system is one you'll actually use consistently."}</p>
+          </div>
+          
+          <p>The playbook includes a complete tool-matching guide with specific recommendations for each aspect of the ${archetypeName} profile.</p>
+          
+          <div class="cta-center">
+            <a href="${playbookUrl}" class="cta-button">Get the Tool Matching Guide</a>
+          </div>
+          
+          <div class="signature">
+            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+          </div>
+        </div>
+        ${getEmailFooter(user.email)}
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return { subject, html };
+}
+
+export function generateDay10NurtureEmail(user: NurtureEmailUser): { subject: string; html: string } {
+  const content = getArchetypeContent(user.archetype);
+  const archetypeName = content?.name || formatArchetypeName(user.archetype);
+  const playbookUrl = `${BASE_URL}/results?archetype=${user.archetype}#upsell`;
+  
+  const subject = `How a ${archetypeName} went from stuck to unstoppable`;
+  
+  const stories: Record<string, { before: string; after: string; quote: string }> = {
+    "chaotic-creative": {
+      before: "I had 47 open browser tabs, 12 half-finished projects, and couldn't remember why I started any of them.",
+      after: "Now I capture everything in one place and rotate between my top 3 projects daily. I've shipped more in the last month than the previous six.",
+      quote: "The rotation system changed everything. I don't fight my brain anymore — I work with it."
+    },
+    "anxious-perfectionist": {
+      before: "I was spending 4 hours on emails that should take 20 minutes. Everything had to be perfect before I could hit send.",
+      after: "I now set timers and ship at 80%. The quality is still excellent, but I'm actually finishing things.",
+      quote: "My 80% really is other people's 100%. I just needed permission to believe that."
+    },
+    "structured-achiever": {
+      before: "My systems were so rigid that any unexpected change would derail my entire week. I was productive but fragile.",
+      after: "I built in checkpoint reviews and buffer time. My consistency is now sustainable instead of brittle.",
+      quote: "Learning when to break my own rules was the unlock I didn't know I needed."
+    },
+    "novelty-seeker": {
+      before: "I'd find a great productivity system, use it for a week, get bored, and abandon it. Repeat forever.",
+      after: "I stopped trying to find the 'perfect' system and started rotating between three that work. Boredom is now part of the plan.",
+      quote: "Rotation IS my system. I wish someone had told me that years ago."
+    },
+    "strategic-planner": {
+      before: "I spent weeks researching the best approach and never actually started. Analysis paralysis was my default state.",
+      after: "I now set decision deadlines with specific criteria. Research has a purpose instead of being procrastination in disguise.",
+      quote: "Pre-committing to when I'll decide removed the infinite loop."
+    },
+    "flexible-improviser": {
+      before: "I was great at putting out fires but had no sense of what I was building toward. Busy but not productive.",
+      after: "One weekly review changed everything. 30 minutes of planning gives me direction without killing my adaptability.",
+      quote: "I needed minimal structure, not no structure. Big difference."
+    }
+  };
+  
+  const story = stories[user.archetype] || stories["chaotic-creative"];
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>${getEmailBaseStyles()}</style>
+    </head>
+    <body>
+      <div class="container">
+        ${getEmailHeader()}
+        <div class="content">
+          <p>Hey,</p>
+          
+          <p>I wanted to share a story that might sound familiar.</p>
+          
+          <p><strong>Before:</strong></p>
+          <p style="font-style: italic; color: #64748b;">"${story.before}"</p>
+          
+          <p><strong>After working through the ${archetypeName} strategies:</strong></p>
+          <p style="font-style: italic; color: #64748b;">"${story.after}"</p>
+          
+          <div class="highlight-box">
+            <p style="margin: 0; font-style: italic;">"${story.quote}"</p>
+          </div>
+          
+          <p>If this resonates, the ${archetypeName} Playbook has the complete system that made this transformation possible.</p>
+          
+          <div class="cta-center">
+            <a href="${playbookUrl}" class="cta-button">Get the ${archetypeName} Playbook</a>
+          </div>
+          
+          <div class="signature">
+            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+          </div>
+        </div>
+        ${getEmailFooter(user.email)}
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return { subject, html };
+}
+
+export function generateDay14NurtureEmail(user: NurtureEmailUser): { subject: string; html: string } {
+  const content = getArchetypeContent(user.archetype);
+  const archetypeName = content?.name || formatArchetypeName(user.archetype);
+  const playbookUrl = `${BASE_URL}/results?archetype=${user.archetype}#upsell`;
+  
+  const subject = "I procrastinated on building an anti-procrastination platform (true story)";
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>${getEmailBaseStyles()}</style>
+    </head>
+    <body>
+      <div class="container">
+        ${getEmailHeader()}
+        <div class="content">
+          <p>Hey,</p>
+          
+          <p>True confession: I procrastinated on launching a platform designed to help people stop procrastinating. For <em>months</em>.</p>
+          
+          <p>I have ADHD. I know what it's like when your brain won't cooperate with your intentions. I've read every productivity book, tried every system, and blamed myself for every failure.</p>
+          
+          <p>Then I discovered Dr. Tim Pychyl's research at Carleton University. The breakthrough? <strong>Procrastination isn't a time management problem. It's an emotion regulation problem.</strong></p>
+          
+          <p>We don't avoid tasks because we're lazy. We avoid them because they trigger uncomfortable emotions — anxiety, boredom, frustration — and our brains choose short-term relief over long-term goals.</p>
+          
+          <p>The fix isn't better planning. It's understanding your specific emotional patterns and building systems that work <em>with</em> your brain instead of against it.</p>
+          
+          <p>That's what Prolific Personalities is. That's what the ${archetypeName} Playbook contains. Research-backed strategies designed for the brain you actually have — not the brain productivity gurus assume you should have.</p>
+          
+          <div class="cta-center">
+            <a href="${playbookUrl}" class="cta-button">Get the ${archetypeName} Playbook — $19</a>
+          </div>
+          
+          <p style="text-align: center; color: #64748b; font-size: 14px;">No countdown timer. No "limited spots." Just research-backed strategies designed for your archetype.</p>
+          
+          <div class="highlight-box" style="background: #f8fafc; border-color: #94a3b8;">
+            <p style="margin: 0; font-size: 14px; color: #64748b;"><strong>Note:</strong> This is the last email in this series. I won't keep filling your inbox. If you want the playbook, great. If not, no hard feelings.</p>
+          </div>
+          
+          <div class="signature">
+            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+          </div>
+        </div>
+        ${getEmailFooter(user.email)}
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return { subject, html };
+}
+
+export function generateDay3OnboardEmail(user: NurtureEmailUser): { subject: string; html: string } {
+  const content = getArchetypeContent(user.archetype);
+  const archetypeName = content?.name || formatArchetypeName(user.archetype);
+  const playbookUrl = `${BASE_URL}/playbook/${user.archetype}`;
+  
+  const subject = `Quick question about your ${archetypeName} playbook`;
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>${getEmailBaseStyles()}</style>
+    </head>
+    <body>
+      <div class="container">
+        ${getEmailHeader()}
+        <div class="content">
+          <p>Hey,</p>
+          
+          <p>Quick question: have you tried one strategy from the playbook yet?</p>
+          
+          <p>Research on implementation intentions (Gollwitzer, 1999) shows that specificity beats motivation every time. "I'll be more productive" doesn't work. "I'll try the 2-minute brain dump right after I finish my morning coffee" does.</p>
+          
+          <p>You don't need to do everything at once. Start with the strategy that feels least intimidating. The one where you think "yeah, I could probably do that today."</p>
+          
+          <div class="highlight-box">
+            <p style="margin: 0;"><strong>Pro tip:</strong> The first strategy in Chapter 1 is designed to be the easiest starting point. Even if you just read that section and try one thing, you're ahead of 90% of people who buy self-improvement resources.</p>
+          </div>
+          
+          <div class="cta-center">
+            <a href="${playbookUrl}" class="cta-button">Open Your Playbook</a>
+          </div>
+          
+          <p>Hit reply and let me know what you tried — I read every email.</p>
+          
+          <div class="signature">
+            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+          </div>
+        </div>
+        ${getEmailFooter(user.email)}
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return { subject, html };
+}
+
+export function generateDay7OnboardEmail(user: NurtureEmailUser): { subject: string; html: string } {
+  const content = getArchetypeContent(user.archetype);
+  const archetypeName = content?.name || formatArchetypeName(user.archetype);
+  const playbookUrl = `${BASE_URL}/playbook/${user.archetype}`;
+  
+  const subject = "One week in — here's what matters";
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>${getEmailBaseStyles()}</style>
+    </head>
+    <body>
+      <div class="container">
+        ${getEmailHeader()}
+        <div class="content">
+          <p>Hey,</p>
+          
+          <p>It's been a week since you got the ${archetypeName} Playbook. Here's what I want you to know:</p>
+          
+          <p><strong>If you've implemented one strategy — even imperfectly:</strong><br>
+          You're ahead of 90% of people who buy self-improvement resources. Seriously. Research from Lally et al. (2010) shows habit formation takes an average of 66 days. You're in the messy middle. Keep going.</p>
+          
+          <p><strong>If you tried something and it didn't work:</strong><br>
+          That's data, not failure. Every archetype has multiple strategies for a reason — different situations call for different approaches. Try another one.</p>
+          
+          <p><strong>If you haven't started yet:</strong><br>
+          No judgment. Today's a new day. Pick the smallest possible action from the playbook — something that takes less than 5 minutes — and do it before you close this email.</p>
+          
+          <div class="cta-center">
+            <a href="${playbookUrl}" class="cta-button">Continue Your Playbook</a>
+          </div>
+          
+          <p>Remember: progress isn't linear. What matters is that you keep showing up.</p>
+          
+          <div class="signature">
+            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+          </div>
+        </div>
+        ${getEmailFooter(user.email)}
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return { subject, html };
+}
+
+export function generateDay30OnboardEmail(user: NurtureEmailUser): { subject: string; html: string } {
+  const content = getArchetypeContent(user.archetype);
+  const archetypeName = content?.name || formatArchetypeName(user.archetype);
+  const quizUrl = `${BASE_URL}/quiz`;
+  
+  const subject = "30 days later — has your archetype shifted?";
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>${getEmailBaseStyles()}</style>
+    </head>
+    <body>
+      <div class="container">
+        ${getEmailHeader()}
+        <div class="content">
+          <p>Hey,</p>
+          
+          <p>It's been 30 days since you got the ${archetypeName} Playbook. I have a question for you:</p>
+          
+          <p><strong>Has your archetype shifted?</strong></p>
+          
+          <p>The 4-axis framework measures preferences, not fixed traits. As you grow and implement new strategies, your preferences can evolve. That's a sign of growth, not inconsistency.</p>
+          
+          <p>I'd encourage you to retake the quiz:</p>
+          
+          <ul style="margin: 20px 0; padding-left: 20px;">
+            <li><strong>If you get the same archetype:</strong> Your strategies are reinforcing your natural strengths. You're building on a solid foundation.</li>
+            <li><strong>If you get a different archetype:</strong> You've grown! And with lifetime access, you automatically get the new playbook too.</li>
+          </ul>
+          
+          <div class="cta-center">
+            <a href="${quizUrl}" class="cta-button">Retake the Assessment</a>
+          </div>
+          
+          <div class="highlight-box">
+            <p style="margin: 0 0 12px 0;"><strong>One more thing — would you share your experience?</strong></p>
+            <p style="margin: 0;">I'd love to hear from you. Just reply to this email and tell me:</p>
+            <ol style="margin: 12px 0 0 0; padding-left: 20px;">
+              <li>What was your biggest challenge before the playbook?</li>
+              <li>What shifted for you?</li>
+              <li>Would you recommend it to others?</li>
+            </ol>
+          </div>
+          
+          <p>Thanks for being part of this. Your feedback helps me make this better for everyone.</p>
+          
+          <div class="signature">
+            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+          </div>
+        </div>
+        ${getEmailFooter(user.email)}
+      </div>
+    </body>
+    </html>
+  `;
+  
+  return { subject, html };
+}
