@@ -2693,23 +2693,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
       }
 
-      // 6. Weekly Accountability Email
-      const weeklyEmail = generateWeeklyAccountabilityEmail({
-        firstName: null,
-        archetype: sampleArchetype.title,
-        weekNumber: 1,
-      });
-      await sendTestEmail("Weekly Accountability", () =>
-        resend.emails.send({
-          from: "Prolific Personalities <support@prolificpersonalities.com>",
-          to: email,
-          subject: `[TEST] ${weeklyEmail.subject}`,
-          html: weeklyEmail.html,
-        })
-      );
+      // 6. Weekly Accountability Emails (all 8 variations)
+      for (let week = 1; week <= 8; week++) {
+        const weeklyEmail = generateWeeklyAccountabilityEmail({
+          firstName: null,
+          archetype: sampleArchetype.title,
+          weekNumber: week,
+        });
+        await sendTestEmail(`Weekly Accountability Week ${week}`, () =>
+          resend.emails.send({
+            from: "Prolific Personalities <support@prolificpersonalities.com>",
+            to: email,
+            subject: `[TEST] ${weeklyEmail.subject}`,
+            html: weeklyEmail.html,
+          })
+        );
+      }
 
       console.log(`✅ Test emails sent to ${email}:`, results);
-      res.json({ message: "Test emails sent", results });
+      res.json({ message: "Test emails sent", results, totalEmails: results.length });
     } catch (error) {
       if (error instanceof z.ZodError) {
         res
@@ -2886,8 +2888,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get active Partner subscribers
       const partnerSubscribers = await storage.getActivePartnerSubscribers();
 
-      // Calculate week number (weeks since epoch, for consistent weekly tips)
-      const weekNumber = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
+      // Calculate week number (1-8 rotating cycle based on weeks since a fixed date)
+      // Using Jan 1, 2026 as epoch for cleaner tracking
+      const epochStart = new Date('2026-01-01').getTime();
+      const weeksSinceEpoch = Math.floor((Date.now() - epochStart) / (7 * 24 * 60 * 60 * 1000));
+      const weekNumber = (weeksSinceEpoch % 8) + 1; // 1-8 rotating cycle
       
       const results = [];
 

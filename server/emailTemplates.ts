@@ -927,70 +927,248 @@ export function generateAbandonedCartEmail(data: AbandonedCartEmailData): { subj
   return { subject, html };
 }
 
-// Weekly accountability email for Partner subscribers
+// Weekly accountability email for Partner subscribers - 8 unique rotating templates
 export interface WeeklyAccountabilityEmailData {
   firstName: string | null;
   archetype: string;
   weekNumber: number;
 }
 
-const weeklyTips: { [key: string]: string[] } = {
+// 8 weeks of archetype-specific tips (rotates every 8 weeks)
+const weeklyTipsBy8Weeks: { [archetype: string]: string[] } = {
   'the-dynamo': [
-    "This week, try timeboxing your most ambitious project into 25-minute sprints. Dynamos thrive with focused bursts followed by quick wins.",
-    "Challenge yourself: delegate one task you normally do yourself. Your visionary energy is needed for the big picture.",
-    "Schedule your most creative work for the first 2 hours of your day—that's when your energy signature peaks.",
-    "Try the 'two-list' method: keep your main goals list short (3 items max) and a separate 'parking lot' for ideas that excite you but aren't priorities.",
+    "Week 1 Challenge: Identify your top 3 energy-draining tasks and delegate or eliminate ONE this week. Dynamos create more impact by focusing on high-value work.",
+    "Week 2 Challenge: Try the '2-Hour Morning Block' — protect your first 2 hours for your most visionary work. No emails, no meetings, just creation.",
+    "Week 3 Challenge: Pick one project and break it into 25-minute sprints. Your burst energy is your superpower — harness it with intention.",
+    "Week 4 Challenge: Start a 'Parking Lot' list for brilliant ideas that pop up mid-task. Capture them, then return to focus. Your brain will thank you.",
+    "Week 5 Challenge: Delegate something you normally do yourself. Your visionary energy is too valuable for tasks others can handle.",
+    "Week 6 Challenge: Schedule a 'Strategic Thinking Hour' with zero agenda — let your mind wander to big-picture possibilities.",
+    "Week 7 Challenge: Review your past week's wins and identify what made you feel most alive. Do more of exactly that.",
+    "Week 8 Challenge: Create a 'Not-To-Do' list — what activities drain your energy without adding value? Cut one this week.",
   ],
   'the-catalyst': [
-    "This week, experiment with 'energy matching'—tackle collaborative tasks when you're feeling social, solo work when you need to recharge.",
-    "Set up three quick check-ins with teammates this week. Your collaborative nature drives team momentum.",
-    "Try documenting your decision-making process this week. It'll help you understand your intuitive leaps.",
-    "Schedule a 'creative collision' meeting—bring together two people who don't usually work together for fresh ideas.",
+    "Week 1 Challenge: Schedule 3 quick 15-minute check-ins with teammates. Your collaborative energy creates momentum for everyone.",
+    "Week 2 Challenge: Try 'energy matching' — tackle collaborative tasks when feeling social, solo work when you need to recharge.",
+    "Week 3 Challenge: Document one decision-making process this week. Understanding your intuitive leaps helps you trust them more.",
+    "Week 4 Challenge: Host a 'creative collision' — bring together two people who don't usually work together and facilitate a brainstorm.",
+    "Week 5 Challenge: Block 'connection time' in your calendar as firmly as you'd block a meeting. Relationships are your productivity fuel.",
+    "Week 6 Challenge: Ask someone for feedback on how you've helped them recently. Catalysts often underestimate their impact.",
+    "Week 7 Challenge: Take someone for coffee and just listen. Your strength in understanding others deepens with intentional practice.",
+    "Week 8 Challenge: Reflect on which collaborations energized you most this month. Seek more of those partnerships.",
   ],
   'the-architect': [
-    "Focus on optimizing one system this week. Small process improvements compound over time for Architects.",
-    "Schedule 90-minute deep work blocks for your most complex projects. Protect these times fiercely.",
-    "This week, document a process you've mastered. Your systematic approach helps others level up.",
-    "Try 'pre-mortem' thinking: before starting a project, imagine what could go wrong and plan around it.",
+    "Week 1 Challenge: Optimize one small system this week. Even a 5% improvement compounds massively over time.",
+    "Week 2 Challenge: Schedule a 90-minute deep work block and guard it fiercely. Your complex thinking needs uninterrupted space.",
+    "Week 3 Challenge: Document a process you've mastered so others can benefit from your systematic approach.",
+    "Week 4 Challenge: Try 'pre-mortem' thinking — before starting a project, imagine what could go wrong and plan around it.",
+    "Week 5 Challenge: Identify one area where 'good enough' would free up time for more important work. Perfect is the enemy of done.",
+    "Week 6 Challenge: Review your systems and ask: which one is due for an upgrade? Schedule time to improve it.",
+    "Week 7 Challenge: Teach someone your process for a task you do well. Explaining it often reveals improvements.",
+    "Week 8 Challenge: Create a template or checklist for a recurring task. Future you will be grateful.",
   ],
   'the-harmonizer': [
-    "This week, prioritize relationship-building alongside your tasks. Your strength is in connection.",
-    "Try batch-processing your communication—dedicate specific times for emails and messages to stay focused.",
-    "Schedule a 'listening tour'—have coffee with three colleagues to understand their challenges better.",
-    "This week, practice saying 'let me think about it' before committing to new requests.",
+    "Week 1 Challenge: Prioritize one relationship-building activity alongside your task list. Connection is your superpower.",
+    "Week 2 Challenge: Batch your communication — set specific times for emails and messages to protect your focus.",
+    "Week 3 Challenge: Schedule a 'listening tour' — have coffee with someone you want to understand better.",
+    "Week 4 Challenge: Practice saying 'let me think about it' before committing to new requests. Your time matters.",
+    "Week 5 Challenge: Identify one boundary you need to set this week. Harmonizers thrive when they protect their energy.",
+    "Week 6 Challenge: Notice when you're overgiving. Choose one area to give less so you can sustain your impact.",
+    "Week 7 Challenge: Celebrate a team win publicly. Your ability to see others' contributions is a gift.",
+    "Week 8 Challenge: Schedule 'solitude time' — even connectors need space to recharge and reflect.",
   ],
   'the-explorer': [
-    "Embrace your curiosity this week: allocate 30 minutes daily to explore a topic tangent to your main work.",
-    "Try connecting two unrelated ideas from different projects. Your exploratory mind finds unexpected solutions.",
-    "This week, start documenting your exploration journey—future you will thank you for the breadcrumbs.",
-    "Schedule 'wandering time' in your calendar. Explorers need space to discover unexpected connections.",
+    "Week 1 Challenge: Allocate 30 minutes daily to explore a topic tangent to your main work. Curiosity is your compass.",
+    "Week 2 Challenge: Connect two unrelated ideas from different projects. Your exploratory mind finds unexpected solutions.",
+    "Week 3 Challenge: Start documenting your exploration journey — breadcrumbs for your future self.",
+    "Week 4 Challenge: Schedule 'wandering time' in your calendar. Explorers need space to discover unexpected connections.",
+    "Week 5 Challenge: Share one interesting discovery with someone who might benefit. Exploration compounds when shared.",
+    "Week 6 Challenge: Revisit an old idea you shelved — does it connect to something you're working on now?",
+    "Week 7 Challenge: Set a 'completion checkpoint' — before starting something new, finish one thing in progress.",
+    "Week 8 Challenge: Create a 'curiosity log' — track what captures your attention this week. Patterns will emerge.",
   ],
   'the-anchor': [
-    "This week, reflect on how your consistent approach has helped your team. Stability is a superpower.",
-    "Try introducing one small change to your routine. Anchors grow by expanding comfort zones gradually.",
-    "Mentor someone this week—your reliable presence helps others feel grounded.",
-    "Create a 'consistency playbook' for a recurring task. Others can benefit from your systematic approach.",
+    "Week 1 Challenge: Reflect on how your consistent approach has helped your team lately. Stability is a superpower.",
+    "Week 2 Challenge: Introduce one small change to your routine. Anchors grow by expanding comfort zones gradually.",
+    "Week 3 Challenge: Mentor someone this week — your reliable presence helps others feel grounded.",
+    "Week 4 Challenge: Create a 'consistency playbook' for a recurring task. Others can benefit from your approach.",
+    "Week 5 Challenge: Identify one area where more flexibility might help. Small adaptations can strengthen your foundation.",
+    "Week 6 Challenge: Celebrate how your reliability has created trust. This is genuine value you provide.",
+    "Week 7 Challenge: Share your favorite routine or habit with someone who might benefit. Your systems work.",
+    "Week 8 Challenge: Review what's working well and recommit to those practices. Consistency is the key.",
+  ],
+  'strategic-planner': [
+    "Week 1 Challenge: Map out your top 3 goals for the quarter. Strategic Planners thrive with clear direction.",
+    "Week 2 Challenge: Review one plan from last month — what worked? What needs adjustment? Iterate with intention.",
+    "Week 3 Challenge: Break your biggest goal into weekly milestones. Your strength is turning vision into action.",
+    "Week 4 Challenge: Schedule a 'planning power hour' — dedicated time to think strategically about what's ahead.",
+    "Week 5 Challenge: Identify one area where you're over-planning. Sometimes the best plan is to start and learn.",
+    "Week 6 Challenge: Share your planning process with someone struggling to get organized. Your approach helps others.",
+    "Week 7 Challenge: Review your progress against your goals. Celebrate wins and adjust what's not working.",
+    "Week 8 Challenge: Create a 'decision framework' for a recurring choice. Strategic thinking scales through systems.",
   ],
 };
 
-const motivationalQuotes = [
+// 8 unique motivational quotes that rotate weekly
+const weeklyQuotes = [
   { quote: "Progress, not perfection, is the goal.", author: "Unknown" },
   { quote: "The secret of getting ahead is getting started.", author: "Mark Twain" },
   { quote: "Small daily improvements over time lead to stunning results.", author: "Robin Sharma" },
   { quote: "Productivity is never an accident. It is always the result of commitment to excellence.", author: "Paul J. Meyer" },
   { quote: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
   { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+  { quote: "Success is the sum of small efforts repeated day in and day out.", author: "Robert Collier" },
+  { quote: "What you do today can improve all your tomorrows.", author: "Ralph Marston" },
+];
+
+// 8 unique email themes with different formats
+interface WeeklyEmailTheme {
+  themeTitle: string;
+  emoji: string;
+  headerGradient: string;
+  introText: (archetype: string) => string;
+  challengeTitle: string;
+  reflectionQuestions: string[];
+  closingText: string;
+  ctaText: string;
+}
+
+const weeklyEmailThemes: WeeklyEmailTheme[] = [
+  {
+    themeTitle: "Weekly Momentum Check",
+    emoji: "🚀",
+    headerGradient: "linear-gradient(135deg, #4f9a94 0%, #3d8b85 100%)",
+    introText: (archetype) => `As a ${archetype}, your unique strengths set you up for a powerful week. Let's build on that momentum.`,
+    challengeTitle: "This Week's Growth Challenge",
+    reflectionQuestions: [
+      "What was your biggest win last week?",
+      "What challenge slowed you down?",
+      "What's your #1 priority this week?",
+    ],
+    closingText: "Small, consistent progress beats sporadic bursts. You've got this!",
+    ctaText: "Track Your Progress",
+  },
+  {
+    themeTitle: "Mindset Monday",
+    emoji: "🧠",
+    headerGradient: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+    introText: (archetype) => `Happy Monday! As a ${archetype}, your mindset is your greatest asset. Let's set the tone for an intentional week.`,
+    challengeTitle: "Your Mindset Shift This Week",
+    reflectionQuestions: [
+      "What limiting belief can you challenge this week?",
+      "What's one thing you're grateful for about your work style?",
+      "How can you show up as your best self today?",
+    ],
+    closingText: "Your thoughts shape your productivity. Choose empowering ones.",
+    ctaText: "View Your Insights",
+  },
+  {
+    themeTitle: "Energy Audit",
+    emoji: "⚡",
+    headerGradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+    introText: (archetype) => `Time for an energy check! As a ${archetype}, understanding what energizes you is key to sustainable productivity.`,
+    challengeTitle: "This Week's Energy Focus",
+    reflectionQuestions: [
+      "What activities gave you energy last week?",
+      "What drained your energy?",
+      "How can you do more of what energizes you?",
+    ],
+    closingText: "Protect your energy like the valuable resource it is.",
+    ctaText: "Optimize Your Energy",
+  },
+  {
+    themeTitle: "Deep Focus Friday Prep",
+    emoji: "🎯",
+    headerGradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+    introText: (archetype) => `Let's prepare for a week of focused work. As a ${archetype}, you have unique ways of achieving deep concentration.`,
+    challengeTitle: "Your Focus Challenge",
+    reflectionQuestions: [
+      "What's the ONE thing that would make this week a success?",
+      "What distractions will you eliminate?",
+      "When is your peak focus time?",
+    ],
+    closingText: "Deep focus is a skill. Each week you practice, you get stronger.",
+    ctaText: "Plan Your Focus Blocks",
+  },
+  {
+    themeTitle: "Progress Pulse",
+    emoji: "📊",
+    headerGradient: "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+    introText: (archetype) => `Let's take your progress pulse! As a ${archetype}, tracking your wins helps you build on what's working.`,
+    challengeTitle: "This Week's Progress Target",
+    reflectionQuestions: [
+      "What did you accomplish that you're proud of?",
+      "What's 1% better this week than last?",
+      "What habit is becoming more automatic?",
+    ],
+    closingText: "Celebrate small wins. They compound into massive results.",
+    ctaText: "See Your Progress",
+  },
+  {
+    themeTitle: "Strategic Reset",
+    emoji: "🔄",
+    headerGradient: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+    introText: (archetype) => `Time for a strategic reset! As a ${archetype}, periodic resets help you stay aligned with what matters most.`,
+    challengeTitle: "Your Reset Focus",
+    reflectionQuestions: [
+      "What's working that you should keep doing?",
+      "What's not working that you should stop?",
+      "What new approach might help?",
+    ],
+    closingText: "Sometimes progress means stepping back to leap forward.",
+    ctaText: "Refine Your Strategy",
+  },
+  {
+    themeTitle: "Strengths Spotlight",
+    emoji: "💪",
+    headerGradient: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+    introText: (archetype) => `Let's spotlight your strengths! As a ${archetype}, leaning into what you do best accelerates your results.`,
+    challengeTitle: "Leverage Your Strengths",
+    reflectionQuestions: [
+      "When did you feel 'in the zone' last week?",
+      "How can you use your natural talents more?",
+      "What strength has others noticed in you?",
+    ],
+    closingText: "Your unique combination of strengths is your competitive advantage.",
+    ctaText: "Explore Your Strengths",
+  },
+  {
+    themeTitle: "Intentional Week Ahead",
+    emoji: "🌟",
+    headerGradient: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
+    introText: (archetype) => `Let's set intentions for the week ahead! As a ${archetype}, clarity of purpose drives your best work.`,
+    challengeTitle: "Your Weekly Intention",
+    reflectionQuestions: [
+      "What word or theme will guide your week?",
+      "What will you say 'no' to protect your priorities?",
+      "How will you know this week was successful?",
+    ],
+    closingText: "Intention plus action equals transformation.",
+    ctaText: "Set Your Intentions",
+  },
 ];
 
 export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmailData): { subject: string; html: string } {
   const { firstName, archetype, weekNumber } = data;
+  
+  // Use modulo 8 to rotate through themes (weeks 1-8 cycle)
+  const themeIndex = (weekNumber - 1) % 8;
+  const theme = weeklyEmailThemes[themeIndex];
+  const quote = weeklyQuotes[themeIndex];
+  
+  // Get archetype-specific tip for this week
   const archetypeKey = archetype.toLowerCase().replace(/ /g, '-');
-  const tips = weeklyTips[archetypeKey] || weeklyTips['the-architect'];
-  const weeklyTip = tips[weekNumber % tips.length];
-  const quote = motivationalQuotes[weekNumber % motivationalQuotes.length];
+  const tips = weeklyTipsBy8Weeks[archetypeKey] || weeklyTipsBy8Weeks['the-architect'] || weeklyTipsBy8Weeks['strategic-planner'];
+  const weeklyTip = tips[themeIndex];
   
   const greeting = firstName ? `Hi ${firstName}` : "Hey there";
-  const subject = `Week ${weekNumber}: Your ${archetype} Productivity Check-in`;
+  const subject = `${theme.emoji} ${theme.themeTitle}: Your ${archetype} Weekly Check-in`;
+  
+  const reflectionHtml = theme.reflectionQuestions.map(q => `
+    <div style="display: flex; align-items: flex-start; margin-bottom: 8px; color: #475569;">
+      <div style="width: 20px; height: 20px; border: 2px solid #4f9a94; border-radius: 4px; margin-right: 12px; flex-shrink: 0;"></div>
+      <span>${q}</span>
+    </div>
+  `).join('');
   
   const html = `
     <!DOCTYPE html>
@@ -999,186 +1177,51 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>${subject}</title>
-      <style>
-        body {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-          line-height: 1.6;
-          color: #1e293b;
-          background-color: #f8fafc;
-          margin: 0;
-          padding: 0;
-        }
-        .container {
-          max-width: 600px;
-          margin: 0 auto;
-          background-color: #ffffff;
-        }
-        .header {
-          background: linear-gradient(135deg, #4f9a94 0%, #d4a574 100%);
-          color: white;
-          padding: 40px 30px;
-          text-align: center;
-        }
-        .header h1 {
-          margin: 0 0 10px 0;
-          font-size: 28px;
-          font-weight: 700;
-        }
-        .header .week-badge {
-          display: inline-block;
-          background: rgba(255,255,255,0.2);
-          padding: 4px 16px;
-          border-radius: 20px;
-          font-size: 14px;
-        }
-        .content {
-          padding: 40px 30px;
-        }
-        .greeting {
-          font-size: 18px;
-          margin-bottom: 20px;
-        }
-        .tip-card {
-          background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 100%);
-          border-left: 4px solid #4f9a94;
-          padding: 20px;
-          margin: 24px 0;
-          border-radius: 0 8px 8px 0;
-        }
-        .tip-title {
-          font-size: 16px;
-          font-weight: 600;
-          color: #4f9a94;
-          margin: 0 0 12px 0;
-        }
-        .tip-text {
-          color: #334155;
-          margin: 0;
-          font-size: 15px;
-        }
-        .quote-section {
-          text-align: center;
-          padding: 24px;
-          background: #fef3c7;
-          border-radius: 8px;
-          margin: 24px 0;
-        }
-        .quote-text {
-          font-style: italic;
-          font-size: 18px;
-          color: #92400e;
-          margin: 0 0 8px 0;
-        }
-        .quote-author {
-          color: #b45309;
-          font-size: 14px;
-        }
-        .checklist {
-          background: #f8fafc;
-          padding: 20px;
-          border-radius: 8px;
-          margin: 24px 0;
-        }
-        .checklist-title {
-          font-weight: 600;
-          margin: 0 0 12px 0;
-          color: #1e293b;
-        }
-        .checklist-item {
-          display: flex;
-          align-items: flex-start;
-          margin-bottom: 8px;
-          color: #475569;
-        }
-        .checkbox {
-          width: 20px;
-          height: 20px;
-          border: 2px solid #4f9a94;
-          border-radius: 4px;
-          margin-right: 12px;
-          flex-shrink: 0;
-        }
-        .cta-button {
-          display: inline-block;
-          background: linear-gradient(135deg, #4f9a94 0%, #3d8b85 100%);
-          color: white !important;
-          text-decoration: none;
-          padding: 14px 32px;
-          border-radius: 8px;
-          font-weight: 600;
-          font-size: 16px;
-          margin-top: 20px;
-        }
-        .footer {
-          text-align: center;
-          padding: 30px;
-          background: #f1f5f9;
-          color: #64748b;
-          font-size: 14px;
-        }
-        .footer a {
-          color: #4f9a94;
-        }
-        .unsubscribe {
-          margin-top: 16px;
-          font-size: 12px;
-        }
-        .unsubscribe a {
-          color: #94a3b8;
-        }
-      </style>
     </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <span class="week-badge">Week ${weekNumber}</span>
-          <h1>Your Weekly Check-in</h1>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #1e293b; background-color: #f8fafc; margin: 0; padding: 0;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        
+        <div style="background: ${theme.headerGradient}; color: white; padding: 40px 30px; text-align: center;">
+          <span style="display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 16px; border-radius: 20px; font-size: 14px;">Week ${((weekNumber - 1) % 8) + 1} of 8</span>
+          <h1 style="margin: 10px 0 0 0; font-size: 28px; font-weight: 700;">${theme.emoji} ${theme.themeTitle}</h1>
         </div>
         
-        <div class="content">
-          <p class="greeting">${greeting},</p>
+        <div style="padding: 40px 30px;">
+          <p style="font-size: 18px; margin-bottom: 20px;">${greeting},</p>
           
-          <p>Welcome to your weekly productivity check-in as a <strong>${archetype}</strong>. Let's make this week count!</p>
+          <p style="margin-bottom: 20px;">${theme.introText(archetype)}</p>
           
-          <div class="tip-card">
-            <h3 class="tip-title">This Week's Focus</h3>
-            <p class="tip-text">${weeklyTip}</p>
+          <div style="background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 100%); border-left: 4px solid #4f9a94; padding: 20px; margin: 24px 0; border-radius: 0 8px 8px 0;">
+            <h3 style="font-size: 16px; font-weight: 600; color: #4f9a94; margin: 0 0 12px 0;">${theme.challengeTitle}</h3>
+            <p style="color: #334155; margin: 0; font-size: 15px;">${weeklyTip}</p>
           </div>
           
-          <div class="quote-section">
-            <p class="quote-text">"${quote.quote}"</p>
-            <span class="quote-author">— ${quote.author}</span>
+          <div style="text-align: center; padding: 24px; background: #fef3c7; border-radius: 8px; margin: 24px 0;">
+            <p style="font-style: italic; font-size: 18px; color: #92400e; margin: 0 0 8px 0;">"${quote.quote}"</p>
+            <span style="color: #b45309; font-size: 14px;">— ${quote.author}</span>
           </div>
           
-          <div class="checklist">
-            <h3 class="checklist-title">Quick Weekly Reflection</h3>
-            <div class="checklist-item">
-              <div class="checkbox"></div>
-              <span>What was your biggest win last week?</span>
-            </div>
-            <div class="checklist-item">
-              <div class="checkbox"></div>
-              <span>What challenge slowed you down?</span>
-            </div>
-            <div class="checklist-item">
-              <div class="checkbox"></div>
-              <span>What's your #1 priority this week?</span>
-            </div>
+          <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 24px 0;">
+            <h3 style="font-weight: 600; margin: 0 0 12px 0; color: #1e293b;">Quick Weekly Reflection</h3>
+            ${reflectionHtml}
           </div>
           
-          <p>Remember: small, consistent progress beats sporadic bursts of productivity. You've got this!</p>
+          <p style="margin-bottom: 20px;">${theme.closingText}</p>
           
           <div style="text-align: center;">
-            <a href="https://prolificpersonalities.com/dashboard" class="cta-button">View Your Progress</a>
+            <a href="https://prolificpersonalities.com/dashboard" style="display: inline-block; background: linear-gradient(135deg, #4f9a94 0%, #3d8b85 100%); color: white !important; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; margin-top: 20px;">${theme.ctaText}</a>
           </div>
+          
+          <p style="margin-top: 30px; color: #64748b; font-size: 14px;">Keep going — you're building something great,</p>
+          <p style="color: #1e293b; font-weight: 600;">— A.</p>
         </div>
 
-        <div class="footer">
-          <p><strong>Prolific Personalities</strong></p>
-          <p>Your Partner in Productivity</p>
-          <p class="unsubscribe">
+        <div style="text-align: center; padding: 30px; background: #f1f5f9; color: #64748b; font-size: 14px;">
+          <p style="margin: 0;"><strong>Prolific Personalities</strong></p>
+          <p style="margin: 8px 0 0 0;">Your Partner in Productivity</p>
+          <p style="margin-top: 16px; font-size: 12px;">
             You're receiving this as a Partner subscriber.<br>
-            <a href="https://prolificpersonalities.com/settings">Manage email preferences</a>
+            <a href="https://prolificpersonalities.com/settings" style="color: #94a3b8;">Manage email preferences</a>
           </p>
         </div>
       </div>
