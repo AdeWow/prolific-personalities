@@ -2565,85 +2565,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
         task: 80,
       };
 
-      const results = [];
+      const results: Array<{ type: string; status: string; error?: string; resendId?: string }> = [];
+      
+      // Helper function to send email with proper error checking and delay
+      const sendTestEmail = async (name: string, sendFn: () => Promise<{ data: any; error: any }>) => {
+        try {
+          const { data, error } = await sendFn();
+          if (error) {
+            console.error(`❌ ${name} failed:`, error);
+            results.push({ type: name, status: "failed", error: error.message || String(error) });
+          } else {
+            console.log(`✅ ${name} sent:`, data?.id);
+            results.push({ type: name, status: "sent", resendId: data?.id });
+          }
+          // Delay of 600ms to stay under Resend's 2 requests/second rate limit
+          await new Promise(resolve => setTimeout(resolve, 600));
+        } catch (e) {
+          console.error(`❌ ${name} threw error:`, e);
+          results.push({ type: name, status: "failed", error: String(e) });
+        }
+      };
 
       // 1. Send Welcome Email
-      try {
-        const welcomeEmail = generateWelcomeEmail({
-          recipientEmail: email,
-          archetype: {
-            id: sampleArchetype.id,
-            title: sampleArchetype.title,
-          },
-          resultsUrl: `${baseUrl}/results?session=test-session-123`,
-          unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
-        });
-
-        await resend.emails.send({
+      await sendTestEmail("Welcome Email", () => 
+        resend.emails.send({
           from: "Prolific Personalities <support@prolificpersonalities.com>",
           to: email,
-          subject: `[TEST] ${welcomeEmail.subject}`,
-          html: welcomeEmail.html,
-        });
-        results.push({ type: "Welcome Email", status: "sent" });
-      } catch (e) {
-        results.push({
-          type: "Welcome Email",
-          status: "failed",
-          error: String(e),
-        });
-      }
+          subject: `[TEST] ${generateWelcomeEmail({
+            recipientEmail: email,
+            archetype: { id: sampleArchetype.id, title: sampleArchetype.title },
+            resultsUrl: `${baseUrl}/results?session=test-session-123`,
+            unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
+          }).subject}`,
+          html: generateWelcomeEmail({
+            recipientEmail: email,
+            archetype: { id: sampleArchetype.id, title: sampleArchetype.title },
+            resultsUrl: `${baseUrl}/results?session=test-session-123`,
+            unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
+          }).html,
+        })
+      );
 
       // 2. Send Abandoned Cart Email
-      try {
-        const abandonedCartEmail = generateAbandonedCartEmail({
-          recipientEmail: email,
-          archetype: {
-            id: sampleArchetype.id,
-            title: sampleArchetype.title,
-          },
-          checkoutUrl: `${baseUrl}/results/test-session-123#premium`,
-          unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
-        });
-
-        await resend.emails.send({
+      await sendTestEmail("Abandoned Cart Email", () => 
+        resend.emails.send({
           from: "Prolific Personalities <support@prolificpersonalities.com>",
           to: email,
-          subject: `[TEST] ${abandonedCartEmail.subject}`,
-          html: abandonedCartEmail.html,
-        });
-        results.push({ type: "Abandoned Cart Email", status: "sent" });
-      } catch (e) {
-        results.push({
-          type: "Abandoned Cart Email",
-          status: "failed",
-          error: String(e),
-        });
-      }
+          subject: `[TEST] ${generateAbandonedCartEmail({
+            recipientEmail: email,
+            archetype: { id: sampleArchetype.id, title: sampleArchetype.title },
+            checkoutUrl: `${baseUrl}/results/test-session-123#premium`,
+            unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
+          }).subject}`,
+          html: generateAbandonedCartEmail({
+            recipientEmail: email,
+            archetype: { id: sampleArchetype.id, title: sampleArchetype.title },
+            checkoutUrl: `${baseUrl}/results/test-session-123#premium`,
+            unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
+          }).html,
+        })
+      );
 
       // 3. Send Results Email
-      try {
-        const resultsEmail = generateResultsEmail({
-          recipientEmail: email,
-          archetype: sampleArchetype,
-          scores: sampleScores,
-          resultsUrl: `${baseUrl}/results/test-session-123`,
-        });
-
-        await resend.emails.send({
+      await sendTestEmail("Results Email", () => 
+        resend.emails.send({
           from: "Prolific Personalities <support@prolificpersonalities.com>",
           to: email,
-          subject: `[TEST] ${resultsEmail.subject}`,
-          html: resultsEmail.html,
-        });
-        results.push({ type: "Results Email", status: "sent" });
-      } catch (e) {
-        results.push({
-          type: "Results Email",
-          status: "failed",
-          error: String(e),
-        });
-      }
+          subject: `[TEST] ${generateResultsEmail({
+            recipientEmail: email,
+            archetype: sampleArchetype,
+            scores: sampleScores,
+            resultsUrl: `${baseUrl}/results/test-session-123`,
+          }).subject}`,
+          html: generateResultsEmail({
+            recipientEmail: email,
+            archetype: sampleArchetype,
+            scores: sampleScores,
+            resultsUrl: `${baseUrl}/results/test-session-123`,
+          }).html,
+        })
+      );
 
       // Sample user data for nurture/onboarding emails
       const sampleUser = {
@@ -2662,18 +2663,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ];
 
       for (const { name, generator } of nurtureEmails) {
-        try {
-          const { subject, html } = generator(sampleUser);
-          await resend.emails.send({
+        const { subject, html } = generator(sampleUser);
+        await sendTestEmail(name, () =>
+          resend.emails.send({
             from: "Prolific Personalities <support@prolificpersonalities.com>",
             to: email,
             subject: `[TEST] ${subject}`,
             html,
-          });
-          results.push({ type: name, status: "sent" });
-        } catch (e) {
-          results.push({ type: name, status: "failed", error: String(e) });
-        }
+          })
+        );
       }
 
       // 5. Onboarding Sequence Emails (3 emails)
@@ -2684,38 +2682,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ];
 
       for (const { name, generator } of onboardingEmails) {
-        try {
-          const { subject, html } = generator(sampleUser);
-          await resend.emails.send({
+        const { subject, html } = generator(sampleUser);
+        await sendTestEmail(name, () =>
+          resend.emails.send({
             from: "Prolific Personalities <support@prolificpersonalities.com>",
             to: email,
             subject: `[TEST] ${subject}`,
             html,
-          });
-          results.push({ type: name, status: "sent" });
-        } catch (e) {
-          results.push({ type: name, status: "failed", error: String(e) });
-        }
+          })
+        );
       }
 
       // 6. Weekly Accountability Email
-      try {
-        const weeklyEmail = generateWeeklyAccountabilityEmail({
-          firstName: null,
-          archetype: sampleArchetype.title,
-          weekNumber: 1,
-        });
-
-        await resend.emails.send({
+      const weeklyEmail = generateWeeklyAccountabilityEmail({
+        firstName: null,
+        archetype: sampleArchetype.title,
+        weekNumber: 1,
+      });
+      await sendTestEmail("Weekly Accountability", () =>
+        resend.emails.send({
           from: "Prolific Personalities <support@prolificpersonalities.com>",
           to: email,
           subject: `[TEST] ${weeklyEmail.subject}`,
           html: weeklyEmail.html,
-        });
-        results.push({ type: "Weekly Accountability", status: "sent" });
-      } catch (e) {
-        results.push({ type: "Weekly Accountability", status: "failed", error: String(e) });
-      }
+        })
+      );
 
       console.log(`✅ Test emails sent to ${email}:`, results);
       res.json({ message: "Test emails sent", results });
