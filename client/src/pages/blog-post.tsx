@@ -3,73 +3,12 @@ import { useEffect, useRef } from 'react';
 import { blogPosts } from '@/data/blog-posts';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Calendar, Clock, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { trackEvent } from '@/lib/analytics';
 import { SEOHead } from '@/components/seo-head';
-
-function renderInlineFormatting(text: string): (string | JSX.Element)[] {
-  const elements: (string | JSX.Element)[] = [];
-  let remaining = text;
-  let keyIndex = 0;
-  
-  while (remaining.length > 0) {
-    // Check for links [text](url)
-    const linkMatch = remaining.match(/\[([^\]]+)\]\(([^)]+)\)/);
-    // Check for bold **text**
-    const boldMatch = remaining.match(/\*\*([^*]+)\*\*/);
-    // Check for italic *text* (but not bold)
-    const italicMatch = remaining.match(/(?<!\*)\*([^*]+)\*(?!\*)/);
-    
-    // Find the earliest match
-    const matches = [
-      { type: 'link', match: linkMatch, index: linkMatch?.index ?? Infinity },
-      { type: 'bold', match: boldMatch, index: boldMatch?.index ?? Infinity },
-      { type: 'italic', match: italicMatch, index: italicMatch?.index ?? Infinity },
-    ].filter(m => m.match).sort((a, b) => a.index - b.index);
-    
-    if (matches.length === 0) {
-      elements.push(remaining);
-      break;
-    }
-    
-    const first = matches[0];
-    
-    // Add text before the match
-    if (first.index > 0) {
-      elements.push(remaining.slice(0, first.index));
-    }
-    
-    if (first.type === 'link' && first.match) {
-      const [fullMatch, linkText, url] = first.match;
-      elements.push(
-        <a key={keyIndex++} href={url} className="text-primary hover:underline font-medium">
-          {linkText}
-        </a>
-      );
-      remaining = remaining.slice(first.index + fullMatch.length);
-    } else if (first.type === 'bold' && first.match) {
-      const [fullMatch, boldText] = first.match;
-      elements.push(
-        <strong key={keyIndex++} className="font-semibold text-gray-900 dark:text-white">
-          {boldText}
-        </strong>
-      );
-      remaining = remaining.slice(first.index + fullMatch.length);
-    } else if (first.type === 'italic' && first.match) {
-      const [fullMatch, italicText] = first.match;
-      elements.push(
-        <em key={keyIndex++} className="italic">
-          {italicText}
-        </em>
-      );
-      remaining = remaining.slice(first.index + fullMatch.length);
-    }
-  }
-  
-  return elements;
-}
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function BlogPostPage() {
   const [, params] = useRoute('/blog/:slug');
@@ -203,88 +142,22 @@ export default function BlogPostPage() {
         )}
 
         {/* Article Content */}
-        <div className="max-w-none mb-16">
-          {post.content.split('\n\n').map((paragraph, index) => {
-            // Handle code blocks
-            if (paragraph.startsWith('```')) {
-              const lines = paragraph.split('\n');
-              const codeContent = lines.slice(1, -1).join('\n');
-              return (
-                <pre key={index} className="mb-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-x-auto">
-                  <code className="text-base text-gray-800 dark:text-gray-200 font-mono whitespace-pre">
-                    {codeContent}
-                  </code>
-                </pre>
-              );
-            }
-            
-            // Handle H2 headings
-            if (paragraph.startsWith('## ')) {
-              const heading = paragraph.replace('## ', '');
-              return (
-                <h2 key={index} className="text-2xl md:text-3xl font-bold mt-12 mb-6 text-gray-900 dark:text-white">
-                  {heading}
-                </h2>
-              );
-            }
-            
-            // Handle H3 headings
-            if (paragraph.startsWith('### ')) {
-              const heading = paragraph.replace('### ', '');
-              return (
-                <h3 key={index} className="text-xl md:text-2xl font-bold mt-10 mb-4 text-gray-900 dark:text-white">
-                  {heading}
-                </h3>
-              );
-            }
-            
-            // Handle horizontal rules
-            if (paragraph.trim() === '---') {
-              return <hr key={index} className="my-10 border-gray-200 dark:border-gray-700" />;
-            }
-            
-            // Handle bullet lists (lines starting with -)
-            if (paragraph.includes('\n-') || paragraph.startsWith('-')) {
-              const lines = paragraph.split('\n').filter(line => line.trim());
-              return (
-                <ul key={index} className="mb-8 space-y-3 pl-6">
-                  {lines.map((line, i) => {
-                    const content = line.replace(/^-\s*/, '');
-                    return (
-                      <li key={i} className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed list-disc">
-                        {renderInlineFormatting(content)}
-                      </li>
-                    );
-                  })}
-                </ul>
-              );
-            }
-            
-            // Handle numbered lists
-            if (/^\d+\.\s/.test(paragraph)) {
-              const lines = paragraph.split('\n').filter(line => line.trim());
-              return (
-                <ol key={index} className="mb-8 space-y-3 pl-6">
-                  {lines.map((line, i) => {
-                    const content = line.replace(/^\d+\.\s*/, '');
-                    return (
-                      <li key={i} className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed list-decimal">
-                        {renderInlineFormatting(content)}
-                      </li>
-                    );
-                  })}
-                </ol>
-              );
-            }
-            
-            // Regular paragraphs with inline formatting
-            return (
-              <p key={index} className="mb-6 text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-                {renderInlineFormatting(paragraph)}
-              </p>
-            );
-          })}
-        </div>
+        <article className="prose prose-lg prose-slate dark:prose-invert max-w-none mb-16
+          prose-headings:text-gray-900 dark:prose-headings:text-white
+          prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:font-bold prose-h2:mt-12 prose-h2:mb-6
+          prose-h3:text-xl prose-h3:md:text-2xl prose-h3:font-bold prose-h3:mt-10 prose-h3:mb-4
+          prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-6
+          prose-li:text-gray-700 dark:prose-li:text-gray-300 prose-li:my-1
+          prose-ul:pl-6 prose-ol:pl-6 prose-ul:my-4 prose-ol:my-4
+          prose-strong:font-semibold prose-strong:text-gray-900 dark:prose-strong:text-white
+          prose-a:text-primary prose-a:font-medium hover:prose-a:underline
+          prose-hr:my-10 prose-hr:border-gray-200 dark:prose-hr:border-gray-700
+          prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800 prose-pre:rounded-lg prose-pre:p-6
+          prose-code:text-gray-800 dark:prose-code:text-gray-200">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {post.content}
+          </ReactMarkdown>
+        </article>
 
         {/* CTA Card */}
         <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 border-2 border-primary/20 dark:border-primary/30 p-8 text-center" data-testid="card-cta-assessment">

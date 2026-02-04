@@ -1,0 +1,93 @@
+**bold** is showing as literal characters instead of bold text.
+I don’t know the file name—find and fix it.
+
+1) Locate the broken content
+
+Search the repo for the exact strings shown in the screenshot:
+
+"Why This Matters for Productivity"
+
+"Here's what the assessment revealed about me:"
+
+"My actual strengths:"
+
+"What I'm NOT good at:"
+
+"Time-blocking?"
+
+"Daily routines?"
+
+"Habit stacking?"
+
+Identify which blog post file this is (MD/MDX, CMS content, or JSON/DB content rendered in a component).
+
+2) Determine why formatting is broken
+
+Check which of these applies and fix appropriately:
+Case A — Markdown is being rendered as plain text
+
+The content contains markdown syntax (**, -) but is output in JSX like {content} without a markdown renderer.
+
+Fix by rendering with a markdown component such as react-markdown (and remark-gfm for proper lists).
+
+Case B — Markdown is rendered, but Tailwind resets are removing list styling
+
+Lists may have list-style: none due to Tailwind preflight / global CSS.
+
+Fix by applying proper list classes to the blog content container:
+
+prose classes (preferred): Tailwind Typography plugin
+
+or manual: space-y-4, prose, list-disc, list-decimal, pl-6, and nested list spacing.
+
+Case C — The content is stored as HTML but missing styles
+
+If it’s HTML injected via dangerouslySetInnerHTML, wrap it with a “prose” container and ensure nested lists and headings have spacing.
+
+3) Implement the correct rendering
+
+Preferred solution (clean + consistent):
+
+Install and use Tailwind Typography (@tailwindcss/typography) if not already enabled.
+
+Wrap blog content in:
+
+<article className="prose prose-slate max-w-none prose-li:my-1 prose-ul:pl-6 prose-ol:pl-6 prose-strong:font-semibold">...</article>
+
+If markdown rendering is missing:
+
+Add react-markdown and remark-gfm
+
+Render content like:
+
+<ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+
+Make sure:
+
+**bold** renders as <strong>
+
+Nested bullet lists indent properly
+
+Spacing between sections is readable (headings, paragraphs, lists)
+
+4) Fix the specific structure in this section
+
+The structure should look like:
+
+Heading: “Why This Matters for Productivity”
+
+Paragraph
+
+Bullet section “My actual strengths:” (bold label) with a list beneath it
+
+Bullet section “What I’m NOT good at:” (bold label) with a list beneath it
+
+Paragraphs below with proper spacing
+
+5) Deliverables
+
+Update the blog rendering so this post (and other posts) render markdown correctly.
+
+Provide a brief summary of what was wrong and which files you edited.
+
+Ensure the page builds with TypeScript and formatting is correct in the browser.
