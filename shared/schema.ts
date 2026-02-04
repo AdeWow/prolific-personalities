@@ -100,6 +100,31 @@ export const emailCaptures = pgTable("email_captures", {
   subscribed: integer("subscribed").notNull().default(1), // 1 = subscribed, 0 = unsubscribed
   welcomeEmailSent: integer("welcome_email_sent").notNull().default(0), // 0 = not sent, 1 = sent
   capturedAt: timestamp("captured_at").defaultNow().notNull(),
+  // Nurture sequence tracking (pre-purchase)
+  day3NurtureSent: integer("day3_nurture_sent").notNull().default(0),
+  day5NurtureSent: integer("day5_nurture_sent").notNull().default(0),
+  day7NurtureSent: integer("day7_nurture_sent").notNull().default(0),
+  day10NurtureSent: integer("day10_nurture_sent").notNull().default(0),
+  day14NurtureSent: integer("day14_nurture_sent").notNull().default(0),
+  // Purchase tracking
+  purchased: integer("purchased").notNull().default(0),
+  purchaseDate: timestamp("purchase_date"),
+  // Onboarding sequence tracking (post-purchase)
+  day3OnboardSent: integer("day3_onboard_sent").notNull().default(0),
+  day7OnboardSent: integer("day7_onboard_sent").notNull().default(0),
+  day30OnboardSent: integer("day30_onboard_sent").notNull().default(0),
+  // Unsubscribe tracking
+  unsubscribed: integer("unsubscribed").notNull().default(0),
+});
+
+export const emailLog = pgTable("email_log", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull(),
+  emailType: text("email_type").notNull(),
+  archetype: text("archetype"),
+  sentAt: timestamp("sent_at").defaultNow().notNull(),
+  resendId: text("resend_id"),
+  status: text("status").notNull().default("sent"),
 });
 
 export const checkoutAttempts = pgTable("checkout_attempts", {
@@ -208,6 +233,22 @@ export const insertEmailCaptureSchema = createInsertSchema(emailCaptures).omit({
   id: true,
   capturedAt: true,
   welcomeEmailSent: true,
+  day3NurtureSent: true,
+  day5NurtureSent: true,
+  day7NurtureSent: true,
+  day10NurtureSent: true,
+  day14NurtureSent: true,
+  purchased: true,
+  purchaseDate: true,
+  day3OnboardSent: true,
+  day7OnboardSent: true,
+  day30OnboardSent: true,
+  unsubscribed: true,
+});
+
+export const insertEmailLogSchema = createInsertSchema(emailLog).omit({
+  id: true,
+  sentAt: true,
 });
 
 export const insertCheckoutAttemptSchema = createInsertSchema(checkoutAttempts).omit({
@@ -306,6 +347,8 @@ export type InsertTool = z.infer<typeof insertToolSchema>;
 export type Tool = typeof tools.$inferSelect;
 export type InsertEmailCapture = z.infer<typeof insertEmailCaptureSchema>;
 export type EmailCapture = typeof emailCaptures.$inferSelect;
+export type InsertEmailLog = z.infer<typeof insertEmailLogSchema>;
+export type EmailLog = typeof emailLog.$inferSelect;
 export type InsertCheckoutAttempt = z.infer<typeof insertCheckoutAttemptSchema>;
 export type CheckoutAttempt = typeof checkoutAttempts.$inferSelect;
 export type InsertUnsubscribeFeedback = z.infer<typeof insertUnsubscribeFeedbackSchema>;
