@@ -1273,7 +1273,7 @@ function getEmailBaseStyles(): string {
 function getEmailHeader(): string {
   return `
     <div class="header">
-      <img src="${BASE_URL}/logo.png" alt="Prolific Personalities" class="logo" style="width: 180px; height: auto;">
+      <h2 style="text-align:center;color:#2d2d2d;font-family:Arial,sans-serif;margin:0;font-size:24px;">Prolific Personalities</h2>
     </div>
   `;
 }
@@ -1348,7 +1348,7 @@ export function generateAbandonedCartEmailV2(user: NurtureEmailUser): { subject:
           </div>
           
           <div class="signature">
-            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+            <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
           </div>
         </div>
         ${getEmailFooter(user.email)}
@@ -1395,7 +1395,7 @@ export function generateDay3NurtureEmail(user: NurtureEmailUser): { subject: str
           <p>More coming in a couple days.</p>
           
           <div class="signature">
-            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+            <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
           </div>
         </div>
         ${getEmailFooter(user.email)}
@@ -1445,7 +1445,7 @@ export function generateDay5NurtureEmail(user: NurtureEmailUser): { subject: str
           </div>
           
           <div class="signature">
-            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+            <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
           </div>
         </div>
         ${getEmailFooter(user.email)}
@@ -1496,7 +1496,7 @@ export function generateDay7NurtureEmail(user: NurtureEmailUser): { subject: str
           </div>
           
           <div class="signature">
-            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+            <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
           </div>
         </div>
         ${getEmailFooter(user.email)}
@@ -1584,7 +1584,7 @@ export function generateDay10NurtureEmail(user: NurtureEmailUser): { subject: st
           </div>
           
           <div class="signature">
-            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+            <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
           </div>
         </div>
         ${getEmailFooter(user.email)}
@@ -1641,7 +1641,7 @@ export function generateDay14NurtureEmail(user: NurtureEmailUser): { subject: st
           </div>
           
           <div class="signature">
-            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+            <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
           </div>
         </div>
         ${getEmailFooter(user.email)}
@@ -1692,7 +1692,7 @@ export function generateDay3OnboardEmail(user: NurtureEmailUser): { subject: str
           <p>Hit reply and let me know what you tried — I read every email.</p>
           
           <div class="signature">
-            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+            <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
           </div>
         </div>
         ${getEmailFooter(user.email)}
@@ -1744,7 +1744,7 @@ export function generateDay7OnboardEmail(user: NurtureEmailUser): { subject: str
           <p>Remember: progress isn't linear. What matters is that you keep showing up.</p>
           
           <div class="signature">
-            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+            <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
           </div>
         </div>
         ${getEmailFooter(user.email)}
@@ -1808,7 +1808,7 @@ export function generateDay30OnboardEmail(user: NurtureEmailUser): { subject: st
           <p>Thanks for being part of this. Your feedback helps me make this better for everyone.</p>
           
           <div class="signature">
-            <p style="margin: 0;">— John<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+            <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
           </div>
         </div>
         ${getEmailFooter(user.email)}
