@@ -2645,6 +2645,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Sample user data for nurture/onboarding emails
+      const sampleUser = {
+        email,
+        archetype: sampleArchetype.id,
+        capturedAt: new Date(),
+      };
+
+      // 4. Nurture Sequence Emails (5 emails)
+      const nurtureEmails = [
+        { name: "Nurture Day 3", generator: generateDay3NurtureEmail },
+        { name: "Nurture Day 5", generator: generateDay5NurtureEmail },
+        { name: "Nurture Day 7", generator: generateDay7NurtureEmail },
+        { name: "Nurture Day 10", generator: generateDay10NurtureEmail },
+        { name: "Nurture Day 14", generator: generateDay14NurtureEmail },
+      ];
+
+      for (const { name, generator } of nurtureEmails) {
+        try {
+          const { subject, html } = generator(sampleUser);
+          await resend.emails.send({
+            from: "Prolific Personalities <support@prolificpersonalities.com>",
+            to: email,
+            subject: `[TEST] ${subject}`,
+            html,
+          });
+          results.push({ type: name, status: "sent" });
+        } catch (e) {
+          results.push({ type: name, status: "failed", error: String(e) });
+        }
+      }
+
+      // 5. Onboarding Sequence Emails (3 emails)
+      const onboardingEmails = [
+        { name: "Onboarding Day 3", generator: generateDay3OnboardEmail },
+        { name: "Onboarding Day 7", generator: generateDay7OnboardEmail },
+        { name: "Onboarding Day 30", generator: generateDay30OnboardEmail },
+      ];
+
+      for (const { name, generator } of onboardingEmails) {
+        try {
+          const { subject, html } = generator(sampleUser);
+          await resend.emails.send({
+            from: "Prolific Personalities <support@prolificpersonalities.com>",
+            to: email,
+            subject: `[TEST] ${subject}`,
+            html,
+          });
+          results.push({ type: name, status: "sent" });
+        } catch (e) {
+          results.push({ type: name, status: "failed", error: String(e) });
+        }
+      }
+
+      // 6. Weekly Accountability Email
+      try {
+        const weeklyEmail = generateWeeklyAccountabilityEmail({
+          firstName: null,
+          archetype: sampleArchetype.title,
+          weekNumber: 1,
+        });
+
+        await resend.emails.send({
+          from: "Prolific Personalities <support@prolificpersonalities.com>",
+          to: email,
+          subject: `[TEST] ${weeklyEmail.subject}`,
+          html: weeklyEmail.html,
+        });
+        results.push({ type: "Weekly Accountability", status: "sent" });
+      } catch (e) {
+        results.push({ type: "Weekly Accountability", status: "failed", error: String(e) });
+      }
+
       console.log(`✅ Test emails sent to ${email}:`, results);
       res.json({ message: "Test emails sent", results });
     } catch (error) {
