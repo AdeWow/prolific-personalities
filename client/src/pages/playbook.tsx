@@ -633,6 +633,7 @@ export default function Playbook() {
                     <ContentRenderer 
                       content={selectedSection.content}
                       sectionId={selectedSectionId}
+                      archetype={archetype}
                     />
                     
                     {/* Mark Complete Button - More prominent at bottom of content */}

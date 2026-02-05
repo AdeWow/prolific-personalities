@@ -13,9 +13,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { InteractiveCheckbox } from "./InteractiveElements";
 
 interface ParsedContent {
-  type: 'paragraph' | 'header' | 'insight' | 'action' | 'why' | 'warning' | 'doNow' | 'traits' | 'bullets' | 'question' | 'citation' | 'table';
+  type: 'paragraph' | 'header' | 'insight' | 'action' | 'why' | 'warning' | 'doNow' | 'traits' | 'bullets' | 'question' | 'citation' | 'table' | 'checklist';
   content: string;
   metadata?: Record<string, any>;
 }
@@ -164,6 +165,30 @@ function parseMarkdownContent(rawContent: string): ParsedContent[] {
       continue;
     }
 
+    // Detect checklist items with □ (empty box) or ☐ character
+    const checklistMatch = trimmed.match(/^[-•]?\s*[□☐]\s+(.+)$/);
+    if (checklistMatch) {
+      flushCurrentBlock();
+      flushBulletList();
+      const checklistItems: string[] = [checklistMatch[1]];
+      let j = i + 1;
+      while (j < lines.length) {
+        const nextLine = lines[j].trim();
+        const nextMatch = nextLine.match(/^[-•]?\s*[□☐]\s+(.+)$/);
+        if (nextMatch) {
+          checklistItems.push(nextMatch[1]);
+          j++;
+        } else if (!nextLine) {
+          break;
+        } else {
+          break;
+        }
+      }
+      blocks.push({ type: 'checklist', content: '', metadata: { items: checklistItems } });
+      i = j - 1;
+      continue;
+    }
+
     if (trimmed.startsWith('- ') || trimmed.startsWith('• ')) {
       flushCurrentBlock();
       inBulletList = true;
@@ -198,6 +223,7 @@ function parseMarkdownContent(rawContent: string): ParsedContent[] {
 interface ContentRendererProps {
   content: string;
   sectionId?: string;
+  archetype?: string;
 }
 
 const traitDescriptions: Record<string, { explanation: string; dayMeaning: string }> = {
@@ -219,7 +245,7 @@ const traitDescriptions: Record<string, { explanation: string; dayMeaning: strin
   }
 };
 
-export function ContentRenderer({ content, sectionId }: ContentRendererProps) {
+export function ContentRenderer({ content, sectionId, archetype = '' }: ContentRendererProps) {
   const blocks = parseMarkdownContent(content);
   
   const doThisNowAction = getDoThisNowAction(sectionId);
@@ -353,6 +379,26 @@ export function ContentRenderer({ content, sectionId }: ContentRendererProps) {
                   {block.content}
                 </ReactMarkdown>
               </div>
+            );
+          
+          case 'checklist':
+            const checklistItems = block.metadata?.items || [];
+            return (
+              <Card key={idx} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    {checklistItems.map((item: string, i: number) => (
+                      <InteractiveCheckbox
+                        key={i}
+                        id={`${sectionId || 'section'}_${idx}_${i}`}
+                        label={item}
+                        archetype={archetype}
+                        sectionId={sectionId || 'default'}
+                      />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             );
           
           case 'paragraph':
