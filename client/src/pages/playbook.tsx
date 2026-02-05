@@ -634,6 +634,7 @@ export default function Playbook() {
                       content={selectedSection.content}
                       sectionId={selectedSectionId}
                       archetype={archetype}
+                      session={session}
                     />
                     
                     {/* Mark Complete Button - More prominent at bottom of content */}

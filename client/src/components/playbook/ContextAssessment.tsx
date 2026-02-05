@@ -7,9 +7,14 @@ import { usePlaybookResponses } from './InteractiveElements';
 import { cn } from '@/lib/utils';
 import { Lightbulb, Battery, Clock, Target, Check, Loader2 } from 'lucide-react';
 
+interface Session {
+  access_token?: string;
+}
+
 interface ContextAssessmentProps {
   archetype: string;
   sectionId: string;
+  session?: Session | null;
   className?: string;
 }
 
@@ -50,16 +55,36 @@ const getRecommendedApproach = (energy: number, pressure: string, clarity: strin
   return 'Balanced approach - mix focused work with regular breaks';
 };
 
-export function ContextAssessment({ archetype, sectionId, className }: ContextAssessmentProps) {
-  const { getResponse, updateResponse, saveStatus } = usePlaybookResponses({
+export function ContextAssessment({ archetype, sectionId, session, className }: ContextAssessmentProps) {
+  const { getResponse, updateResponse, saveStatus, isLoading } = usePlaybookResponses({
     archetype,
     sectionId,
+    session,
   });
 
   const energy = getResponse('context_energy', 5);
   const pressure = getResponse('context_pressure', 'medium');
   const clarity = getResponse('context_clarity', 'medium');
   const recommendation = getRecommendedApproach(energy, pressure, clarity);
+
+  if (isLoading) {
+    return (
+      <Card className={cn("border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 animate-pulse", className)}>
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-2">
+            <div className="h-5 w-5 bg-slate-200 rounded" />
+            <div className="h-6 w-48 bg-slate-200 rounded" />
+          </div>
+          <div className="h-4 w-64 bg-slate-100 rounded mt-2" />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="h-8 bg-slate-100 rounded" />
+          <div className="h-24 bg-slate-100 rounded" />
+          <div className="h-24 bg-slate-100 rounded" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className={cn("border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900", className)}>

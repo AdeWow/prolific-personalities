@@ -220,10 +220,15 @@ function parseMarkdownContent(rawContent: string): ParsedContent[] {
   return blocks;
 }
 
+interface Session {
+  access_token?: string;
+}
+
 interface ContentRendererProps {
   content: string;
   sectionId?: string;
   archetype?: string;
+  session?: Session | null;
 }
 
 const traitDescriptions: Record<string, { explanation: string; dayMeaning: string }> = {
@@ -245,7 +250,7 @@ const traitDescriptions: Record<string, { explanation: string; dayMeaning: strin
   }
 };
 
-export function ContentRenderer({ content, sectionId, archetype = '' }: ContentRendererProps) {
+export function ContentRenderer({ content, sectionId, archetype = '', session }: ContentRendererProps) {
   const blocks = parseMarkdownContent(content);
   
   const doThisNowAction = getDoThisNowAction(sectionId);
@@ -384,7 +389,7 @@ export function ContentRenderer({ content, sectionId, archetype = '' }: ContentR
           case 'checklist':
             const checklistItems = block.metadata?.items || [];
             return (
-              <Card key={idx} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm">
+              <Card key={idx} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm animate-fade-in-up">
                 <CardContent className="p-4">
                   <div className="space-y-1">
                     {checklistItems.map((item: string, i: number) => (
@@ -394,6 +399,7 @@ export function ContentRenderer({ content, sectionId, archetype = '' }: ContentR
                         label={item}
                         archetype={archetype}
                         sectionId={sectionId || 'default'}
+                        session={session}
                       />
                     ))}
                   </div>

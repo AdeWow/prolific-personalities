@@ -17,21 +17,41 @@ interface PlaybookResponse {
   updatedAt: string;
 }
 
+interface Session {
+  access_token?: string;
+}
+
 interface UsePlaybookResponsesProps {
   archetype: string;
   sectionId: string;
+  session?: Session | null;
   enabled?: boolean;
 }
 
-export function usePlaybookResponses({ archetype, sectionId, enabled = true }: UsePlaybookResponsesProps) {
+export function usePlaybookResponses({ archetype, sectionId, session, enabled = true }: UsePlaybookResponsesProps) {
   const queryClient = useQueryClient();
   const [localResponses, setLocalResponses] = useState<Record<string, any>>({});
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
+  const getAuthHeaders = useCallback((): HeadersInit => {
+    const headers: HeadersInit = { 'Content-Type': 'application/json' };
+    if (session?.access_token) {
+      (headers as Record<string, string>)['Authorization'] = `Bearer ${session.access_token}`;
+    }
+    return headers;
+  }, [session]);
+
   const { data: responses, isLoading } = useQuery<PlaybookResponse[]>({
     queryKey: ['/api/playbook', archetype, 'responses', sectionId],
     queryFn: async () => {
-      const res = await fetch(`/api/playbook/${archetype}/responses?sectionId=${sectionId}`);
+      const headers: HeadersInit = {};
+      if (session?.access_token) {
+        (headers as Record<string, string>)['Authorization'] = `Bearer ${session.access_token}`;
+      }
+      const res = await fetch(`/api/playbook/${archetype}/responses?sectionId=${sectionId}`, {
+        headers,
+        credentials: 'include',
+      });
       if (!res.ok) throw new Error('Failed to fetch responses');
       return res.json();
     },
@@ -48,7 +68,7 @@ export function usePlaybookResponses({ archetype, sectionId, enabled = true }: U
     mutationFn: async (newResponses: Record<string, any>) => {
       const res = await fetch(`/api/playbook/${archetype}/responses`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ sectionId, responses: newResponses }),
         credentials: 'include',
       });
@@ -87,6 +107,7 @@ export function usePlaybookResponses({ archetype, sectionId, enabled = true }: U
     isLoading,
     saveStatus,
     isSaving: saveMutation.isPending,
+    hasError: saveMutation.isError,
   };
 }
 
@@ -95,16 +116,27 @@ interface InteractiveCheckboxProps {
   label: string;
   archetype: string;
   sectionId: string;
+  session?: Session | null;
   className?: string;
 }
 
-export function InteractiveCheckbox({ id, label, archetype, sectionId, className }: InteractiveCheckboxProps) {
-  const { getResponse, updateResponse, isSaving } = usePlaybookResponses({
+export function InteractiveCheckbox({ id, label, archetype, sectionId, session, className }: InteractiveCheckboxProps) {
+  const { getResponse, updateResponse, isSaving, isLoading } = usePlaybookResponses({
     archetype,
     sectionId,
+    session,
   });
 
   const checked = getResponse(`checkbox_${id}`, false);
+
+  if (isLoading) {
+    return (
+      <div className={cn("flex items-start gap-3 py-2 opacity-50", className)}>
+        <div className="w-5 h-5 rounded border-2 border-slate-300 bg-slate-100 animate-pulse" />
+        <span className="text-sm text-muted-foreground">{label}</span>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("flex items-start gap-3 py-2 group", className)}>
@@ -137,14 +169,29 @@ interface InteractiveRadioGroupProps {
   options: Array<{ value: string; label: string }>;
   archetype: string;
   sectionId: string;
+  session?: Session | null;
   className?: string;
 }
 
-export function InteractiveRadioGroup({ groupId, options, archetype, sectionId, className }: InteractiveRadioGroupProps) {
-  const { getResponse, updateResponse, isSaving } = usePlaybookResponses({
+export function InteractiveRadioGroup({ groupId, options, archetype, sectionId, session, className }: InteractiveRadioGroupProps) {
+  const { getResponse, updateResponse, isSaving, isLoading } = usePlaybookResponses({
     archetype,
     sectionId,
+    session,
   });
+
+  if (isLoading) {
+    return (
+      <div className={cn("space-y-2 opacity-50", className)}>
+        {options.map((option) => (
+          <div key={option.value} className="flex items-center gap-3">
+            <div className="h-5 w-5 rounded-full border-2 border-slate-300 bg-slate-100 animate-pulse" />
+            <span className="text-sm text-muted-foreground">{option.label}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   const value = getResponse(`radio_${groupId}`, '');
 
@@ -183,14 +230,24 @@ interface InteractiveInputProps {
   placeholder?: string;
   archetype: string;
   sectionId: string;
+  session?: Session | null;
   className?: string;
 }
 
-export function InteractiveInput({ inputId, placeholder, archetype, sectionId, className }: InteractiveInputProps) {
-  const { getResponse, updateResponse, saveStatus } = usePlaybookResponses({
+export function InteractiveInput({ inputId, placeholder, archetype, sectionId, session, className }: InteractiveInputProps) {
+  const { getResponse, updateResponse, saveStatus, isLoading } = usePlaybookResponses({
     archetype,
     sectionId,
+    session,
   });
+
+  if (isLoading) {
+    return (
+      <div className={cn("relative", className)}>
+        <div className="h-10 bg-slate-100 rounded-md animate-pulse" />
+      </div>
+    );
+  }
   
   const [localValue, setLocalValue] = useState('');
   const savedValue = getResponse(`input_${inputId}`, '');
