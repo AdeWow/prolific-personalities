@@ -1,0 +1,218 @@
+# RESTRUCTURE THE ABOUT PAGE (/about)
+
+## Overview
+
+The current About page is functional but lacks emotional 
+resonance, has outdated elements (waitlist CTA), and is 
+missing a founder story — which is the single most important 
+trust-building element for this type of product. 
+
+This prompt restructures the page to: build trust, humanize 
+the brand, and funnel visitors toward the quiz.
+
+## REMOVE FROM CURRENT PAGE
+
+1. "Get Early Access" / "Join Waitlist" section — product is 
+   live, this is outdated
+2. "The Research Behind It" section — redundant, already 
+   exists at /the-research
+3. "Send Feedback" form — move to a /contact or /feedback 
+   page (or footer link). Do NOT delete the form component, 
+   just relocate it.
+
+## NEW PAGE STRUCTURE (in order)
+
+### Section 1: Hero
+
+Title: "About Prolific Personalities"
+
+Subtitle directly beneath (styled as a pull quote or 
+larger italic text, not a heading):
+
+"You're not lazy. You're not broken. You just need a 
+different approach."
+
+Keep the same centered layout as current hero.
+
+---
+
+### Section 2: Why We Exist
+
+Keep the current copy exactly as-is:
+
+"Most productivity advice fails because it's generic. It 
+assumes everyone is wired the same way — when in reality, 
+people vary widely in how they think, focus, and stay 
+motivated.
+
+Productivity becomes sustainable only when it's 
+personalized. By understanding your patterns and 
+tendencies, we help you identify what actually works 
+for you."
+
+No changes needed here.
+
+---
+
+### Section 3: Meet the Founder (NEW SECTION)
+
+Layout: Two-column on desktop, stacked on mobile.
+- Left column (40%): Founder photo placeholder (square, 
+  rounded-xl, subtle shadow). For now, use a placeholder 
+  div with text "Founder Photo" and a neutral background 
+  (bg-slate-200) sized at 400x400px. The founder will 
+  upload their actual photo later.
+- Right column (60%): Story text.
+
+Heading: "Meet the Founder"
+
+Body copy (render as regular paragraphs, NOT italic, 
+NOT blockquote):
+
+"I built Prolific Personalities because I needed it 
+myself.
+
+I spent years cycling through productivity systems that 
+worked for everyone except me — Pomodoro, time-blocking, 
+bullet journals, you name it. Nothing stuck. And for a 
+long time, I thought the problem was me. Not enough 
+discipline. Not enough willpower. Not trying hard enough.
+
+Then I started researching. I dug into executive function 
+theory, cognitive load science, and motivation psychology. 
+What I found changed everything: personality traits 
+moderate how effective any given productivity strategy 
+is by 27–42%. There is no 'best' system. There's only 
+the best system for you.
+
+That's what Prolific Personalities is — the tool I wish 
+I'd had years ago. Every recommendation on this platform 
+is grounded in real research, mapped to your specific 
+patterns, and designed to actually work with how your 
+brain operates — not against it."
+
+— Adeola, Founder
+
+Style notes:
+- The attribution "— Adeola, Founder" should be styled 
+  subtly: text-slate-500, font-medium, mt-4
+- Paragraphs should have comfortable spacing (space-y-4)
+- Overall section background: white or very slight contrast 
+  from the main page background to visually distinguish it
+- Optional: thin left border accent in the brand green on 
+  the text column (border-l-2 border-teal-500 pl-6)
+
+---
+
+### Section 4: What Makes Us Different
+
+Keep the current 2x2 grid layout and all copy exactly 
+as-is:
+
+- Personality-first approach
+- Backed by behavioral science
+- Actionable over aspirational
+- Designed for real humans
+
+No changes.
+
+---
+
+### Section 5: Who It's For
+
+Keep the current list and all copy exactly as-is:
+
+- Creatives who struggle to stay focused and organized
+- Professionals who are highly driven but easily overwhelmed
+- People with ADHD or executive dysfunction
+- High-achievers battling burnout
+- Anyone who wants sustainable productivity
+
+No changes.
+
+---
+
+### Section 6: CTA (REPLACES old waitlist section)
+
+Full-width section with centered content.
+Background: subtle gradient or the brand dark color 
+(bg-slate-800 or bg-slate-900 with white text).
+
+Heading: "Ready to find what actually works for you?"
+
+Subtext: "Take our free 5-minute assessment and discover 
+your productivity archetype."
+
+Button: "Discover Your Type" → links to /quiz
+- Style: primary green button (bg-teal-600 hover:bg-teal-700), 
+  large size (px-8 py-4 text-lg), rounded-xl
+- This should be the ONLY CTA on the entire page. 
+  One action, one destination.
+
+---
+
+## WHAT TO DO WITH REMOVED SECTIONS
+
+### Feedback Form
+- Create a new page at /contact OR /feedback
+- Move the existing feedback form component there 
+  (Name, Email, Type of Feedback, Message — keep all 
+  fields and validation identical)
+- Add a link to this new page in the site footer
+- Page title: "Send Feedback"
+- Page intro: "Share your thoughts, suggestions, or 
+  feature requests. We read everything."
+
+### Research Section
+- No action needed — /the-research already exists in nav
+- Do NOT duplicate research content on the About page
+
+---
+
+## STYLING GUIDELINES
+
+- Maintain the existing page background color (the warm 
+  off-white/beige currently used)
+- Max content width should match the current page 
+  (max-w-3xl or max-w-4xl, centered)
+- All section spacing: py-16 on desktop, py-12 on mobile
+- Horizontal dividers between sections: thin 
+  (border-t border-slate-200) with margin (my-8)
+- Typography should match existing site fonts and sizes
+- No emojis anywhere on this page
+
+---
+
+## MOBILE RESPONSIVE NOTES
+
+- Founder section: photo stacks above text on mobile, 
+  centered, max-w-[280px]
+- 2x2 grid ("What Makes Us Different"): collapses to 
+  single column on mobile
+- CTA section: button goes full-width on mobile 
+  (w-full on small screens)
+
+---
+
+## TESTING CHECKLIST
+
+1. Hero displays with subtitle quote
+2. "Why We Exist" copy unchanged
+3. Founder section renders two-column desktop, 
+   stacked mobile
+4. Photo placeholder displays correctly
+5. "What Makes Us Different" grid unchanged
+6. "Who It's For" list unchanged
+7. CTA button links to /quiz correctly
+8. Old waitlist section is fully removed
+9. Old research section is fully removed
+10. Feedback form is accessible at new /contact 
+    or /feedback route
+11. Footer includes link to feedback page
+12. No broken elements or orphaned components
+13. Page has proper meta tags: 
+    title="About | Prolific Personalities" 
+    description="Learn why we built Prolific 
+    Personalities — a research-backed platform that 
+    matches productivity strategies to how your 
+    brain actually works."

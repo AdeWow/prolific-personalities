@@ -28,6 +28,7 @@ import PaymentSuccess from "@/pages/payment-success";
 import PaymentCancelled from "@/pages/payment-cancelled";
 import PurchaseSuccess from "@/pages/purchase-success";
 import Playbook from "@/pages/playbook";
+import Feedback from "@/pages/feedback";
 import RefundPolicy from "@/pages/refund-policy";
 import Unsubscribe from "@/pages/unsubscribe";
 import DevTools from "@/pages/dev-tools";
@@ -59,6 +60,7 @@ function Router() {
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-cancelled" component={PaymentCancelled} />
       <Route path="/about" component={About} />
+      <Route path="/feedback" component={Feedback} />
       <Route path="/science" component={Science} />
       <Route path="/archetypes/:slug" component={ArchetypeDetail} />
       <Route path="/archetypes" component={Archetypes} />
