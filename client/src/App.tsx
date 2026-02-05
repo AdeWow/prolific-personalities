@@ -7,7 +7,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ExitIntentPopup } from "@/components/exit-intent-popup";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { useClaimPendingQuiz } from "@/hooks/useClaimPendingQuiz";
-import { GlobalFooter } from "@/components/global-footer";
 import { initGA } from "./lib/analytics";
 import { initPostHog } from "./lib/posthog";
 import { useAnalytics } from "./hooks/use-analytics";
@@ -108,12 +107,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <ExitIntentPopup />
-          <div className="flex flex-col min-h-screen">
-            <div className="flex-1">
-              <Router />
-            </div>
-            <GlobalFooter />
-          </div>
+          <Router />
         </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>
