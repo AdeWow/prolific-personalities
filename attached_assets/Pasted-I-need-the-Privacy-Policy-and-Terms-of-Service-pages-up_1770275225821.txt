@@ -1,0 +1,107 @@
+I need the Privacy Policy and Terms of Service pages updated with proper content. Both currently have placeholder text and reference the wrong email address. Here are the full rewrites:
+IMPORTANT: On both pages, replace ALL instances of hello@prolificpersonalities.com with support@prolificpersonalities.com. This email does not exist and must not appear anywhere on the site.
+Also — remove the "This page is being updated" disclaimer from both pages. These should read as finalized, professional documents.
+Both pages should use the same card-based layout style as the Refund Policy page (cards with subtle borders, section headings, clean spacing). Do NOT use raw text with bold headings on a flat background like they currently are. Match the visual treatment of the refund page for consistency.
+
+PRIVACY POLICY PAGE
+Replace the entire page content with the following sections (each in its own card):
+Page title: Privacy Policy
+Subtitle: Last updated: February 2025
+Card 1 — "What We Collect"
+Heading: What We Collect
+Content:
+When you use Prolific Personalities, we collect:
+
+Email address (when you create an account or sign up for updates)
+Quiz responses (your answers to the productivity assessment)
+Basic usage data (pages visited, features used) to improve the platform
+
+We do not collect payment information directly — all payments are securely processed by Stripe.
+Card 2 — "How We Use Your Information"
+Heading: How We Use Your Information
+Content:
+We use your information to:
+
+Generate your personalized productivity profile and archetype results
+Deliver your premium playbook if purchased
+Send relevant updates and tips (only with your consent — you can unsubscribe anytime)
+Improve the platform based on aggregate, anonymized usage patterns
+
+We never sell your personal data to third parties.
+Card 3 — "Data Storage & Security"
+Heading: Data Storage & Security
+Content:
+Your data is stored securely using industry-standard encryption. We use Supabase for authentication and a secure PostgreSQL database for quiz results. Access to your data is restricted to essential platform operations only.
+Card 4 — "Your Rights"
+Heading: Your Rights
+Content:
+You can request to:
+
+View all data we have associated with your account
+Delete your account and all associated data
+Opt out of marketing emails at any time
+
+To make any of these requests, email us at support@prolificpersonalities.com.
+Card 5 — "Cookies"
+Heading: Cookies
+Content:
+We use essential cookies to keep you logged in and remember your preferences. We also use analytics tools to understand how people use the platform. We do not use advertising cookies or trackers.
+Card 6 — "Contact"
+Heading: Questions?
+Content:
+For privacy-related questions, contact us at support@prolificpersonalities.com.
+
+TERMS OF SERVICE PAGE
+Replace the entire page content with the following sections (each in its own card):
+Page title: Terms of Service
+Subtitle: Last updated: February 2025
+Card 1 — "Acceptance of Terms"
+Heading: Acceptance of Terms
+Content:
+By accessing or using Prolific Personalities, you agree to these terms. If you don't agree, please don't use the platform. We may update these terms from time to time — continued use of the platform means you accept any changes.
+Card 2 — "What We Provide"
+Heading: What We Provide
+Content:
+Prolific Personalities offers a research-backed productivity assessment that classifies users into productivity archetypes and provides personalized strategies and tool recommendations. Our free tier includes the assessment and basic results. Premium playbooks are available as one-time purchases.
+Card 3 — "Your Account"
+Heading: Your Account
+Content:
+You're responsible for maintaining the security of your account credentials. Please use a strong, unique password. If you suspect unauthorized access, contact us immediately at support@prolificpersonalities.com.
+Card 4 — "Purchases & Refunds"
+Heading: Purchases & Refunds
+Content:
+All purchases are processed securely through Stripe. We offer a 30-day satisfaction guarantee on all playbook purchases. For full details, see our refund policy (link to /refund-policy).
+Make "refund policy" a clickable link to /refund-policy.
+Card 5 — "Acceptable Use"
+Heading: Acceptable Use
+Content:
+Please use Prolific Personalities for its intended purpose — personal productivity improvement. You agree not to:
+
+Scrape, copy, or redistribute our assessment content or research
+Use the platform for any unlawful purpose
+Attempt to access other users' data or accounts
+Resell or redistribute premium playbook content
+
+Card 6 — "Intellectual Property"
+Heading: Intellectual Property
+Content:
+All content on Prolific Personalities — including the assessment framework, archetype descriptions, research summaries, and playbook content — is our original work and is protected by copyright. You may not reproduce or distribute it without written permission.
+Card 7 — "Limitation of Liability"
+Heading: Limitation of Liability
+Content:
+Prolific Personalities provides productivity insights and recommendations for informational purposes. We are not a substitute for professional medical, psychological, or career advice. We are not liable for decisions you make based on your results.
+Card 8 — "Contact"
+Heading: Questions?
+Content:
+For questions about these terms, email us at support@prolificpersonalities.com.
+
+DESIGN REQUIREMENTS FOR BOTH PAGES:
+
+Use the same card-based layout as the Refund Policy page (subtle border, rounded corners, clean padding)
+Remove the "This page is being updated" placeholder from both pages
+Replace ALL instances of hello@prolificpersonalities.com with support@prolificpersonalities.com
+Remove any standalone "Contact Us" sections at the bottom since the global footer now handles that
+Do NOT add "← Back to Home" links — the sticky nav and footer handle navigation
+
+
+After implementing, also do a global search across the entire codebase for hello@prolificpersonalities.com and replace every instance with support@prolificpersonalities.com. This email should not appear anywhere on the site.
