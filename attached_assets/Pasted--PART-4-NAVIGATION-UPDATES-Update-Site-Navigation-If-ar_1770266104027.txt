@@ -1,0 +1,110 @@
+## PART 4: NAVIGATION UPDATES
+
+### Update Site Navigation
+
+If archetypes has a dropdown or submenu in the main nav, update it to link to the overview page:
+```jsx
+<Link href="/archetypes">Archetypes</Link>
+```
+
+### Breadcrumb on Detail Pages (Optional but Recommended)
+
+Add a breadcrumb above the hero on individual archetype pages:
+```jsx
+<nav class="py-4 px-6 text-sm text-slate-500">
+  <Link href="/archetypes" class="hover:text-slate-700">Archetypes</Link>
+  <span class="mx-2">→</span>
+  <span class="text-slate-900">{archetype.name}</span>
+</nav>
+```
+
+---
+
+## PART 5: REDIRECTS & SEO
+
+### Handle Old URL Structure
+
+If the old page had anchor links (e.g., `/archetypes#structured-achiever`), add redirects:
+```javascript
+// next.config.js
+module.exports = {
+  async redirects() {
+    return [
+      {
+        source: '/archetypes#structured-achiever',
+        destination: '/archetypes/structured-achiever',
+        permanent: true,
+      },
+      {
+        source: '/archetypes#chaotic-creative',
+        destination: '/archetypes/chaotic-creative',
+        permanent: true,
+      },
+      // ... repeat for all 6
+    ];
+  },
+};
+```
+
+Note: Hash-based redirects may not work in all cases. If the old page didn't use anchors, skip this.
+
+### Sitemap
+
+Ensure the sitemap includes all new pages:
+```xml
+<url>
+  <loc>https://prolificpersonalities.com/archetypes</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://prolificpersonalities.com/archetypes/structured-achiever</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.7</priority>
+</url>
+<!-- ... repeat for all 6 archetypes -->
+```
+
+---
+
+## PART 6: STYLING TOKENS
+
+Use these consistent color mappings for archetype headers:
+
+| Archetype | Gradient Classes | Border Color |
+|-----------|-----------------|--------------|
+| Structured Achiever | `from-blue-400 to-blue-600` | `border-blue-400` |
+| Chaotic Creative | `from-purple-400 to-purple-600` | `border-purple-400` |
+| Anxious Perfectionist | `from-rose-400 to-rose-600` | `border-rose-400` |
+| Novelty Seeker | `from-amber-400 to-amber-600` | `border-amber-400` |
+| Strategic Planner | `from-teal-400 to-teal-600` | `border-teal-400` |
+| Flexible Improviser | `from-cyan-400 to-cyan-600` | `border-cyan-400` |
+
+---
+
+## TESTING CHECKLIST
+
+After implementation, verify:
+
+1. [ ] `/archetypes` shows 6-card grid with no detail content
+2. [ ] Each card links to correct `/archetypes/[slug]` page
+3. [ ] All 6 individual archetype pages load with correct content
+4. [ ] Illustrations display correctly on all pages
+5. [ ] "Take the Assessment" CTA links to quiz
+6. [ ] "Explore Other Types" shows 5 cards (excludes current)
+7. [ ] Cross-linking between archetype pages works
+8. [ ] Mobile responsive: grid becomes 2-col on tablet, 1-col on mobile
+9. [ ] SEO meta tags render correctly (check with View Source)
+10. [ ] Page transitions feel smooth
+11. [ ] Old `/archetypes` long-scroll page no longer exists
+12. [ ] No broken images or 404s
+
+---
+
+## FILES TO CREATE/MODIFY
+
+1. `pages/archetypes/index.jsx` OR `app/archetypes/page.jsx` — Overview grid
+2. `pages/archetypes/[slug].jsx` OR `app/archetypes/[slug]/page.jsx` — Detail pages
+3. `data/archetypes.js` — Centralized content data
+4. `next.config.js` — Redirects (if needed)
+5. Delete or archive the old single-page archetypes implementation

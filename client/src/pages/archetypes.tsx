@@ -1,10 +1,20 @@
-import { Link } from "wouter";
+import { useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { archetypes } from "@/data/archetypes";
 import { ArrowRight, ChevronRight } from "lucide-react";
+
+const validSlugs = [
+  'structured-achiever',
+  'chaotic-creative',
+  'anxious-perfectionist',
+  'novelty-seeker',
+  'strategic-planner',
+  'flexible-improviser',
+];
 
 import anxiousPerfectionistImage from "@assets/7d8c5462-febe-45f3-b3bd-207fb697cc04_1762297180709.png";
 import chaoticCreativeImage from "@assets/763894fc-7172-473f-b45a-30417b2f157a_1762297193215.png";
@@ -56,6 +66,15 @@ const archetypeCards = [
 ];
 
 export default function Archetypes() {
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash && validSlugs.includes(hash)) {
+      setLocation(`/archetypes/${hash}`);
+    }
+  }, [setLocation]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
