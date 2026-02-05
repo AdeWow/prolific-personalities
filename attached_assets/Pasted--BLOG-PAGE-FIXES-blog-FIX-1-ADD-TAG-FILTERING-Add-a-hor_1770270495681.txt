@@ -1,0 +1,289 @@
+# BLOG PAGE FIXES (/blog)
+
+## FIX 1: ADD TAG FILTERING
+
+Add a horizontal filter bar below the hero section 
+("Productivity Insights" heading) and ABOVE the featured 
+post.
+
+Filter categories (derived from the most common tags 
+across all posts):
+
+All | Archetypes | Research | Productivity | Focus | 
+ADHD | Psychology | Tools | Founder Story
+
+Behavior:
+- "All" selected by default, shows all posts
+- Clicking a filter shows only posts that have a 
+  matching tag
+- Multiple filters should NOT be selectable — single 
+  filter at a time
+- When a filter is active, the featured post section 
+  should HIDE (unless the featured post matches the 
+  active filter)
+- Show a count next to each filter in parentheses: 
+  e.g., "Archetypes (8)" — this helps users know 
+  what to expect
+
+Style:
+- Horizontal scrollable row on mobile
+- Pill buttons matching site style
+- Selected: bg-slate-800 text-white rounded-full 
+  px-4 py-2
+- Unselected: bg-white text-slate-600 border 
+  border-slate-200 rounded-full px-4 py-2 
+  hover:bg-slate-50
+- Gap between pills: gap-2
+- Container: flex flex-wrap gap-2 justify-center 
+  mb-8
+
+---
+
+## FIX 2: MAKE TAGS CLICKABLE AND FUNCTIONAL
+
+Every tag badge on every blog card should be clickable. 
+Clicking a tag activates the corresponding filter from 
+Fix 1.
+
+For tags that match an archetype name (Chaotic Creative, 
+Anxious Perfectionist, Structured Achiever, Novelty 
+Seeker, Strategic Planner, Flexible Improviser), add a 
+SECONDARY behavior: 
+
+- Clicking the tag filters the blog (primary)
+- Add a small link icon or make the archetype tag 
+  slightly different style to indicate it also links 
+  to the archetype page
+
+Actually, simpler approach: Make archetype-name tags 
+filter the blog on click, but ALSO add a tooltip on 
+hover that says "View archetype profile →" with a link 
+to /archetypes/[slug]. This avoids confusing dual 
+behavior on a single click.
+
+---
+
+## FIX 3: LIMIT TAGS TO 3 PER CARD
+
+In the blog card display, show a MAXIMUM of 3 tags per 
+post. If a post has more than 3 tags in its data, show 
+only the first 3.
+
+Priority order for which 3 to show:
+1. Archetype name tags first (these are most useful 
+   for filtering)
+2. Topic tags second (Research, Productivity, Focus, 
+   etc.)
+3. Generic tags last (Self-Improvement, Psychology)
+
+Keep all tags in the post's data for filtering purposes 
+— this only affects the DISPLAY on the blog index cards.
+
+---
+
+## FIX 4: MAKE ENTIRE CARD CLICKABLE
+
+Wrap each blog card in a single <a> or <Link> element 
+that links to the full blog post URL.
+
+- The entire card (image, tags, title, excerpt, date) 
+  should be clickable
+- On hover: subtle shadow increase (shadow-md → 
+  shadow-lg) and slight upward translate 
+  (hover:-translate-y-1) with transition-all 
+  duration-200
+- Remove the separate "Read More" button — it's 
+  redundant when the whole card is clickable
+- Cursor: pointer on the entire card
+
+For the featured post card at the top, same behavior — 
+the "Read the Full Story" button can stay as a visual 
+anchor but the entire featured card area should also 
+be clickable.
+
+---
+
+## FIX 5: NORMALIZE CARD HEIGHTS
+
+All blog cards in the 3-column grid should have equal 
+heights per row.
+
+- Use CSS grid with: grid-template-columns: 
+  repeat(3, 1fr) on desktop, repeat(2, 1fr) on 
+  tablet, 1fr on mobile
+- Each card should use flex flex-col with the excerpt 
+  using flex-grow to push the date/metadata to the 
+  bottom
+- Truncate all excerpts to a maximum of 3 lines using:
+  display: -webkit-box
+  -webkit-line-clamp: 3
+  -webkit-box-orient: vertical
+  overflow: hidden
+- This ensures every card has consistent visual weight
+
+---
+
+## FIX 6: UPDATE ALL BLOG POST DATES
+
+Change all blog post publication dates so the EARLIEST 
+post is dated October 2025, and the LATEST posts are 
+dated January 2026.
+
+Rules:
+- The featured post ("Confessions of an Imperfect 
+  Founder") should be dated January 30, 2026 (keep it 
+  as the most recent)
+- The two other Jan 2026 posts ("Why Productivity 
+  Advice Keeps Failing You" and "I Asked AI to 
+  Brutally Assess My Skills") should keep their 
+  January 2026 dates
+- All posts currently dated January 2025 should be 
+  moved to November-December 2025
+- All posts currently dated November-December 2025 
+  should stay in that range
+- All posts currently dated Dec 31, 2024 or earlier 
+  should move to October 2025
+- Maintain the relative chronological ORDER of posts 
+  — don't shuffle which post came before which
+- Space posts roughly 3-5 days apart to look natural
+
+Expected new date range:
+- Oldest post: ~October 1, 2025
+- Newest post: January 30, 2026
+- Posts should be spread across Oct, Nov, Dec 2025 
+  and Jan 2026
+
+Make sure the blog index sorts by date DESCENDING 
+(newest first) after the date changes.
+
+---
+
+## FIX 7: FIX SORT ORDER
+
+After updating dates, verify the blog grid displays 
+posts in strict reverse-chronological order (newest 
+first), AFTER the featured post.
+
+The featured post is always pinned at the top regardless 
+of date. The grid below it should flow newest → oldest, 
+left to right, top to bottom.
+
+---
+
+## FIX 8: ADD AUTHOR BYLINE WITH REAL PHOTO
+
+Add a small author byline to each blog card, positioned 
+between the excerpt and the date metadata.
+
+Layout:
+- Small circular photo (w-6 h-6 rounded-full) + 
+  "Adeola" in text-sm text-slate-500
+- Sits on the same line as the date and read time
+- Example: [photo] Adeola  ·  Jan 30, 2026  ·  
+  8 min read
+
+For now, use a placeholder circle (bg-slate-300 w-6 h-6 
+rounded-full) — the founder will upload her actual 
+headshot photo. Add an easy way to swap this image 
+(single file reference, not hardcoded in every card).
+
+This adds a personal, founder-led feel to every post 
+and builds recognition over time.
+
+---
+
+## FIX 9: REPLACE "BACK TO HOME" WITH QUIZ CTA
+
+Remove the "← Back to Home" link at the bottom of the 
+page.
+
+Replace with a CTA section BELOW the email subscribe 
+form:
+
+Style: centered text, no card/box needed
+Text: "Curious which archetype you are?"
+Button: "Take the Free Assessment" → /quiz
+Button style: bg-teal-600 hover:bg-teal-700 text-white 
+  px-6 py-3 rounded-xl text-base font-medium
+Spacing: py-8 above and below
+
+---
+
+## FIX 10: VERIFY EMAIL SUBSCRIBE FORM
+
+The "Get productivity insights in your inbox" subscribe 
+form at the bottom of the page must:
+
+1. Actually connect to the existing email system 
+   (Resend)
+2. Store the subscriber's email in the database 
+   (same table used by quiz email capture and other 
+   signup forms)
+3. Show a success state after submission: hide the 
+   form, show "You're in! Check your inbox for a 
+   welcome email."
+4. Show an error state if submission fails: 
+   "Something went wrong. Please try again."
+5. Prevent duplicate submissions (if email already 
+   exists, show: "You're already subscribed!")
+6. Include basic email validation (check for @ and 
+   domain)
+
+If the form is currently not connected to anything, 
+wire it up to the same Resend + database flow used 
+by the rest of the site's email capture.
+
+---
+
+## FIX 11: FEATURED POST IMAGE
+
+Keep the current AI-generated illustration for the 
+featured post ("Confessions of an Imperfect Founder"). 
+Do NOT replace it with a photo.
+
+No changes needed here — just confirming this stays 
+as-is.
+
+---
+
+## FIX 12: META TAGS
+
+Ensure the blog index page has proper meta tags:
+
+title: "Productivity Insights Blog | Prolific 
+Personalities"
+description: "Research-backed strategies for every 
+productivity style. Explore archetype-specific tips, 
+psychology insights, and actionable advice for how 
+your brain actually works."
+og:image: Use the featured post illustration or a 
+dedicated blog OG image
+
+---
+
+## TESTING CHECKLIST
+
+1. Filter bar appears below hero, above featured post
+2. Clicking a filter shows only matching posts
+3. Post count appears next to each filter
+4. Tags on cards are clickable and trigger filtering
+5. Maximum 3 tags displayed per card
+6. Entire card is clickable (not just "Read More")
+7. "Read More" buttons are removed from cards
+8. Card heights are equal within each row
+9. All post dates fall between Oct 2025 - Jan 2026
+10. Posts sort newest-first after featured post
+11. Author byline with photo placeholder shows on 
+    each card
+12. "Back to Home" is gone, replaced with quiz CTA
+13. Email subscribe form submits successfully
+14. Email subscribe shows success/error/duplicate 
+    states
+15. No broken links to individual blog posts
+16. Blog page is responsive: 3 cols desktop, 2 cols 
+    tablet, 1 col mobile
+17. Archetype-name tags show tooltip with link to 
+    archetype page
+18. Featured post hides when a filter is active 
+    (unless it matches the filter)
+19. Meta tags are correct

@@ -41,7 +41,7 @@ export const blogPosts: BlogPost[] = [
     title: "Why Productivity Advice Keeps Failing You (It's Not Your Fault)",
     slug: "why-productivity-advice-keeps-failing-you",
     excerpt: "The science behind why one-size-fits-all productivity systems don't work—and what actually does. Hint: you're not broken, the advice is.",
-    publishDate: "2026-01-31",
+    publishDate: "2026-01-25",
     author: "Prolific Personalities Team",
     readTime: "8 min read",
     tags: ["Research", "Productivity Science", "Personality", "Self-Improvement"],
@@ -131,7 +131,7 @@ Because you're not lazy. You're not broken. You just need a different approach.
     title: "I Asked AI to Brutally Assess My Skills. It Explained Why I Keep Failing at Productivity.",
     slug: "ai-brutal-assessment-productivity-failure",
     excerpt: "I asked ChatGPT to be brutally honest about my actual skill sets. What came back was uncomfortable, accurate, and explained every failed productivity system, every abandoned routine, every project at 70% completion.",
-    publishDate: "2026-01-27",
+    publishDate: "2026-01-20",
     author: "Prolific Personalities Team",
     readTime: "12 min read",
     tags: ["Self-Assessment", "AI", "Productivity", "Strategic Planner", "Chaotic Creative", "Novelty Seeker"],
@@ -436,7 +436,7 @@ It won't tell you to be more disciplined. It'll tell you which strategies actual
     title: "A Dog Applied for My Head of Growth Position. His Productivity Strategy Is Better Than Yours.",
     slug: "dog-applied-head-of-growth-productivity-strategy",
     excerpt: "I posted a job listing for Head of Growth at Prolific Personalities. What I got: A Yorkshire Terrier named Benny. After reviewing his resume, I'm genuinely considering it—because his productivity strategy is objectively better than 90% of the humans I know.",
-    publishDate: "2025-01-17",
+    publishDate: "2026-01-15",
     author: "Prolific Personalities Team",
     readTime: "7 min read",
     tags: ["Productivity", "Humor", "Flexible Improviser", "Energy Management", "Self-Improvement"],
@@ -612,7 +612,7 @@ If a Yorkshire Terrier can be productive without time-blocking or productivity a
     slug: "confessions-imperfect-founder-procrastination",
     excerpt:
       "I launched Prolific Personalities three weeks late. The reason? I got distracted building a feature for people who get distracted. The irony wasn't lost on me.",
-    publishDate: "2025-01-09",
+    publishDate: "2026-01-30",
     author: "Prolific Personalities Team",
     readTime: "8 min read",
     tags: [
@@ -787,7 +787,7 @@ Built by a procrastinator, for procrastinators. And I mean that as the highest p
     slug: "time-blocking-less-productive-some-brains",
     excerpt:
       "You've tried time blocking. Cal Newport swears by it. Day 1: The schedule mocks you. Day 2: You feel like a failure. Day 3: You abandon it. Here's the truth: Time blocking is legitimately counterproductive for your brain type.",
-    publishDate: "2025-01-06",
+    publishDate: "2025-12-18",
     author: "Prolific Personalities Team",
     readTime: "18 min read",
     tags: [
@@ -1233,7 +1233,7 @@ Your failed time blocking attempts aren't the problem. The mismatch between your
     slug: "constant-stimulation-adhd-or-productivity-style",
     excerpt:
       "You can't work in silence. Your browser has 47 tabs open. You've Googled \"do I have ADHD\" more times than you can count. Here's the truth: Both ADHD and novelty-seeking are real. This article helps you understand the difference.",
-    publishDate: "2025-01-10",
+    publishDate: "2026-01-10",
     author: "Prolific Personalities Team",
     readTime: "20 min read",
     tags: [
@@ -1728,7 +1728,7 @@ Your need for stimulation isn't the problem. The mismatch between your needs and
     slug: "cant-stick-to-routine-what-to-do-instead",
     excerpt:
       "You've tried morning routines. Evening routines. Productivity routines. Day 1 is perfect. Day 7, you sleep through your alarm. Here's what the productivity industry won't tell you: Routines aren't universal. Some brains genuinely can't operate on fixed schedules.",
-    publishDate: "2025-01-04",
+    publishDate: "2025-12-08",
     author: "Prolific Personalities Team",
     readTime: "18 min read",
     tags: [
@@ -2186,7 +2186,7 @@ Your failed routines aren't the problem. The mismatch between your brain and one
     slug: "start-everything-finish-nothing-psychology",
     excerpt:
       "Your hard drive has a folder called \"Projects.\" Inside: A half-finished novel. A business idea with 60% of the landing page built. Three different online courses you started. The problem isn't your commitment. It's that your brain has a specific completion pattern.",
-    publishDate: "2025-01-03",
+    publishDate: "2025-12-03",
     author: "Prolific Personalities Team",
     readTime: "20 min read",
     tags: [
@@ -2613,7 +2613,7 @@ Your project graveyard isn't the problem. The mismatch between your brain and ge
     slug: "cant-focus-anymore-brain-wont-cooperate",
     excerpt:
       "You sit down to work. You have clear tasks. You want to focus. But your brain won't cooperate. Your inability to focus isn't a discipline problem. It's an executive function breakdown. And treating it like a character flaw makes it worse.",
-    publishDate: "2025-01-02",
+    publishDate: "2025-11-28",
     author: "Prolific Personalities Team",
     readTime: "18 min read",
     tags: [
@@ -3023,7 +3023,7 @@ Your focus problems aren't the problem. The mismatch between your brain and gene
     slug: "flexible-improvisers-energy-wont-follow-schedule",
     excerpt:
       "Monday at 10 AM: You're unstoppable. Wednesday at 10 AM: You can barely respond to emails. Everyone tells you to \"just be consistent.\" But here's what they don't understand: Your energy doesn't run on a schedule. And forcing consistency creates burnout.",
-    publishDate: "2025-01-01",
+    publishDate: "2025-11-24",
     author: "Prolific Personalities Team",
     readTime: "15 min read",
     tags: [
@@ -3428,7 +3428,7 @@ Your variable energy isn't the problem. The lack of energy-aligned strategy is t
     slug: "strategic-planners-brilliant-plans-never-reality",
     excerpt:
       "Your roadmap is comprehensive. Your strategy document is 47 pages of brilliance. Your actual execution? Nonexistent. Here's the uncomfortable truth: You're not a strategic thinker who struggles with execution. You're using strategic thinking to avoid the vulnerable act of doing.",
-    publishDate: "2025-01-05",
+    publishDate: "2025-12-13",
     author: "Prolific Personalities Team",
     readTime: "16 min read",
     tags: [
@@ -3823,7 +3823,7 @@ Your strategic thinking isn't the problem. The lack of execution constraints is 
     slug: "novelty-seekers-boredom-kills-projects",
     excerpt:
       "You have 10 side projects. Each one started with genuine excitement and big dreams. You made real progress—60%, maybe 70% done. Then... nothing. The problem isn't your commitment. It's that your brain is optimized for learning and exploration, not sustained execution.",
-    publishDate: "2025-01-07",
+    publishDate: "2025-12-23",
     author: "Prolific Personalities Team",
     readTime: "15 min read",
     tags: [
@@ -4184,7 +4184,7 @@ Your variety-seeking isn't the problem. The lack of strategic constraints is the
     slug: "structured-achiever-hidden-trap",
     excerpt:
       "Your Notion workspace is a work of art. Color-coded databases, linked properties, automated workflows. You've spent 6 hours this week perfecting it. Your actual work? Untouched. Here's the paradox: Your greatest strength has become your greatest weakness.",
-    publishDate: "2025-01-08",
+    publishDate: "2025-12-28",
     author: "Prolific Personalities Team",
     readTime: "16 min read",
     tags: [
@@ -5133,7 +5133,7 @@ Your brain isn't broken. The advice you've been following was just never meant f
     slug: "choose-productivity-tool-5-minutes",
     excerpt:
       "You've spent 6 hours watching productivity YouTube. You have 14 tabs open comparing Notion vs. Obsidian vs. Roam. Your actual work? Still not done. Here's the 5-minute decision framework based on your productivity archetype.",
-    publishDate: "2025-11-18",
+    publishDate: "2025-10-30",
     author: "Prolific Personalities Team",
     readTime: "10 min read",
     tags: ["Productivity", "Tools", "Decision Making", "Archetypes"],
@@ -5412,7 +5412,7 @@ Now use it for a week before you research anything else.
     slug: "discipline-advice-destroys-productivity",
     excerpt:
       "You've heard it a thousand times: \"You just need more discipline.\" Here's what they're not telling you: discipline-based productivity advice is gaslighting backed by pseudoscience. And for millions of people, it's actively harmful.",
-    publishDate: "2025-11-15",
+    publishDate: "2025-10-25",
     author: "Prolific Personalities Team",
     readTime: "12 min read",
     tags: ["Productivity", "Psychology", "Research", "Self-Compassion"],
@@ -5667,7 +5667,7 @@ You don't need more discipline. You need the right approach for your brain.
     slug: "why-every-productivity-system-has-failed-you",
     excerpt:
       "It's 9 AM on Monday. You open your task manager—the third one this year—with genuine optimism. By Friday, you haven't opened it once. You're not lazy. You're the victim of the productivity industry's biggest lie.",
-    publishDate: "2025-11-12",
+    publishDate: "2025-10-20",
     author: "Prolific Personalities Team",
     readTime: "8 min read",
     tags: ["Productivity", "Systems", "Psychology", "Research"],
@@ -5797,7 +5797,7 @@ Because the problem was never you. It was the one-size-fits-all lie.
     slug: "productivity-archetype-changes-fluid-styles",
     excerpt:
       "Have you ever taken a productivity quiz, identified your \"type,\" and then realized a week later you're approaching work completely differently? Maybe you recognize patterns from every archetype depending on your mood, the season, or even your monthly cycle. If so, you're not alone.",
-    publishDate: "2025-11-06",
+    publishDate: "2025-10-15",
     author: "Prolific Personalities Team",
     readTime: "5 min read",
     tags: ["Productivity", "Psychology", "Archetypes"],
@@ -5859,7 +5859,7 @@ The goal isn't to find your one true archetype and stick to it forever. The goal
     slug: "digital-minimalism-challenge",
     excerpt:
       "I used to think notifications were just a minor annoyance—a ping here, a badge there. But one week, I decided to turn them all off. What happened next was both painful and eye-opening.",
-    publishDate: "2025-11-05",
+    publishDate: "2025-10-10",
     author: "Prolific Personalities Team",
     readTime: "5 min read",
     tags: ["Digital Minimalism", "Focus", "Productivity"],
@@ -5911,7 +5911,7 @@ So—are you ready to try it? Can you survive without notifications? The results
     slug: "when-productivity-hurts",
     excerpt:
       "Sometimes, the hardest part of building a productivity platform isn't the code or the research—it's facing our own productivity guilt. The hurt that comes from \"not being productive\" is something so many share, but few talk about openly.",
-    publishDate: "2025-11-05",
+    publishDate: "2025-10-08",
     author: "Prolific Personalities Team",
     readTime: "6 min read",
     tags: ["Mental Health", "Productivity", "Self-Compassion"],
@@ -5957,7 +5957,7 @@ To everyone who knows that pain: **you're not alone**. Guilt may be part of the 
     slug: "6-productivity-archetypes-explained",
     excerpt:
       "If you've ever wondered why productivity hacks that seem life-changing for others completely fall flat for you, you're not alone. The truth is: productivity isn't just about discipline or organization — it's about fit.",
-    publishDate: "2025-11-03",
+    publishDate: "2025-10-05",
     author: "Prolific Personalities Team",
     readTime: "8 min read",
     tags: ["Productivity", "Archetypes", "Psychology"],

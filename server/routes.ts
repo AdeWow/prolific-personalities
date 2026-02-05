@@ -644,6 +644,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/email-capture", emailLimiter, async (req, res) => {
     try {
       const validatedData = insertEmailCaptureSchema.parse(req.body);
+      
+      // Check for existing email
+      const existingCapture = await storage.getEmailCaptureByEmail(validatedData.email);
+      if (existingCapture) {
+        return res.status(200).json({ 
+          message: "You're already subscribed!",
+          alreadySubscribed: true 
+        });
+      }
+      
       const capture = await storage.saveEmailCapture(validatedData);
 
       // Send welcome email if Resend is configured and archetype is provided

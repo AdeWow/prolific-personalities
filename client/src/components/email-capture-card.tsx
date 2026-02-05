@@ -35,21 +35,29 @@ export function EmailCaptureCard({
       const response = await apiRequest('POST', '/api/email-capture', emailData);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setSubmitted(true);
       setEmail("");
       setError(null);
-      trackEvent('email_captured', 'Conversion', `Context: ${context}`);
-      toast({
-        title: "Success!",
-        description: "You've been added to our mailing list. Check your inbox soon!",
-      });
+      
+      if (data.alreadySubscribed) {
+        toast({
+          title: "Already subscribed!",
+          description: "You're already on our mailing list.",
+        });
+      } else {
+        trackEvent('email_captured', 'Conversion', `Context: ${context}`);
+        toast({
+          title: "Success!",
+          description: "You've been added to our mailing list. Check your inbox soon!",
+        });
+      }
     },
     onError: () => {
-      setError("Failed to save email. Please try again.");
+      setError("Something went wrong. Please try again.");
       toast({
         title: "Error",
-        description: "Failed to save email. Please try again.",
+        description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
     },
