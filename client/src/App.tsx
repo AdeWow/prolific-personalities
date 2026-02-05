@@ -35,6 +35,7 @@ import Unsubscribe from "@/pages/unsubscribe";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
 import DevTools from "@/pages/dev-tools";
+import DevIconExport from "@/pages/dev-icon-export";
 import AdminTestFlows from "@/pages/admin-test-flows";
 import Login from "@/pages/login";
 import AuthCallback from "@/pages/auth-callback";
@@ -52,6 +53,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/dev" component={DevTools} />
+      <Route path="/dev/icon-export" component={DevIconExport} />
       <Route path="/admin/test-flows" component={AdminTestFlows} />
       <Route path="/quiz" component={Quiz} />
       <Route path="/pricing" component={Pricing} />
