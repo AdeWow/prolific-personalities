@@ -10,7 +10,7 @@ interface BlockProps {
 
 export function InsightBlock({ title, children, className = "" }: BlockProps) {
   return (
-    <Card className={`border-l-4 border-l-amber-400 bg-amber-50/50 dark:bg-amber-950/20 ${className}`}>
+    <Card className={`border-l-4 border-l-amber-400 bg-amber-50/50 dark:bg-amber-950/20 animate-fade-in-up hover:shadow-md transition-shadow duration-200 ${className}`}>
       <CardContent className="p-4">
         <div className="flex gap-3">
           <div className="flex-shrink-0">
@@ -32,7 +32,7 @@ export function InsightBlock({ title, children, className = "" }: BlockProps) {
 
 export function ActionBlock({ title, children, className = "" }: BlockProps) {
   return (
-    <Card className={`border-l-4 border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 ${className}`}>
+    <Card className={`border-l-4 border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 animate-fade-in-up hover:shadow-md transition-shadow duration-200 ${className}`}>
       <CardContent className="p-4">
         <div className="flex gap-3">
           <div className="flex-shrink-0">
@@ -54,7 +54,7 @@ export function ActionBlock({ title, children, className = "" }: BlockProps) {
 
 export function WhyItMattersBlock({ title, children, className = "" }: BlockProps) {
   return (
-    <Card className={`border-l-4 border-l-purple-500 bg-purple-50/50 dark:bg-purple-950/20 ${className}`}>
+    <Card className={`border-l-4 border-l-purple-500 bg-purple-50/50 dark:bg-purple-950/20 animate-fade-in-up hover:shadow-md transition-shadow duration-200 ${className}`}>
       <CardContent className="p-4">
         <div className="flex gap-3">
           <div className="flex-shrink-0">
@@ -76,7 +76,7 @@ export function WhyItMattersBlock({ title, children, className = "" }: BlockProp
 
 export function CommonMistakeBlock({ title, children, className = "" }: BlockProps) {
   return (
-    <Card className={`border-l-4 border-l-orange-500 bg-orange-50/50 dark:bg-orange-950/20 ${className}`}>
+    <Card className={`border-l-4 border-l-orange-500 bg-orange-50/50 dark:bg-orange-950/20 animate-fade-in-up hover:shadow-md transition-shadow duration-200 ${className}`}>
       <CardContent className="p-4">
         <div className="flex gap-3">
           <div className="flex-shrink-0">
@@ -145,7 +145,7 @@ export function CoreTraitCard({ trait, level, explanation, dayMeaning }: CoreTra
   };
 
   return (
-    <Card className="h-full hover:shadow-md transition-shadow">
+    <Card className="h-full hover:shadow-md transition-all duration-200 animate-scale-in border-2 border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-semibold text-foreground">{trait}</h4>
