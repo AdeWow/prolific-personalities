@@ -323,8 +323,8 @@ export default function Science() {
                 <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                   <p>• Gollwitzer, P. M., & Sheeran, P. (2006). Implementation intentions and goal achievement. <em>Advances in Experimental Social Psychology</em>.</p>
                   <p>• Steel, P. (2007). The nature of procrastination: A meta-analytic review. <em>Psychological Bulletin</em>.</p>
-                  <p>• Wilmot, M. P., & Ones, D. S. (2021). Conscientiousness and job performance. <em>Journal of Applied Psychology</em>.</p>
-                  <p>• Plus 40+ additional peer-reviewed sources in the full paper</p>
+                  <p>• Wilmot, M. P., & Ones, D. S. (2019). A century of research on conscientiousness at work. <em>Proceedings of the National Academy of Sciences</em>.</p>
+                  <p>• Plus 35+ additional peer-reviewed sources in the full paper</p>
                 </div>
               </CardContent>
             </Card>
