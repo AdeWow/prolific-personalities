@@ -32,8 +32,8 @@ export default function About() {
         {/* Section 2: Why We Exist */}
         <section className="py-12 md:py-16">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-xl font-bold text-foreground mb-4">Why We Exist</h2>
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Why We Exist</h2>
+            <div className="space-y-5 text-muted-foreground text-lg leading-relaxed">
               <p>
                 Most productivity advice fails because it's generic. It assumes everyone is wired the same way — when in reality, people vary widely in how they think, focus, and stay motivated.
               </p>
@@ -89,34 +89,34 @@ export default function About() {
         {/* Section 4: What Makes Us Different */}
         <section className="py-12 md:py-16">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-xl font-bold text-foreground mb-6">What Makes Us Different</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="flex items-start gap-3">
-                <span className="text-primary mt-0.5"><Check className="h-5 w-5" /></span>
+            <h2 className="text-2xl font-bold text-foreground mb-8">What Makes Us Different</h2>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="flex items-start gap-4">
+                <span className="text-primary mt-1"><Check className="h-6 w-6" /></span>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">Personality-first approach</h3>
-                  <p className="text-muted-foreground text-sm">Map to one of six productivity archetypes with tailored insights.</p>
+                  <h3 className="font-semibold text-foreground text-lg mb-2">Personality-first approach</h3>
+                  <p className="text-muted-foreground text-base">Map to one of six productivity archetypes with tailored insights.</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <span className="text-primary mt-0.5"><Check className="h-5 w-5" /></span>
+              <div className="flex items-start gap-4">
+                <span className="text-primary mt-1"><Check className="h-6 w-6" /></span>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">Backed by behavioral science</h3>
-                  <p className="text-muted-foreground text-sm">Built on executive function theory, cognitive load theory, and motivation science.</p>
+                  <h3 className="font-semibold text-foreground text-lg mb-2">Backed by behavioral science</h3>
+                  <p className="text-muted-foreground text-base">Built on executive function theory, cognitive load theory, and motivation science.</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <span className="text-primary mt-0.5"><Check className="h-5 w-5" /></span>
+              <div className="flex items-start gap-4">
+                <span className="text-primary mt-1"><Check className="h-6 w-6" /></span>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">Actionable over aspirational</h3>
-                  <p className="text-muted-foreground text-sm">Clear next steps and systems you can actually follow through on.</p>
+                  <h3 className="font-semibold text-foreground text-lg mb-2">Actionable over aspirational</h3>
+                  <p className="text-muted-foreground text-base">Clear next steps and systems you can actually follow through on.</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <span className="text-primary mt-0.5"><Check className="h-5 w-5" /></span>
+              <div className="flex items-start gap-4">
+                <span className="text-primary mt-1"><Check className="h-6 w-6" /></span>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">Designed for real humans</h3>
-                  <p className="text-muted-foreground text-sm">Especially valuable for neurodivergent, multi-passionate people.</p>
+                  <h3 className="font-semibold text-foreground text-lg mb-2">Designed for real humans</h3>
+                  <p className="text-muted-foreground text-base">Especially valuable for neurodivergent, multi-passionate people.</p>
                 </div>
               </div>
             </div>
@@ -128,8 +128,8 @@ export default function About() {
         {/* Section 5: Who It's For */}
         <section className="py-12 md:py-16">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-xl font-bold text-foreground mb-4">Who It's For</h2>
-            <ul className="space-y-3">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Who It's For</h2>
+            <ul className="space-y-4">
               {[
                 "Creatives who struggle to stay focused and organized",
                 "Professionals who are highly driven but easily overwhelmed", 
@@ -137,9 +137,9 @@ export default function About() {
                 "High-achievers battling burnout",
                 "Anyone who wants sustainable productivity"
               ].map((item, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <span className="text-primary mt-0.5"><Check className="h-5 w-5" /></span>
-                  <span className="text-muted-foreground">{item}</span>
+                <li key={index} className="flex items-start gap-4">
+                  <span className="text-primary mt-1"><Check className="h-6 w-6" /></span>
+                  <span className="text-muted-foreground text-lg">{item}</span>
                 </li>
               ))}
             </ul>
