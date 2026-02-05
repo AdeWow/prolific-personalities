@@ -936,75 +936,75 @@ export interface WeeklyAccountabilityEmailData {
 
 // 8 weeks of archetype-specific tips (rotates every 8 weeks)
 const weeklyTipsBy8Weeks: { [archetype: string]: string[] } = {
-  'the-dynamo': [
-    "Week 1 Challenge: Identify your top 3 energy-draining tasks and delegate or eliminate ONE this week. Dynamos create more impact by focusing on high-value work.",
-    "Week 2 Challenge: Try the '2-Hour Morning Block' — protect your first 2 hours for your most visionary work. No emails, no meetings, just creation.",
-    "Week 3 Challenge: Pick one project and break it into 25-minute sprints. Your burst energy is your superpower — harness it with intention.",
-    "Week 4 Challenge: Start a 'Parking Lot' list for brilliant ideas that pop up mid-task. Capture them, then return to focus. Your brain will thank you.",
-    "Week 5 Challenge: Delegate something you normally do yourself. Your visionary energy is too valuable for tasks others can handle.",
-    "Week 6 Challenge: Schedule a 'Strategic Thinking Hour' with zero agenda — let your mind wander to big-picture possibilities.",
-    "Week 7 Challenge: Review your past week's wins and identify what made you feel most alive. Do more of exactly that.",
-    "Week 8 Challenge: Create a 'Not-To-Do' list — what activities drain your energy without adding value? Cut one this week.",
+  'structured-achiever': [
+    "Week 1 Challenge: Create a 'flexible buffer' in your schedule — leave one hour unplanned this week. Notice how you adapt when structure bends.",
+    "Week 2 Challenge: Pick one task and complete it to 80% instead of 100%. Practice releasing the need for perfection.",
+    "Week 3 Challenge: Try a new productivity method outside your comfort zone (mind mapping, voice notes, etc.). Expand your toolkit.",
+    "Week 4 Challenge: Delegate one task you usually do yourself. Trust others to handle it — even if differently than you would.",
+    "Week 5 Challenge: Schedule 'white space' — 30 minutes with no agenda. Let your structured mind wander creatively.",
+    "Week 6 Challenge: Identify one system that's become overly complex. Simplify it. Sometimes less structure means more flow.",
+    "Week 7 Challenge: Celebrate progress over perfection. List 3 things you moved forward this week, regardless of completion.",
+    "Week 8 Challenge: Ask a colleague for feedback on your work style. Structured Achievers grow by understanding others' perspectives.",
   ],
-  'the-catalyst': [
-    "Week 1 Challenge: Schedule 3 quick 15-minute check-ins with teammates. Your collaborative energy creates momentum for everyone.",
-    "Week 2 Challenge: Try 'energy matching' — tackle collaborative tasks when feeling social, solo work when you need to recharge.",
-    "Week 3 Challenge: Document one decision-making process this week. Understanding your intuitive leaps helps you trust them more.",
-    "Week 4 Challenge: Host a 'creative collision' — bring together two people who don't usually work together and facilitate a brainstorm.",
-    "Week 5 Challenge: Block 'connection time' in your calendar as firmly as you'd block a meeting. Relationships are your productivity fuel.",
-    "Week 6 Challenge: Ask someone for feedback on how you've helped them recently. Catalysts often underestimate their impact.",
-    "Week 7 Challenge: Take someone for coffee and just listen. Your strength in understanding others deepens with intentional practice.",
-    "Week 8 Challenge: Reflect on which collaborations energized you most this month. Seek more of those partnerships.",
+  'chaotic-creative': [
+    "Week 1 Challenge: Create ONE simple structure for your most important project. Just one rule to follow this week.",
+    "Week 2 Challenge: Try time-boxing: set a 25-minute timer for a task you've been avoiding. Creativity thrives within constraints.",
+    "Week 3 Challenge: Capture your brilliant ideas in ONE place this week. A notes app, a notebook — just one spot.",
+    "Week 4 Challenge: Complete something before starting something new. Finish one project, no matter how small.",
+    "Week 5 Challenge: Schedule your most creative work during your peak energy hours. Protect that time fiercely.",
+    "Week 6 Challenge: Create a 'chaos container' — a specific time block where you allow yourself to explore freely.",
+    "Week 7 Challenge: Partner with a Structured Achiever on a project. Let them handle the structure while you drive the vision.",
+    "Week 8 Challenge: Review your past week and identify one pattern in your creative process. Self-awareness amplifies your gifts.",
   ],
-  'the-architect': [
-    "Week 1 Challenge: Optimize one small system this week. Even a 5% improvement compounds massively over time.",
-    "Week 2 Challenge: Schedule a 90-minute deep work block and guard it fiercely. Your complex thinking needs uninterrupted space.",
-    "Week 3 Challenge: Document a process you've mastered so others can benefit from your systematic approach.",
-    "Week 4 Challenge: Try 'pre-mortem' thinking — before starting a project, imagine what could go wrong and plan around it.",
-    "Week 5 Challenge: Identify one area where 'good enough' would free up time for more important work. Perfect is the enemy of done.",
-    "Week 6 Challenge: Review your systems and ask: which one is due for an upgrade? Schedule time to improve it.",
-    "Week 7 Challenge: Teach someone your process for a task you do well. Explaining it often reveals improvements.",
-    "Week 8 Challenge: Create a template or checklist for a recurring task. Future you will be grateful.",
+  'anxious-perfectionist': [
+    "Week 1 Challenge: Ship something imperfect on purpose. Send that email, submit that draft — done is better than perfect.",
+    "Week 2 Challenge: Set a 'worry window' — 15 minutes to write down all concerns, then close the notebook and move on.",
+    "Week 3 Challenge: When you catch yourself over-researching, stop and take action instead. Trust what you already know.",
+    "Week 4 Challenge: Practice the 2-minute rule: if a decision takes less than 2 minutes, make it immediately. No deliberation.",
+    "Week 5 Challenge: Celebrate a 'good enough' moment from this week. Reframe imperfection as progress.",
+    "Week 6 Challenge: Ask yourself: 'What would I do if I wasn't afraid of making a mistake?' Then do that thing.",
+    "Week 7 Challenge: Set a deadline for one thing you've been perfecting. Commit to finishing by that date, no extensions.",
+    "Week 8 Challenge: Share work-in-progress with someone you trust. Practice vulnerability as a productivity tool.",
   ],
-  'the-harmonizer': [
-    "Week 1 Challenge: Prioritize one relationship-building activity alongside your task list. Connection is your superpower.",
-    "Week 2 Challenge: Batch your communication — set specific times for emails and messages to protect your focus.",
-    "Week 3 Challenge: Schedule a 'listening tour' — have coffee with someone you want to understand better.",
-    "Week 4 Challenge: Practice saying 'let me think about it' before committing to new requests. Your time matters.",
-    "Week 5 Challenge: Identify one boundary you need to set this week. Harmonizers thrive when they protect their energy.",
-    "Week 6 Challenge: Notice when you're overgiving. Choose one area to give less so you can sustain your impact.",
-    "Week 7 Challenge: Celebrate a team win publicly. Your ability to see others' contributions is a gift.",
-    "Week 8 Challenge: Schedule 'solitude time' — even connectors need space to recharge and reflect.",
-  ],
-  'the-explorer': [
-    "Week 1 Challenge: Allocate 30 minutes daily to explore a topic tangent to your main work. Curiosity is your compass.",
-    "Week 2 Challenge: Connect two unrelated ideas from different projects. Your exploratory mind finds unexpected solutions.",
-    "Week 3 Challenge: Start documenting your exploration journey — breadcrumbs for your future self.",
-    "Week 4 Challenge: Schedule 'wandering time' in your calendar. Explorers need space to discover unexpected connections.",
-    "Week 5 Challenge: Share one interesting discovery with someone who might benefit. Exploration compounds when shared.",
-    "Week 6 Challenge: Revisit an old idea you shelved — does it connect to something you're working on now?",
-    "Week 7 Challenge: Set a 'completion checkpoint' — before starting something new, finish one thing in progress.",
-    "Week 8 Challenge: Create a 'curiosity log' — track what captures your attention this week. Patterns will emerge.",
-  ],
-  'the-anchor': [
-    "Week 1 Challenge: Reflect on how your consistent approach has helped your team lately. Stability is a superpower.",
-    "Week 2 Challenge: Introduce one small change to your routine. Anchors grow by expanding comfort zones gradually.",
-    "Week 3 Challenge: Mentor someone this week — your reliable presence helps others feel grounded.",
-    "Week 4 Challenge: Create a 'consistency playbook' for a recurring task. Others can benefit from your approach.",
-    "Week 5 Challenge: Identify one area where more flexibility might help. Small adaptations can strengthen your foundation.",
-    "Week 6 Challenge: Celebrate how your reliability has created trust. This is genuine value you provide.",
-    "Week 7 Challenge: Share your favorite routine or habit with someone who might benefit. Your systems work.",
-    "Week 8 Challenge: Review what's working well and recommit to those practices. Consistency is the key.",
+  'novelty-seeker': [
+    "Week 1 Challenge: Finish one thing you started before starting anything new. Channel your energy toward completion.",
+    "Week 2 Challenge: Create a 'shiny object' parking lot — write down new ideas but commit to exploring them later.",
+    "Week 3 Challenge: Find the novelty in a routine task. How can you make something boring more interesting?",
+    "Week 4 Challenge: Pair a new exciting task with a necessary boring one. Use novelty as a reward for discipline.",
+    "Week 5 Challenge: Set a 'depth goal' — spend more time on one thing instead of breadth across many things.",
+    "Week 6 Challenge: Interview someone who does deep, focused work. Learn from their approach to find new inspiration.",
+    "Week 7 Challenge: Create consequences for abandoning projects. What will you give up if you don't finish?",
+    "Week 8 Challenge: Celebrate sustained focus. Track how many days you stuck with one project this week.",
   ],
   'strategic-planner': [
-    "Week 1 Challenge: Map out your top 3 goals for the quarter. Strategic Planners thrive with clear direction.",
-    "Week 2 Challenge: Review one plan from last month — what worked? What needs adjustment? Iterate with intention.",
-    "Week 3 Challenge: Break your biggest goal into weekly milestones. Your strength is turning vision into action.",
-    "Week 4 Challenge: Schedule a 'planning power hour' — dedicated time to think strategically about what's ahead.",
-    "Week 5 Challenge: Identify one area where you're over-planning. Sometimes the best plan is to start and learn.",
-    "Week 6 Challenge: Share your planning process with someone struggling to get organized. Your approach helps others.",
-    "Week 7 Challenge: Review your progress against your goals. Celebrate wins and adjust what's not working.",
-    "Week 8 Challenge: Create a 'decision framework' for a recurring choice. Strategic thinking scales through systems.",
+    "Week 1 Challenge: Start one task without a complete plan. Practice taking action with 70% of the information.",
+    "Week 2 Challenge: Set a time limit on planning. When the timer ends, execute — even if the plan isn't perfect.",
+    "Week 3 Challenge: Try 'rapid prototyping' — build a quick version instead of planning the perfect version.",
+    "Week 4 Challenge: Ask for feedback earlier in your process. Let others' input shape your plans before they're final.",
+    "Week 5 Challenge: Identify one area where you're over-planning. What would happen if you just started?",
+    "Week 6 Challenge: Practice 'good enough' planning. Create a one-page plan instead of a ten-page document.",
+    "Week 7 Challenge: Delegate the planning for one small project. Trust someone else's approach.",
+    "Week 8 Challenge: Reflect on when action taught you more than planning. What did spontaneity reveal?",
+  ],
+  'flexible-improviser': [
+    "Week 1 Challenge: Commit to ONE system or routine for the whole week. Just one — and stick to it.",
+    "Week 2 Challenge: Plan your tomorrow before today ends. A small structure can amplify your adaptability.",
+    "Week 3 Challenge: Document what's working in your improvisational approach. Make your genius repeatable.",
+    "Week 4 Challenge: Say 'no' to one opportunity this week. Not everything deserves your flexible attention.",
+    "Week 5 Challenge: Create a 'default' for one decision you make repeatedly. Remove that daily choice.",
+    "Week 6 Challenge: Partner with a Strategic Planner on a project. Let structure complement your adaptability.",
+    "Week 7 Challenge: Set one non-negotiable boundary this week. Flexibility needs fences to be sustainable.",
+    "Week 8 Challenge: Review patterns in your improvisations. What themes emerge? Use insights to be more intentional.",
+  ],
+  'adaptive-generalist': [
+    "Week 1 Challenge: Choose ONE mode (structure, creativity, or flexibility) to lean into this week. Go deep, not wide.",
+    "Week 2 Challenge: Identify which of your multiple approaches works best for which situations. Create a personal playbook.",
+    "Week 3 Challenge: Embrace being 'multi-modal' — schedule different work styles for different days.",
+    "Week 4 Challenge: Ask colleagues what they value most about your versatility. Use that insight intentionally.",
+    "Week 5 Challenge: Notice when you're spreading too thin across modes. Pick the best approach for your current goal.",
+    "Week 6 Challenge: Create 'mode triggers' — specific situations that tell you which approach to use.",
+    "Week 7 Challenge: Teach someone else about adaptability. Your ability to shift contexts is a learnable skill.",
+    "Week 8 Challenge: Celebrate your range. List three situations where your generalist nature saved the day.",
   ],
 };
 
@@ -1156,8 +1156,9 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
   const quote = weeklyQuotes[themeIndex];
   
   // Get archetype-specific tip for this week
-  const archetypeKey = archetype.toLowerCase().replace(/ /g, '-');
-  const tips = weeklyTipsBy8Weeks[archetypeKey] || weeklyTipsBy8Weeks['the-architect'] || weeklyTipsBy8Weeks['strategic-planner'];
+  // Handle both formats: "The Structured Achiever" -> "structured-achiever" and "structured-achiever"
+  const archetypeKey = archetype.toLowerCase().replace(/^the\s+/, '').replace(/ /g, '-');
+  const tips = weeklyTipsBy8Weeks[archetypeKey] || weeklyTipsBy8Weeks['adaptive-generalist'];
   const weeklyTip = tips[themeIndex];
   
   const greeting = firstName ? `Hi ${firstName}` : "Hey there";
