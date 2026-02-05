@@ -1,0 +1,539 @@
+# ARCHETYPE PAGE RESTRUCTURE - Separate Pages Architecture
+
+## OVERVIEW
+
+We're restructuring the /archetypes page from a single long-scroll page showing all 6 archetypes into a hub-and-spoke architecture:
+
+- `/archetypes` → Overview grid page (hub)
+- `/archetypes/[slug]` → Individual archetype detail pages (spokes)
+
+This improves user experience, enables better SEO, and makes results more shareable.
+
+## ARCHETYPE SLUGS
+
+Use these exact slugs for routing:
+
+1. `structured-achiever` → The Structured Achiever
+2. `chaotic-creative` → The Chaotic Creative
+3. `anxious-perfectionist` → The Anxious Perfectionist
+4. `novelty-seeker` → The Novelty Seeker
+5. `strategic-planner` → The Strategic Planner
+6. `flexible-improviser` → The Flexible Improviser
+
+Note: "Adaptive Generalist" is intentionally excluded from this public page. It only appears in quiz results.
+
+---
+
+## PART 1: OVERVIEW PAGE (`/archetypes`)
+
+### Structure
+┌─────────────────────────────────────────────────────────────┐
+│ HEADER (existing site nav)                                   │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│              [Productivity Archetypes badge]                 │
+│                                                              │
+│         Six Distinct Productivity Personalities              │
+│                                                              │
+│   Everyone approaches productivity differently. Some thrive  │
+│   on structure, others crave spontaneity. Discover which     │
+│   one resonates with you.                                    │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
+│   │   [img]     │ │   [img]     │ │   [img]     │           │
+│   │ Structured  │ │  Chaotic    │ │  Anxious    │           │
+│   │  Achiever   │ │  Creative   │ │Perfectionist│           │
+│   │  [tagline]  │ │  [tagline]  │ │  [tagline]  │           │
+│   └─────────────┘ └─────────────┘ └─────────────┘           │
+│                                                              │
+│   ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
+│   │   [img]     │ │   [img]     │ │   [img]     │           │
+│   │  Novelty    │ │  Strategic  │ │  Flexible   │           │
+│   │   Seeker    │ │   Planner   │ │ Improviser  │           │
+│   │  [tagline]  │ │  [tagline]  │ │  [tagline]  │           │
+│   └─────────────┘ └─────────────┘ └─────────────┘           │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│        Not sure which one you are?                           │
+│                                                              │
+│   Take our free 5-minute assessment to discover your         │
+│   productivity personality and get personalized strategies.  │
+│                                                              │
+│              [ Discover Your Type ]                          │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│ FOOTER                                                       │
+└─────────────────────────────────────────────────────────────┘
+
+### Card Component Specifications
+
+Each archetype card in the grid:
+```jsx
+<Link href={`/archetypes/${archetype.slug}`}>
+  <div class="group bg-white border border-slate-200 rounded-2xl p-6 
+              hover:border-slate-300 hover:shadow-lg 
+              transition-all duration-200 cursor-pointer">
+    
+    {/* Illustration */}
+    <div class="w-20 h-20 mx-auto mb-4">
+      <img 
+        src={archetype.illustration} 
+        alt={archetype.name}
+        class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
+      />
+    </div>
+    
+    {/* Name */}
+    <h3 class="text-lg font-bold text-slate-900 text-center mb-2">
+      {archetype.name}
+    </h3>
+    
+    {/* Tagline */}
+    <p class="text-sm text-slate-500 text-center">
+      {archetype.tagline}
+    </p>
+    
+    {/* Hover indicator */}
+    <div class="mt-4 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+      <span class="text-xs font-medium text-primary-600 flex items-center gap-1">
+        Learn more
+        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </span>
+    </div>
+  </div>
+</Link>
+```
+
+### Archetype Data for Overview Cards
+```javascript
+const archetypes = [
+  {
+    slug: 'structured-achiever',
+    name: 'The Structured Achiever',
+    tagline: 'You thrive on goals and accountability.',
+    illustration: '/images/archetypes/structured-achiever.png', // use existing
+    color: 'blue', // header color on detail page
+  },
+  {
+    slug: 'chaotic-creative',
+    name: 'The Chaotic Creative',
+    tagline: 'You create your own path.',
+    illustration: '/images/archetypes/chaotic-creative.png',
+    color: 'purple',
+  },
+  {
+    slug: 'anxious-perfectionist',
+    name: 'The Anxious Perfectionist',
+    tagline: 'You hold yourself to high standards.',
+    illustration: '/images/archetypes/anxious-perfectionist.png',
+    color: 'rose',
+  },
+  {
+    slug: 'novelty-seeker',
+    name: 'The Novelty Seeker',
+    tagline: 'You thrive on variety and discovery.',
+    illustration: '/images/archetypes/novelty-seeker.png',
+    color: 'amber',
+  },
+  {
+    slug: 'strategic-planner',
+    name: 'The Strategic Planner',
+    tagline: 'You see the big picture clearly.',
+    illustration: '/images/archetypes/strategic-planner.png',
+    color: 'teal',
+  },
+  {
+    slug: 'flexible-improviser',
+    name: 'The Flexible Improviser',
+    tagline: 'You adapt and flow with circumstances.',
+    illustration: '/images/archetypes/flexible-improviser.png',
+    color: 'cyan',
+  },
+];
+```
+
+### Overview Page SEO Meta
+```jsx
+<Head>
+  <title>Productivity Archetypes | Prolific Personalities</title>
+  <meta 
+    name="description" 
+    content="Discover the six distinct productivity personalities. Learn which archetype matches how you naturally focus, plan, and follow through."
+  />
+  <meta property="og:title" content="Six Productivity Archetypes | Prolific Personalities" />
+  <meta property="og:description" content="Everyone approaches productivity differently. Discover which personality type resonates with you." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://prolificpersonalities.com/archetypes" />
+</Head>
+```
+
+---
+
+## PART 2: INDIVIDUAL ARCHETYPE PAGES (`/archetypes/[slug]`)
+
+### File Structure
+
+Create a dynamic route:
+pages/archetypes/[slug].jsx
+OR
+app/archetypes/[slug]/page.jsx
+
+### Page Layout Structure
+┌─────────────────────────────────────────────────────────────┐
+│ HEADER (existing site nav)                                   │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│ ┌─────────────────────────────────────────────────────────┐ │
+│ │                                                         │ │
+│ │   [Color Banner - matches archetype]                    │ │
+│ │                                                         │ │
+│ │      The Structured Achiever                            │ │
+│ │      You thrive on goals and accountability.            │ │
+│ │                                                         │ │
+│ └─────────────────────────────────────────────────────────┘ │
+│                                                              │
+│  ┌──────────────────────┐  ┌─────────────────────────────┐  │
+│  │                      │  │                             │  │
+│  │  [Intro paragraphs   │  │      [Illustration]         │  │
+│  │   about this type]   │  │                             │  │
+│  │                      │  │                             │  │
+│  └──────────────────────┘  └─────────────────────────────┘  │
+│                                                              │
+│  [Trait pills: Organized, Goal-oriented, Detail-focused]    │
+│                                                              │
+│  ┌─────────────────────────────────────────────────────────┐│
+│  │ Your Superpowers (green left border)                    ││
+│  │                                                         ││
+│  │  ┌─────────────┐  ┌─────────────┐                       ││
+│  │  │ Reliability │  │ Efficiency  │                       ││
+│  │  │ description │  │ description │                       ││
+│  │  └─────────────┘  └─────────────┘                       ││
+│  │  ┌─────────────┐  ┌─────────────┐                       ││
+│  │  │Accountability│ │ Execution   │                       ││
+│  │  │ description │  │ description │                       ││
+│  │  └─────────────┘  └─────────────┘                       ││
+│  └─────────────────────────────────────────────────────────┘│
+│                                                              │
+│  ┌─────────────────────────────────────────────────────────┐│
+│  │ Common Blockers (red/pink left border)                  ││
+│  │                                                         ││
+│  │  • Ambiguous goals: You freeze without clear criteria   ││
+│  │  • Lack of external accountability: Solo = unmotivating ││
+│  │  • Over-planning: Optimizing systems > doing the work   ││
+│  └─────────────────────────────────────────────────────────┘│
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   Want to discover your personalized strengths, growth      │
+│   areas, and tool recommendations?                          │
+│                                                              │
+│              [ Take the Assessment ]                         │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   Explore Other Types                                        │
+│                                                              │
+│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌───────┐│
+│   │Chaotic  │ │Anxious  │ │ Novelty │ │Strategic│ │Flexible││
+│   │Creative │ │Perfect. │ │ Seeker  │ │ Planner │ │Improv. ││
+│   └─────────┘ └─────────┘ └─────────┘ └─────────┘ └───────┘│
+│   (excludes current archetype, shows other 5)               │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│ FOOTER                                                       │
+└─────────────────────────────────────────────────────────────┘
+
+### Dynamic Page Component
+```jsx
+// pages/archetypes/[slug].jsx or app/archetypes/[slug]/page.jsx
+
+import { archetypeData } from '@/data/archetypes'; // move existing content here
+import Head from 'next/head';
+import Link from 'next/link';
+
+export default function ArchetypePage({ params }) {
+  const { slug } = params;
+  const archetype = archetypeData[slug];
+  
+  if (!archetype) {
+    return notFound(); // 404
+  }
+  
+  const otherArchetypes = Object.values(archetypeData).filter(a => a.slug !== slug);
+  
+  return (
+    <>
+      <Head>
+        <title>{archetype.name} | Prolific Personalities</title>
+        <meta name="description" content={archetype.metaDescription} />
+        <meta property="og:title" content={`${archetype.name} | Productivity Archetype`} />
+        <meta property="og:description" content={archetype.tagline} />
+        <meta property="og:url" content={`https://prolificpersonalities.com/archetypes/${slug}`} />
+      </Head>
+      
+      {/* Hero Banner */}
+      <section class={`bg-gradient-to-r ${archetype.gradientClasses} py-16 px-6`}>
+        <div class="max-w-4xl mx-auto">
+          <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+            {archetype.name}
+          </h1>
+          <p class="text-xl text-white/90 italic">
+            {archetype.tagline}
+          </p>
+        </div>
+      </section>
+      
+      {/* Main Content */}
+      <section class="py-12 px-6">
+        <div class="max-w-4xl mx-auto">
+          
+          {/* Intro + Illustration */}
+          <div class="grid md:grid-cols-5 gap-8 mb-10">
+            <div class="md:col-span-3 space-y-4 text-slate-700 text-lg leading-relaxed">
+              {archetype.introParagraphs.map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
+            </div>
+            <div class="md:col-span-2 flex items-center justify-center">
+              <img 
+                src={archetype.illustration} 
+                alt={archetype.name}
+                class="max-w-full h-auto rounded-xl"
+              />
+            </div>
+          </div>
+          
+          {/* Trait Pills */}
+          <div class="flex flex-wrap gap-2 mb-10">
+            {archetype.traits.map((trait) => (
+              <span 
+                key={trait}
+                class="px-4 py-1.5 bg-slate-100 text-slate-700 rounded-full text-sm font-medium"
+              >
+                {trait}
+              </span>
+            ))}
+          </div>
+          
+          {/* Superpowers */}
+          <div class="mb-8 p-6 bg-emerald-50 border-l-4 border-emerald-400 rounded-r-xl">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">Your Superpowers</h2>
+            <div class="grid sm:grid-cols-2 gap-4">
+              {archetype.superpowers.map((power) => (
+                <div key={power.name} class="bg-white p-4 rounded-lg">
+                  <h3 class="font-bold text-slate-900 mb-1">{power.name}</h3>
+                  <p class="text-slate-600 text-sm">{power.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Common Blockers */}
+          <div class="mb-12 p-6 bg-rose-50 border-l-4 border-rose-400 rounded-r-xl">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">Common Blockers</h2>
+            <ul class="space-y-3">
+              {archetype.blockers.map((blocker) => (
+                <li key={blocker.name} class="flex items-start gap-3">
+                  <span class="w-2 h-2 mt-2 bg-rose-400 rounded-full flex-shrink-0"></span>
+                  <div>
+                    <span class="font-semibold text-slate-900">{blocker.name}:</span>
+                    <span class="text-slate-600 ml-1">{blocker.description}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+        </div>
+      </section>
+      
+      {/* CTA Section */}
+      <section class="py-12 px-6 bg-slate-50 border-y border-slate-200">
+        <div class="max-w-2xl mx-auto text-center">
+          <p class="text-lg text-slate-600 mb-6">
+            Want to discover your personalized strengths, growth areas, and tool recommendations?
+          </p>
+          <Link 
+            href="/quiz"
+            class="inline-flex items-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-600 
+                   text-white font-semibold rounded-full transition-colors shadow-lg shadow-primary-500/25"
+          >
+            Take the Assessment
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        </div>
+      </section>
+      
+      {/* Explore Other Types */}
+      <section class="py-12 px-6">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-2xl font-bold text-slate-900 text-center mb-8">
+            Explore Other Types
+          </h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            {otherArchetypes.map((other) => (
+              <Link 
+                key={other.slug}
+                href={`/archetypes/${other.slug}`}
+                class="group bg-white border border-slate-200 rounded-xl p-4 
+                       hover:border-slate-300 hover:shadow-md transition-all text-center"
+              >
+                <img 
+                  src={other.illustration} 
+                  alt={other.name}
+                  class="w-12 h-12 mx-auto mb-2 group-hover:scale-110 transition-transform"
+                />
+                <span class="text-sm font-medium text-slate-700 group-hover:text-slate-900">
+                  {other.shortName}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+// For static generation (recommended for SEO)
+export async function generateStaticParams() {
+  return [
+    { slug: 'structured-achiever' },
+    { slug: 'chaotic-creative' },
+    { slug: 'anxious-perfectionist' },
+    { slug: 'novelty-seeker' },
+    { slug: 'strategic-planner' },
+    { slug: 'flexible-improviser' },
+  ];
+}
+```
+
+### Archetype Data Structure
+
+Create a data file to store all archetype content (migrate from current page):
+```javascript
+// data/archetypes.js
+
+export const archetypeData = {
+  'structured-achiever': {
+    slug: 'structured-achiever',
+    name: 'The Structured Achiever',
+    shortName: 'Structured Achiever',
+    tagline: 'You thrive on goals and accountability.',
+    metaDescription: 'The Structured Achiever is highly organized and externally motivated. Learn about your superpowers, blockers, and personalized productivity strategies.',
+    gradientClasses: 'from-blue-400 to-blue-600',
+    illustration: '/images/archetypes/structured-achiever.png',
+    introParagraphs: [
+      'The Structured Achiever is highly organized and externally motivated. You excel when you have clear goals, deadlines, and accountability systems. External validation and recognition fuel your productivity.',
+      'You naturally gravitate toward structured environments where expectations are clear and progress is measurable. Deadlines don\'t stress you out—they motivate you. You thrive when others are counting on you, and you love the feeling of checking tasks off your list.',
+      'Your attention to detail and systematic approach make you reliable and efficient. You excel at following through on commitments and delivering high-quality work on time. You respond well to external rewards, whether that\'s recognition from colleagues or tangible achievements.',
+    ],
+    traits: ['Organized', 'Goal-oriented', 'Detail-focused'],
+    superpowers: [
+      { name: 'Reliability', description: 'When you commit, you deliver. Deadlines are sacred.' },
+      { name: 'Efficiency', description: 'You optimize workflows others find tedious.' },
+      { name: 'Accountability', description: 'External deadlines and team expectations drive you to excellence.' },
+      { name: 'Execution', description: 'Once the plan is clear, you execute flawlessly.' },
+    ],
+    blockers: [
+      { name: 'Ambiguous goals', description: 'You freeze without clear success criteria' },
+      { name: 'Lack of external accountability', description: 'Solo work feels unmotivating' },
+      { name: 'Over-planning', description: 'You spend more time optimizing systems than doing the work' },
+    ],
+  },
+  
+  'chaotic-creative': {
+    slug: 'chaotic-creative',
+    name: 'The Chaotic Creative',
+    shortName: 'Chaotic Creative',
+    tagline: 'You create your own path.',
+    metaDescription: 'The Chaotic Creative is naturally curious and thrives on variety. Learn about your superpowers, blockers, and personalized productivity strategies.',
+    gradientClasses: 'from-purple-400 to-purple-600',
+    illustration: '/images/archetypes/chaotic-creative.png',
+    introParagraphs: [
+      'The Chaotic Creative is naturally curious and thrives on variety. You prefer flexibility over rigid schedules, and you\'re energized by new experiences and big-picture thinking, though starting tasks can be challenging.',
+      'You might have a dozen interests at once, and that\'s not a problem—it\'s how you learn. You connect ideas across disciplines and find inspiration in unexpected places. Structure feels confining, but complete chaos doesn\'t work either.',
+      'Your challenge is finding systems that bend without breaking. You need frameworks that support your curiosity rather than limit it. Procrastination is often your nemesis—not from lack of interest, but from overthinking or waiting for the perfect moment.',
+    ],
+    traits: ['Creative', 'Flexible', 'Visionary'],
+    superpowers: [
+      { name: 'Creativity', description: 'You see solutions and connections others miss.' },
+      { name: 'Adaptability', description: 'When plans change, you pivot easily.' },
+      { name: 'Passion', description: 'When interested, you enter hyperfocus and produce magic.' },
+      { name: 'Innovation', description: 'Your refusal to do things "the normal way" leads to breakthroughs.' },
+    ],
+    blockers: [
+      { name: 'Task initiation paralysis', description: 'Starting feels impossibly hard' },
+      { name: 'Novelty addiction', description: 'You abandon projects when the excitement fades' },
+      { name: 'Guilt spirals', description: 'Shame about procrastination creates more avoidance' },
+    ],
+  },
+  
+  'anxious-perfectionist': {
+    slug: 'anxious-perfectionist',
+    name: 'The Anxious Perfectionist',
+    shortName: 'Anxious Perfectionist',
+    tagline: 'You hold yourself to high standards.',
+    metaDescription: 'The Anxious Perfectionist sets high standards and cares deeply about quality. Learn about your superpowers, blockers, and personalized productivity strategies.',
+    gradientClasses: 'from-rose-400 to-rose-600',
+    illustration: '/images/archetypes/anxious-perfectionist.png',
+    introParagraphs: [
+      // Migrate existing content from current page
+    ],
+    traits: [/* migrate */],
+    superpowers: [/* migrate */],
+    blockers: [/* migrate */],
+  },
+  
+  'novelty-seeker': {
+    slug: 'novelty-seeker',
+    name: 'The Novelty Seeker',
+    shortName: 'Novelty Seeker',
+    tagline: 'You thrive on variety and discovery.',
+    metaDescription: 'The Novelty Seeker is energized by new experiences and diverse interests. Learn about your superpowers, blockers, and personalized productivity strategies.',
+    gradientClasses: 'from-amber-400 to-amber-600',
+    illustration: '/images/archetypes/novelty-seeker.png',
+    introParagraphs: [/* migrate */],
+    traits: [/* migrate */],
+    superpowers: [/* migrate */],
+    blockers: [/* migrate */],
+  },
+  
+  'strategic-planner': {
+    slug: 'strategic-planner',
+    name: 'The Strategic Planner',
+    shortName: 'Strategic Planner',
+    tagline: 'You see the big picture clearly.',
+    metaDescription: 'The Strategic Planner excels at long-term thinking and systematic approaches. Learn about your superpowers, blockers, and personalized productivity strategies.',
+    gradientClasses: 'from-teal-400 to-teal-600',
+    illustration: '/images/archetypes/strategic-planner.png',
+    introParagraphs: [/* migrate */],
+    traits: [/* migrate */],
+    superpowers: [/* migrate */],
+    blockers: [/* migrate */],
+  },
+  
+  'flexible-improviser': {
+    slug: 'flexible-improviser',
+    name: 'The Flexible Improviser',
+    shortName: 'Flexible Improviser',
+    tagline: 'You adapt and flow with circumstances.',
+    metaDescription: 'The Flexible Improviser thrives in dynamic environments and adapts quickly. Learn about your superpowers, blockers, and personalized productivity strategies.',
+    gradientClasses: 'from-cyan-400 to-cyan-600',
+    illustration: '/images/archetypes/flexible-improviser.png',
+    introParagraphs: [/* migrate */],
+    traits: [/* migrate */],
+    superpowers: [/* migrate */],
+    blockers: [/* migrate */],
+  },
+};
+```
+
+---

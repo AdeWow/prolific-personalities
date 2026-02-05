@@ -16,6 +16,7 @@ import Results from "@/pages/results";
 import About from "@/pages/about";
 import Science from "@/pages/science";
 import Archetypes from "@/pages/archetypes";
+import ArchetypeDetail from "@/pages/archetype-detail";
 import Resources from "@/pages/resources";
 import FAQ from "@/pages/faq";
 import Blog from "@/pages/blog";
@@ -59,6 +60,7 @@ function Router() {
       <Route path="/payment-cancelled" component={PaymentCancelled} />
       <Route path="/about" component={About} />
       <Route path="/science" component={Science} />
+      <Route path="/archetypes/:slug" component={ArchetypeDetail} />
       <Route path="/archetypes" component={Archetypes} />
       <Route path="/resources" component={Resources} />
       <Route path="/faq" component={FAQ} />
