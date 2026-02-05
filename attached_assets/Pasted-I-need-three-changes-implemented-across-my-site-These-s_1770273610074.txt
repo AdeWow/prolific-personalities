@@ -1,0 +1,91 @@
+I need three changes implemented across my site. These should be done in order because Fix 1 and Fix 2 are global (affect every page), and Fix 3 is page-specific.
+
+FIX 1: Make the Top Navigation Sticky
+Current behavior: The top nav scrolls away when the user scrolls down. Users have to scroll all the way back up to navigate.
+Required behavior:
+
+The nav should be position: sticky (or fixed) at the top of the viewport at all times
+When the user scrolls past 80px, the nav should shrink slightly:
+
+Reduce vertical padding (e.g., py-4 → py-2)
+Slightly reduce the logo size
+Add a subtle bottom shadow (shadow-sm) so it visually separates from page content
+
+
+The transition between default and scrolled states should be smooth (transition-all duration-300)
+Add a solid white (or your current nav background color) background so page content doesn't bleed through when scrolling
+Important: Add z-50 so the nav always sits on top of all other content
+Make sure to add appropriate padding-top or margin-top to the page body/main content container so the sticky nav doesn't overlap the first section of content on any page
+
+Do NOT change:
+
+The nav links, logo, or general layout
+The mobile hamburger menu behavior (if applicable)
+The Dashboard/Logout buttons
+
+
+FIX 2: Create a Global Footer Component
+Current state: Some pages have ad-hoc bottom sections (like "Questions?" with an email link), but there is no consistent footer across the site.
+Create a new reusable Footer component and add it to every page (or to the main layout wrapper so it automatically appears on all pages).
+Footer design:
+[Subtle top border or light gray background section]
+
+Prolific Personalities (logo or text — same as nav)
+
+Navigation row (centered, single line):
+Take the Quiz  ·  About  ·  Blog  ·  Pricing  ·  Contact
+
+support@prolificpersonalities.com (mailto link)
+
+© 2025 Prolific Personalities. All rights reserved.
+Privacy Policy  ·  Terms of Service  ·  Refund Policy
+(these three should link to their respective pages)
+Design requirements:
+
+Light gray background (bg-gray-50 or similar) with subtle top border (border-t border-gray-200)
+Generous vertical padding (py-12 or py-16)
+All text centered
+Nav links: text-sm text-gray-600 hover:text-gray-900 with · separators
+Legal links: text-xs text-gray-400 hover:text-gray-600
+Email: styled as a clickable link in your brand color
+"Take the Quiz" link in the footer nav row should link to the quiz start page (same as your main CTA)
+Keep it simple — single column, no multi-column grid, no social icons for now
+Important: Add the Footer component to the app's layout wrapper (e.g., App.tsx or Layout.tsx or wherever the page structure is defined) so it appears on EVERY page automatically. Do not manually add it to individual page files.
+
+
+FIX 3: Refund Policy Page Updates
+File: Wherever the refund policy page lives (likely client/src/pages/refund-policy.tsx or similar)
+3a. Remove "← Back to Home" link
+
+Delete the "← Back to Home" link at the top of the page content. The sticky nav and footer now handle all navigation. This orphan link is redundant.
+
+3b. Update the date
+
+Change "Last updated: December 2024" to "Last updated: February 2025" (or remove the date line entirely — your choice, but if keeping it, make it current).
+
+3c. Soften the "Important Notes" section
+Replace the current Important Notes bullet points with these:
+- Refunds requested after 30 days will be reviewed on a case-by-case basis
+- Upon refund, access to the interactive web playbook will be revoked
+- Downloaded PDF files are yours to keep
+Remove these two lines entirely:
+
+"continued use is not authorized after refund" — delete this
+"Repeated refund requests may result in future purchase restrictions" — delete this
+
+3d. Remove the "Questions?" section at the bottom
+
+Delete the standalone "Questions?" card with the email link at the bottom of the page. The global footer now provides the contact email on every page, making this section redundant.
+
+
+Testing Checklist
+After implementing, verify:
+
+ Nav stays visible when scrolling on every page
+ Nav shrinks smoothly on scroll (shadow appears, padding reduces)
+ Page content does not get hidden behind the sticky nav on any page
+ Footer appears at the bottom of every page
+ All footer links work correctly (Quiz, About, Blog, Pricing, Privacy, Terms, Refund, email)
+ Refund page no longer has "← Back to Home" or "Questions?" section
+ Refund page "Important Notes" has the softened language
+ Everything looks correct on mobile as well as desktop
