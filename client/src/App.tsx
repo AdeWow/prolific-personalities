@@ -52,8 +52,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/dev" component={DevTools} />
       <Route path="/dev/icon-export" component={DevIconExport} />
+      <Route path="/dev" component={DevTools} />
       <Route path="/admin/test-flows" component={AdminTestFlows} />
       <Route path="/quiz" component={Quiz} />
       <Route path="/pricing" component={Pricing} />
