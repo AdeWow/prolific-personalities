@@ -5,14 +5,15 @@ import { Menu, X, User, LogOut, ChevronDown, ChevronRight, ArrowRight } from "lu
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import logoImage from "@assets/Logo5Nobackground1_1762920314202.png";
+import { ArchetypeIcon, type ArchetypeSlug } from "@/components/archetype-icon";
 
-const archetypeNavItems = [
-  { slug: 'structured-achiever', name: 'The Structured Achiever', color: 'bg-blue-500' },
-  { slug: 'chaotic-creative', name: 'The Chaotic Creative', color: 'bg-purple-500' },
-  { slug: 'anxious-perfectionist', name: 'The Anxious Perfectionist', color: 'bg-rose-500' },
-  { slug: 'novelty-seeker', name: 'The Novelty Seeker', color: 'bg-amber-500' },
-  { slug: 'strategic-planner', name: 'The Strategic Planner', color: 'bg-teal-500' },
-  { slug: 'flexible-improviser', name: 'The Flexible Improviser', color: 'bg-cyan-500' },
+const archetypeNavItems: { slug: ArchetypeSlug; name: string }[] = [
+  { slug: 'structured-achiever', name: 'The Structured Achiever' },
+  { slug: 'chaotic-creative', name: 'The Chaotic Creative' },
+  { slug: 'anxious-perfectionist', name: 'The Anxious Perfectionist' },
+  { slug: 'novelty-seeker', name: 'The Novelty Seeker' },
+  { slug: 'strategic-planner', name: 'The Strategic Planner' },
+  { slug: 'flexible-improviser', name: 'The Flexible Improviser' },
 ];
 
 export function Header() {
@@ -101,7 +102,7 @@ export function Header() {
                         href={`/archetypes/${archetype.slug}`}
                         className="flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                       >
-                        <span className={`w-2.5 h-2.5 rounded-full ${archetype.color} flex-shrink-0`} />
+                        <ArchetypeIcon archetype={archetype.slug} size="xs" />
                         <span className="font-medium">{archetype.name}</span>
                       </Link>
                     ))}
@@ -206,7 +207,7 @@ export function Header() {
                         className="flex items-center gap-3 py-2 text-muted-foreground hover:text-primary transition-colors"
                         onClick={() => { setMobileMenuOpen(false); setMobileArchetypesExpanded(false); }}
                       >
-                        <span className={`w-2 h-2 rounded-full ${archetype.color} flex-shrink-0`} />
+                        <ArchetypeIcon archetype={archetype.slug} size="xs" />
                         <span className="text-sm">{archetype.name}</span>
                       </Link>
                     ))}

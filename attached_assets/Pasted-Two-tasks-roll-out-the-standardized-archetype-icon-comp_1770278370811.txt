@@ -1,0 +1,28 @@
+Two tasks: roll out the standardized archetype icon component across the site, and save the icon PNGs for email use.
+TASK 1: Apply <ArchetypeIcon /> everywhere archetype icons appear
+Go through every page and component that displays an archetype icon and replace the current implementation with the standardized <ArchetypeIcon /> component from client/src/components/archetype-icon.tsx. Based on the audit we did earlier, here are the specific locations to update:
+
+/resources (By Archetype tab) — Currently uses inline Lucide icons in gradient squares. Replace with <ArchetypeIcon />. Use size md or lg depending on what fits the existing card layout.
+/the-research page — If any archetype-specific icons appear here, replace with the standardized component. If the icons here are generic section icons (not archetype-specific), leave them alone.
+Header nav dropdown — Currently uses simple colored dots next to archetype names. Replace with <ArchetypeIcon size="xs" /> for each archetype in the dropdown menu. This gives the dropdown real visual identity instead of plain dots.
+archetype-card.tsx component — Currently uses the AI-generated PNG character images or a gradient fallback. Keep the AI-generated PNG character illustrations where they already appear (like on /archetypes and /archetypes/:slug pages — those are working well as hero images). But anywhere archetype-card.tsx is used in a compact or list context where the full character illustration is overkill, use <ArchetypeIcon /> instead.
+Any other location where archetype icons appear that I may have missed — search the codebase for hardcoded Lucide icon references (Sparkles, Target, Brain, Zap, Compass, Lightbulb) that are being used to represent specific archetypes and replace with the component.
+
+Do NOT replace:
+
+The AI-generated character PNG illustrations on the main /archetypes page cards or the individual archetype detail pages (/archetypes/:slug). Those full character images work well as hero/featured visuals. The <ArchetypeIcon /> component is for compact UI contexts (nav, cards, lists, badges).
+
+TASK 2: Save the icon PNGs to a permanent location
+Take the 7 archetype icon PNGs that are currently renderable on the /dev/icon-export page and save them as actual files in the project. Create a folder at public/images/archetype-icons/ and save them as:
+
+chaotic-creative.png
+anxious-perfectionist.png
+structured-achiever.png
+novelty-seeker.png
+strategic-planner.png
+flexible-improviser.png
+adaptive-generalist.png
+
+These will be used in email templates. If you can't programmatically export the rendered component as a PNG, that's fine — just create the folder structure and I'll manually add the files I already saved.
+After both tasks are done, you can delete the /dev/icon-export route.
+TESTING: After implementing, visually check each page where icons were swapped and confirm they render correctly at the right size and don't break the existing layout.
