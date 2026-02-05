@@ -1,0 +1,267 @@
+# SITEMAP + SEO TECHNICAL FOUNDATIONS
+
+## FIX 1: GENERATE DYNAMIC SITEMAP
+
+Create a dynamic sitemap at /sitemap.xml that 
+auto-updates whenever pages or blog posts are added.
+
+If using Next.js, create this as an API route or 
+use next-sitemap package. The sitemap must include 
+ALL public pages:
+
+Static pages:
+- https://prolificpersonalities.com/
+- https://prolificpersonalities.com/about
+- https://prolificpersonalities.com/archetypes
+- https://prolificpersonalities.com/archetypes/chaotic-creative
+- https://prolificpersonalities.com/archetypes/anxious-perfectionist
+- https://prolificpersonalities.com/archetypes/structured-achiever
+- https://prolificpersonalities.com/archetypes/novelty-seeker
+- https://prolificpersonalities.com/archetypes/strategic-planner
+- https://prolificpersonalities.com/archetypes/flexible-improviser
+- https://prolificpersonalities.com/the-research (or /science — use whichever is the canonical URL)
+- https://prolificpersonalities.com/resources
+- https://prolificpersonalities.com/blog
+- https://prolificpersonalities.com/pricing
+- https://prolificpersonalities.com/quiz
+
+Dynamic pages (auto-generated from blog post data):
+- https://prolificpersonalities.com/blog/{{slug}} 
+  for every published blog post
+
+Each URL entry should include:
+- <loc> — the full URL
+- <lastmod> — last modified date in ISO 8601 
+  (YYYY-MM-DD)
+- <changefreq> — how often the page changes:
+  * Homepage: weekly
+  * Blog index: weekly
+  * Individual blog posts: monthly
+  * Static pages (about, pricing, research): monthly
+  * Archetype pages: monthly
+  * Resources: monthly
+- <priority> — relative importance:
+  * Homepage: 1.0
+  * Quiz: 0.9
+  * Blog index: 0.8
+  * Archetype pages: 0.8
+  * Individual blog posts: 0.7
+  * Resources: 0.7
+  * Research: 0.7
+  * About: 0.6
+  * Pricing: 0.6
+
+Example output format:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/
+  sitemap/0.9">
+  <url>
+    <loc>https://prolificpersonalities.com/</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- ... all other URLs ... -->
+</urlset>
+
+Pages to EXCLUDE from sitemap:
+- /dashboard (authenticated only)
+- /login, /signup, /forgot-password
+- /admin or any admin routes
+- Any API routes
+- Results pages that require authentication
+
+DO NOT hardcode blog post URLs — the sitemap must 
+dynamically read from the blog post data source so 
+new posts are automatically included.
+
+---
+
+## FIX 2: ADD robots.txt
+
+Create a robots.txt file at the root of the site 
+(accessible at https://prolificpersonalities.com/
+robots.txt).
+
+Content:
+
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /api/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /admin
+
+Sitemap: https://prolificpersonalities.com/sitemap.xml
+
+This tells search engines where your sitemap is and 
+which pages to skip.
+
+---
+
+## FIX 3: ADD GOOGLE SEARCH CONSOLE VERIFICATION
+
+Add support for Google Search Console verification 
+via HTML meta tag. Add this to the <head> of every 
+page (in the root layout):
+
+<meta name="google-site-verification" 
+  content="{{VERIFICATION_CODE}}" />
+
+The founder will replace {{VERIFICATION_CODE}} with 
+the actual code from Google Search Console after 
+setup. For now, add it as an environment variable:
+
+NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=placeholder
+
+And reference it in the layout:
+
+{process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION && 
+  <meta name="google-site-verification" 
+    content={process.env.
+    NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION} />
+}
+
+---
+
+## FIX 4: ENSURE CANONICAL URLS ON ALL PAGES
+
+Every page on the site should have a canonical URL 
+in the <head>:
+
+<link rel="canonical" 
+  href="https://prolificpersonalities.com/
+  {{current-path}}" />
+
+This prevents duplicate content issues (e.g., if 
+someone links to your page with query parameters 
+like ?utm_source=reddit, Google still knows the 
+canonical version).
+
+Check that:
+- Blog posts already have canonical URLs from the 
+  previous prompt — verify they're working
+- All other pages get canonical URLs added
+- Canonical URLs use https:// (not http://)
+- Canonical URLs do NOT include trailing slashes 
+  (be consistent: either always use them or never)
+- Canonical URLs do NOT include query parameters
+
+---
+
+## FIX 5: ADD DEFAULT SEO META TAGS FOR ALL PAGES
+
+Create a default SEO component or layout-level meta 
+tags that apply to every page unless overridden by 
+page-specific tags (like the blog posts).
+
+Defaults:
+
+<title>Prolific Personalities — Productivity That 
+  Fits How You Think</title>
+<meta name="description" content="Discover your 
+  productivity archetype with our research-backed 
+  assessment. Get personalized strategies that match 
+  how your brain actually works. Not generic advice 
+  — real science." />
+<meta property="og:site_name" 
+  content="Prolific Personalities" />
+<meta property="og:type" content="website" />
+<meta property="og:image" 
+  content="https://prolificpersonalities.com/
+  og-default.png" />
+<meta name="twitter:card" 
+  content="summary_large_image" />
+
+Each page should override title and description 
+with page-specific versions. Here are the recommended 
+meta descriptions for key pages:
+
+Homepage:
+title: "Prolific Personalities — Productivity That 
+  Fits How You Think"
+description: "Take our free 5-minute assessment. 
+  Discover your productivity archetype and get 
+  research-backed strategies that match how your 
+  brain actually works."
+
+Quiz:
+title: "Free Productivity Assessment | Prolific 
+  Personalities"
+description: "28 questions. 5 minutes. Discover 
+  which of 6 productivity archetypes matches your 
+  working style — and get strategies built for your 
+  brain."
+
+Archetypes (index):
+title: "6 Productivity Archetypes | Prolific 
+  Personalities"
+description: "Not all brains work the same way. 
+  Explore 6 research-backed productivity archetypes 
+  and find out which strategies match your natural 
+  working style."
+
+About:
+title: "About | Prolific Personalities"
+description: "Built by someone who struggled with 
+  every productivity system out there. Learn why 
+  we created a research-backed platform for 
+  personalized productivity."
+
+The Research:
+title: "The Research | Prolific Personalities"
+description: "Our framework is built on 40+ 
+  peer-reviewed studies in behavioral psychology 
+  and cognitive science. See the evidence behind 
+  personality-based productivity."
+
+Resources:
+title: "Tools & Resources | Prolific Personalities"
+description: "Curated productivity tools matched to 
+  your archetype. Find the perfect stack for how 
+  your brain actually works."
+
+Pricing:
+title: "Pricing | Prolific Personalities"
+description: "Get your personalized productivity 
+  playbook. Pay once, access forever. Research-backed 
+  strategies tailored to your archetype."
+
+Blog (index):
+title: "Productivity Insights Blog | Prolific 
+  Personalities"
+description: "Research-backed strategies for every 
+  productivity style. Archetype-specific tips, 
+  psychology insights, and actionable advice."
+
+Individual archetype pages:
+title: "{{Archetype Name}} — Productivity Archetype 
+  | Prolific Personalities"
+description: "Discover how {{Archetype Name}}s work 
+  best. Research-backed strategies, common blockers, 
+  and recommended tools for your productivity style."
+
+---
+
+## TESTING CHECKLIST
+
+1. Visit /sitemap.xml — valid XML with all public 
+   pages listed
+2. Visit /robots.txt — correct content with sitemap 
+   reference
+3. Blog posts are dynamically included in sitemap
+4. Dashboard, login, signup, API routes are excluded 
+   from sitemap
+5. Google verification meta tag renders in page source 
+   (even with placeholder value)
+6. Every page has a canonical URL in <head>
+7. Canonical URLs are consistent (no mixed trailing 
+   slashes)
+8. Every page has a unique <title> tag
+9. Every page has a unique meta description
+10. OG tags render on all pages (check with view source)
+11. No duplicate meta tags on any page
+12. Sitemap URLs match canonical URLs exactly
