@@ -11,9 +11,11 @@ import {
 } from "./ContentBlocks";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface ParsedContent {
-  type: 'paragraph' | 'header' | 'insight' | 'action' | 'why' | 'warning' | 'doNow' | 'traits' | 'bullets' | 'question' | 'citation';
+  type: 'paragraph' | 'header' | 'insight' | 'action' | 'why' | 'warning' | 'doNow' | 'traits' | 'bullets' | 'question' | 'citation' | 'table';
   content: string;
   metadata?: Record<string, any>;
 }
@@ -41,6 +43,17 @@ function parseMarkdownContent(rawContent: string): ParsedContent[] {
       bulletItems = [];
     }
     inBulletList = false;
+  };
+
+  // Helper to detect if a line is part of a markdown table
+  const isTableLine = (line: string) => {
+    const trimmed = line.trim();
+    return trimmed.startsWith('|') && trimmed.endsWith('|');
+  };
+
+  const isTableSeparator = (line: string) => {
+    const trimmed = line.trim();
+    return trimmed.startsWith('|') && /^[\|\s\-:]+$/.test(trimmed);
   };
 
   for (let i = 0; i < lines.length; i++) {
@@ -124,6 +137,23 @@ function parseMarkdownContent(rawContent: string): ParsedContent[] {
       const citation = trimmed.replace('**Citation:**', '').trim();
       blocks.push({ type: 'citation', content: citation });
       continue;
+    }
+
+    // Detect markdown tables (lines starting and ending with |)
+    if (isTableLine(trimmed)) {
+      flushCurrentBlock();
+      flushBulletList();
+      const tableLines: string[] = [line];
+      let j = i + 1;
+      while (j < lines.length && (isTableLine(lines[j].trim()) || isTableSeparator(lines[j].trim()))) {
+        tableLines.push(lines[j]);
+        j++;
+      }
+      if (tableLines.length >= 2) { // At least header + separator or header + row
+        blocks.push({ type: 'table', content: tableLines.join('\n') });
+        i = j - 1;
+        continue;
+      }
     }
 
     if (trimmed.match(/^\*\*[^*]+:\*\*$/)) {
@@ -295,6 +325,34 @@ export function ContentRenderer({ content, sectionId }: ContentRendererProps) {
                   <p className="text-xs text-muted-foreground italic">{block.content}</p>
                 </CardContent>
               </Card>
+            );
+          
+          case 'table':
+            return (
+              <div key={idx} className="overflow-x-auto my-6 rounded-xl border border-slate-200 dark:border-slate-700">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    table: ({children}) => (
+                      <table className="w-full text-sm">{children}</table>
+                    ),
+                    thead: ({children}) => (
+                      <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">{children}</thead>
+                    ),
+                    th: ({children}) => (
+                      <th className="px-4 py-3 text-left font-semibold text-slate-700 dark:text-slate-300">{children}</th>
+                    ),
+                    td: ({children}) => (
+                      <td className="px-4 py-3 text-slate-700 dark:text-slate-300 border-b border-slate-100 dark:border-slate-800">{children}</td>
+                    ),
+                    tr: ({children}) => (
+                      <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">{children}</tr>
+                    ),
+                  }}
+                >
+                  {block.content}
+                </ReactMarkdown>
+              </div>
             );
           
           case 'paragraph':

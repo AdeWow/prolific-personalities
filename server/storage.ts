@@ -1,4 +1,4 @@
-import { users, quizResults, tools, emailCaptures, emailLog, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, chatConversations, chatMessages, chatUsage, promoCodes, promoCodeRedemptions, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes, type ChatConversation, type InsertChatConversation, type ChatMessage, type InsertChatMessage, type ChatUsage, type InsertChatUsage, type PromoCode, type InsertPromoCode, type PromoCodeRedemption, type InsertPromoCodeRedemption } from "@shared/schema";
+import { users, quizResults, tools, emailCaptures, emailLog, checkoutAttempts, unsubscribeFeedback, waitlist, feedback, orders, playbookProgress, actionPlanProgress, toolTracking, playbookNotes, playbookResponses, chatConversations, chatMessages, chatUsage, promoCodes, promoCodeRedemptions, type User, type UpsertUser, type QuizResult, type InsertQuizResult, type Tool, type InsertTool, type EmailCapture, type InsertEmailCapture, type CheckoutAttempt, type InsertCheckoutAttempt, type UnsubscribeFeedback, type InsertUnsubscribeFeedback, type Waitlist, type InsertWaitlist, type Feedback, type InsertFeedback, type Order, type InsertOrder, type ToolWithFitScore, type PlaybookProgress, type InsertPlaybookProgress, type ActionPlanProgress, type InsertActionPlanProgress, type ToolTracking, type InsertToolTracking, type PlaybookNotes, type InsertPlaybookNotes, type PlaybookResponses, type InsertPlaybookResponses, type ChatConversation, type InsertChatConversation, type ChatMessage, type InsertChatMessage, type ChatUsage, type InsertChatUsage, type PromoCode, type InsertPromoCode, type PromoCodeRedemption, type InsertPromoCodeRedemption } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, sql, isNull } from "drizzle-orm";
 import memoize from "memoizee";
@@ -72,6 +72,9 @@ export interface IStorage {
   savePlaybookNote(userId: string, archetype: string, sectionId: string, content: string): Promise<PlaybookNotes>;
   updatePlaybookNote(id: number, content: string): Promise<PlaybookNotes | undefined>;
   deletePlaybookNote(id: number): Promise<void>;
+  // Playbook Interactive Responses
+  getPlaybookResponses(userId: string, archetype: string, sectionId?: string): Promise<PlaybookResponses[]>;
+  savePlaybookResponses(userId: string, archetype: string, sectionId: string, responses: Record<string, any>): Promise<PlaybookResponses>;
   // Chat
   createConversation(data: InsertChatConversation): Promise<ChatConversation>;
   getConversation(id: number): Promise<ChatConversation | undefined>;
@@ -844,6 +847,52 @@ export class DatabaseStorage implements IStorage {
     await db
       .delete(playbookNotes)
       .where(eq(playbookNotes.id, id));
+  }
+
+  // Playbook Interactive Responses Methods
+  async getPlaybookResponses(userId: string, archetype: string, sectionId?: string): Promise<PlaybookResponses[]> {
+    if (sectionId) {
+      return db
+        .select()
+        .from(playbookResponses)
+        .where(
+          and(
+            eq(playbookResponses.userId, userId),
+            eq(playbookResponses.archetype, archetype),
+            eq(playbookResponses.sectionId, sectionId)
+          )
+        );
+    }
+    return db
+      .select()
+      .from(playbookResponses)
+      .where(
+        and(
+          eq(playbookResponses.userId, userId),
+          eq(playbookResponses.archetype, archetype)
+        )
+      );
+  }
+
+  async savePlaybookResponses(userId: string, archetype: string, sectionId: string, responses: Record<string, any>): Promise<PlaybookResponses> {
+    // Upsert: insert if not exists, update if exists
+    const [response] = await db
+      .insert(playbookResponses)
+      .values({
+        userId,
+        archetype,
+        sectionId,
+        responses,
+      })
+      .onConflictDoUpdate({
+        target: [playbookResponses.userId, playbookResponses.archetype, playbookResponses.sectionId],
+        set: {
+          responses,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return response;
   }
 
   // Chat Conversation Methods

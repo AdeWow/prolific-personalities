@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, jsonb, timestamp, varchar, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, jsonb, timestamp, varchar, index, unique } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -367,6 +367,27 @@ export type InsertToolTracking = z.infer<typeof insertToolTrackingSchema>;
 export type ToolTracking = typeof toolTracking.$inferSelect;
 export type InsertPlaybookNotes = z.infer<typeof insertPlaybookNotesSchema>;
 export type PlaybookNotes = typeof playbookNotes.$inferSelect;
+
+// Playbook interactive responses (checkboxes, radios, inputs, etc.)
+export const playbookResponses = pgTable("playbook_responses", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  archetype: text("archetype").notNull(),
+  sectionId: text("section_id").notNull(),
+  responses: jsonb("responses").notNull().default({}), // Stores all interactive element values as JSON
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  uniqueUserArchetypeSection: unique("playbook_responses_user_archetype_section_unique").on(table.userId, table.archetype, table.sectionId),
+}));
+
+export const insertPlaybookResponsesSchema = createInsertSchema(playbookResponses).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export type InsertPlaybookResponses = z.infer<typeof insertPlaybookResponsesSchema>;
+export type PlaybookResponses = typeof playbookResponses.$inferSelect;
 
 // Type for tools with archetype fit score
 export type ToolWithFitScore = Tool & { fitScore: number };

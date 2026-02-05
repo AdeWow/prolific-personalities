@@ -95,6 +95,7 @@ export default function Playbook() {
   const [selectedSectionId, setSelectedSectionId] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [noteSaveStatus, setNoteSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [activeTab, setActiveTab] = useState<string>('content');
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Set page title
@@ -528,12 +529,14 @@ export default function Playbook() {
       )}
 
       <div className="flex max-w-7xl mx-auto">
-        {/* Sidebar */}
+        {/* Sidebar - Only visible on Content tab */}
         <aside className={`
-          ${sidebarOpen ? 'block' : 'hidden'} lg:block
+          ${sidebarOpen ? 'block' : 'hidden'} 
+          ${activeTab === 'content' ? 'lg:block' : 'lg:hidden'}
           fixed lg:sticky top-[140px] left-0 h-[calc(100vh-140px)]
           w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700
           overflow-y-auto z-30 lg:z-0
+          transition-all duration-200 ease-out
         `}>
           <div className="p-4 space-y-2">
             {playbook?.chapters.map((chapter, idx) => {
@@ -587,8 +590,8 @@ export default function Playbook() {
         </aside>
 
         {/* Main Content */}
-        <main id="main-content" role="main" className="flex-1 p-4 sm:p-6 lg:p-8">
-          <Tabs defaultValue="content" className="space-y-6">
+        <main id="main-content" role="main" className={`flex-1 p-4 sm:p-6 lg:p-8 transition-all duration-200 ${activeTab !== 'content' ? 'lg:max-w-none' : ''}`}>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-5 max-w-3xl">
               <TabsTrigger value="content" data-testid="tab-content">
                 <BookOpen className="h-4 w-4 sm:mr-2" />

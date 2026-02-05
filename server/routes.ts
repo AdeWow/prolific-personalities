@@ -2210,6 +2210,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   );
 
+  // Get playbook interactive responses (for checkboxes, radios, inputs, etc.)
+  app.get(
+    "/api/playbook/:archetype/responses",
+    supabaseAuth,
+    hasPremiumAccess,
+    async (req: any, res) => {
+      try {
+        const userId = req.localUserId;
+        const { archetype } = req.params;
+        const { sectionId } = req.query;
+        const responses = await storage.getPlaybookResponses(
+          userId,
+          archetype,
+          sectionId as string | undefined,
+        );
+        res.json(responses);
+      } catch (error) {
+        console.error("Error fetching responses:", error);
+        res.status(500).json({ message: "Failed to fetch responses" });
+      }
+    },
+  );
+
+  // Save/update playbook interactive responses
+  app.post(
+    "/api/playbook/:archetype/responses",
+    writeLimiter,
+    supabaseAuth,
+    hasPremiumAccess,
+    async (req: any, res) => {
+      try {
+        const userId = req.localUserId;
+        const { archetype } = req.params;
+        const { sectionId, responses } = req.body;
+
+        if (!sectionId || !responses) {
+          res
+            .status(400)
+            .json({ message: "sectionId and responses are required" });
+          return;
+        }
+
+        const response = await storage.savePlaybookResponses(
+          userId,
+          archetype,
+          sectionId,
+          responses,
+        );
+        res.json(response);
+      } catch (error) {
+        console.error("Error saving responses:", error);
+        res.status(500).json({ message: "Failed to save responses" });
+      }
+    },
+  );
+
   // Check if sessionId has premium access (no auth required - for prepaid anonymous users)
   app.get("/api/playbook/:archetype/session-access", async (req, res) => {
     try {

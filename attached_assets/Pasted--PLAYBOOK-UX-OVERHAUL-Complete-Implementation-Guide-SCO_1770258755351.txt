@@ -1,0 +1,1057 @@
+# PLAYBOOK UX OVERHAUL - Complete Implementation Guide
+
+## SCOPE
+These changes apply to ALL 7 playbook archetypes:
+1. Strategic Planner
+2. Flexible Improviser
+3. Structured Achiever
+4. Creative Visionary
+5. Steady Operator
+6. Novelty Seeker
+7. Adaptive Generalist
+
+Every fix and enhancement below must be implemented consistently across all playbook types.
+
+---
+
+## DESIGN SYSTEM & TAILWIND TOKENS
+
+Before implementing, use these consistent design tokens throughout:
+
+### Colors (use existing brand colors, extend as needed)
+```javascript
+// tailwind.config.js extend or use inline
+const colors = {
+  // Primary actions & highlights
+  primary: {
+    50: '#f0fdf4',   // light green tint (backgrounds)
+    100: '#dcfce7',  // hover states
+    500: '#22c55e',  // primary green (buttons, active states)
+    600: '#16a34a',  // hover on primary
+    700: '#15803d',  // pressed state
+  },
+  // Neutral grays for UI
+  slate: {
+    50: '#f8fafc',   // page background
+    100: '#f1f5f9',  // card backgrounds
+    200: '#e2e8f0',  // borders, dividers
+    300: '#cbd5e1',  // disabled states
+    400: '#94a3b8',  // placeholder text
+    500: '#64748b',  // secondary text
+    700: '#334155',  // primary text
+    900: '#0f172a',  // headings
+  },
+  // Accent for recommendations/highlights
+  amber: {
+    50: '#fffbeb',   // recommendation card bg
+    100: '#fef3c7',  // recommendation badge bg
+    500: '#f59e0b',  // star icon, badges
+  }
+}
+```
+
+### Interactive Element Styles
+
+**Checkboxes:**
+```html
+<!-- Unchecked -->
+<label class="flex items-center gap-3 cursor-pointer group">
+  <input type="checkbox" class="peer sr-only" />
+  <div class="w-5 h-5 rounded border-2 border-slate-300 
+              peer-checked:bg-primary-500 peer-checked:border-primary-500 
+              peer-focus:ring-2 peer-focus:ring-primary-500/20
+              group-hover:border-slate-400
+              transition-all duration-150 ease-out
+              flex items-center justify-center">
+    <!-- Checkmark icon (hidden until checked) -->
+    <svg class="w-3 h-3 text-white opacity-0 peer-checked:opacity-100" 
+         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  </div>
+  <span class="text-slate-700 group-hover:text-slate-900">Option label here</span>
+</label>
+```
+
+**Radio Buttons (for single-select like Pressure Level):**
+```html
+<label class="flex items-center gap-3 cursor-pointer group">
+  <input type="radio" name="pressure_level" value="high" class="peer sr-only" />
+  <div class="w-5 h-5 rounded-full border-2 border-slate-300 
+              peer-checked:border-primary-500 
+              peer-focus:ring-2 peer-focus:ring-primary-500/20
+              group-hover:border-slate-400
+              transition-all duration-150 ease-out
+              flex items-center justify-center">
+    <div class="w-2.5 h-2.5 rounded-full bg-primary-500 
+                scale-0 peer-checked:scale-100 transition-transform duration-150"></div>
+  </div>
+  <span class="text-slate-700 group-hover:text-slate-900">High (urgent)</span>
+</label>
+```
+
+**Number Input (Energy Level 1-10):**
+```html
+<div class="flex items-center gap-4">
+  <label class="text-slate-700 font-medium">Energy Level:</label>
+  <input 
+    type="number" 
+    min="1" 
+    max="10" 
+    placeholder="1-10"
+    class="w-20 px-3 py-2 text-center text-slate-700
+           border border-slate-200 rounded-lg
+           focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500
+           placeholder:text-slate-400
+           transition-all duration-150"
+  />
+  <span class="text-sm text-slate-500">Scale: 1 (exhausted) → 10 (peak energy)</span>
+</div>
+```
+
+**Text Input (fill-in fields):**
+```html
+<input 
+  type="text" 
+  placeholder="Type your response..."
+  class="w-full px-4 py-2.5 text-slate-700
+         bg-slate-50 border border-slate-200 rounded-lg
+         focus:outline-none focus:ring-2 focus:ring-primary-500/20 
+         focus:border-primary-500 focus:bg-white
+         placeholder:text-slate-400
+         transition-all duration-150"
+/>
+```
+
+**Auto-Generated Result Box (Recommended Approach):**
+```html
+<div class="mt-6 p-4 bg-primary-50 border border-primary-100 rounded-xl">
+  <div class="flex items-center gap-2 mb-2">
+    <svg class="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+    </svg>
+    <span class="text-sm font-semibold text-primary-700 uppercase tracking-wide">Your Recommended Approach</span>
+  </div>
+  <p class="text-lg font-semibold text-slate-900" id="recommended-approach">
+    <!-- Dynamically populated -->
+    Strategic Planner (plan-execute)
+  </p>
+</div>
+```
+
+**Saved Indicator (toast/inline):**
+```html
+<span class="inline-flex items-center gap-1.5 text-sm text-primary-600 animate-fade-in">
+  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+  </svg>
+  Saved
+</span>
+```
+
+**Tables (Decision Matrix):**
+```html
+<div class="overflow-x-auto rounded-xl border border-slate-200">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="bg-slate-50 border-b border-slate-200">
+        <th class="px-4 py-3 text-left font-semibold text-slate-700">Project Type</th>
+        <th class="px-4 py-3 text-left font-semibold text-slate-700">Energy</th>
+        <th class="px-4 py-3 text-left font-semibold text-slate-700">Pressure</th>
+        <th class="px-4 py-3 text-left font-semibold text-slate-700">Clarity</th>
+        <th class="px-4 py-3 text-left font-semibold text-slate-700">Recommended Approach</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      <tr class="hover:bg-slate-50 transition-colors">
+        <td class="px-4 py-3 text-slate-700">Creative</td>
+        <td class="px-4 py-3 text-slate-600">High</td>
+        <td class="px-4 py-3 text-slate-600">Low</td>
+        <td class="px-4 py-3 text-slate-600">Low</td>
+        <td class="px-4 py-3 text-slate-900 font-medium">Chaotic Creative (bursts)</td>
+      </tr>
+      <!-- Additional rows... -->
+    </tbody>
+  </table>
+</div>
+```
+
+**Tool Cards (Alternatives):**
+```html
+<!-- Primary Recommended Tool -->
+<div class="p-5 bg-white border-2 border-primary-200 rounded-xl shadow-sm">
+  <div class="flex items-start gap-4">
+    <div class="p-2 bg-amber-50 rounded-lg">
+      <svg class="w-6 h-6 text-amber-500"><!-- Star icon --></svg>
+    </div>
+    <div class="flex-1">
+      <span class="inline-block px-2 py-0.5 mb-2 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">
+        Recommended for You
+      </span>
+      <h3 class="text-lg font-semibold text-slate-900">Notion</h3>
+      <p class="mt-1 text-slate-600">All-in-one workspace for organized thinking</p>
+    </div>
+  </div>
+</div>
+
+<!-- Alternative Tool (smaller) -->
+<div class="p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-300 transition-colors cursor-pointer">
+  <h4 class="font-semibold text-slate-900">Obsidian</h4>
+  <p class="mt-1 text-sm text-slate-600">Local-first markdown knowledge base</p>
+</div>
+```
+
+**Tomorrow Preview Line:**
+```html
+<div class="flex items-center gap-2 py-3 text-slate-500">
+  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+          d="M13 7l5 5m0 0l-5 5m5-5H6" />
+  </svg>
+  <span class="text-sm">
+    <span class="text-slate-400">Tomorrow:</span> 
+    <span class="font-medium text-slate-600">Day 2 → Continue Baseline</span>
+  </span>
+</div>
+```
+
+### Animation Utilities
+Add to your global CSS or Tailwind config:
+```css
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out forwards;
+}
+```
+
+---
+
+## IMPLEMENTATION PRIORITY
+
+### CRITICAL FIX 1: Contextual Sidebar Navigation
+
+**Problem:** Left sidebar and top tabs operate independently.
+
+**Implementation:**
+1. Create a state variable to track the active tab:
+```javascript
+const [activeTab, setActiveTab] = useState('content'); // 'content' | '30-day-plan' | 'tools' | 'notes' | 'pdf'
+```
+
+2. Conditionally render sidebar based on active tab:
+```jsx
+{activeTab === 'content' && (
+  <aside class="w-72 border-r border-slate-200 bg-white">
+    {/* Existing chapter navigation */}
+  </aside>
+)}
+
+<main class={`flex-1 ${activeTab === 'content' ? '' : 'w-full'}`}>
+  {/* Tab content */}
+</main>
+```
+
+3. When user clicks any tab other than "Content", the sidebar should smoothly hide and the main content area should expand to full width.
+
+4. Add smooth transition:
+```jsx
+<aside class={`
+  w-72 border-r border-slate-200 bg-white
+  transition-all duration-200 ease-out
+  ${activeTab === 'content' ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full absolute'}
+`}>
+```
+
+---
+
+### CRITICAL FIX 2: Markdown Table Parsing
+
+**Problem:** Tables render as raw pipe-delimited text.
+
+**Implementation:**
+1. Identify where playbook content is being rendered (likely a markdown-to-HTML parser or raw text display)
+
+2. If using a markdown library (react-markdown, marked, etc.), ensure tables plugin is enabled:
+```javascript
+// If using react-markdown
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
+<ReactMarkdown remarkPlugins={[remarkGfm]}>
+  {content}
+</ReactMarkdown>
+```
+
+3. Add custom table styling component:
+```javascript
+const components = {
+  table: ({node, ...props}) => (
+    <div class="overflow-x-auto my-6 rounded-xl border border-slate-200">
+      <table class="w-full text-sm" {...props} />
+    </div>
+  ),
+  thead: ({node, ...props}) => (
+    <thead class="bg-slate-50 border-b border-slate-200" {...props} />
+  ),
+  th: ({node, ...props}) => (
+    <th class="px-4 py-3 text-left font-semibold text-slate-700" {...props} />
+  ),
+  td: ({node, ...props}) => (
+    <td class="px-4 py-3 text-slate-700 border-b border-slate-100" {...props} />
+  ),
+  tr: ({node, ...props}) => (
+    <tr class="hover:bg-slate-50 transition-colors" {...props} />
+  ),
+};
+
+<ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
+  {content}
+</ReactMarkdown>
+```
+
+4. If NOT using a markdown library and content is stored as raw text, create a table parser:
+```javascript
+function parseMarkdownTable(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split('|').filter(cell => cell.trim()).map(cell => cell.trim());
+  const rows = lines.slice(2).map(line => 
+    line.split('|').filter(cell => cell.trim()).map(cell => cell.trim())
+  );
+  return { headers, rows };
+}
+```
+
+---
+
+### CRITICAL FIX 3: Interactive Checkboxes & Radio Buttons
+
+**Problem:** Static checkbox characters (□) throughout content.
+
+**Implementation:**
+
+1. Create a reusable InteractiveCheckbox component:
+```jsx
+function InteractiveCheckbox({ 
+  id, 
+  label, 
+  checked, 
+  onChange, 
+  sectionId,
+  fieldName 
+}) {
+  return (
+    <label class="flex items-center gap-3 cursor-pointer group py-1.5">
+      <input 
+        type="checkbox" 
+        id={id}
+        checked={checked}
+        onChange={(e) => onChange(sectionId, fieldName, e.target.checked)}
+        class="peer sr-only" 
+      />
+      <div class="w-5 h-5 rounded border-2 border-slate-300 
+                  peer-checked:bg-primary-500 peer-checked:border-primary-500 
+                  peer-focus:ring-2 peer-focus:ring-primary-500/20
+                  group-hover:border-slate-400
+                  transition-all duration-150 ease-out
+                  flex items-center justify-center">
+        <svg class="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity" 
+             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <span class="text-slate-700 group-hover:text-slate-900 transition-colors">{label}</span>
+    </label>
+  );
+}
+```
+
+2. Create InteractiveRadioGroup for single-select options:
+```jsx
+function InteractiveRadioGroup({ 
+  name, 
+  options, 
+  value, 
+  onChange, 
+  sectionId 
+}) {
+  return (
+    <div class="flex flex-wrap gap-x-6 gap-y-2">
+      {options.map((option) => (
+        <label key={option.value} class="flex items-center gap-3 cursor-pointer group">
+          <input 
+            type="radio" 
+            name={name}
+            value={option.value}
+            checked={value === option.value}
+            onChange={(e) => onChange(sectionId, name, e.target.value)}
+            class="peer sr-only" 
+          />
+          <div class="w-5 h-5 rounded-full border-2 border-slate-300 
+                      peer-checked:border-primary-500 
+                      peer-focus:ring-2 peer-focus:ring-primary-500/20
+                      group-hover:border-slate-400
+                      transition-all duration-150 ease-out
+                      flex items-center justify-center">
+            <div class="w-2.5 h-2.5 rounded-full bg-primary-500 
+                        scale-0 peer-checked:scale-100 transition-transform duration-150"></div>
+          </div>
+          <span class="text-slate-700 group-hover:text-slate-900">{option.label}</span>
+        </label>
+      ))}
+    </div>
+  );
+}
+```
+
+3. Create an InteractiveNumberInput for Energy Level:
+```jsx
+function EnergyLevelInput({ value, onChange, sectionId }) {
+  return (
+    <div class="flex items-center gap-4 py-2">
+      <label class="text-slate-700 font-medium">ENERGY LEVEL (1-10):</label>
+      <input 
+        type="number" 
+        min="1" 
+        max="10" 
+        value={value || ''}
+        onChange={(e) => onChange(sectionId, 'energy_level', parseInt(e.target.value) || null)}
+        placeholder="—"
+        class="w-16 px-3 py-2 text-center text-slate-700 font-semibold
+               border border-slate-200 rounded-lg bg-white
+               focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500
+               placeholder:text-slate-400 placeholder:font-normal
+               transition-all duration-150"
+      />
+    </div>
+  );
+}
+```
+
+4. Parse content and replace static checkboxes with interactive components:
+
+Identify patterns in your content like:
+- `□ Creative (writing, design, art)` → checkbox
+- `□ High (urgent) □ Medium □ Low (flexible)` → radio group
+- `ENERGY LEVEL (1-10): ___` → number input
+- `RECOMMENDED APPROACH: ___` → auto-generated output
+
+Create a content parser that identifies these patterns and replaces them with the appropriate interactive components.
+
+5. Create the Context Assessment Protocol as a structured interactive component:
+```jsx
+function ContextAssessmentProtocol({ responses, onResponseChange, onSave }) {
+  const projectTypes = [
+    { value: 'creative', label: 'Creative (writing, design, art)' },
+    { value: 'analytical', label: 'Analytical (data, research, strategy)' },
+    { value: 'execution', label: 'Execution (implementation, building)' },
+    { value: 'exploratory', label: 'Exploratory (learning, experimenting)' },
+  ];
+
+  const pressureLevels = [
+    { value: 'high', label: 'High (urgent)' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'low', label: 'Low (flexible)' },
+  ];
+
+  const clarityLevels = [
+    { value: 'high', label: 'High (clear)' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'low', label: 'Low (ambiguous)' },
+  ];
+
+  const recommendedApproach = getRecommendedApproach(
+    responses.project_type,
+    responses.energy_level,
+    responses.pressure_level,
+    responses.clarity_level
+  );
+
+  return (
+    <div class="space-y-6">
+      <p class="text-slate-600">Before starting any work session, take 5 minutes for a context check:</p>
+      
+      {/* Project Type - Multi-select checkboxes */}
+      <div>
+        <h4 class="font-semibold text-slate-900 mb-3">PROJECT TYPE</h4>
+        <div class="space-y-2">
+          {projectTypes.map((type) => (
+            <InteractiveCheckbox
+              key={type.value}
+              id={`project-type-${type.value}`}
+              label={type.label}
+              checked={responses.project_type?.includes(type.value)}
+              onChange={(_, __, checked) => {
+                const current = responses.project_type || [];
+                const updated = checked 
+                  ? [...current, type.value]
+                  : current.filter(t => t !== type.value);
+                onResponseChange('context-assessment', 'project_type', updated);
+              }}
+              sectionId="context-assessment"
+              fieldName="project_type"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Energy Level */}
+      <EnergyLevelInput 
+        value={responses.energy_level}
+        onChange={onResponseChange}
+        sectionId="context-assessment"
+      />
+
+      {/* Pressure Level - Single select radio */}
+      <div>
+        <h4 class="font-semibold text-slate-900 mb-3">PRESSURE LEVEL</h4>
+        <InteractiveRadioGroup
+          name="pressure_level"
+          options={pressureLevels}
+          value={responses.pressure_level}
+          onChange={onResponseChange}
+          sectionId="context-assessment"
+        />
+      </div>
+
+      {/* Clarity Level - Single select radio */}
+      <div>
+        <h4 class="font-semibold text-slate-900 mb-3">CLARITY LEVEL</h4>
+        <InteractiveRadioGroup
+          name="clarity_level"
+          options={clarityLevels}
+          value={responses.clarity_level}
+          onChange={onResponseChange}
+          sectionId="context-assessment"
+        />
+      </div>
+
+      {/* Auto-generated Recommended Approach */}
+      {recommendedApproach && (
+        <div class="mt-8 p-5 bg-gradient-to-br from-primary-50 to-primary-100/50 border border-primary-200 rounded-xl">
+          <div class="flex items-center gap-2 mb-2">
+            <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            <span class="text-sm font-semibold text-primary-700 uppercase tracking-wide">
+              Recommended Approach
+            </span>
+          </div>
+          <p class="text-xl font-bold text-slate-900">{recommendedApproach}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+---
+
+### CRITICAL FIX 4: Auto-Save & Database Schema
+
+**Implementation:**
+
+1. Add database column (run this migration):
+```sql
+-- If using playbook_purchases table
+ALTER TABLE playbook_purchases 
+ADD COLUMN IF NOT EXISTS interactive_responses JSONB DEFAULT '{}';
+
+-- OR create dedicated table
+CREATE TABLE IF NOT EXISTS playbook_responses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  playbook_type VARCHAR(50) NOT NULL,
+  responses JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, playbook_type)
+);
+
+-- Add index for fast lookups
+CREATE INDEX IF NOT EXISTS idx_playbook_responses_user 
+ON playbook_responses(user_id, playbook_type);
+```
+
+2. Create auto-save hook:
+```javascript
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+
+function usePlaybookResponses(userId, playbookType) {
+  const [responses, setResponses] = useState({});
+  const [saveStatus, setSaveStatus] = useState('idle'); // 'idle' | 'saving' | 'saved' | 'error'
+  const saveTimeoutRef = useRef(null);
+
+  // Load responses on mount
+  useEffect(() => {
+    async function loadResponses() {
+      const { data, error } = await supabase
+        .from('playbook_responses')
+        .select('responses')
+        .eq('user_id', userId)
+        .eq('playbook_type', playbookType)
+        .single();
+
+      if (data?.responses) {
+        setResponses(data.responses);
+      }
+    }
+    
+    if (userId && playbookType) {
+      loadResponses();
+    }
+  }, [userId, playbookType]);
+
+  // Debounced save function
+  const saveResponses = useCallback(async (newResponses) => {
+    setSaveStatus('saving');
+    
+    const { error } = await supabase
+      .from('playbook_responses')
+      .upsert({
+        user_id: userId,
+        playbook_type: playbookType,
+        responses: newResponses,
+        updated_at: new Date().toISOString(),
+      }, {
+        onConflict: 'user_id,playbook_type'
+      });
+
+    if (error) {
+      setSaveStatus('error');
+      console.error('Failed to save responses:', error);
+    } else {
+      setSaveStatus('saved');
+      // Reset to idle after 2 seconds
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    }
+  }, [userId, playbookType]);
+
+  // Update handler with debounce
+  const updateResponse = useCallback((sectionId, fieldName, value) => {
+    setResponses(prev => {
+      const newResponses = {
+        ...prev,
+        [sectionId]: {
+          ...prev[sectionId],
+          [fieldName]: value,
+        }
+      };
+      
+      // Clear existing timeout
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      
+      // Debounce save by 500ms
+      saveTimeoutRef.current = setTimeout(() => {
+        saveResponses(newResponses);
+      }, 500);
+      
+      return newResponses;
+    });
+  }, [saveResponses]);
+
+  return { responses, updateResponse, saveStatus };
+}
+```
+
+3. Add save indicator to the UI:
+```jsx
+function SaveIndicator({ status }) {
+  if (status === 'idle') return null;
+  
+  return (
+    <div class="fixed bottom-6 right-6 z-50">
+      <div class={`
+        px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm font-medium
+        transition-all duration-200 animate-fade-in
+        ${status === 'saving' ? 'bg-slate-100 text-slate-600' : ''}
+        ${status === 'saved' ? 'bg-primary-100 text-primary-700' : ''}
+        ${status === 'error' ? 'bg-red-100 text-red-700' : ''}
+      `}>
+        {status === 'saving' && (
+          <>
+            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Saving...
+          </>
+        )}
+        {status === 'saved' && (
+          <>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            Saved
+          </>
+        )}
+        {status === 'error' && (
+          <>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Failed to save
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+```
+
+---
+
+### ENHANCEMENT 1: Recommended Approach Logic
+```javascript
+function getRecommendedApproach(projectTypes, energy, pressure, clarity) {
+  // No input yet
+  if (!energy && !pressure && !clarity && (!projectTypes || projectTypes.length === 0)) {
+    return null;
+  }
+
+  // Low energy overrides everything
+  if (energy && energy < 4) {
+    return "Rest (no approach, just recover)";
+  }
+
+  // Depleted state
+  if (energy && energy < 5) {
+    return "Flexible Improviser (minimal, energy-first)";
+  }
+
+  // Get primary project type (first selected)
+  const primaryProject = projectTypes?.[0];
+
+  // Decision matrix
+  if (primaryProject === 'creative' && energy >= 7) {
+    return "Chaotic Creative (bursts)";
+  }
+  
+  if (primaryProject === 'analytical' && pressure === 'medium' && clarity === 'high') {
+    return "Strategic Planner (plan-execute)";
+  }
+  
+  if (primaryProject === 'execution' && pressure === 'high' && clarity === 'high') {
+    return "Structured Achiever (checklist blitz)";
+  }
+  
+  if (primaryProject === 'exploratory' && energy >= 5) {
+    return "Novelty Seeker (rotate experiments)";
+  }
+
+  // High pressure + high clarity combo
+  if (pressure === 'high' && clarity === 'high') {
+    return "Structured Achiever (checklist blitz)";
+  }
+
+  // Creative + high energy
+  if (primaryProject === 'creative' && energy >= 6) {
+    return "Chaotic Creative (bursts)";
+  }
+
+  // Analytical + medium energy
+  if (primaryProject === 'analytical' && energy >= 5 && energy <= 7) {
+    return "Strategic Planner (plan-execute)";
+  }
+
+  // Default fallback
+  return "Flexible Improviser (minimal, energy-first)";
+}
+```
+
+---
+
+### ENHANCEMENT 2: Tools Tab Redesign
+
+Replace current single-tool display with expanded layout:
+```jsx
+function ToolsTab({ recommendedTools, userStatuses, onStatusChange }) {
+  const [showAllTools, setShowAllTools] = useState(false);
+  
+  const primaryTool = recommendedTools[0];
+  const alternativeTools = recommendedTools.slice(1, 3);
+  const remainingTools = recommendedTools.slice(3);
+
+  return (
+    <div class="max-w-3xl mx-auto py-8 px-6">
+      {/* Primary Recommendation */}
+      <div class="mb-8">
+        <div class="p-6 bg-white border-2 border-primary-200 rounded-2xl shadow-sm">
+          <div class="flex items-start gap-4">
+            <div class="p-3 bg-amber-50 rounded-xl">
+              <svg class="w-7 h-7 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <span class="inline-block px-3 py-1 mb-3 text-xs font-bold text-amber-700 bg-amber-100 rounded-full uppercase tracking-wide">
+                Recommended for You
+              </span>
+              <h3 class="text-2xl font-bold text-slate-900">{primaryTool.name}</h3>
+              <p class="mt-2 text-slate-600">{primaryTool.description}</p>
+              
+              <div class="mt-4 p-4 bg-slate-50 rounded-xl">
+                <div class="flex items-center gap-2 text-sm text-primary-700">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span class="font-medium">Why this tool:</span>
+                </div>
+                <p class="mt-1 text-slate-700">{primaryTool.whyThisTool}</p>
+              </div>
+
+              <div class="mt-4 flex items-center justify-between">
+                <span class="text-sm text-slate-500">Your status</span>
+                <select 
+                  value={userStatuses[primaryTool.id] || 'not_started'}
+                  onChange={(e) => onStatusChange(primaryTool.id, e.target.value)}
+                  class="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                >
+                  <option value="not_started">Not Started</option>
+                  <option value="trying">Trying It</option>
+                  <option value="using">Using Regularly</option>
+                  <option value="not_for_me">Not For Me</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Alternative Tools */}
+      <div class="mb-6">
+        <h4 class="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
+          Also worth considering
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {alternativeTools.map((tool) => (
+            <div 
+              key={tool.id}
+              class="p-5 bg-slate-50 border border-slate-200 rounded-xl hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer"
+            >
+              <h4 class="font-semibold text-slate-900">{tool.name}</h4>
+              <p class="mt-1 text-sm text-slate-600 line-clamp-2">{tool.description}</p>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="text-xs text-slate-400">Click to learn more</span>
+                <select 
+                  value={userStatuses[tool.id] || 'not_started'}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    onStatusChange(tool.id, e.target.value);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  class="px-2 py-1 text-xs border border-slate-200 rounded focus:outline-none"
+                >
+                  <option value="not_started">Not Started</option>
+                  <option value="trying">Trying</option>
+                  <option value="using">Using</option>
+                  <option value="not_for_me">Skip</option>
+                </select>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* See All Tools */}
+      {remainingTools.length > 0 && (
+        <div>
+          <button
+            onClick={() => setShowAllTools(!showAllTools)}
+            class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+          >
+            <svg 
+              class={`w-4 h-4 transition-transform ${showAllTools ? 'rotate-180' : ''}`} 
+              fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+            {showAllTools ? 'Hide' : 'See all'} {remainingTools.length + alternativeTools.length + 1} tools
+          </button>
+
+          {showAllTools && (
+            <div class="mt-4 space-y-3 animate-fade-in">
+              {remainingTools.map((tool) => (
+                <div 
+                  key={tool.id}
+                  class="p-4 bg-white border border-slate-100 rounded-lg flex items-center justify-between"
+                >
+                  <div>
+                    <h5 class="font-medium text-slate-900">{tool.name}</h5>
+                    <p class="text-sm text-slate-500">{tool.shortDescription}</p>
+                  </div>
+                  <select 
+                    value={userStatuses[tool.id] || 'not_started'}
+                    onChange={(e) => onStatusChange(tool.id, e.target.value)}
+                    class="px-2 py-1 text-xs border border-slate-200 rounded focus:outline-none"
+                  >
+                    <option value="not_started">Not Started</option>
+                    <option value="trying">Trying</option>
+                    <option value="using">Using</option>
+                    <option value="not_for_me">Skip</option>
+                  </select>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Wisdom quote */}
+      <div class="mt-12 py-6 border-t border-slate-100">
+        <p class="text-center text-slate-400 italic">
+          "Trying one tool beats configuring five."
+        </p>
+      </div>
+    </div>
+  );
+}
+```
+
+---
+
+### ENHANCEMENT 3: 30-Day Plan Tomorrow Preview
+```jsx
+function ThirtyDayPlanTab({ days, currentDay, completedDays, onDayComplete }) {
+  const today = days[currentDay - 1];
+  const tomorrow = days[currentDay];
+  const upcomingDays = days.slice(currentDay + 1, currentDay + 5);
+
+  return (
+    <div class="max-w-2xl mx-auto py-8 px-6">
+      {/* Today's Focus */}
+      <div class="mb-6">
+        <div class="flex items-center gap-2 mb-4 text-primary-600">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+          </svg>
+          <span class="font-semibold">Today's Focus</span>
+        </div>
+        
+        <div class="p-6 bg-white border-2 border-primary-200 rounded-2xl shadow-sm">
+          <div class="flex items-start gap-4">
+            <input 
+              type="checkbox"
+              checked={completedDays.includes(currentDay)}
+              onChange={() => onDayComplete(currentDay)}
+              class="mt-1 w-5 h-5 rounded border-2 border-slate-300 
+                     checked:bg-primary-500 checked:border-primary-500
+                     focus:ring-2 focus:ring-primary-500/20
+                     cursor-pointer"
+            />
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="px-2.5 py-1 text-xs font-bold text-primary-700 bg-primary-100 rounded-full">
+                  Day {currentDay}
+                </span>
+                <span class="text-sm text-slate-500">⏱ {today.duration}</span>
+              </div>
+              <h3 class="text-xl font-bold text-slate-900">{today.title}</h3>
+              <p class="mt-2 text-slate-600">{today.description}</p>
+              
+              {today.whyItMatters && (
+                <div class="mt-4 flex items-start gap-2 text-sm text-slate-500">
+                  <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span><strong>Why this matters:</strong> {today.whyItMatters}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tomorrow Preview - Always Visible */}
+      {tomorrow && (
+        <div class="mb-6 flex items-center gap-3 px-4 py-3 text-slate-500 border-l-2 border-slate-200">
+          <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+          <span class="text-sm">
+            <span class="text-slate-400">Tomorrow:</span>{' '}
+            <span class="font-medium text-slate-600">Day {currentDay + 1} → {tomorrow.title}</span>
+          </span>
+        </div>
+      )}
+
+      {/* Coming Up Accordion */}
+      {upcomingDays.length > 0 && (
+        <details class="group">
+          <summary class="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors list-none">
+            <svg 
+              class="w-4 h-4 transition-transform group-open:rotate-180" 
+              fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+            Coming Up
+          </summary>
+          
+          <div class="mt-4 space-y-3 pl-6 border-l-2 border-slate-100 animate-fade-in">
+            {upcomingDays.map((day, idx) => (
+              <div key={day.day} class="flex items-center gap-3 py-2">
+                <span class="px-2 py-0.5 text-xs font-medium text-slate-400 bg-slate-100 rounded">
+                  Day {currentDay + 2 + idx}
+                </span>
+                <span class="text-slate-600">{day.title}</span>
+              </div>
+            ))}
+            {days.length > currentDay + 5 && (
+              <p class="text-sm text-slate-400 italic">
+                + {days.length - currentDay - 5} more days
+              </p>
+            )}
+          </div>
+        </details>
+      )}
+    </div>
+  );
+}
+```
+
+---
+
+## TESTING CHECKLIST
+
+After implementing, verify:
+
+1. [ ] Sidebar hides on all non-Content tabs
+2. [ ] Sidebar shows correctly on Content tab
+3. [ ] All tables render properly (no raw markdown)
+4. [ ] Checkboxes are clickable and save state
+5. [ ] Radio buttons work for single-select fields
+6. [ ] Energy level input accepts 1-10 only
+7. [ ] Recommended Approach auto-generates based on inputs
+8. [ ] Save indicator shows when changes are made
+9. [ ] Responses persist after page refresh
+10. [ ] Tools tab shows 3 tools before expand
+11. [ ] "See all tools" expands correctly
+12. [ ] Tomorrow preview is always visible in 30-Day Plan
+13. [ ] "Coming Up" accordion works without "(29 days)" text
+14. [ ] All changes work across all 7 archetype playbooks
+15. [ ] Mobile responsive layout maintained
+
+---
+
+## FILES LIKELY TO MODIFY
+
+Based on typical Next.js structure:
+- `components/Playbook/PlaybookLayout.jsx` (sidebar logic)
+- `components/Playbook/ContentTab.jsx` (interactive elements)
+- `components/Playbook/ToolsTab.jsx` (tool cards)
+- `components/Playbook/ThirtyDayPlanTab.jsx` (day display)
+- `lib/hooks/usePlaybookResponses.js` (new file - auto-save)
+- `lib/utils/getRecommendedApproach.js` (new file - decision logic)
+- Database migration for `playbook_responses` table
+- Global CSS for animations
