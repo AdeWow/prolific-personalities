@@ -102,10 +102,10 @@ export function Footer() {
             © {currentYear} Prolific Personalities. All rights reserved.
           </p>
           <a 
-            href="mailto:hello@prolificpersonalities.com" 
+            href="mailto:support@prolificpersonalities.com" 
             className="text-sm text-slate-400 hover:text-white transition-colors"
           >
-            hello@prolificpersonalities.com
+            support@prolificpersonalities.com
           </a>
         </div>
       </div>

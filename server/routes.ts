@@ -2999,7 +2999,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
 
           const { data, error } = await resend.emails.send({
-            from: "Prolific Personalities <hello@prolificpersonalities.com>",
+            from: "Prolific Personalities <support@prolificpersonalities.com>",
             to: [subscriber.email],
             subject,
             html,
