@@ -23,6 +23,31 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [, setLocation] = useLocation();
   const { isAuthenticated, user, signOut } = useAuth();
+  const [currentPath] = useLocation();
+  
+  const isActive = (path: string) => {
+    if (path === '/the-research') {
+      return currentPath === '/the-research' || currentPath === '/science';
+    }
+    if (path === '/archetypes') {
+      return currentPath === '/archetypes' || currentPath.startsWith('/archetypes/');
+    }
+    return currentPath === path;
+  };
+  
+  const navLinkClass = (path: string) => 
+    `transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded ${
+      isActive(path) 
+        ? 'text-primary border-b-2 border-primary pb-1' 
+        : 'text-muted-foreground hover:text-primary'
+    }`;
+  
+  const mobileNavLinkClass = (path: string) => 
+    `block transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded ${
+      isActive(path) 
+        ? 'text-primary bg-primary/10 px-3 -mx-3 rounded-lg' 
+        : 'text-muted-foreground hover:text-primary'
+    }`;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,7 +94,7 @@ export function Header() {
             </Link>
 
             <nav className="hidden md:flex items-center space-x-8" role="navigation" aria-label="Main navigation">
-              <Link href="/about" className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
+              <Link href="/about" className={navLinkClass('/about')}>
                 About
               </Link>
               <div 
@@ -79,7 +104,7 @@ export function Header() {
               >
                 <Link 
                   href="/archetypes" 
-                  className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded inline-flex items-center gap-1 pb-2"
+                  className={`${navLinkClass('/archetypes')} inline-flex items-center gap-1 pb-2`}
                 >
                   Archetypes
                   <ChevronDown className={`h-4 w-4 transition-transform duration-150 ${archetypesDropdownOpen ? 'rotate-180' : ''}`} />
@@ -130,16 +155,16 @@ export function Header() {
                 </div>
                 </div>
               </div>
-              <Link href="/the-research" className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" data-testid="link-research">
+              <Link href="/the-research" className={navLinkClass('/the-research')} data-testid="link-research">
                 The Research
               </Link>
-              <Link href="/resources" className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" data-testid="link-resources">
+              <Link href="/resources" className={navLinkClass('/resources')} data-testid="link-resources">
                 Resources
               </Link>
-              <Link href="/blog" className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" data-testid="link-blog">
+              <Link href="/blog" className={navLinkClass('/blog')} data-testid="link-blog">
                 Blog
               </Link>
-              <Link href="/pricing" className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
+              <Link href="/pricing" className={navLinkClass('/pricing')}>
                 Pricing
               </Link>
               {isAuthenticated ? (
@@ -185,7 +210,7 @@ export function Header() {
 
           {mobileMenuOpen && (
             <nav id="mobile-navigation" className="md:hidden py-4 space-y-4 border-t border-border" role="navigation" aria-label="Mobile navigation">
-              <Link href="/about" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/about" className={mobileNavLinkClass('/about')} onClick={() => setMobileMenuOpen(false)}>
                 About
               </Link>
               <div>
@@ -236,16 +261,16 @@ export function Header() {
                   </div>
                 </div>
               </div>
-              <Link href="/the-research" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" onClick={() => setMobileMenuOpen(false)} data-testid="link-research-mobile">
+              <Link href="/the-research" className={mobileNavLinkClass('/the-research')} onClick={() => setMobileMenuOpen(false)} data-testid="link-research-mobile">
                 The Research
               </Link>
-              <Link href="/resources" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" onClick={() => setMobileMenuOpen(false)} data-testid="link-resources-mobile">
+              <Link href="/resources" className={mobileNavLinkClass('/resources')} onClick={() => setMobileMenuOpen(false)} data-testid="link-resources-mobile">
                 Resources
               </Link>
-              <Link href="/blog" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" onClick={() => setMobileMenuOpen(false)} data-testid="link-blog-mobile">
+              <Link href="/blog" className={mobileNavLinkClass('/blog')} onClick={() => setMobileMenuOpen(false)} data-testid="link-blog-mobile">
                 Blog
               </Link>
-              <Link href="/pricing" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/pricing" className={mobileNavLinkClass('/pricing')} onClick={() => setMobileMenuOpen(false)}>
                 Pricing
               </Link>
               {isAuthenticated ? (
