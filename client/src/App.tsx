@@ -5,7 +5,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ExitIntentPopup } from "@/components/exit-intent-popup";
-import { InstallPrompt } from "@/components/install-prompt";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { useClaimPendingQuiz } from "@/hooks/useClaimPendingQuiz";
 import { initGA } from "./lib/analytics";
@@ -105,7 +104,6 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <ExitIntentPopup />
-          <InstallPrompt />
           <Router />
         </TooltipProvider>
       </AuthProvider>
