@@ -1,0 +1,88 @@
+# ADD DROPDOWN MENU TO ARCHETYPES NAV ITEM
+
+## What to Build
+
+When a user hovers over "Archetypes" in the main navigation bar, 
+show a dropdown menu with links to all 6 individual archetype pages.
+
+## Behavior
+
+- Trigger: hover on desktop, tap on mobile
+- Show dropdown with 6 archetype links
+- Each link goes to `/archetypes/[slug]`
+- Clicking "Archetypes" text itself still goes to `/archetypes` overview
+- Dropdown closes when mouse leaves or user clicks elsewhere
+- Dropdown should not block other nav items
+
+## Dropdown Layout
+## Dropdown Layout
+
+Archetypes ▾
+┌──────────────────────────────────────┐
+│  ● The Structured Achiever          │
+│  ● The Chaotic Creative             │
+│  ● The Anxious Perfectionist        │
+│  ● The Novelty Seeker               │
+│  ● The Strategic Planner            │
+│  ● The Flexible Improviser          │
+│─────────────────────────────────────│
+│  View All Archetypes →              │
+│─────────────────────────────────────│
+│  Not sure? Take the Assessment →    │
+└──────────────────────────────────────┘
+
+Each ● should be a small colored circle (w-2.5 h-2.5 rounded-full) 
+using the archetype's brand color:
+
+- Structured Achiever: bg-blue-500
+- Chaotic Creative: bg-purple-500
+- Anxious Perfectionist: bg-rose-500
+- Novelty Seeker: bg-amber-500
+- Strategic Planner: bg-teal-500
+- Flexible Improviser: bg-cyan-500
+
+Do NOT use emojis anywhere in the dropdown.
+
+## Styling
+
+- Dropdown background: white with subtle shadow (`shadow-lg`)
+- Border: `border border-slate-200`
+- Rounded corners: `rounded-xl`
+- Each item: padding `px-4 py-3`
+- Hover state per item: `bg-slate-50` with smooth transition
+- Include the archetype illustration (small, 24x24px) or 
+  a colored dot matching each archetype's brand color next 
+  to each name
+- "View All Archetypes" and "Take the Assessment" should be 
+  visually separated from the list with a top border 
+  (`border-t border-slate-100`)
+- "Take the Assessment" link should use the primary green 
+  color to stand out
+- Smooth open/close animation: fade in + slight slide down 
+  (150ms ease-out)
+
+## Mobile Behavior
+
+On mobile, the dropdown should function as an expandable 
+accordion within the mobile menu rather than a hover dropdown.
+
+## Links
+
+| Item | Destination |
+|------|------------|
+| The Structured Achiever | `/archetypes/structured-achiever` |
+| The Chaotic Creative | `/archetypes/chaotic-creative` |
+| The Anxious Perfectionist | `/archetypes/anxious-perfectionist` |
+| The Novelty Seeker | `/archetypes/novelty-seeker` |
+| The Strategic Planner | `/archetypes/strategic-planner` |
+| The Flexible Improviser | `/archetypes/flexible-improviser` |
+| View All Archetypes | `/archetypes` |
+| Take the Assessment | `/quiz` |
+
+## Important
+
+- Do NOT include Adaptive Generalist in this dropdown
+- Use the same illustration thumbnails from the archetype 
+  pages if available
+- Ensure dropdown has proper z-index to appear above 
+  all page content
