@@ -5,15 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { PDFPreview } from "@/components/pdf-preview";
-import { Brain, Target, Zap, BookOpen, Download, TrendingUp, BarChart3, CheckCircle } from "lucide-react";
+import { Brain, Target, Zap, BookOpen, Download, TrendingUp } from "lucide-react";
 
 export default function Science() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:from-card dark:to-background">
       <SEOHead
-        title="The Science Behind Personalized Productivity"
-        description="Discover the research behind Prolific Personalities. Learn about cognitive science, executive function theory, and self-determination theory that powers our assessment."
-        keywords="productivity science, cognitive science, executive function, self-determination theory, productivity research, personalized productivity"
+        title="The Science | Prolific Personalities"
+        description="The peer-reviewed research behind personalized productivity. Built on executive function theory, cognitive load science, and motivation psychology."
+        keywords="productivity science, cognitive science, executive function, motivation psychology, productivity research, personalized productivity"
       />
       <Header />
       <main id="main-content" role="main">
@@ -38,6 +38,21 @@ export default function Science() {
                 </Button>
               </a>
             </div>
+            
+            {/* Section Navigation */}
+            <nav className="pt-8 flex flex-wrap justify-center gap-x-2 gap-y-2 text-sm text-slate-500">
+              <a href="#problem" className="hover:text-primary transition-colors">The Problem</a>
+              <span className="text-slate-300">·</span>
+              <a href="#framework" className="hover:text-primary transition-colors">Our Framework</a>
+              <span className="text-slate-300">·</span>
+              <a href="#personality" className="hover:text-primary transition-colors">Why Personality Matters</a>
+              <span className="text-slate-300">·</span>
+              <a href="#research-shows" className="hover:text-primary transition-colors">What Research Shows</a>
+              <span className="text-slate-300">·</span>
+              <a href="#our-research" className="hover:text-primary transition-colors">Our Research</a>
+              <span className="text-slate-300">·</span>
+              <a href="#sources" className="hover:text-primary transition-colors">Key Sources</a>
+            </nav>
           </div>
         </div>
       </section>
@@ -45,7 +60,7 @@ export default function Science() {
       <section className="pb-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          <Card className="bg-white dark:bg-gray-800 shadow-lg border-l-4 border-l-red-500">
+          <Card id="problem" className="bg-white dark:bg-gray-800 shadow-lg border-l-4 border-l-red-500">
             <CardContent className="p-8">
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
@@ -101,7 +116,7 @@ export default function Science() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 shadow-lg">
+          <Card id="framework" className="bg-white dark:bg-gray-800 shadow-lg">
             <CardContent className="p-8">
               <div className="flex items-start gap-4 mb-8">
                 <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -116,7 +131,7 @@ export default function Science() {
               </div>
               
               <div className="space-y-4">
-                <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 rounded-xl border border-blue-200 dark:border-blue-700">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
                     <div className="w-8 h-8 bg-blue-600 dark:bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold text-sm">1</div>
                     Structure Orientation
@@ -126,7 +141,7 @@ export default function Science() {
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-6 rounded-xl border border-green-200 dark:border-green-700">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
                     <div className="w-8 h-8 bg-green-600 dark:bg-green-500 text-white rounded-lg flex items-center justify-center font-bold text-sm">2</div>
                     Motivation Style
@@ -136,7 +151,7 @@ export default function Science() {
                   </p>
                 </div>
 
-                <div className="bg-accent/10 dark:bg-accent/20 p-6 rounded-xl border border-accent/20 dark:border-accent/30">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
                     <div className="w-8 h-8 bg-accent text-white rounded-lg flex items-center justify-center font-bold text-sm">3</div>
                     Cognitive Focus
@@ -146,7 +161,7 @@ export default function Science() {
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-6 rounded-xl border border-orange-200 dark:border-orange-700">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
                     <div className="w-8 h-8 bg-orange-600 dark:bg-orange-500 text-white rounded-lg flex items-center justify-center font-bold text-sm">4</div>
                     Task Relationship
@@ -159,7 +174,7 @@ export default function Science() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 shadow-lg">
+          <Card id="personality" className="bg-white dark:bg-gray-800 shadow-lg">
             <CardContent className="p-8">
               <div className="flex items-start gap-4 mb-6">
                 <div className="p-3 bg-primary/10 dark:bg-primary/20 rounded-lg">
@@ -201,7 +216,7 @@ export default function Science() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 shadow-lg">
+          <Card id="research-shows" className="bg-white dark:bg-gray-800 shadow-lg">
             <CardContent className="p-8">
               <div className="flex items-start gap-4 mb-6">
                 <div className="p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg">
@@ -265,36 +280,28 @@ export default function Science() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 shadow-lg">
+          <Card id="our-research" className="bg-white dark:bg-gray-800 shadow-lg">
             <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Our Validation</h2>
-              
-              <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
-                We tested our framework with over 2,000 users in a 90-day study, comparing personalized recommendations against generic productivity advice:
-              </p>
-
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-6 rounded-xl border border-green-200 dark:border-green-700">
-                <h3 className="font-bold text-gray-900 dark:text-white mb-4">Results:</h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                      <BarChart3 className="w-4 h-4 text-green-600" />
-                    </div>
-                    <div>
-                      <div className="font-bold text-gray-900 dark:text-white">40% Greater Improvement</div>
-                      <div className="text-gray-700 dark:text-gray-300">in self-reported productivity vs. control group</div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                    </div>
-                    <div>
-                      <div className="font-bold text-gray-900 dark:text-white">25% Higher Adherence</div>
-                      <div className="text-gray-700 dark:text-gray-300">to recommended strategies</div>
-                    </div>
-                  </div>
+              <div className="flex items-start gap-4 mb-6">
+                <div className="p-3 bg-primary/10 rounded-lg">
+                  <BookOpen className="h-8 w-8 text-primary" />
                 </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Our Research</h2>
+                  <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                    Our framework is built on an extensive literature review of peer-reviewed research in behavioral psychology, cognitive science, and productivity. We synthesized findings from over 40 published studies to develop our four-axis model and archetype classification system.
+                  </p>
+                  <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                    Our research paper is currently under peer review at <em>Personality and Individual Differences</em>.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <a href="/research-paper.pdf" download="Beyond-One-Size-Fits-All-Research-Paper.pdf" className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+                  <Download className="h-4 w-4" />
+                  <span className="underline">Read the full paper (PDF)</span>
+                </a>
               </div>
             </CardContent>
           </Card>
@@ -317,7 +324,7 @@ export default function Science() {
               isPublic={true}
             />
 
-            <Card className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+            <Card id="sources" className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Key Sources:</h3>
                 <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
@@ -336,18 +343,11 @@ export default function Science() {
                 "Stop fighting your brain. Start working with it."
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/quiz">
-                  <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" data-testid="button-discover-archetype">
-                    Take the Quiz
-                  </Button>
-                </Link>
-                <Link href="/about">
-                  <Button variant="outline" className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-3 rounded-xl font-semibold hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors" data-testid="button-learn-more">
-                    Learn More About Us
-                  </Button>
-                </Link>
-              </div>
+              <Link href="/quiz">
+                <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" data-testid="button-discover-archetype">
+                  Take the Quiz
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>

@@ -1,0 +1,220 @@
+# RESEARCH PAGE FIXES + SITE-WIDE CLAIM AUDIT
+
+## ⚠️ CRITICAL: REMOVE FALSE VALIDATION SECTION
+
+The "Our Validation" section on /science contains fabricated 
+claims. This MUST be removed immediately.
+
+DELETE the entire "Our Validation" card/section that contains:
+- "We tested our framework with over 2,000 users in a 
+  90-day study, comparing personalized recommendations 
+  against generic productivity advice"
+- "Results: 40% Greater Improvement" 
+- "25% Higher Adherence"
+
+This data is not real. Remove the entire card, not just 
+the text. Leave no trace of it on the page.
+
+REPLACE it with a shorter, honest section:
+
+---
+
+Section title: "Our Research"
+Icon: same book/document icon style used elsewhere on page
+
+Body text:
+
+"Our framework is built on an extensive literature review 
+of peer-reviewed research in behavioral psychology, 
+cognitive science, and productivity. We synthesized 
+findings from over 40 published studies to develop our 
+four-axis model and archetype classification system.
+
+Our research paper is currently under peer review at 
+Personality and Individual Differences."
+
+That's it. No stats, no results claims, no study data. 
+Keep it factual and honest.
+
+---
+
+## FIX 2: SINGLE CTA AT BOTTOM
+
+Current bottom section has two buttons:
+- "Take the Quiz" (primary)
+- "Learn More About Us" (secondary)
+
+REMOVE "Learn More About Us" button entirely.
+
+Keep only:
+- The quote: "Stop fighting your brain. Start working 
+  with it."
+- Single button: "Take the Quiz" → links to /quiz
+- Style: primary green, centered, same as current
+
+---
+
+## FIX 3: ADD SECTION NAVIGATION
+
+Add an inline anchor nav below the hero section 
+(below the "Download Full Research Paper" button, 
+above "The Problem" card).
+
+Layout: horizontal row of links, centered, with 
+subtle styling.
+
+Links:
+- The Problem → #problem
+- Our Framework → #framework  
+- Why Personality Matters → #personality
+- What Research Shows → #research-shows
+- Our Research → #our-research (the new replacement section)
+- Key Sources → #sources
+
+Style:
+- text-sm text-slate-500 hover:text-teal-600
+- Separated by a middle dot (·) or thin vertical line
+- Wrap to multiple lines on mobile if needed
+- Optional: make sticky on scroll (position: sticky, 
+  top: 0, with white background and bottom border). 
+  Only do this if it doesn't conflict with the main 
+  site nav.
+
+Add corresponding id attributes to each section 
+heading on the page.
+
+---
+
+## FIX 4: UNIFY FOUR-AXIS FRAMEWORK COLORS
+
+Current state: Each of the 4 axis cards has a different 
+pastel background (blue, green, pink, orange/peach).
+
+Change to: All 4 cards should have the SAME background 
+(white or very light gray, bg-white or bg-slate-50) with 
+ONLY the numbered badge (the circled 1, 2, 3, 4) using 
+the distinct color for each axis.
+
+Badge colors to keep:
+- 1 Structure Orientation: blue badge
+- 2 Motivation Style: green badge  
+- 3 Cognitive Focus: purple/pink badge
+- 4 Task Relationship: orange/amber badge
+
+Card style: consistent bg-white or bg-slate-50, with 
+subtle border (border border-slate-200), rounded-xl. 
+This looks more authoritative and less playful — 
+appropriate for a research page.
+
+---
+
+## FIX 5: PDF ACCESS
+
+The PDF is now public (already updated by founder). 
+Verify that:
+- The "Download Full Research Paper (PDF)" button in the 
+  hero works without login
+- The PDF preview section lower on the page renders 
+  without login
+- Remove any "Please log in to view the PDF" text if 
+  it still exists anywhere
+- If login-gating code remains, remove the auth check 
+  for this specific asset
+
+---
+
+## FIX 6: DUPLICATE DOWNLOAD PLACEMENT
+
+Add a second "Download Full Research Paper (PDF)" button 
+(or text link) immediately after the new "Our Research" 
+section (the peer review mention). Someone who reads the 
+entire page is most motivated to download at this point.
+
+Style it as a secondary/outline button or a simple text 
+link with download icon — don't make it identical to the 
+hero button. Something like:
+
+"Read the full paper (PDF)" with a small download icon, 
+styled as: text-teal-600 hover:text-teal-700 underline, 
+inline, not a big button.
+
+---
+
+## ⚠️ CRITICAL: SITE-WIDE FALSE CLAIMS AUDIT
+
+Search the ENTIRE codebase for any of these fabricated 
+claims that may appear on other pages (homepage, about, 
+archetypes, results, emails, etc.):
+
+Search terms to grep for:
+- "2,000 users"
+- "2000 users"  
+- "90-day study"
+- "90 day study"
+- "40% Greater Improvement"
+- "25% Higher Adherence"
+- "tested our framework"
+- "validated with"
+- "our study found"
+- "our study showed"
+- "our research found"
+- "our research showed"
+- "participants showed"
+- "control group"
+
+For EACH match found:
+1. Log the file path and line number
+2. Show the surrounding context (5 lines before and after)
+3. Do NOT auto-delete — just report all matches so the 
+   founder can review each one and decide what to keep, 
+   reword, or remove
+
+Output all matches in a summary at the end of the task 
+so the founder can review them.
+
+IMPORTANT: The platform DID conduct a literature review 
+of 40+ peer-reviewed studies. Claims like "research shows" 
+or "studies demonstrate" that reference EXTERNAL published 
+research are fine. The problem is only with claims that 
+suggest Prolific Personalities conducted its OWN original 
+study with participants, control groups, or measured 
+outcomes. Those are false and must be flagged.
+
+---
+
+## FILES TO CHECK IN THE AUDIT
+
+At minimum, search these locations:
+- All page components (homepage, about, archetypes, 
+  pricing, results, dashboard, quiz)
+- All email templates (welcome, nurture, post-purchase, 
+  post-quiz sequences)
+- Any marketing copy components (hero sections, CTAs, 
+  testimonial areas)
+- Meta descriptions and SEO content
+- README or any public-facing documentation
+- Blog posts if any exist
+
+---
+
+## TESTING CHECKLIST
+
+1. False validation section is completely removed
+2. New "Our Research" section displays with peer 
+   review mention
+3. No "2,000 users" or "90-day study" text anywhere 
+   on /science
+4. Bottom CTA shows only "Take the Quiz" — no 
+   "Learn More About Us"
+5. Section nav links scroll to correct sections
+6. All section headings have proper id attributes
+7. Four-Axis Framework cards have unified backgrounds
+8. PDF downloads without login
+9. No "Please log in" text remains on page
+10. Second download link appears after "Our Research" section
+11. Site-wide audit results are reported in terminal/console
+12. Page meta tags are correct:
+    title="The Science | Prolific Personalities"
+    description="The peer-reviewed research behind 
+    personalized productivity. Built on executive function 
+    theory, cognitive load science, and motivation psychology."
