@@ -59,20 +59,24 @@ export function Header() {
               >
                 <Link 
                   href="/archetypes" 
-                  className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded inline-flex items-center gap-1"
+                  className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded inline-flex items-center gap-1 pb-2"
                 >
                   Archetypes
                   <ChevronDown className={`h-4 w-4 transition-transform duration-150 ${archetypesDropdownOpen ? 'rotate-180' : ''}`} />
                 </Link>
                 
+                {/* Invisible bridge to prevent hover gap */}
+                <div className="absolute top-full left-0 h-2 w-full" />
+                
                 {/* Dropdown Menu */}
                 <div 
-                  className={`absolute top-full left-0 mt-2 w-72 bg-white dark:bg-card border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-50 overflow-hidden transition-all duration-150 ease-out ${
+                  className={`absolute top-full left-0 pt-2 w-72 z-50 transition-all duration-150 ease-out ${
                     archetypesDropdownOpen 
                       ? 'opacity-100 translate-y-0 pointer-events-auto' 
                       : 'opacity-0 -translate-y-2 pointer-events-none'
                   }`}
                 >
+                <div className="bg-white dark:bg-card border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg overflow-hidden">
                   <div className="py-2">
                     {archetypeNavItems.map((archetype) => (
                       <Link
@@ -105,6 +109,7 @@ export function Header() {
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
+                </div>
                 </div>
               </div>
               <Link href="/science" className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" data-testid="link-research">
