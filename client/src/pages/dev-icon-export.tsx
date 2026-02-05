@@ -1,4 +1,7 @@
+import { useRef } from "react";
 import { Sparkles, Target, Brain, Zap, Compass, Lightbulb, Shuffle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import html2canvas from "html2canvas";
 
 const archetypeIcons = [
   {
@@ -45,30 +48,79 @@ const archetypeIcons = [
   },
 ];
 
+function IconCard({ archetype, index }: { archetype: typeof archetypeIcons[0], index: number }) {
+  const iconRef = useRef<HTMLDivElement>(null);
+  const Icon = archetype.icon;
+
+  const downloadIcon = async () => {
+    if (!iconRef.current) return;
+    
+    const canvas = await html2canvas(iconRef.current, {
+      backgroundColor: null,
+      scale: 2,
+      width: 256,
+      height: 256,
+    });
+    
+    const link = document.createElement('a');
+    link.download = `${archetype.slug}-icon.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <div 
+        ref={iconRef}
+        className={`flex items-center justify-center bg-gradient-to-br ${archetype.gradient} rounded-3xl`}
+        style={{ width: '256px', height: '256px' }}
+      >
+        <Icon className="w-32 h-32 text-white" strokeWidth={1.5} />
+      </div>
+      <p className="text-lg font-semibold text-gray-800 text-center">
+        {archetype.name}
+      </p>
+      <Button onClick={downloadIcon} variant="outline" size="sm">
+        Download PNG
+      </Button>
+    </div>
+  );
+}
+
 export default function DevIconExport() {
+  const downloadAll = async () => {
+    const icons = document.querySelectorAll('[data-icon-container]');
+    for (let i = 0; i < icons.length; i++) {
+      const icon = icons[i] as HTMLElement;
+      const canvas = await html2canvas(icon, {
+        backgroundColor: null,
+        scale: 2,
+        width: 256,
+        height: 256,
+      });
+      
+      const link = document.createElement('a');
+      link.download = `${archetypeIcons[i].slug}-icon.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      await new Promise(r => setTimeout(r, 500));
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white p-12">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Archetype Icon Export</h1>
-      <p className="text-gray-600 mb-8">Right-click and "Save image as..." to download each icon as PNG (256x256px)</p>
-      
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-        {archetypeIcons.map((archetype) => {
-          const Icon = archetype.icon;
-          return (
-            <div key={archetype.slug} className="flex flex-col items-center">
-              <div 
-                className={`w-64 h-64 flex items-center justify-center bg-gradient-to-br ${archetype.gradient} rounded-3xl shadow-lg`}
-                style={{ width: '256px', height: '256px' }}
-              >
-                <Icon className="w-32 h-32 text-white" strokeWidth={1.5} />
-              </div>
-              <p className="mt-4 text-lg font-semibold text-gray-800 text-center">
-                {archetype.name}
-              </p>
-              <p className="text-sm text-gray-500">{archetype.slug}</p>
-            </div>
-          );
-        })}
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Archetype Icon Export</h1>
+        <p className="text-gray-600 mb-4">Click "Download PNG" to save each icon as a 256x256px PNG file</p>
+        <Button onClick={downloadAll} className="mb-8">
+          Download All Icons
+        </Button>
+        
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+          {archetypeIcons.map((archetype, index) => (
+            <IconCard key={archetype.slug} archetype={archetype} index={index} />
+          ))}
+        </div>
       </div>
     </div>
   );
