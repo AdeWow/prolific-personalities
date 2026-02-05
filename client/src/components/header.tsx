@@ -104,7 +104,7 @@ export function Header() {
               >
                 <Link 
                   href="/archetypes" 
-                  className={`${navLinkClass('/archetypes')} inline-flex items-center gap-1 pb-2`}
+                  className={`${navLinkClass('/archetypes')} inline-flex items-center gap-1`}
                 >
                   Archetypes
                   <ChevronDown className={`h-4 w-4 transition-transform duration-150 ${archetypesDropdownOpen ? 'rotate-180' : ''}`} />
