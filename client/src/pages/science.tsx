@@ -31,7 +31,7 @@ export default function Science() {
             </p>
             
             <div className="pt-4">
-              <a href="/prolific-personalities-research-paper.pdf" download="Prolific-Personalities-Research-Paper.pdf">
+              <a href="/research-paper.pdf" download="Beyond-One-Size-Fits-All-Research-Paper.pdf">
                 <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 gap-2" data-testid="button-download-research">
                   <Download className="h-5 w-5" />
                   Download Full Research Paper (PDF)
@@ -308,12 +308,13 @@ export default function Science() {
             </div>
 
             <PDFPreview
-              src="/prolific-personalities-research-paper.pdf"
-              title="The Science of Personalized Productivity"
-              downloadFilename="Prolific-Personalities-Research-Paper.pdf"
+              src="/research-paper.pdf"
+              title="Beyond One-Size-Fits-All: An ATI Framework for Personalized Productivity"
+              downloadFilename="Beyond-One-Size-Fits-All-Research-Paper.pdf"
               height="700px"
               showDownloadButton={true}
               collapsible={false}
+              isPublic={true}
             />
 
             <Card className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">

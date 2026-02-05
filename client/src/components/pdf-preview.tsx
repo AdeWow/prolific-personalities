@@ -12,6 +12,7 @@ interface PDFPreviewProps {
   collapsible?: boolean;
   defaultExpanded?: boolean;
   authToken?: string;
+  isPublic?: boolean;
 }
 
 export function PDFPreview({ 
@@ -22,7 +23,8 @@ export function PDFPreview({
   showDownloadButton = true,
   collapsible = false,
   defaultExpanded = true,
-  authToken
+  authToken,
+  isPublic = false
 }: PDFPreviewProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [hasError, setHasError] = useState(false);
@@ -30,9 +32,15 @@ export function PDFPreview({
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    // For public PDFs, use the src directly without fetching
+    if (isPublic) {
+      setBlobUrl(src);
+      return;
+    }
+
     if (!authToken) {
       setBlobUrl((prev) => {
-        if (prev) URL.revokeObjectURL(prev);
+        if (prev && prev !== src) URL.revokeObjectURL(prev);
         return null;
       });
       return;
@@ -59,7 +67,7 @@ export function PDFPreview({
         if (isMounted) {
           createdUrl = URL.createObjectURL(blob);
           setBlobUrl((prev) => {
-            if (prev) URL.revokeObjectURL(prev);
+            if (prev && prev !== src) URL.revokeObjectURL(prev);
             return createdUrl;
           });
           setIsLoading(false);
@@ -81,7 +89,7 @@ export function PDFPreview({
         URL.revokeObjectURL(createdUrl);
       }
     };
-  }, [src, authToken]);
+  }, [src, authToken, isPublic]);
 
   const handleOpenInNewTab = () => {
     if (blobUrl) {
@@ -165,7 +173,7 @@ export function PDFPreview({
             <div className="flex flex-col items-center justify-center p-12 bg-gray-50 dark:bg-gray-800 border-t">
               <FileText className="h-16 w-16 text-gray-400 mb-4" />
               <p className="text-gray-600 dark:text-gray-400 mb-4 text-center">
-                {!authToken 
+                {!authToken && !isPublic
                   ? "Please log in to view the PDF." 
                   : "Unable to preview PDF. Please try refreshing the page."}
               </p>
