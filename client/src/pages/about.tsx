@@ -55,7 +55,7 @@ export default function About() {
                 <img 
                   src={founderImage}
                   alt="Adeola, Founder of Prolific Personalities"
-                  className="w-full max-w-[280px] md:max-w-[400px] aspect-square object-cover rounded-xl shadow-md"
+                  className="w-full max-w-[280px] md:max-w-[400px] object-cover object-top rounded-xl shadow-md"
                 />
               </div>
               
