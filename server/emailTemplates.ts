@@ -709,7 +709,7 @@ export function generateWelcomeEmail(data: WelcomeEmailData): { subject: string;
           
           <div class="premium-teaser">
             <h3>Ready to go deeper?</h3>
-            <p style="margin: 0; color: #78350f;">The Premium Playbook ($27) gives you 100+ pages of research-backed strategies, a 30-day action plan with daily tasks, and productivity tools rated specifically for your archetype. It's the difference between knowing your type and actually transforming how you work.</p>
+            <p style="margin: 0; color: #78350f;">The Premium Playbook (<span style="text-decoration: line-through;">$29</span> $19) gives you 100+ pages of research-backed strategies, a 30-day action plan with daily tasks, and productivity tools rated specifically for your archetype. It's the difference between knowing your type and actually transforming how you work.</p>
           </div>
         </div>
 
