@@ -1184,7 +1184,7 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
         
         <div style="background: ${theme.headerGradient}; color: white; padding: 40px 30px; text-align: center;">
           <span style="display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 16px; border-radius: 20px; font-size: 14px;">Week ${((weekNumber - 1) % 8) + 1} of 8</span>
-          <h1 style="margin: 10px 0 0 0; font-size: 28px; font-weight: 700;">${theme.emoji} ${theme.themeTitle}</h1>
+          <h1 style="margin: 10px 0 0 0; font-size: 28px; font-weight: 700;">${theme.themeTitle}</h1>
         </div>
         
         <div style="padding: 40px 30px;">
