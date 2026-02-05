@@ -1,0 +1,261 @@
+# RESOURCES PAGE FIXES (/resources)
+
+## FIX 1: ADD LINKS TO ALL TOOLS
+
+Every tool name on this page — in BOTH the "By Archetype" 
+cards AND the "All Tools" table — must be a clickable link 
+that opens in a new tab (target="_blank" rel="noopener 
+noreferrer").
+
+Here are the direct URLs for each tool. Use these for now. 
+The founder will swap them for affiliate links later, so 
+structure the code so URLs are stored in a single data 
+file/object (not hardcoded in multiple places) for easy 
+updating.
+
+Tool links:
+
+| Tool | URL |
+|------|-----|
+| Notion | https://www.notion.com |
+| Todoist | https://todoist.com |
+| Trello | https://trello.com |
+| Forest App | https://www.forestapp.cc |
+| Freedom | https://freedom.to |
+| RescueTime | https://www.rescuetime.com |
+| Brain.fm | https://www.brain.fm |
+| Sunsama | https://www.sunsama.com |
+| Things 3 | https://culturedcode.com/things/ |
+| Toggl | https://toggl.com/track/ |
+| Habitify | https://www.habitify.me |
+| Fantastical | https://flexibits.com/fantastical |
+| Google Calendar | https://calendar.google.com |
+| Google Keep | https://keep.google.com |
+| Voice Memos | https://apps.apple.com/us/app/voice-memos/id1069512134 |
+| Evernote | https://evernote.com |
+| Obsidian | https://obsidian.md |
+| Roam | https://roamresearch.com |
+| Asana | https://asana.com |
+
+Style for linked tool names:
+- Text color: inherit (don't make them look like typical 
+  blue links)
+- On hover: text-teal-600 with subtle underline
+- Small external link icon (optional, 12px, text-slate-400) 
+  after the tool name to indicate it opens externally
+- Cursor: pointer
+
+Create a centralized tool data file (e.g., 
+`data/tools.js` or `lib/tools.ts`) that stores all tool 
+info in one place:
+```js
+export const tools = {
+  notion: {
+    name: "Notion",
+    url: "https://www.notion.com", // swap to affiliate later
+    category: "Project Management",
+    cost: "Free-$10/mo",
+    // ... other fields
+  },
+  // ...
+}
+```
+
+Both the "By Archetype" view and "All Tools" table should 
+read from this same data source.
+
+---
+
+## FIX 2: CONDITIONAL HERO CTA
+
+Current: "Take the Quiz First" button shows for everyone.
+
+Change to conditional logic:
+
+IF user is NOT logged in OR has NOT completed the quiz:
+  → Show: "Take the Quiz First" → links to /quiz
+  → Subtitle stays: "Not all productivity tools work for 
+    everyone. Find the perfect stack matched to your 
+    unique working style."
+
+IF user IS logged in AND HAS completed the quiz:
+  → HIDE the "Take the Quiz First" button entirely
+  → Change subtitle to: "Not all productivity tools work 
+    for everyone. Here are the tools matched to your 
+    unique working style."
+  → Optional enhancement: auto-scroll to or highlight 
+    their archetype card in the "By Archetype" view
+
+Use whatever auth/quiz-completion check already exists 
+in the codebase (likely Supabase session + a quiz_results 
+or assessment_results table).
+
+---
+
+## FIX 3: STYLE FREE vs PAID BADGES
+
+In BOTH views ("By Archetype" cards and "All Tools" table), 
+visually distinguish free tools from paid tools:
+
+FREE tools (cost is exactly "Free" or starts with "Free"):
+- Badge: bg-green-50 text-green-700 border border-green-200
+- Example: "Free" shows as green badge
+
+PAID tools (cost starts with "$" or doesn't include "Free"):
+- Badge: bg-slate-50 text-slate-600 border border-slate-200
+- Example: "$9/mo" shows as neutral gray badge
+
+FREEMIUM tools (cost includes both, like "Free-$10/mo"):
+- Badge: bg-green-50 text-green-700 border border-green-200
+- Same as free — lead with the free option visually
+
+This helps users scanning quickly see which tools they 
+can try at zero cost.
+
+---
+
+## FIX 4: LINK ARCHETYPE NAMES TO ARCHETYPE PAGES
+
+In the "By Archetype" view, each archetype card heading 
+(e.g., "Chaotic Creative", "Anxious Perfectionist") should 
+link to its corresponding archetype detail page.
+
+| Card Heading | Link |
+|-------------|------|
+| Chaotic Creative | /archetypes/chaotic-creative |
+| Anxious Perfectionist | /archetypes/anxious-perfectionist |
+| Structured Achiever | /archetypes/structured-achiever |
+| Novelty Seeker | /archetypes/novelty-seeker |
+| Strategic Planner | /archetypes/strategic-planner |
+| Flexible Improviser | /archetypes/flexible-improviser |
+
+Style: archetype name becomes a link with hover underline. 
+Keep the current font weight and size — just make it 
+clickable.
+
+In the "All Tools" table, the "Best For Archetypes" column 
+values should also be clickable links to the respective 
+archetype pages. If a cell contains multiple archetypes 
+(e.g., "Chaotic Creative, Novelty Seeker"), each one 
+should be a separate link.
+
+---
+
+## FIX 5: ADD AFFILIATE DISCLOSURE
+
+Add a small disclosure at the bottom of the page, BELOW 
+the "How to Choose Your Stack" section and ABOVE the 
+page footer.
+
+Text: "Some links on this page may be affiliate links, 
+which means we earn a small commission if you sign up — 
+at no extra cost to you. We only recommend tools we 
+genuinely believe match each archetype's working style."
+
+Style:
+- text-xs text-slate-400
+- Centered
+- Max width: max-w-2xl mx-auto
+- Padding: py-8
+- Do NOT put this in a card or box — keep it subtle 
+  and inline
+
+---
+
+## FIX 6: ALL TOOLS TABLE IMPROVEMENTS
+
+The "All Tools" table is good but needs a few tweaks:
+
+### 6a: Add category filter
+Above the table, add a horizontal row of filter pills 
+for each category:
+
+All | Task Management | Focus & Blocking | Time Tracking | 
+Visual Organization | Project Management | Daily Planning | 
+Focus Music
+
+- Default: "All" is selected
+- Clicking a category filters the table to show only 
+  matching tools
+- Style: pill buttons, similar to the "By Archetype / 
+  All Tools" toggle
+- Selected state: bg-slate-800 text-white
+- Unselected: bg-white text-slate-600 border border-slate-200
+
+### 6b: Make tool names clickable
+Same as Fix 1 — tool names in the table should link to 
+the tool's website (from the centralized data file).
+
+### 6c: Mobile responsiveness
+The 5-column table will be hard to read on mobile. On 
+screens below 768px:
+- Switch to a card layout instead of table
+- Each tool becomes a stacked card showing: 
+  Name, Category badge, Cost badge, Primary Use, 
+  Best For Archetypes
+- This matches the card layout used in the 
+  "By Archetype" view
+
+---
+
+## FIX 7: ADD PLATFORM AVAILABILITY
+
+In the centralized tool data file, add a `platforms` 
+field for each tool. Display this as small icons or 
+text beneath each tool name.
+
+| Tool | Platforms |
+|------|-----------|
+| Notion | Web, iOS, Android, Mac, Windows |
+| Todoist | Web, iOS, Android, Mac, Windows |
+| Trello | Web, iOS, Android |
+| Forest App | iOS, Android |
+| Freedom | Mac, Windows, iOS, Android, Chrome |
+| RescueTime | Mac, Windows, Linux, Android |
+| Brain.fm | Web, iOS, Android |
+| Sunsama | Web, Mac, Windows |
+| Things 3 | Mac, iOS |
+| Toggl | Web, iOS, Android, Mac, Windows |
+| Habitify | Web, iOS, Android, Mac |
+| Fantastical | Mac, iOS |
+| Google Calendar | Web, iOS, Android |
+| Google Keep | Web, iOS, Android |
+| Voice Memos | iOS |
+| Evernote | Web, iOS, Android, Mac, Windows |
+| Obsidian | Web, iOS, Android, Mac, Windows, Linux |
+| Roam | Web |
+| Asana | Web, iOS, Android |
+
+Display style (in "By Archetype" cards):
+- Small text beneath the tool description
+- text-xs text-slate-400
+- Example: "Web · iOS · Android"
+
+Display style (in "All Tools" table):
+- Don't add a new column — show beneath the tool 
+  description in the Tool column
+- Same text-xs text-slate-400 styling
+
+---
+
+## TESTING CHECKLIST
+
+1. Every tool name is clickable in "By Archetype" view 
+   and opens correct URL in new tab
+2. Every tool name is clickable in "All Tools" table 
+   and opens correct URL in new tab
+3. All links come from a single centralized data source
+4. Hero CTA hides for logged-in users who completed quiz
+5. Hero CTA shows for logged-out or quiz-incomplete users
+6. Free badges are green, paid badges are gray
+7. Archetype names link to /archetypes/[slug] pages
+8. Affiliate disclosure appears at bottom of page
+9. Category filter pills work in "All Tools" view
+10. Table converts to cards on mobile (<768px)
+11. Platform info displays beneath each tool
+12. No broken links
+13. Page meta tags:
+    title="Tools & Resources | Prolific Personalities"
+    description="Curated productivity tools matched to 
+    your archetype. Find the perfect stack for how your 
+    brain actually works."

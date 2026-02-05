@@ -1,4 +1,6 @@
+import { useState, useCallback } from "react";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,8 +8,159 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { ExternalLink, Sparkles, Target, Brain, Zap, Compass, Lightbulb } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { 
+  getToolUrl, 
+  getToolPlatforms, 
+  getArchetypeSlug, 
+  toolCategories, 
+  isFreeOrFreemium,
+  combinedToolUrls
+} from "@/data/tools";
+import type { QuizResult } from "@shared/schema";
+
+function ToolLink({ name, className = "" }: { name: string; className?: string }) {
+  const combinedTool = combinedToolUrls[name];
+  
+  if (combinedTool) {
+    return (
+      <span className={className}>
+        <a 
+          href={combinedTool.first.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="cursor-pointer hover:text-teal-600 hover:underline transition-colors inline-flex items-center gap-1"
+        >
+          {combinedTool.first.name}
+          <ExternalLink className="h-3 w-3 text-slate-400" />
+        </a>
+        {" or "}
+        <a 
+          href={combinedTool.second.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="cursor-pointer hover:text-teal-600 hover:underline transition-colors inline-flex items-center gap-1"
+        >
+          {combinedTool.second.name}
+          <ExternalLink className="h-3 w-3 text-slate-400" />
+        </a>
+      </span>
+    );
+  }
+  
+  const url = getToolUrl(name);
+  
+  if (!url) {
+    return <span className={className}>{name}</span>;
+  }
+  
+  return (
+    <a 
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`cursor-pointer hover:text-teal-600 hover:underline transition-colors inline-flex items-center gap-1 ${className}`}
+    >
+      {name}
+      <ExternalLink className="h-3 w-3 text-slate-400" />
+    </a>
+  );
+}
+
+function ArchetypeLink({ name, className = "" }: { name: string; className?: string }) {
+  const slug = getArchetypeSlug(name);
+  
+  if (!slug) {
+    return <span className={className}>{name}</span>;
+  }
+  
+  return (
+    <Link 
+      href={`/archetypes/${slug}`}
+      className={`hover:underline transition-colors ${className}`}
+    >
+      {name}
+    </Link>
+  );
+}
+
+function CostBadge({ cost }: { cost: string }) {
+  const isFree = isFreeOrFreemium(cost);
+  
+  return (
+    <Badge 
+      variant="outline" 
+      className={`text-xs ${
+        isFree 
+          ? "bg-green-50 text-green-700 border-green-200" 
+          : "bg-slate-50 text-slate-600 border-slate-200"
+      }`}
+    >
+      {cost}
+    </Badge>
+  );
+}
+
+function PlatformDisplay({ toolName }: { toolName: string }) {
+  const platforms = getToolPlatforms(toolName);
+  
+  if (platforms.length === 0) return null;
+  
+  return (
+    <p className="text-xs text-slate-400 mt-1">
+      {platforms.join(" · ")}
+    </p>
+  );
+}
+
+function ArchetypesList({ archetypes }: { archetypes: string }) {
+  if (archetypes.toLowerCase().includes("all")) {
+    return <span>{archetypes}</span>;
+  }
+  
+  const archetypeNames = archetypes.split(",").map(a => a.trim());
+  
+  return (
+    <span className="flex flex-wrap gap-1">
+      {archetypeNames.map((name, idx) => (
+        <span key={name}>
+          <ArchetypeLink name={name} className="hover:text-teal-600" />
+          {idx < archetypeNames.length - 1 && ", "}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 export default function Resources() {
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { session } = useAuthContext();
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  
+  const authFetch = useCallback(async (url: string) => {
+    const headers: Record<string, string> = {};
+    if (session?.access_token) {
+      headers["Authorization"] = `Bearer ${session.access_token}`;
+    }
+    const res = await fetch(url, { headers });
+    if (!res.ok) {
+      throw new Error(`${res.status}: ${await res.text()}`);
+    }
+    return res.json();
+  }, [session?.access_token]);
+  
+  const { data: quizResults } = useQuery<QuizResult[]>({
+    queryKey: ["/api/dashboard/results", session?.access_token],
+    queryFn: () => authFetch("/api/dashboard/results"),
+    enabled: isAuthenticated && !!session?.access_token,
+  });
+  
+  const hasAuthenticatedQuizResults = quizResults && quizResults.length > 0;
+  const hasPendingQuizSession = typeof window !== 'undefined' && localStorage.getItem('pendingQuizSessionId');
+  const hasCompletedQuiz = hasAuthenticatedQuizResults || !!hasPendingQuizSession;
+  const userArchetype = hasAuthenticatedQuizResults ? quizResults[0]?.archetype : null;
+  
   const archetypeResources = {
     "chaotic-creative": {
       name: "Chaotic Creative",
@@ -94,11 +247,15 @@ export default function Resources() {
     { name: "Sunsama", category: "Daily Planning", archetypes: "Strategic Planner, Structured Achiever", primaryUse: "Thoughtful daily planning ritual", cost: "$20/mo", whyRecommended: "Intentional planning, integrates calendars & tasks", bestFor: "People who want structured reflection" },
   ];
 
+  const filteredTools = selectedCategory === "All" 
+    ? universalTools 
+    : universalTools.filter(tool => tool.category === selectedCategory);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       <SEOHead
-        title="Productivity Tools & Resources"
-        description="Find the perfect productivity tools matched to your archetype. Curated recommendations for task management, focus apps, time tracking, and more."
+        title="Tools & Resources | Prolific Personalities"
+        description="Curated productivity tools matched to your archetype. Find the perfect stack for how your brain actually works."
         keywords="productivity tools, best productivity apps, time management tools, focus apps, task management software, productivity resources"
       />
       <Header />
@@ -113,17 +270,22 @@ export default function Resources() {
               Tools & Resources <span className="text-primary">for Every Archetype</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Not all productivity tools work for everyone. Find the perfect stack matched to your unique working style.
+              {hasCompletedQuiz 
+                ? "Not all productivity tools work for everyone. Here are the tools matched to your unique working style."
+                : "Not all productivity tools work for everyone. Find the perfect stack matched to your unique working style."
+              }
             </p>
           </div>
 
-          <div className="flex justify-center mb-12">
-            <Link href="/quiz">
-              <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" data-testid="button-discover-archetype">
-                Take the Quiz First
-              </Button>
-            </Link>
-          </div>
+          {!authLoading && (!isAuthenticated || !hasCompletedQuiz) && (
+            <div className="flex justify-center mb-12">
+              <Link href="/quiz">
+                <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" data-testid="button-discover-archetype">
+                  Take the Quiz First
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 
@@ -139,13 +301,24 @@ export default function Resources() {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Object.entries(archetypeResources).map(([key, archetype]) => {
                   const Icon = archetype.icon;
+                  const isUserArchetype = userArchetype === key;
                   return (
-                    <Card key={key} className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow">
+                    <Card 
+                      key={key} 
+                      className={`bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow ${
+                        isUserArchetype ? "ring-2 ring-primary" : ""
+                      }`}
+                    >
                       <CardHeader>
                         <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${archetype.color} flex items-center justify-center mb-4`}>
                           <Icon className="h-6 w-6 text-white" />
                         </div>
-                        <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">{archetype.name}</CardTitle>
+                        <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
+                          <ArchetypeLink name={archetype.name} className="hover:text-teal-600" />
+                          {isUserArchetype && (
+                            <Badge className="ml-2 bg-primary/10 text-primary text-xs">Your Archetype</Badge>
+                          )}
+                        </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div>
@@ -154,10 +327,14 @@ export default function Resources() {
                             {archetype.essentialStack.map((tool, idx) => (
                               <div key={idx} className="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
                                 <div className="flex justify-between items-start mb-1">
-                                  <span className="font-semibold text-gray-900 dark:text-white text-sm">{tool.name}</span>
-                                  <Badge variant="outline" className="text-xs">{tool.cost}</Badge>
+                                  <ToolLink 
+                                    name={tool.name} 
+                                    className="font-semibold text-gray-900 dark:text-white text-sm"
+                                  />
+                                  <CostBadge cost={tool.cost} />
                                 </div>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">{tool.purpose}</p>
+                                <PlatformDisplay toolName={tool.name} />
                               </div>
                             ))}
                           </div>
@@ -188,9 +365,27 @@ export default function Resources() {
             </TabsContent>
 
             <TabsContent value="all-tools">
+              {/* Category Filter Pills */}
+              <div className="flex flex-wrap gap-2 mb-6 justify-center">
+                {toolCategories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      selectedCategory === category
+                        ? "bg-slate-800 text-white"
+                        : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+
               <Card className="bg-white dark:bg-gray-800 shadow-lg">
                 <CardContent className="p-6">
-                  <div className="overflow-x-auto">
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto">
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-gray-200 dark:border-gray-700">
@@ -202,24 +397,53 @@ export default function Resources() {
                         </tr>
                       </thead>
                       <tbody>
-                        {universalTools.map((tool, idx) => (
+                        {filteredTools.map((tool, idx) => (
                           <tr key={idx} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                             <td className="py-4 px-4">
-                              <div className="font-semibold text-gray-900 dark:text-white">{tool.name}</div>
+                              <ToolLink 
+                                name={tool.name} 
+                                className="font-semibold text-gray-900 dark:text-white"
+                              />
                               <div className="text-sm text-gray-600 dark:text-gray-400">{tool.bestFor}</div>
+                              <PlatformDisplay toolName={tool.name} />
                             </td>
                             <td className="py-4 px-4">
                               <Badge variant="outline" className="text-xs">{tool.category}</Badge>
                             </td>
-                            <td className="py-4 px-4 text-sm text-gray-700 dark:text-gray-300">{tool.archetypes}</td>
+                            <td className="py-4 px-4 text-sm text-gray-700 dark:text-gray-300">
+                              <ArchetypesList archetypes={tool.archetypes} />
+                            </td>
                             <td className="py-4 px-4">
-                              <span className="text-sm font-semibold text-primary">{tool.cost}</span>
+                              <CostBadge cost={tool.cost} />
                             </td>
                             <td className="py-4 px-4 text-sm text-gray-700 dark:text-gray-300">{tool.primaryUse}</td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
+                  </div>
+
+                  {/* Mobile Card View */}
+                  <div className="md:hidden space-y-4">
+                    {filteredTools.map((tool, idx) => (
+                      <div key={idx} className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+                        <div className="flex justify-between items-start mb-2">
+                          <ToolLink 
+                            name={tool.name} 
+                            className="font-semibold text-gray-900 dark:text-white"
+                          />
+                          <CostBadge cost={tool.cost} />
+                        </div>
+                        <div className="flex gap-2 mb-2">
+                          <Badge variant="outline" className="text-xs">{tool.category}</Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{tool.primaryUse}</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">
+                          <strong>Best For:</strong> <ArchetypesList archetypes={tool.archetypes} />
+                        </p>
+                        <PlatformDisplay toolName={tool.name} />
+                      </div>
+                    ))}
                   </div>
 
                   <div className="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-700">
@@ -269,6 +493,13 @@ export default function Resources() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Affiliate Disclosure */}
+          <div className="max-w-2xl mx-auto py-8 text-center">
+            <p className="text-xs text-slate-400">
+              Some links on this page may be affiliate links, which means we earn a small commission if you sign up — at no extra cost to you. We only recommend tools we genuinely believe match each archetype's working style.
+            </p>
+          </div>
         </div>
         </section>
       </main>
