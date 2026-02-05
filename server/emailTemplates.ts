@@ -258,7 +258,7 @@ export interface PremiumPlaybookEmailData {
 export function generatePremiumPlaybookEmail(data: PremiumPlaybookEmailData): { subject: string; html: string } {
   const { archetype, resultsUrl } = data;
 
-  const subject = `Your Premium ${archetype.title} Playbook is Here! 🎉`;
+  const subject = `Your Premium ${archetype.title} Playbook is Here`;
 
   const html = `
     <!DOCTYPE html>
@@ -1162,7 +1162,7 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
   const weeklyTip = tips[themeIndex];
   
   const greeting = firstName ? `Hi ${firstName}` : "Hey there";
-  const subject = `${theme.emoji} ${theme.themeTitle}: Your ${archetype} Weekly Check-in`;
+  const subject = `${theme.themeTitle}: Your ${archetype} Weekly Check-in`;
   
   const reflectionHtml = theme.reflectionQuestions.map(q => `
     <div style="display: flex; align-items: flex-start; margin-bottom: 8px; color: #475569;">
