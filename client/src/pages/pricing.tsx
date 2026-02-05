@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { SEOHead } from "@/components/seo-head";
 import { CheckCircle2, Sparkles, Lock, Zap, Target, RefreshCw, Loader2, ChevronDown, ArrowRight } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
@@ -573,7 +572,6 @@ export default function Pricing() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 }

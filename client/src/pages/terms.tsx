@@ -1,5 +1,4 @@
 import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { SEOHead } from "@/components/seo-head";
 
 export default function Terms() {
@@ -54,7 +53,6 @@ export default function Terms() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

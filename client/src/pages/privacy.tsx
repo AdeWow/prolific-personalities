@@ -1,5 +1,4 @@
 import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { SEOHead } from "@/components/seo-head";
 
 export default function Privacy() {
@@ -48,7 +47,6 @@ export default function Privacy() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ExitIntentPopup } from "@/components/exit-intent-popup";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { useClaimPendingQuiz } from "@/hooks/useClaimPendingQuiz";
+import { GlobalFooter } from "@/components/global-footer";
 import { initGA } from "./lib/analytics";
 import { initPostHog } from "./lib/posthog";
 import { useAnalytics } from "./hooks/use-analytics";
@@ -41,10 +42,8 @@ import AuthCallback from "@/pages/auth-callback";
 function Router() {
   const [location] = useLocation();
   
-  // Track page views when routes change
   useAnalytics();
   
-  // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
@@ -84,23 +83,19 @@ function Router() {
   );
 }
 
-// Component to handle quiz claiming globally when user is authenticated
 function QuizClaimHandler() {
   useClaimPendingQuiz();
   return null;
 }
 
 function App() {
-  // Initialize analytics when app loads
   useEffect(() => {
-    // Google Analytics
     if (!import.meta.env.VITE_GA_MEASUREMENT_ID) {
       console.warn('Missing required Google Analytics key: VITE_GA_MEASUREMENT_ID');
     } else {
       initGA();
     }
     
-    // PostHog for funnel analytics
     if (import.meta.env.VITE_POSTHOG_KEY) {
       initPostHog();
     }
@@ -113,7 +108,12 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <ExitIntentPopup />
-          <Router />
+          <div className="flex flex-col min-h-screen">
+            <div className="flex-1">
+              <Router />
+            </div>
+            <GlobalFooter />
+          </div>
         </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>

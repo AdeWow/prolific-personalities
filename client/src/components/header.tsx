@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut, ChevronDown, ChevronRight, ArrowRight } from "lucide-react";
@@ -19,8 +19,17 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [archetypesDropdownOpen, setArchetypesDropdownOpen] = useState(false);
   const [mobileArchetypesExpanded, setMobileArchetypesExpanded] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [, setLocation] = useLocation();
   const { isAuthenticated, user, signOut } = useAuth();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 80);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = async () => {
     await signOut();
@@ -29,7 +38,6 @@ export function Header() {
 
   return (
     <>
-      {/* Skip Navigation Link - 508 Compliance */}
       <a 
         href="#main-content" 
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -38,20 +46,31 @@ export function Header() {
         Skip to main content
       </a>
       
-      <header className="bg-white dark:bg-card backdrop-blur-sm shadow-sm sticky top-0 z-50" role="banner">
+      <header 
+        className={`bg-white dark:bg-card sticky top-0 z-50 transition-all duration-300 ${
+          isScrolled ? 'shadow-sm py-0' : 'shadow-none'
+        }`} 
+        role="banner"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className={`flex justify-between items-center transition-all duration-300 ${
+            isScrolled ? 'py-2' : 'py-4'
+          }`}>
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg">
-              <img src={logoImage} alt="Prolific Personalities Logo" className="w-20 h-20" />
-              <span className="text-xl font-bold text-foreground">Prolific Personalities</span>
+              <img 
+                src={logoImage} 
+                alt="Prolific Personalities Logo" 
+                className={`transition-all duration-300 ${isScrolled ? 'w-14 h-14' : 'w-20 h-20'}`} 
+              />
+              <span className={`font-bold text-foreground transition-all duration-300 ${
+                isScrolled ? 'text-lg' : 'text-xl'
+              }`}>Prolific Personalities</span>
             </Link>
 
-            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8" role="navigation" aria-label="Main navigation">
               <Link href="/about" className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">
                 About
               </Link>
-              {/* Archetypes Dropdown */}
               <div 
                 className="relative"
                 onMouseEnter={() => setArchetypesDropdownOpen(true)}
@@ -65,10 +84,8 @@ export function Header() {
                   <ChevronDown className={`h-4 w-4 transition-transform duration-150 ${archetypesDropdownOpen ? 'rotate-180' : ''}`} />
                 </Link>
                 
-                {/* Invisible bridge to prevent hover gap */}
                 <div className="absolute top-full left-0 h-2 w-full" />
                 
-                {/* Dropdown Menu */}
                 <div 
                   className={`absolute top-full left-0 pt-2 w-72 z-50 transition-all duration-150 ease-out ${
                     archetypesDropdownOpen 
@@ -153,7 +170,6 @@ export function Header() {
               )}
             </nav>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 text-muted-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
@@ -166,13 +182,11 @@ export function Header() {
             </button>
           </div>
 
-          {/* Mobile Navigation */}
           {mobileMenuOpen && (
             <nav id="mobile-navigation" className="md:hidden py-4 space-y-4 border-t border-border" role="navigation" aria-label="Mobile navigation">
               <Link href="/about" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" onClick={() => setMobileMenuOpen(false)}>
                 About
               </Link>
-              {/* Mobile Archetypes Accordion */}
               <div>
                 <button
                   onClick={() => setMobileArchetypesExpanded(!mobileArchetypesExpanded)}

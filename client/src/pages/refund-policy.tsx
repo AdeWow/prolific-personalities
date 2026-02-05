@@ -1,9 +1,7 @@
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "wouter";
-import { Mail, Clock, CheckCircle2, AlertCircle, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Clock, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function RefundPolicy() {
   return (
@@ -16,18 +14,11 @@ export default function RefundPolicy() {
       <main id="main-content" role="main">
         <section className="py-16" aria-labelledby="refund-title">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link href="/">
-            <Button variant="ghost" className="mb-6" data-testid="button-back-home">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-          </Link>
-
           <h1 id="refund-title" className="text-4xl font-bold text-foreground dark:text-white mb-4">
             Refund Policy
           </h1>
           <p className="text-lg text-muted-foreground dark:text-muted-foreground mb-8">
-            Last updated: December 2024
+            Last updated: February 2025
           </p>
 
           <div className="space-y-8">
@@ -158,36 +149,8 @@ export default function RefundPolicy() {
                     <ul className="text-muted-foreground dark:text-muted-foreground space-y-2 text-sm">
                       <li>• Refunds requested after 30 days will be reviewed on a case-by-case basis</li>
                       <li>• Upon refund, access to the interactive web playbook will be revoked</li>
-                      <li>• Downloaded PDF files are yours to keep, but continued use is not authorized after refund</li>
-                      <li>• Repeated refund requests may result in future purchase restrictions</li>
+                      <li>• Downloaded PDF files are yours to keep</li>
                     </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 border-0">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-white dark:bg-card flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-foreground dark:text-white mb-2">
-                      Questions?
-                    </h2>
-                    <p className="text-muted-foreground dark:text-muted-foreground mb-4">
-                      If you have any questions about our refund policy or need assistance with a purchase, 
-                      we're here to help.
-                    </p>
-                    <a 
-                      href="mailto:support@prolificpersonalities.com"
-                      className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
-                      data-testid="link-contact-support"
-                    >
-                      <Mail className="w-4 h-4" />
-                      support@prolificpersonalities.com
-                    </a>
                   </div>
                 </div>
               </CardContent>
