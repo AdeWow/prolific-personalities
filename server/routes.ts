@@ -3208,6 +3208,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // robots.txt for SEO
+  app.get("/robots.txt", (req, res) => {
+    const baseUrl = process.env.NODE_ENV === "production"
+      ? "https://prolificpersonalities.com"
+      : `${req.protocol}://${req.get("host") || "localhost:5000"}`;
+
+    const robotsTxt = `User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /api/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /admin
+Disallow: /playbook/
+Disallow: /results
+Disallow: /payment-success
+Disallow: /payment-cancelled
+Disallow: /purchase-success
+
+Sitemap: ${baseUrl}/sitemap.xml
+`;
+
+    res.header("Content-Type", "text/plain");
+    res.send(robotsTxt);
+  });
+
   // XML Sitemap for SEO
   app.get("/sitemap.xml", async (req, res) => {
     // Use APP_URL if set, otherwise safely construct from request
@@ -3228,19 +3255,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const staticPages = [
       { url: "/", priority: "1.0", changefreq: "weekly" },
       { url: "/quiz", priority: "0.9", changefreq: "monthly" },
+      { url: "/blog", priority: "0.8", changefreq: "weekly" },
       { url: "/archetypes", priority: "0.8", changefreq: "monthly" },
-      { url: "/pricing", priority: "0.8", changefreq: "monthly" },
-      { url: "/blog", priority: "0.7", changefreq: "weekly" },
+      { url: "/pricing", priority: "0.6", changefreq: "monthly" },
       { url: "/science", priority: "0.7", changefreq: "monthly" },
       { url: "/resources", priority: "0.7", changefreq: "monthly" },
       { url: "/about", priority: "0.6", changefreq: "monthly" },
       { url: "/faq", priority: "0.6", changefreq: "monthly" },
       { url: "/founder", priority: "0.5", changefreq: "yearly" },
       { url: "/refund-policy", priority: "0.3", changefreq: "yearly" },
-      { url: "/dashboard", priority: "0.4", changefreq: "weekly" },
-      { url: "/payment-success", priority: "0.2", changefreq: "yearly" },
-      { url: "/payment-cancelled", priority: "0.2", changefreq: "yearly" },
-      { url: "/purchase-success", priority: "0.2", changefreq: "yearly" },
     ];
 
     const archetypes = [
@@ -3307,17 +3330,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-  </url>
-`;
-    }
-
-    // Add playbook pages (premium content)
-    for (const archetype of archetypes) {
-      sitemap += `  <url>
-    <loc>${baseUrl}/playbook/${archetype}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
 `;
     }

@@ -1,0 +1,107 @@
+# AUTHOR BYLINE ADJUSTMENTS
+
+## FIX 1: REMOVE AUTHOR BYLINE FROM BLOG INDEX CARDS
+
+On the /blog page, remove the author name and author 
+photo/placeholder from every blog card in the grid.
+
+Cards should now show ONLY:
+- Featured image
+- Tags (max 3)
+- Title
+- Excerpt
+- Date · Read time
+
+Remove:
+- The circular author photo (or placeholder)
+- "Adeola" text
+- Any separator dot between the author name and date
+
+The date and read time line should look like:
+Jan 30, 2026  ·  8 min read
+
+NOT:
+[photo] Adeola  ·  Jan 30, 2026  ·  8 min read
+
+Do the same for the featured post card at the top — 
+no author byline on the index page.
+
+---
+
+## FIX 2: KEEP AUTHOR ON INDIVIDUAL BLOG POST PAGES
+
+On each individual blog post page (/blog/[slug]), 
+keep or add an author section near the top of the 
+article, below the title and above the article body.
+
+Layout:
+- Circular photo placeholder (w-10 h-10 rounded-full 
+  bg-slate-300) — founder will upload actual photo
+- "Adeola" in text-sm font-medium text-slate-700
+- Below the name: date · read time in text-sm 
+  text-slate-500
+- Optional: link "Adeola" to /about
+
+Example:
+
+[photo] Adeola
+Jan 30, 2026  ·  8 min read
+
+Use first name only — do NOT display a last name 
+anywhere on the blog.
+
+---
+
+## FIX 3: KEEP JSON-LD AUTHOR DATA FOR SEO
+
+On individual blog post pages, the JSON-LD structured 
+data should STILL include the full author block:
+
+"author": {
+  "@type": "Person",
+  "name": "Adeola",
+  "url": "https://prolificpersonalities.com/about"
+}
+
+This is critical for Google E-E-A-T ranking signals. 
+The structured data references the author even though 
+the blog index cards don't display it visually.
+
+Verify this is present in the existing Article 
+schema from the previous SEO prompt. If it currently 
+says a full name, change it to first name only: 
+"Adeola".
+
+---
+
+## FIX 4: CHECK ALL OTHER PAGES FOR FULL NAME
+
+Search the entire codebase for any instance of 
+Adeola's full/last name. If found anywhere 
+public-facing (blog, about page, footer, meta tags, 
+email templates, etc.), replace with first name only: 
+"Adeola"
+
+Exceptions where full name is acceptable:
+- Legal pages (terms of service, privacy policy) 
+  if required
+- The research paper PDF (already published)
+- Structured data that's not visible to users
+
+Report back all locations where the name was found 
+and what was changed.
+
+---
+
+## TESTING CHECKLIST
+
+1. Blog index cards show NO author name or photo
+2. Featured post card shows NO author name or photo
+3. Individual blog post pages show "Adeola" with 
+   photo placeholder, date, and read time
+4. JSON-LD on blog posts contains author name 
+   "Adeola" with URL to /about
+5. No full name appears anywhere public-facing 
+   on the site
+6. Author name on blog posts links to /about 
+   (if implemented)

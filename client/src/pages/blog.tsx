@@ -109,12 +109,9 @@ function TagBadge({
   );
 }
 
-function AuthorByline({ date, readTime }: { date: string; readTime: string }) {
+function DateReadTime({ date, readTime }: { date: string; readTime: string }) {
   return (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-      <div className="w-6 h-6 rounded-full bg-slate-300 flex-shrink-0" />
-      <span className="text-slate-500">Adeola</span>
-      <span className="text-slate-300">·</span>
       <div className="flex items-center gap-1">
         <Calendar className="h-3.5 w-3.5" />
         {new Date(date).toLocaleDateString('en-US', {
@@ -262,7 +259,7 @@ export default function BlogPage() {
                   <p className="text-muted-foreground mb-4 text-lg line-clamp-3">
                     {featuredPost.excerpt}
                   </p>
-                  <AuthorByline date={featuredPost.publishDate} readTime={featuredPost.readTime} />
+                  <DateReadTime date={featuredPost.publishDate} readTime={featuredPost.readTime} />
                   <div className="mt-4">
                     <Button className="w-fit pointer-events-none" data-testid={`button-read-featured-${featuredPost.slug}`}>
                       Read the Full Story
@@ -308,7 +305,7 @@ export default function BlogPage() {
                   <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-grow">
                     {post.excerpt}
                   </p>
-                  <AuthorByline date={post.publishDate} readTime={post.readTime} />
+                  <DateReadTime date={post.publishDate} readTime={post.readTime} />
                 </CardContent>
               </Card>
             </Link>
