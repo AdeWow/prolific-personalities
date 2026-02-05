@@ -568,6 +568,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Check if current user has purchased playbook
+  app.get("/api/user-purchase-status", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        res.json({ hasPurchased: false });
+        return;
+      }
+
+      const token = authHeader.replace("Bearer ", "");
+      const { user, error } = await supabaseAuth.getUser(token);
+      
+      if (error || !user) {
+        res.json({ hasPurchased: false });
+        return;
+      }
+
+      const userOrders = await storage.getOrdersByUserId(user.id);
+      const hasPurchased = userOrders.some((order: { status: string }) => order.status === "completed");
+      
+      res.json({ hasPurchased });
+    } catch (error) {
+      console.error("Error checking user purchase status:", error);
+      res.json({ hasPurchased: false });
+    }
+  });
+
   // Add to mobile app waitlist
   app.post("/api/app-waitlist", emailLimiter, async (req, res) => {
     try {
@@ -3258,12 +3285,14 @@ Sitemap: ${baseUrl}/sitemap.xml
       { url: "/blog", priority: "0.8", changefreq: "weekly" },
       { url: "/archetypes", priority: "0.8", changefreq: "monthly" },
       { url: "/pricing", priority: "0.6", changefreq: "monthly" },
-      { url: "/science", priority: "0.7", changefreq: "monthly" },
+      { url: "/the-research", priority: "0.7", changefreq: "monthly" },
       { url: "/resources", priority: "0.7", changefreq: "monthly" },
       { url: "/about", priority: "0.6", changefreq: "monthly" },
       { url: "/faq", priority: "0.6", changefreq: "monthly" },
       { url: "/founder", priority: "0.5", changefreq: "yearly" },
       { url: "/refund-policy", priority: "0.3", changefreq: "yearly" },
+      { url: "/privacy", priority: "0.3", changefreq: "yearly" },
+      { url: "/terms", priority: "0.3", changefreq: "yearly" },
     ];
 
     const archetypes = [

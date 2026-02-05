@@ -1,0 +1,466 @@
+# PRICING PAGE FIXES (/pricing)
+
+## FIX 1: VALIDATE FIRST 100 CUSTOMERS TRACKING
+
+Search the codebase for how the "first 100 customers" 
+launch pricing is tracked. Check:
+
+- Is there a counter pulling from Stripe successful 
+  payments or a database table tracking purchases?
+- Is the $19 price hardcoded or does it dynamically 
+  change to $29 after 100 purchases?
+- Is there any logic that displays the count or 
+  checks against a threshold?
+
+Search terms to check:
+- "100 customers"
+- "first 100"
+- "launch price"
+- "early-bird"
+- "earlyBird"
+- "launchPrice"
+- "customer_count"
+- "purchase_count"
+
+IF tracking exists and works:
+- Add a live counter below the "Early-bird pricing 
+  for first 100 customers" text
+- Display: "X of 100 launch spots remaining"
+- Style: text-sm font-medium text-teal-700
+- Pull the count from Stripe successful payments 
+  or the database purchase count
+- This should update dynamically (not hardcoded)
+
+IF tracking does NOT exist:
+- Wire it up: query the database or Stripe for 
+  total successful playbook purchases
+- Store/cache the count so it doesn't hit Stripe 
+  on every page load
+- Add the same "X of 100 launch spots remaining" 
+  display
+- When count reaches 100, automatically:
+  * Remove the strikethrough $29 and "Launch Price" 
+    badge
+  * Change displayed price to $29
+  * Remove "Early-bird pricing for first 100 
+    customers" text
+  * Update the Stripe checkout price to $29
+
+Report back what you find about the current 
+tracking state.
+
+---
+
+## FIX 2: FIX DISCOVERY CARD DEAD SPACE
+
+The Discovery (free) card is much shorter than the 
+Complete Playbook card, leaving empty white space.
+
+Fix:
+- Make both cards the same height using flex flex-col 
+  on the card container
+- Pin the CTA button to the bottom of each card 
+  using mt-auto on the button wrapper
+- In the remaining space on the Discovery card, 
+  add a subtle upsell nudge:
+
+  <div class="mt-8 pt-6 border-t border-slate-100 
+    text-center">
+    <p class="text-sm text-slate-400">
+      Want the complete picture?
+    </p>
+    <a href="#complete-playbook" 
+      class="text-sm text-teal-600 hover:text-teal-700 
+      font-medium">
+      See Complete Playbook →
+    </a>
+  </div>
+
+  This link should smooth-scroll to the Complete 
+  Playbook card. Add id="complete-playbook" to 
+  that card.
+
+---
+
+## FIX 3: FAQ ACCORDION BEHAVIOR
+
+Convert the FAQ section from all-expanded to 
+collapsible accordion.
+
+Behavior:
+- All questions COLLAPSED by default (only question 
+  text visible)
+- Click a question to expand/collapse its answer
+- Multiple questions can be open simultaneously 
+  (independent toggles, not exclusive)
+- Smooth height animation on expand/collapse 
+  (transition-all duration-200)
+
+Style for each FAQ item:
+- Question: font-semibold text-slate-800 cursor-pointer 
+  flex justify-between items-center
+- Add a chevron icon on the right that rotates 
+  180 degrees when expanded (transition-transform 
+  duration-200)
+- Answer: text-slate-600 with pt-3 when expanded
+- Card style stays the same (bg-white rounded-xl 
+  border, etc.)
+- Hover on collapsed question: bg-slate-50
+
+---
+
+## FIX 4: STANDARDIZE /science → /the-research
+
+### 4a: Create redirect
+Add a permanent redirect (301) from /science to 
+/the-research. Anyone visiting /science should 
+automatically land on /the-research.
+
+In Next.js, add to next.config.js:
+
+async redirects() {
+  return [
+    {
+      source: '/science',
+      destination: '/the-research',
+      permanent: true,
+    },
+  ]
+}
+
+### 4b: Fix all internal links
+Search the ENTIRE codebase for any link pointing to 
+/science and change it to /the-research.
+
+Search terms:
+- "/science"
+- "href=\"/science"
+- "href='/science"
+- 'to="/science'
+- 'to="/science'
+
+This includes:
+- The FAQ on this pricing page ("Science page" link)
+- Footer links
+- Any nav references
+- Blog post internal links
+- About page links
+- Any other pages that reference the research
+
+### 4c: Fix link text
+Wherever the link TEXT says "Science page" or 
+"Science," change it to "Research page" or 
+"The Research" to match the nav label.
+
+Specifically on this pricing page FAQ:
+- Change "Learn more on our Science page." 
+  to "Learn more on our Research page."
+- Link should point to /the-research
+
+### 4d: Fix footer link text
+In the footer, change "Science" to "The Research" 
+and ensure it links to /the-research.
+
+Report all locations where /science links were 
+found and updated.
+
+---
+
+## FIX 5: UPDATE FOOTER (SITE-WIDE)
+
+This applies to the footer on ALL pages, not just 
+pricing.
+
+### 5a: Update copyright year
+Change "© 2025 Prolific Personalities" to 
+"© 2026 Prolific Personalities"
+
+Better: make it dynamic so it auto-updates:
+© {new Date().getFullYear()} Prolific Personalities. 
+All rights reserved.
+
+### 5b: Expand footer links
+Replace the current minimal footer with a more 
+complete structure:
+
+Layout: 3 or 4 columns on desktop, stacked on mobile
+
+Column 1 — "Product"
+- Take the Quiz → /quiz
+- Archetypes → /archetypes
+- Resources → /resources
+- Pricing → /pricing
+
+Column 2 — "Learn"
+- Blog → /blog
+- The Research → /the-research
+- About → /about
+
+Column 3 — "Legal"
+- Privacy Policy → /privacy (create if missing)
+- Terms of Service → /terms (create if missing)
+- Refund Policy → /refund-policy (or wherever it 
+  currently lives)
+
+Bottom row (below columns):
+- © 2026 Prolific Personalities. All rights reserved.
+- Optional: contact email (e.g., hello@
+  prolificpersonalities.com)
+
+Style:
+- Background: bg-slate-800 or bg-slate-900
+- Text: text-slate-400 for links, text-slate-300 
+  for column headers
+- Links: hover:text-white
+- Padding: py-12 px-6
+- Column headers: text-sm font-semibold text-slate-300 
+  uppercase tracking-wider mb-4
+- Links: text-sm text-slate-400
+
+If Privacy Policy or Terms of Service pages don't 
+exist yet, create placeholder pages with:
+- Title
+- "This page is being updated. Please contact 
+  hello@prolificpersonalities.com with any questions."
+- These MUST exist before launch for legal 
+  compliance
+
+---
+
+## FIX 6: ADD SOCIAL PROOF SECTION
+
+Add a trust/social proof section between the pricing 
+cards and the "Compare Plans" table.
+
+Since the platform is pre-launch without testimonials 
+yet, use research credibility as the trust signal:
+
+<div class="py-8 text-center">
+  <div class="flex flex-wrap justify-center gap-8 
+    items-center">
+    
+    <div class="text-center">
+      <p class="text-2xl font-bold text-slate-800">
+        40+
+      </p>
+      <p class="text-sm text-slate-500">
+        Peer-reviewed studies
+      </p>
+    </div>
+    
+    <div class="w-px h-10 bg-slate-200"></div>
+    
+    <div class="text-center">
+      <p class="text-2xl font-bold text-slate-800">
+        4-Axis
+      </p>
+      <p class="text-sm text-slate-500">
+        Psychological framework
+      </p>
+    </div>
+    
+    <div class="w-px h-10 bg-slate-200"></div>
+    
+    <div class="text-center">
+      <p class="text-2xl font-bold text-slate-800">
+        28
+      </p>
+      <p class="text-sm text-slate-500">
+        Research-backed questions
+      </p>
+    </div>
+    
+    <div class="w-px h-10 bg-slate-200"></div>
+    
+    <div class="text-center">
+      <p class="text-2xl font-bold text-slate-800">
+        6
+      </p>
+      <p class="text-sm text-slate-500">
+        Distinct archetypes
+      </p>
+    </div>
+    
+  </div>
+  
+  <a href="/the-research" 
+    class="inline-block mt-4 text-sm text-teal-600 
+    hover:text-teal-700">
+    See the research behind our framework →
+  </a>
+</div>
+
+Later, once you have real user data, add a SECOND 
+row below this with metrics like "X assessments 
+completed" pulled dynamically from the database. 
+For now, just the research stats.
+
+---
+
+## FIX 7: SOFTEN MOBILE APP PROMISE
+
+In the Complete Playbook feature list, change:
+"Early access to mobile app when it launches"
+→ "Priority access to new features and updates"
+
+In the Compare Plans table, change:
+"Early Mobile App Access"
+→ "Priority Feature Access"
+
+In the FAQ "Is there a mobile app coming?" answer, 
+change:
+"Yes! We're building a mobile app with AI coaching 
+features. Complete Playbook customers will get early 
+access when it launches."
+→ "We're exploring a mobile app with AI coaching 
+features. Complete Playbook customers will always 
+be first to access new features as we build them."
+
+In the "Why Upgrade?" section, change the Mobile App 
+card:
+- Title: "Mobile App" → "Always Improving"
+- Description: "Coming soon: Get coaching on-the-go 
+  with our upcoming mobile app for iOS and Android"
+  → "Your playbook evolves with the platform. Get 
+  priority access to new features, tools, and 
+  updates as we build them."
+- Icon can stay the same or change to a refresh/
+  update icon
+
+This protects you from being locked into a specific 
+deliverable timeline while still promising ongoing 
+value.
+
+---
+
+## FIX 8: CONDITIONAL STATE FOR EXISTING PURCHASERS
+
+If a logged-in user has already purchased the 
+Complete Playbook, the pricing page should reflect 
+that.
+
+Check: query the database or Stripe for whether the 
+current user has an active purchase.
+
+IF user has purchased:
+- Complete Playbook card:
+  * Replace "Get Your Playbook — $19" button with 
+    a non-clickable badge: "You own this" 
+    (bg-green-50 text-green-700 border 
+    border-green-200 rounded-xl px-6 py-3 
+    text-center font-medium)
+  * Below the badge: "Access your playbook →" link 
+    to /dashboard (or wherever the playbook is 
+    delivered)
+  * Remove the price, strikethrough, and "Launch 
+    Price" badge
+  * Keep the feature list visible so they can see 
+    what they have access to
+
+- Discovery card:
+  * Change "Start Free Assessment" button to 
+    "View Your Results" → link to /dashboard 
+    or /results
+
+IF user is logged in but has NOT purchased:
+- Show the page normally (current behavior)
+
+IF user is NOT logged in:
+- Show the page normally (current behavior)
+
+---
+
+## FIX 9: ADD FAQ STRUCTURED DATA
+
+Add FAQ schema (JSON-LD) to help these questions 
+appear directly in Google search results:
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What do I get with the Complete 
+        Playbook?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You get a 35+ page personalized 
+          guide with evidence-based strategies 
+          tailored to your archetype, implementation 
+          worksheets, a 90-day action plan, curated 
+          tool recommendations, and priority access 
+          to new features."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this based on real science?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Our framework is grounded in 
+          peer-reviewed research on executive 
+          function, motivation theory, flow states, 
+          and cognitive psychology."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if it doesn't work for me?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We offer a 30-day satisfaction 
+          guarantee. If you don't find at least 3 
+          strategies that work, we'll refund your 
+          purchase — no questions asked."
+      }
+    }
+  ]
+}
+</script>
+
+Dynamically generate this from the same data source 
+as the visible FAQ. Update the mobile app FAQ answer 
+to match the softened language from Fix 7.
+
+---
+
+## TESTING CHECKLIST
+
+1. First 100 customers: counter displays remaining 
+   spots (or report what tracking exists)
+2. Discovery card matches Complete Playbook card 
+   height
+3. Upsell nudge appears in Discovery card's extra 
+   space
+4. FAQ questions are collapsed by default
+5. FAQ expand/collapse works with smooth animation
+6. Chevron icon rotates on toggle
+7. /science redirects to /the-research (test in 
+   browser)
+8. NO remaining links to /science in entire codebase
+9. FAQ link text says "Research page" not "Science 
+   page"
+10. Footer says © 2026 (or dynamic year)
+11. Footer has 3 columns: Product, Learn, Legal
+12. Footer links all work
+13. Privacy Policy and Terms pages exist (even if 
+    placeholder)
+14. Social proof stats section appears between pricing 
+    cards and compare table
+15. "Research page" link in social proof works
+16. Mobile app language softened in: feature list, 
+    compare table, FAQ, Why Upgrade section
+17. Logged-in purchaser sees "You own this" instead 
+    of buy button
+18. Logged-in purchaser sees "Access your playbook" 
+    link
+19. Logged-in non-purchaser sees normal pricing
+20. Logged-out user sees normal pricing
+21. FAQ JSON-LD schema present in page source
+22. Validate schema at https://search.google.com/
+    test/rich-results
+23. Footer changes appear on ALL pages (not just 
+    pricing)
+24. All redirects return 301 status code

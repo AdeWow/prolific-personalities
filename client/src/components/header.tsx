@@ -112,7 +112,7 @@ export function Header() {
                 </div>
                 </div>
               </div>
-              <Link href="/science" className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" data-testid="link-research">
+              <Link href="/the-research" className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" data-testid="link-research">
                 The Research
               </Link>
               <Link href="/resources" className="text-muted-foreground hover:text-primary transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" data-testid="link-resources">
@@ -221,7 +221,7 @@ export function Header() {
                   </div>
                 </div>
               </div>
-              <Link href="/science" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" onClick={() => setMobileMenuOpen(false)} data-testid="link-research-mobile">
+              <Link href="/the-research" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" onClick={() => setMobileMenuOpen(false)} data-testid="link-research-mobile">
                 The Research
               </Link>
               <Link href="/resources" className="block text-muted-foreground hover:text-primary transition-colors py-2 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" onClick={() => setMobileMenuOpen(false)} data-testid="link-resources-mobile">

@@ -31,6 +31,8 @@ import Playbook from "@/pages/playbook";
 import Feedback from "@/pages/feedback";
 import RefundPolicy from "@/pages/refund-policy";
 import Unsubscribe from "@/pages/unsubscribe";
+import Privacy from "@/pages/privacy";
+import Terms from "@/pages/terms";
 import DevTools from "@/pages/dev-tools";
 import AdminTestFlows from "@/pages/admin-test-flows";
 import Login from "@/pages/login";
@@ -62,6 +64,9 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/feedback" component={Feedback} />
       <Route path="/science" component={Science} />
+      <Route path="/the-research" component={Science} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       <Route path="/archetypes/:slug" component={ArchetypeDetail} />
       <Route path="/archetypes" component={Archetypes} />
       <Route path="/resources" component={Resources} />

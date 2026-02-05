@@ -88,7 +88,7 @@ export default function Home() {
                   <ChevronRight className="ml-2 h-5 w-5" aria-hidden="true" />
                 </Button>
               </Link>
-              <Link href="/science">
+              <Link href="/the-research">
                 <Button 
                   variant="outline"
                   className="px-8 py-6 rounded-xl font-semibold text-lg"
@@ -279,7 +279,7 @@ export default function Home() {
                 <ul className="space-y-3 text-gray-400 text-base">
                   <li><Link href="/quiz" className="hover:text-white transition-colors">Take Quiz</Link></li>
                   <li><Link href="/archetypes" className="hover:text-white transition-colors">Archetypes</Link></li>
-                  <li><Link href="/science" className="hover:text-white transition-colors">Research</Link></li>
+                  <li><Link href="/the-research" className="hover:text-white transition-colors">Research</Link></li>
                 </ul>
               </div>
               
@@ -303,7 +303,7 @@ export default function Home() {
             </div>
             
             <div className="border-t border-white/20 pt-8 mt-12 text-center text-gray-400 text-base">
-              <p>© 2024 Prolific Personalities. All rights reserved.</p>
+              <p>© {new Date().getFullYear()} Prolific Personalities. All rights reserved.</p>
             </div>
           </div>
         </footer>
