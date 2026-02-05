@@ -1,0 +1,281 @@
+You are Replit’s AI pair-programmer working inside an existing repo named:
+
+Dirtzi - Mobile Laundry Pickup & Delivery Service
+
+DO NOT refactor the stack. Keep it exactly as-is:
+- Frontend: React 18 + TypeScript + Vite + Wouter routing + TanStack React Query + Tailwind + shadcn/ui + Framer Motion
+- Backend: Node + Express + TypeScript (tsx dev) + REST API
+- DB: Postgres (Neon) + Drizzle ORM + drizzle-zod (schemas in /shared/schema.ts)
+- Auth: Replit Auth (OIDC), sessions stored in Postgres
+- Existing features MUST remain working: 4-step order flow, accounts, admin capacity/pricing, courier view, real-time order tracking.
+- Payments are wired for Stripe but keys not yet added (keep “dev safe”).
+- Notifications planned: Twilio + Resend (keys pending).
+
+GOAL:
+Incorporate the “best parts” of the existing Dirtzi marketing site into our web app (NOT copying code/design 1:1), while maintaining all features we’ve built. We are upgrading from a product-only app to an integrated marketing + product experience.
+
+CRITICAL DESIGN REQUIREMENT:
+DO NOT change the existing brand theme. Keep the current blue theme exactly as-is:
+- Primary: #1565C0
+- Accent: #4FC3F7
+Do not replace tokens or recolor components. New UI must reuse existing theme styles.
+
+========================================================
+1) WHAT TO BUILD (FEATURES TO ADD)
+========================================================
+
+A) Marketing Landing Page (Sections + Nav)
+Update the homepage to be a marketing-style landing page that also drives ordering, with:
+- Top nav: For Who | Features | How It Works | FAQ | Join Waitlist (CTA button)
+- Sections (scroll/anchor based is fine):
+  1) Hero
+     - H1: “Laundry pickup & delivery across the DMV.”
+     - Supporting text: Dirtzi connects customers with cleaners and drivers for seamless pickup/delivery.
+     - Buttons:
+       - Primary: “Start an Order” (goes to existing order flow route)
+       - Secondary: “Join Waitlist” (scroll or /waitlist)
+  2) “A Platform for Everyone” (role tabs)
+     - Tabs: Customers | Cleaners | Drivers
+     - Each tab shows a short paragraph + bullet list (do NOT overpromise; mark not-live as “Coming soon”):
+       - Customers: schedule pickup, transparent pricing, tracking, secure payments, support
+       - Cleaners: job dashboard, inventory intake, availability, earnings, customer comms, real-time updates
+       - Drivers: route-optimized pickups/deliveries, flexible schedule, earnings, proof of delivery
+  3) “Platform Features” (card grid)
+     - Secure Authentication
+     - Intuitive Mobile App
+     - Real-time Tracking
+     - Seamless Payments
+     - In-app Communication
+     - Earnings Management
+     Each card should be honest: if not fully built, label “Planned” or “Coming soon”.
+  4) “How Dirtzi Works” (4-step timeline)
+     - 1 Customer books service
+     - 2 Driver picks up
+     - 3 Cleaner processes
+     - 4 Driver delivers
+  5) FAQ (accordion)
+  6) Final CTA banner: “Join the Waitlist” with embedded email field
+
+Implementation details:
+- Use Wouter routes and also support anchor links with smooth scrolling.
+- Add active nav highlighting based on scroll position (simple IntersectionObserver).
+
+B) Waitlist System (REAL DB + Admin + CSV export)
+Create a real waitlist feature (not just UI):
+- Public: /waitlist page (also accessible as modal or section CTA)
+- Fields:
+  - Email (required)
+  - Phone (optional)
+  - ZIP (optional but encouraged)
+  - “I’m interested as” roleInterest: Customer | Cleaner | Driver (default Customer)
+  - Referral code (optional)
+  - Consent checkbox (required)
+- Behavior:
+  - Validate with zod (shared schema).
+  - Store in Postgres via Drizzle.
+  - Show success screen (/waitlist/success) after submission.
+  - De-dupe by email (if email exists, update roleInterest/zip/phone, preserve earliest createdAt).
+- Admin:
+  - New admin page: /admin/waitlist
+  - Table with: email, roleInterest, zip, createdAt, contactedAt, verifiedAt (if enabled)
+  - Filters: roleInterest, date range, “contacted/uncontacted”, ZIP
+  - Actions: “Mark contacted”, “Download CSV”
+- Optional “Double opt-in” (feature flag):
+  - Add verifiedAt field, send verification email if ENABLE_WAITLIST_DOUBLE_OPTIN=true
+  - Since Resend keys are pending, implement the email sender abstraction with:
+    - Console logger provider by default
+    - Resend provider behind env flags
+
+C) FAQ (Use these entries; adapt to DMV)
+Create an FAQ section (accordion) and also allow /faq route that reuses the same component.
+
+Include the following FAQs (rewrite lightly for brevity but preserve meaning; keep professional tone and clarity):
+1) When will Dirtzi be available?
+   - Adapt messaging: “We’re expanding across the DMV first. Join the waitlist to be notified when we reach your ZIP.”
+2) How do I become a cleaner on Dirtzi?
+3) Can I work as a driver on Dirtzi?
+4) What laundry services will be available?
+5) How are payments handled?
+   - Be honest: Stripe cards are planned/primary; other methods may be “planned” and vary by location.
+6) Is there a minimum order amount?
+   - Mention minimum thresholds vary by location/service type.
+   - Mention subscriptions planned to waive minimums (coming soon).
+
+D) Roles: Add Cleaner + Driver (Foundation + Stubs)
+We already have roles customer/courier/admin. Add CLEANER and DRIVER roles without breaking existing logic:
+- Keep courier view working. You may alias DRIVER to COURIER internally if needed, but expose “Driver” in UI.
+- Onboarding:
+  - After first login, if user has no role, prompt them to pick: Customer / Cleaner / Driver.
+  - Save to DB.
+- Create stub dashboards:
+  - /cleaner dashboard:
+    - “Complete your profile” checklist
+    - Service area ZIP selection (for now: simple multi-select of demonstrate ZIPs or ZIP prefixes)
+    - Availability placeholder (coming soon)
+    - Verification placeholder (coming soon)
+  - /driver dashboard:
+    - Link to existing /courier view for tasks
+    - Earnings tab (if wallet scaffolding is done)
+    - Verification placeholder
+
+E) Earnings / Wallet (Scaffold, Safe Stub)
+Introduce a Dirtzi Wallet concept for Cleaner and Driver:
+- DB tables:
+  - wallets (userId unique, balance, currency)
+  - wallet_transactions (walletId, type, amount, status, meta JSON, createdAt)
+  - payout_requests (walletId, amount, status, schedule, createdAt)
+- UI:
+  - /driver/earnings and /cleaner/earnings
+  - Show balance + transaction list
+  - “Withdraw” button opens modal; creates a payout_request (status=pending) (no real payout yet)
+- Admin:
+  - /admin/wallets view to inspect wallets and payout requests
+- Keep this safe and clearly labeled as “beta” / “mock payouts” until real payout rails exist.
+
+F) Payment Methods Architecture (Providers + Feature Flags)
+Stripe is integrated but keys pending. Keep existing Stripe checkout flow intact.
+Add a provider architecture to support multiple methods WITHOUT implementing them fully:
+- Stripe (active)
+- PayPal (stub)
+- Digital wallet (stub)
+- Bank transfer (stub)
+- USSD (stub)
+Checkout should display only enabled methods:
+- Env flags: ENABLE_STRIPE=true, ENABLE_PAYPAL=false, etc.
+- Copy should say “Available methods vary by location.”
+
+G) Minimum Order Rules (Configurable + Enforced)
+Add minimum order logic as real rules:
+- DB: minimum_order_rules table
+  - serviceType (wash_fold, dry_cleaning, specialty, etc.)
+  - locationScope (zip OR zipPrefix OR “DMV_DEFAULT”)
+  - minLbs nullable
+  - minItems nullable
+- Admin UI: /admin/settings/minimum-orders
+  - Create/update rules
+- Enforce in the existing 4-step order flow:
+  - Wash & Fold: validate minLbs against bag input (if you track bags only, infer lbs per bag via configurable constant; document assumption)
+  - Dry Cleaning: validate minItems
+  - Specialty: validate item minimum if applicable
+- Clear error messages inline, not blocking UX unnecessarily.
+
+========================================================
+2) ROUTES / INFORMATION ARCHITECTURE (ADD, DON’T BREAK)
+========================================================
+Keep existing app routes. Add these routes:
+- / (marketing-first landing that can also route into ordering)
+- /waitlist, /waitlist/success
+- /faq (dedicated page; landing also has FAQ section)
+- /plans (coming soon)
+- /cleaner (dashboard)
+- /driver (dashboard; may link to /courier)
+- /admin/waitlist (new)
+- /admin/settings/minimum-orders (new)
+- /admin/settings/payment-methods (optional, simple feature flags UI)
+- /admin/wallets (optional)
+
+If the landing page is scroll-section based, implement anchors:
+- /#for-who
+- /#features
+- /#how-it-works
+- /#faq
+
+========================================================
+3) API ENDPOINTS TO ADD (REST)
+========================================================
+Waitlist:
+- POST /api/waitlist (create/update)
+- GET /api/admin/waitlist (admin-only, supports filters)
+- POST /api/admin/waitlist/:id/contacted (admin-only)
+- GET /api/admin/waitlist.csv (admin-only, returns CSV)
+
+Roles:
+- POST /api/me/role (set role after onboarding)
+- GET /api/me (ensure it returns role)
+
+Wallet:
+- GET /api/me/wallet
+- POST /api/me/payout-requests
+- GET /api/admin/wallets
+- GET /api/admin/payout-requests
+
+Minimum order rules:
+- GET /api/minimum-order-rules (public, for validation)
+- GET/POST/PUT /api/admin/minimum-order-rules (admin-only)
+
+Payment method config (optional):
+- GET /api/payment-methods (public config for checkout display)
+- GET/PUT /api/admin/payment-methods (admin-only)
+
+========================================================
+4) DATABASE / DRIZZLE SCHEMA UPDATES
+========================================================
+Update shared/schema.ts (Drizzle) safely and generate migrations:
+- waitlist_entries:
+  - id (uuid)
+  - email (unique)
+  - phone (nullable)
+  - zip (nullable)
+  - roleInterest (enum: customer|cleaner|driver)
+  - referralCode (nullable)
+  - consent (boolean)
+  - verifiedAt (nullable)
+  - contactedAt (nullable)
+  - createdAt, updatedAt
+- users: extend role enum to include cleaner/driver while preserving existing roles and logic
+- wallets / wallet_transactions / payout_requests
+- minimum_order_rules
+
+Seed updates:
+- Add sample waitlist entries
+- Add default minimum order rules
+- Ensure admin user exists (if your repo already seeds admin, reuse)
+
+========================================================
+5) UI IMPLEMENTATION NOTES (USE EXISTING THEME)
+========================================================
+- Build new sections using shadcn/ui components (Card, Tabs, Accordion, Button).
+- Use Framer Motion sparingly for section entrance transitions.
+- Keep typography consistent with the existing app.
+- Ensure “Start an Order” CTA always visible above the fold (mobile and desktop).
+
+========================================================
+6) TESTS / ACCEPTANCE
+========================================================
+Add Playwright (or extend existing tests) to cover:
+1) Landing page renders and nav anchors scroll
+2) Waitlist submission persists and shows success
+3) Admin waitlist list + CSV export works
+4) Minimum order validation triggers properly
+5) Existing order flow still works (use Stripe mocked mode if keys missing)
+
+========================================================
+7) IMPLEMENTATION ORDER
+========================================================
+1) Marketing landing sections + anchor nav (NO theme changes)
+2) Waitlist DB + API + UI + admin + CSV
+3) FAQ component + /faq route + landing section
+4) Role selection onboarding + cleaner/driver stub dashboards
+5) Minimum order rules DB + admin UI + enforcement in order flow
+6) Wallet scaffolding + earnings pages + admin views
+7) Payment provider abstraction + stubs behind feature flags
+8) Tests + README updates
+
+========================================================
+8) REQUIRED OUTPUTS
+========================================================
+- Working app in Replit with no broken existing features
+- Updated README:
+  - New routes
+  - Env vars and feature flags
+  - How to run migrations/seeds
+  - Admin access details
+  - Assumptions (e.g., lbs-per-bag)
+- Keep code organized:
+  - client/src/components/marketing/*
+  - client/src/components/faq/*
+  - client/src/pages/waitlist*, faq, cleaner, driver
+  - server/waitlist*, server/wallet*, server/minimumOrders*
+  - shared/schema.ts updated cleanly
+
+Start implementing now. Make reasonable assumptions, keep code clean, and document compromises. Do not ask questions unless absolutely necessary—prefer an assumption with documentation.
