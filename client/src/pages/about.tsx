@@ -86,6 +86,38 @@ export default function About() {
 
         <div className="border-t border-slate-200 my-8" />
 
+        {/* Section 3b: Meet the Team */}
+        <section className="py-12 md:py-16 bg-white dark:bg-card/50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-start">
+              <div className="md:col-span-2 flex justify-center md:justify-start">
+                <img 
+                  src="/images/stephen-headshot.jpg"
+                  alt="Stephen, Head of Growth at Prolific Personalities"
+                  className="w-full max-w-[280px] md:max-w-[400px] object-cover object-top rounded-xl shadow-md"
+                />
+              </div>
+              
+              <div className="md:col-span-3 border-l-2 border-teal-500 pl-6">
+                <h2 className="text-xl font-bold text-foreground mb-6">Meet the Team</h2>
+                <div className="space-y-4 text-muted-foreground leading-relaxed">
+                  <p>
+                    I've spent the last decade helping digital products reach the people who actually need them — without relying on hype or growth hacks that burn out users. When Adeola showed me the research behind Prolific Personalities, I realized why so many productivity tools fail: they're built for an imaginary "average" person who doesn't exist.
+                  </p>
+                  <p>
+                    My job is simple: make sure this platform reaches the people who've been trying system after system, wondering why nothing sticks. The answer isn't more willpower. It's better fit.
+                  </p>
+                </div>
+                <p className="text-slate-500 font-medium mt-6">
+                  — Stephen, Head of Growth
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="border-t border-slate-200 my-8" />
+
         {/* Section 4: What Makes Us Different */}
         <section className="py-12 md:py-16">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
