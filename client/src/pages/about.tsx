@@ -49,7 +49,7 @@ export default function About() {
         {/* Section 3: Meet the Founder */}
         <section className="py-12 md:py-16 bg-white dark:bg-card/50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-start">
+            <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-center">
               {/* Photo Column (40%) */}
               <div className="md:col-span-2 flex justify-center md:justify-start">
                 <img 
