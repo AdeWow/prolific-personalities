@@ -32,7 +32,6 @@ export function PDFPreview({
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    // For public PDFs, use the src directly without fetching
     if (isPublic) {
       setBlobUrl(src);
       return;
@@ -110,24 +109,25 @@ export function PDFPreview({
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
+      <CardHeader className="pb-3 px-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg shrink-0">
               <FileText className="h-5 w-5 text-red-600 dark:text-red-400" />
             </div>
-            <div>
-              <CardTitle className="text-lg">{title}</CardTitle>
+            <div className="min-w-0">
+              <CardTitle className="text-base md:text-lg leading-snug">{title}</CardTitle>
               <p className="text-sm text-gray-500 dark:text-gray-400">PDF Document</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
             {showDownloadButton && blobUrl && (
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={handleDownload}
                 data-testid="button-pdf-download"
+                className="whitespace-nowrap"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Download
@@ -139,6 +139,7 @@ export function PDFPreview({
                 size="sm" 
                 onClick={handleOpenInNewTab}
                 data-testid="button-pdf-fullscreen"
+                className="whitespace-nowrap"
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Full Screen
@@ -179,16 +180,48 @@ export function PDFPreview({
               </p>
             </div>
           ) : (
-            <div className="border-t">
-              <iframe
-                src={`${blobUrl}#toolbar=1&navpanes=1&scrollbar=1`}
-                className="w-full"
-                style={{ height }}
-                title={title}
-                onError={() => setHasError(true)}
-                data-testid="pdf-iframe"
-              />
-            </div>
+            <>
+              {/* Mobile: clean card with action buttons, no embed */}
+              <div className="block md:hidden border-t">
+                <div className="flex flex-col items-center justify-center p-8 bg-gray-50 dark:bg-gray-800">
+                  <FileText className="h-16 w-16 text-red-500/60 mb-4" />
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 text-center">
+                    Tap below to download or view the full research paper.
+                  </p>
+                  <div className="flex gap-3 w-full max-w-xs">
+                    <Button
+                      onClick={handleDownload}
+                      className="flex-1 gap-2"
+                      data-testid="button-pdf-download-mobile"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download PDF
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleOpenInNewTab}
+                      className="flex-1 gap-2"
+                      data-testid="button-pdf-view-mobile"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      View Full Paper
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop: PDF iframe embed */}
+              <div className="hidden md:block border-t">
+                <iframe
+                  src={`${blobUrl}#toolbar=1&navpanes=1&scrollbar=1`}
+                  className="w-full"
+                  style={{ height }}
+                  title={title}
+                  onError={() => setHasError(true)}
+                  data-testid="pdf-iframe"
+                />
+              </div>
+            </>
           )}
         </CardContent>
       )}
