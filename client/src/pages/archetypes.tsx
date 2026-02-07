@@ -140,31 +140,31 @@ export default function Archetypes() {
           </div>
         </section>
 
-        <section className="py-12 bg-gradient-to-br from-teal-50 to-cyan-50">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-teal-100">
-              <div className="w-20 h-20 mx-auto mb-4 rounded-xl overflow-hidden">
-                <img 
-                  src={adaptiveGeneralistImage} 
-                  alt="The Adaptive Generalist"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="text-2xl font-bold text-neutral-800 mb-3">
-                What if you're a blend?
-              </h3>
-              <p className="text-neutral-600 mb-6 leading-relaxed">
-                Some people score balanced across multiple axes. If that's you, 
-                you're an <strong>Adaptive Generalist</strong>—someone who shifts 
-                approaches based on context. That's not a flaw. It's a different 
-                kind of productivity superpower.
-              </p>
-              <Link href="/archetypes/adaptive-generalist">
-                <Button variant="outline" className="border-teal-300 text-teal-700 hover:bg-teal-50">
+        <section className="py-12 px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <Link href="/archetypes/adaptive-generalist" className="group block">
+              <div className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200 hover:border-slate-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-xl overflow-hidden">
+                  <img 
+                    src={adaptiveGeneralistImage} 
+                    alt="The Adaptive Generalist"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                  />
+                </div>
+                <h3 className="text-2xl font-bold text-neutral-800 mb-3">
+                  What if you're a blend?
+                </h3>
+                <p className="text-neutral-600 mb-6 leading-relaxed">
+                  Some people score balanced across multiple axes. If that's you, 
+                  you're an <strong>Adaptive Generalist</strong>—someone who shifts 
+                  approaches based on context. That's not a flaw. It's a different 
+                  kind of productivity superpower.
+                </p>
+                <span className="text-sm text-gray-400 group-hover:text-gray-600 transition-colors">
                   Learn more about Adaptive Generalists →
-                </Button>
-              </Link>
-            </div>
+                </span>
+              </div>
+            </Link>
           </div>
         </section>
 
