@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
-import { ExternalLink, Sparkles, Target, Brain, Zap, Compass, Lightbulb } from "lucide-react";
+import { ExternalLink, Sparkles, Target, Brain, Zap, Compass, Lightbulb, Shuffle } from "lucide-react";
+import { ArchetypeIcon } from "@/components/archetype-icon";
 import { useAuth } from "@/hooks/useAuth";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { 
@@ -137,6 +138,7 @@ export default function Resources() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { session } = useAuthContext();
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [activeTab, setActiveTab] = useState("by-archetype");
   
   const authFetch = useCallback(async (url: string) => {
     const headers: Record<string, string> = {};
@@ -291,7 +293,7 @@ export default function Resources() {
 
       <section className="pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Tabs defaultValue="by-archetype" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
               <TabsTrigger value="by-archetype" data-testid="tab-by-archetype">By Archetype</TabsTrigger>
               <TabsTrigger value="all-tools" data-testid="tab-all-tools">All Tools</TabsTrigger>
@@ -348,6 +350,37 @@ export default function Resources() {
                     </Card>
                   );
                 })}
+              </div>
+
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100 p-8 mt-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <ArchetypeIcon archetype="adaptive-generalist" size="md" />
+                  <h3 className="text-xl font-bold text-neutral-800">Adaptive Generalist</h3>
+                </div>
+                
+                <p className="text-sm font-semibold text-indigo-600 mb-3">Your Approach: Context-Dependent</p>
+                
+                <p className="text-neutral-600 mb-4">
+                  Your toolkit changes based on what you're working on. Browse tools from the archetypes that match your current project:
+                </p>
+                
+                <ul className="text-neutral-600 text-sm space-y-2 mb-6">
+                  <li><strong>Creative work?</strong> → Check Chaotic Creative tools</li>
+                  <li><strong>Need accountability?</strong> → Check Structured Achiever tools</li>
+                  <li><strong>Deep planning?</strong> → Check Strategic Planner tools</li>
+                </ul>
+                
+                <p className="text-neutral-600 text-sm mb-4">
+                  Or explore all tools and build your own flexible stack.
+                </p>
+                
+                <Button 
+                  variant="outline" 
+                  className="border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+                  onClick={() => setActiveTab('all-tools')}
+                >
+                  View All Tools →
+                </Button>
               </div>
 
               <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10 border-primary/20 shadow-lg mt-12">
