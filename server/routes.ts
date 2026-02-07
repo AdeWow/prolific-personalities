@@ -162,16 +162,25 @@ export function registerWebhookRoute(app: Express) {
             // Mirror premium status to Supabase for mobile app
             if (customerEmail) {
               try {
-                const { data: users } = await supabaseAdmin.auth.admin.listUsers();
-                const supabaseUser = users?.users?.find((u: any) => u.email === customerEmail);
+                let supabaseUserId: string | null = null;
+                try {
+                  const { data } = await supabaseAdmin.auth.admin.listUsers({ filter: `email.eq.${customerEmail}`, perPage: 1, page: 1 } as any);
+                  if (data?.users?.length) {
+                    supabaseUserId = data.users[0].id;
+                  }
+                } catch {
+                  // Supabase user lookup failed - continue without user_id
+                }
 
+                const isSubscription = session.mode === "subscription";
                 const { error: supabaseError } = await supabaseAdmin
                   .from('premium_users')
                   .upsert({
-                    user_id: supabaseUser?.id || null,
+                    user_id: supabaseUserId,
                     email: customerEmail,
                     source: 'stripe',
-                    stripe_payment_intent: session.payment_intent as string,
+                    stripe_payment_intent: isSubscription ? null : (session.payment_intent as string),
+                    stripe_subscription_id: isSubscription ? (session.subscription as string) : null,
                     purchased_at: new Date().toISOString(),
                   }, {
                     onConflict: 'email',
