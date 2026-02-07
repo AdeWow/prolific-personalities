@@ -6,6 +6,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
+export const supabaseAdmin = supabase;
+
 export const supabaseAuth: RequestHandler = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 

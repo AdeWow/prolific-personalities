@@ -1,4 +1,4 @@
-import { supabaseAuth } from "./supabaseAuth";
+import { supabaseAuth, supabaseAdmin } from "./supabaseAuth";
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -156,6 +156,34 @@ export function registerWebhookRoute(app: Express) {
                 );
               } catch (err) {
                 console.error("Failed to mark email capture purchased:", err);
+              }
+            }
+
+            // Mirror premium status to Supabase for mobile app
+            if (customerEmail) {
+              try {
+                const { data: users } = await supabaseAdmin.auth.admin.listUsers();
+                const supabaseUser = users?.users?.find((u: any) => u.email === customerEmail);
+
+                const { error: supabaseError } = await supabaseAdmin
+                  .from('premium_users')
+                  .upsert({
+                    user_id: supabaseUser?.id || null,
+                    email: customerEmail,
+                    source: 'stripe',
+                    stripe_payment_intent: session.payment_intent as string,
+                    purchased_at: new Date().toISOString(),
+                  }, {
+                    onConflict: 'email',
+                  });
+
+                if (supabaseError) {
+                  console.error('[Stripe Webhook] Failed to mirror to Supabase:', supabaseError);
+                } else {
+                  console.log('[Stripe Webhook] Premium status mirrored to Supabase for:', customerEmail);
+                }
+              } catch (supabaseErr) {
+                console.error('[Stripe Webhook] Supabase mirror error:', supabaseErr);
               }
             }
 
