@@ -305,15 +305,7 @@ Yesterday was my most productive day this week. But if I did that every day, I'd
 
 Use body doubling as a tool, not a crutch. And always, always build in breaks - even when your brain says it doesn't need them.
 
-Trust me on this one. My fried brain learned the hard way.
-
----
-
-**Related posts:**
-
-- [I Need Constant Stimulation to Work: ADHD or Just My Productivity Style?](/blog/constant-stimulation-adhd-or-productivity-style)
-- [Why You Feel Guilty About Resting (And How to Stop)](/blog/why-you-feel-guilty-about-resting)
-- [Chaotic Creatives: Why Your Brain Isn't Broken](/blog/chaotic-creative-brain-isnt-broken)`
+Trust me on this one. My fried brain learned the hard way.`
   },
   {
     id: "25",
@@ -1185,12 +1177,6 @@ You don't need to earn rest. You need to allow it.
 And you can start right now.
 
 ---
-
-**Related posts:**
-
-- [When Productivity Hurts: The Real Weight of Guilt](/blog/when-productivity-hurts-real-weight-of-guilt)
-- [Confessions of an Imperfect Founder](/blog/confessions-imperfect-founder-procrastinated-anti-procrastination)
-- [Why Every Productivity System Has Failed You](/blog/why-productivity-advice-keeps-failing-you)
 
 `
   },
