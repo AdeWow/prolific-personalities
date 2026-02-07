@@ -6,7 +6,7 @@ import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { archetypes } from "@/data/archetypes";
 import { ArrowRight, ChevronRight } from "lucide-react";
-import { ArchetypeIcon } from "@/components/archetype-icon";
+
 
 const validSlugs = [
   'structured-achiever',
@@ -23,6 +23,7 @@ import strategicPlannerImage from "@assets/ae5e43be-19bd-4df2-b053-48732a922fc6_
 import structuredAchieverImage from "@assets/e3fac029-7f4f-4a16-a237-d141ea58b5d6_1762297404337.png";
 import flexibleImproviserImage from "@assets/84c5e71b-0e9d-4158-b8a2-ea2b5f1f0abd_1762297453206.png";
 import noveltySeekerImage from "@assets/56861868-15df-4eb4-a0ae-f1629437f82e_1762297512686.png";
+import adaptiveGeneralistImage from "@assets/d9e893a7-c0ec-4b6f-92b2-d9222bdeafbc_1765447835628.png";
 
 const archetypeImages: Record<string, string> = {
   'structured-achiever': structuredAchieverImage,
@@ -142,7 +143,13 @@ export default function Archetypes() {
         <section className="py-12 bg-gradient-to-br from-teal-50 to-cyan-50">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="bg-white rounded-2xl shadow-lg p-8 border border-teal-100">
-              <div className="mb-4"><ArchetypeIcon archetype="adaptive-generalist" size="xl" /></div>
+              <div className="w-20 h-20 mx-auto mb-4 rounded-xl overflow-hidden">
+                <img 
+                  src={adaptiveGeneralistImage} 
+                  alt="The Adaptive Generalist"
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <h3 className="text-2xl font-bold text-neutral-800 mb-3">
                 What if you're a blend?
               </h3>
