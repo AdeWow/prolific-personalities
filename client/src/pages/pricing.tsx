@@ -129,7 +129,7 @@ function SocialProofSection() {
         <div className="w-px h-10 bg-slate-200 hidden sm:block" />
         
         <div className="text-center">
-          <p className="text-2xl font-bold text-slate-800">6</p>
+          <p className="text-2xl font-bold text-slate-800">7</p>
           <p className="text-sm text-slate-500">Distinct archetypes</p>
         </div>
       </div>
