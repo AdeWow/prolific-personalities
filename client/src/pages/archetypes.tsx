@@ -6,6 +6,7 @@ import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { archetypes } from "@/data/archetypes";
 import { ArrowRight, ChevronRight } from "lucide-react";
+import { ArchetypeIcon } from "@/components/archetype-icon";
 
 const validSlugs = [
   'structured-achiever',
@@ -145,7 +146,7 @@ export default function Archetypes() {
         <section className="py-12 bg-gradient-to-br from-teal-50 to-cyan-50">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="bg-white rounded-2xl shadow-lg p-8 border border-teal-100">
-              <div className="text-4xl mb-4">🔄</div>
+              <div className="mb-4"><ArchetypeIcon archetype="adaptive-generalist" size="xl" /></div>
               <h3 className="text-2xl font-bold text-neutral-800 mb-3">
                 What if you're a blend?
               </h3>
