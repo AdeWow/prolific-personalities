@@ -7052,7 +7052,7 @@ Each of us operates with a unique blend of structure preference, motivation styl
 
 At Prolific Personalities, we've identified distinct Productivity Archetypes, each rooted in cognitive science and motivational psychology. Here's what makes each one tick — and how to actually thrive in your natural rhythm.
 
-## 🌪️ 1. The Chaotic Creative
+## 1. The Chaotic Creative
 
 **Core Traits:** Burst-driven • Spontaneous • Idea-rich • Struggles with executive function
 
@@ -7067,7 +7067,7 @@ You work in explosive bursts of creativity—4 hours of brilliant productivity f
 
 **Try This:** Use burst containment strategies—the 4-hour maximum rule to prevent crashes, momentum maps to pick up where you left off, and voice capture for fleeting ideas. Ship projects at 70% instead of waiting for "done." Use tools like Forest (burst timers), Sunsama (gentle daily planning), and Notion with minimal friction.
 
-## 🎯 2. The Anxious Perfectionist
+## 2. The Anxious Perfectionist
 
 **Core Traits:** Detail-obsessed • Self-critical • Procrastinates through research • Fear-driven
 
@@ -7082,7 +7082,7 @@ You know exactly what needs to be done, but nothing feels good enough. You've re
 
 **Try This:** Implement the Shipwright System—define "80% done" criteria BEFORE starting, limit yourself to 3 revisions maximum, and use Pomodoro timers to create artificial endings. Share work-in-progress publicly to break the perfection spell. Use "done lists" to celebrate shipped work, not endless to-do lists.
 
-## ✓ 3. The Structured Achiever
+## 3. The Structured Achiever
 
 **Core Traits:** Systems-oriented • Optimization-focused • Goal-driven • Reliable
 
@@ -7097,7 +7097,7 @@ You LOVE a good system. Your calendar is color-coded, your Notion workspace is a
 
 **Try This:** Use the Daily Top 3 rule—only three tasks actually matter today, and systems serve those three. Implement the 2-minute rule for system tweaks (if it takes longer, you're procrastinating). Schedule weekly reviews ONLY—no daily tinkering. Build in chaos protocols to practice flexibility when systems break.
 
-## 🎨 4. The Novelty Seeker
+## 4. The Novelty Seeker
 
 **Core Traits:** Curious • Fast learner • Gets bored easily • Juggler of interests
 
@@ -7112,7 +7112,7 @@ You learn fast and get bored faster. New projects are thrilling! Old projects be
 
 **Try This:** Implement the Rotation Protocol—limit yourself to 2 active projects maximum, rotate between them weekly (not on whim), and use visual progress tracking to see how close you are to finishing. Gamify routine tasks with Habitica. Create "someday/maybe" lists for the other 8 ideas calling to you.
 
-## 🗺️ 5. The Strategic Planner
+## 5. The Strategic Planner
 
 **Core Traits:** Big picture thinker • Analytical • Visionary • Execution-avoidant
 
@@ -7127,7 +7127,7 @@ You excel at strategic thinking and can see patterns others miss. You love creat
 
 **Try This:** Use the Strategy Sprint method—time-box planning to 20% of total time (the 80/20 rule), then MUST start execution. Create if-then bridges: "If I finish planning X, then I immediately start Y." Use planning poker to estimate planning time, and when the timer ends, you execute. Track your planning-vs-doing ratio with RescueTime.
 
-## 🌊 6. The Flexible Improviser
+## 6. The Flexible Improviser
 
 **Core Traits:** Energy-sensitive • Spontaneous • Present-focused • Rhythm-dependent
 
@@ -7142,7 +7142,7 @@ Your energy and motivation fluctuate daily in predictable but variable rhythms. 
 
 **Try This:** Implement the Energy Sprint System—map your energy patterns for 2 weeks to find your windows, create task tiers that match difficulty to energy levels (deep work = high energy, admin = low energy), and build guilt-free rest into valleys. Create motivation menus listing what you can do at each energy level.
 
-## 🧩 Why This Matters
+## Why This Matters
 
 Productivity isn't about becoming a different person—it's about working with who you already are. Each archetype reflects real cognitive and motivational patterns validated by research in executive function theory (Barkley, 2012), self-determination theory (Deci & Ryan, 1985), and cognitive psychology.
 
