@@ -355,7 +355,7 @@ export default function Resources() {
                   <h3 className="text-xl font-bold text-neutral-800">Adaptive Generalist</h3>
                 </div>
                 
-                <p className="text-sm font-semibold text-indigo-600 mb-3">Your Approach: Context-Dependent</p>
+                <p className="text-sm font-semibold text-primary mb-3">Your Approach: Context-Dependent</p>
                 
                 <p className="text-neutral-600 mb-4">
                   Your toolkit changes based on what you're working on. Browse tools from the archetypes that match your current project:
@@ -373,7 +373,7 @@ export default function Resources() {
                 
                 <Button 
                   variant="outline" 
-                  className="border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+                  className="border-primary/30 text-primary hover:bg-primary/5"
                   onClick={() => setActiveTab('all-tools')}
                 >
                   View All Tools →
