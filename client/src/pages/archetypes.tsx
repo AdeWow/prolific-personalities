@@ -37,32 +37,32 @@ const archetypeCards = [
   {
     slug: 'structured-achiever',
     name: 'The Structured Achiever',
-    tagline: 'You thrive on goals and accountability.',
+    tagline: 'You turn goals into results.',
   },
   {
     slug: 'chaotic-creative',
     name: 'The Chaotic Creative',
-    tagline: 'You create your own path.',
+    tagline: 'You thrive in beautiful disorder.',
   },
   {
     slug: 'anxious-perfectionist',
     name: 'The Anxious Perfectionist',
-    tagline: 'You hold yourself to high standards.',
+    tagline: 'Your high standards are a superpower.',
   },
   {
     slug: 'novelty-seeker',
     name: 'The Novelty Seeker',
-    tagline: 'You thrive on variety and discovery.',
+    tagline: "You're energized by what's next.",
   },
   {
     slug: 'strategic-planner',
     name: 'The Strategic Planner',
-    tagline: 'You see the big picture clearly.',
+    tagline: 'You see five moves ahead.',
   },
   {
     slug: 'flexible-improviser',
     name: 'The Flexible Improviser',
-    tagline: 'You adapt and flow with circumstances.',
+    tagline: 'You adapt faster than anyone.',
   },
 ];
 
@@ -90,11 +90,8 @@ export default function Archetypes() {
         <section className="py-20" aria-labelledby="archetypes-title">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center space-y-4 mb-16">
-              <Badge className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary/10 to-secondary/10 border-0 text-primary font-semibold">
-                Productivity Archetypes
-              </Badge>
               <h1 id="archetypes-title" className="text-4xl lg:text-5xl font-bold text-foreground">
-                <span className="text-gradient">Productivity Personalities</span>
+                <span className="text-gradient">Which One Are You?</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
                 Everyone approaches productivity differently. Some thrive on structure, others crave spontaneity. 
@@ -113,7 +110,7 @@ export default function Archetypes() {
                   href={`/archetypes/${archetype.slug}`}
                   className="group"
                 >
-                  <div className="bg-white border border-slate-200 rounded-2xl p-6 hover:border-slate-300 hover:shadow-lg transition-all duration-200 cursor-pointer h-full flex flex-col">
+                  <div className="bg-white border border-slate-200 rounded-2xl p-6 hover:border-slate-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer h-full flex flex-col">
                     <div className="w-20 h-20 mx-auto mb-4 rounded-xl overflow-hidden">
                       <img 
                         src={archetypeImages[archetype.slug]} 
@@ -130,10 +127,9 @@ export default function Archetypes() {
                       {archetype.tagline}
                     </p>
                     
-                    <div className="mt-4 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-xs font-medium text-primary flex items-center gap-1">
-                        Learn more
-                        <ChevronRight className="w-3 h-3" />
+                    <div className="mt-4 flex justify-center">
+                      <span className="text-sm text-gray-400 group-hover:text-gray-600 transition-colors">
+                        Learn more →
                       </span>
                     </div>
                   </div>
