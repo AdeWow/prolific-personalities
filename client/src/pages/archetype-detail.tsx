@@ -12,6 +12,7 @@ import strategicPlannerImage from "@assets/ae5e43be-19bd-4df2-b053-48732a922fc6_
 import structuredAchieverImage from "@assets/e3fac029-7f4f-4a16-a237-d141ea58b5d6_1762297404337.png";
 import flexibleImproviserImage from "@assets/84c5e71b-0e9d-4158-b8a2-ea2b5f1f0abd_1762297453206.png";
 import noveltySeekerImage from "@assets/56861868-15df-4eb4-a0ae-f1629437f82e_1762297512686.png";
+import adaptiveGeneralistImage from "@assets/d9e893a7-c0ec-4b6f-92b2-d9222bdeafbc_1765447835628.png";
 
 const archetypeImages: Record<string, string> = {
   'structured-achiever': structuredAchieverImage,
@@ -20,6 +21,7 @@ const archetypeImages: Record<string, string> = {
   'novelty-seeker': noveltySeekerImage,
   'strategic-planner': strategicPlannerImage,
   'flexible-improviser': flexibleImproviserImage,
+  'adaptive-generalist': adaptiveGeneralistImage,
 };
 
 const archetypeDetails: Record<string, {
@@ -80,6 +82,15 @@ const archetypeDetails: Record<string, {
       "Your adaptability is your superpower. When circumstances change, you pivot easily without the stress others experience. You're comfortable with uncertainty and actually enjoy the challenge of improvising solutions in real-time.",
       "Your challenge is strategic thinking and long-term planning. You may miss important details or find yourself needing to backtrack because you acted too quickly. Balancing your action orientation with occasional strategic reflection will help you achieve even more."
     ]
+  },
+  'adaptive-generalist': {
+    tagline: "You don't have one productivity style—you have many.",
+    description: "The Adaptive Generalist scores balanced across multiple productivity axes. You're highly adaptable and context-dependent, shifting approaches based on what each situation demands. That's not a flaw—it's a different kind of productivity superpower.",
+    fullDescription: [
+      "You scored in the balanced range on most productivity axes. This means you don't strongly prefer one approach over another—you're highly adaptable and context-dependent.",
+      "Traditional productivity advice says 'find YOUR system and stick to it.' But that's never worked for you. Different projects need different approaches. Your energy and context vary significantly. One-size-fits-all just doesn't fit.",
+      "Research on cognitive flexibility shows this isn't a flaw—it's a different kind of productivity profile. You're not 'in between' archetypes. You're multi-modal, able to shift approaches based on what the situation demands."
+    ]
   }
 };
 
@@ -90,6 +101,7 @@ const validSlugs = [
   'novelty-seeker',
   'strategic-planner',
   'flexible-improviser',
+  'adaptive-generalist',
 ];
 
 export default function ArchetypeDetail() {
