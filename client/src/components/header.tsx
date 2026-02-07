@@ -14,6 +14,7 @@ const archetypeNavItems: { slug: ArchetypeSlug; name: string }[] = [
   { slug: 'novelty-seeker', name: 'The Novelty Seeker' },
   { slug: 'strategic-planner', name: 'The Strategic Planner' },
   { slug: 'flexible-improviser', name: 'The Flexible Improviser' },
+  { slug: 'adaptive-generalist', name: 'The Adaptive Generalist' },
 ];
 
 export function Header() {
