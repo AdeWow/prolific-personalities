@@ -142,6 +142,28 @@ export default function Archetypes() {
           </div>
         </section>
 
+        <section className="py-12 bg-gradient-to-br from-teal-50 to-cyan-50">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-teal-100">
+              <div className="text-4xl mb-4">🔄</div>
+              <h3 className="text-2xl font-bold text-neutral-800 mb-3">
+                What if you're a blend?
+              </h3>
+              <p className="text-neutral-600 mb-6 leading-relaxed">
+                Some people score balanced across multiple axes. If that's you, 
+                you're an <strong>Adaptive Generalist</strong>—someone who shifts 
+                approaches based on context. That's not a flaw. It's a different 
+                kind of productivity superpower.
+              </p>
+              <Link href="/archetypes/adaptive-generalist">
+                <Button variant="outline" className="border-teal-300 text-teal-700 hover:bg-teal-50">
+                  Learn more about Adaptive Generalists →
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section className="py-16 bg-slate-50 border-y border-slate-200">
           <div className="max-w-2xl mx-auto px-4 text-center">
             <h2 className="text-2xl font-bold text-slate-900 mb-4">
