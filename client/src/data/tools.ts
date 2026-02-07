@@ -130,5 +130,5 @@ export const toolCategories = [
 
 export function isFreeOrFreemium(cost: string): boolean {
   const lower = cost.toLowerCase();
-  return lower === "free" || lower.startsWith("free");
+  return lower.includes("free");
 }

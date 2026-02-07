@@ -170,7 +170,7 @@ export default function Resources() {
       color: "from-accent to-secondary",
       essentialStack: [
         { name: "Voice Memos", cost: "Free", purpose: "Fastest idea capture" },
-        { name: "Evernote or Google Keep", cost: "Free-$10/mo", purpose: "Organize chaos" },
+        { name: "Evernote or Google Keep", cost: "Free / $10/mo", purpose: "Organize chaos" },
         { name: "Trello", cost: "Free", purpose: "Visual project boards" },
         { name: "Freedom", cost: "$9/mo", purpose: "Block distractions during bursts" },
       ],
@@ -181,10 +181,10 @@ export default function Resources() {
       icon: Target,
       color: "from-blue-500 to-cyan-500",
       essentialStack: [
-        { name: "Todoist", cost: "Free-$4/mo", purpose: "Clean, reliable task lists" },
+        { name: "Todoist", cost: "Free / $4/mo", purpose: "Clean, reliable task lists" },
         { name: "Freedom", cost: "$9/mo", purpose: "Eliminate perfectionism rabbit holes" },
         { name: "Brain.fm", cost: "$10/mo", purpose: "Focus music to reduce anxiety" },
-        { name: "Notion", cost: "Free-$10/mo", purpose: "Reference materials organized" },
+        { name: "Notion", cost: "Free / $10/mo", purpose: "Reference materials organized" },
       ],
       why: "Reduce overwhelm, limit options, clear structure, focus support"
     },
@@ -193,10 +193,10 @@ export default function Resources() {
       icon: Brain,
       color: "from-primary to-accent",
       essentialStack: [
-        { name: "Things 3 or Todoist", cost: "$50 or Free-$4/mo", purpose: "Reliable task management" },
-        { name: "Toggl", cost: "Free-$10/mo", purpose: "Track actual time spent" },
-        { name: "Habitify", cost: "Free-$5/mo", purpose: "Build consistent habits" },
-        { name: "Fantastical or Google Calendar", cost: "Free-$5/mo", purpose: "Schedule everything" },
+        { name: "Things 3 or Todoist", cost: "From Free", purpose: "Reliable task management" },
+        { name: "Toggl", cost: "Free / $10/mo", purpose: "Track actual time spent" },
+        { name: "Habitify", cost: "Free / $5/mo", purpose: "Build consistent habits" },
+        { name: "Fantastical or Google Calendar", cost: "From Free", purpose: "Schedule everything" },
       ],
       why: "Structure, consistency, measurement, proven systems"
     },
@@ -207,8 +207,8 @@ export default function Resources() {
       essentialStack: [
         { name: "Trello", cost: "Free", purpose: "Visual variety" },
         { name: "Forest App", cost: "$2", purpose: "Gamified focus" },
-        { name: "Notion", cost: "Free-$10/mo", purpose: "Rotate project views" },
-        { name: "Evernote", cost: "Free-$10/mo", purpose: "Capture new ideas" },
+        { name: "Notion", cost: "Free / $10/mo", purpose: "Rotate project views" },
+        { name: "Evernote", cost: "Free / $10/mo", purpose: "Capture new ideas" },
       ],
       why: "Visual stimulation, variety, gamification, multiple project juggling"
     },
@@ -217,10 +217,10 @@ export default function Resources() {
       icon: Compass,
       color: "from-green-500 to-teal-500",
       essentialStack: [
-        { name: "Notion or Asana", cost: "Free-$11/mo", purpose: "Comprehensive planning" },
-        { name: "RescueTime", cost: "Free-$12/mo", purpose: "Data on time use" },
+        { name: "Notion or Asana", cost: "From Free", purpose: "Comprehensive planning" },
+        { name: "RescueTime", cost: "Free / $12/mo", purpose: "Data on time use" },
         { name: "Sunsama", cost: "$20/mo", purpose: "Thoughtful daily planning" },
-        { name: "Obsidian or Roam", cost: "Free-$15/mo", purpose: "Strategic thinking notes" },
+        { name: "Obsidian or Roam", cost: "From Free", purpose: "Strategic thinking notes" },
       ],
       why: "Big-picture planning, data-driven, comprehensive systems, strategic thinking"
     },
@@ -239,12 +239,12 @@ export default function Resources() {
   };
 
   const universalTools = [
-    { name: "Notion", category: "Project Management", archetypes: "All (customizable)", primaryUse: "Knowledge base, databases, docs", cost: "Free-$10/mo", whyRecommended: "Flexible, powerful, customizable to any archetype style", bestFor: "Building comprehensive systems" },
-    { name: "Todoist", category: "Task Management", archetypes: "Structured Achiever, Strategic Planner", primaryUse: "Clean task lists with priorities", cost: "Free-$4/mo", whyRecommended: "Simple, reliable, recurring tasks", bestFor: "People who like clear lists" },
-    { name: "Trello", category: "Visual Organization", archetypes: "Chaotic Creative, Novelty Seeker", primaryUse: "Kanban boards for visual workflow", cost: "Free-$12/mo", whyRecommended: "Visual, flexible, drag-and-drop simplicity", bestFor: "Visual thinkers and project managers" },
-    { name: "Forest App", category: "Focus & Blocking", archetypes: "Novelty Seeker, Flexible Improviser", primaryUse: "Gamified focus sessions", cost: "$2 one-time", whyRecommended: "Fun, visual, respects different focus durations", bestFor: "People motivated by gamification" },
-    { name: "Freedom", category: "Focus & Blocking", archetypes: "Chaotic Creative, Anxious Perfectionist", primaryUse: "Block distracting sites/apps", cost: "$9/mo or $40/year", whyRecommended: "Powerful blocking, scheduled sessions", bestFor: "Chronic procrastinators needing hard blocks" },
-    { name: "RescueTime", category: "Time Tracking", archetypes: "Strategic Planner, Structured Achiever", primaryUse: "Automatic time tracking & reports", cost: "Free-$12/mo", whyRecommended: "Data-driven insights into time use", bestFor: "People who want objective productivity data" },
+    { name: "Notion", category: "Project Management", archetypes: "All (customizable)", primaryUse: "Knowledge base, databases, docs", cost: "Free / $10/mo", whyRecommended: "Flexible, powerful, customizable to any archetype style", bestFor: "Building comprehensive systems" },
+    { name: "Todoist", category: "Task Management", archetypes: "Structured Achiever, Strategic Planner", primaryUse: "Clean task lists with priorities", cost: "Free / $4/mo", whyRecommended: "Simple, reliable, recurring tasks", bestFor: "People who like clear lists" },
+    { name: "Trello", category: "Visual Organization", archetypes: "Chaotic Creative, Novelty Seeker", primaryUse: "Kanban boards for visual workflow", cost: "Free / $12/mo", whyRecommended: "Visual, flexible, drag-and-drop simplicity", bestFor: "Visual thinkers and project managers" },
+    { name: "Forest App", category: "Focus & Blocking", archetypes: "Novelty Seeker, Flexible Improviser", primaryUse: "Gamified focus sessions", cost: "$2", whyRecommended: "Fun, visual, respects different focus durations", bestFor: "People motivated by gamification" },
+    { name: "Freedom", category: "Focus & Blocking", archetypes: "Chaotic Creative, Anxious Perfectionist", primaryUse: "Block distracting sites/apps", cost: "$9/mo", whyRecommended: "Powerful blocking, scheduled sessions", bestFor: "Chronic procrastinators needing hard blocks" },
+    { name: "RescueTime", category: "Time Tracking", archetypes: "Strategic Planner, Structured Achiever", primaryUse: "Automatic time tracking & reports", cost: "Free / $12/mo", whyRecommended: "Data-driven insights into time use", bestFor: "People who want objective productivity data" },
     { name: "Brain.fm", category: "Focus Music", archetypes: "Anxious Perfectionist, Strategic Planner", primaryUse: "AI-generated focus music", cost: "$10/mo", whyRecommended: "Science-backed music for concentration", bestFor: "People distracted by silence or normal music" },
     { name: "Sunsama", category: "Daily Planning", archetypes: "Strategic Planner, Structured Achiever", primaryUse: "Thoughtful daily planning ritual", cost: "$20/mo", whyRecommended: "Intentional planning, integrates calendars & tasks", bestFor: "People who want structured reflection" },
   ];
@@ -265,9 +265,6 @@ export default function Resources() {
         <section className="py-16" aria-labelledby="resources-title">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6 mb-12">
-            <Badge className="inline-flex items-center px-6 py-3 bg-primary/10 border-primary/20 text-primary font-semibold">
-              Curated Productivity Resources
-            </Badge>
             <h1 id="resources-title" className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
               Tools & Resources <span className="text-primary">for Every Archetype</span>
             </h1>
@@ -294,9 +291,9 @@ export default function Resources() {
       <section className="pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-              <TabsTrigger value="by-archetype" data-testid="tab-by-archetype">By Archetype</TabsTrigger>
-              <TabsTrigger value="all-tools" data-testid="tab-all-tools">All Tools</TabsTrigger>
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+              <TabsTrigger value="by-archetype" data-testid="tab-by-archetype" className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:font-bold data-[state=active]:text-gray-900 text-gray-500 rounded-md transition-all">By Archetype</TabsTrigger>
+              <TabsTrigger value="all-tools" data-testid="tab-all-tools" className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:font-bold data-[state=active]:text-gray-900 text-gray-500 rounded-md transition-all">All Tools</TabsTrigger>
             </TabsList>
 
             <TabsContent value="by-archetype" className="space-y-8">
