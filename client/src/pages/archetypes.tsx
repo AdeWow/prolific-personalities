@@ -79,7 +79,7 @@ export default function Archetypes() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Productivity Archetypes | Prolific Personalities"
-        description="Discover the six distinct productivity personalities. Learn which archetype matches how you naturally focus, plan, and follow through."
+        description="Discover the productivity personalities. Learn which archetype matches how you naturally focus, plan, and follow through."
         keywords="productivity archetypes, productivity types, work style types, structured achiever, chaotic creative, strategic planner, anxious perfectionist, novelty seeker, flexible improviser"
         canonicalUrl={typeof window !== 'undefined' ? `${window.location.origin}/archetypes` : undefined}
       />
@@ -93,11 +93,11 @@ export default function Archetypes() {
                 Productivity Archetypes
               </Badge>
               <h1 id="archetypes-title" className="text-4xl lg:text-5xl font-bold text-foreground">
-                Six Distinct <span className="text-gradient">Productivity Personalities</span>
+                <span className="text-gradient">Productivity Personalities</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
                 Everyone approaches productivity differently. Some thrive on structure, others crave spontaneity. 
-                Discover which one resonates with you.
+                Some are a blend of many styles. Discover which one resonates with you.
               </p>
             </div>
           </div>

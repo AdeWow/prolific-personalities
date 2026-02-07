@@ -209,7 +209,7 @@ export default function Home() {
                   Get your archetype
                 </h3>
                 <p className="text-muted-foreground text-base">
-                  Discover which of 6 archetypes matches your style.
+                  Discover which archetype matches your style.
                 </p>
               </div>
 

@@ -1339,7 +1339,7 @@ I wasn't failing at productivity. I was trying to be someone I'm not.
 
 ## The Archetype I Was Ignoring
 
-When I built Prolific Personalities, I created six archetypes based on cognitive patterns and productivity styles.
+When I built Prolific Personalities, I created multiple archetypes based on cognitive patterns and productivity styles.
 
 After reading this assessment, I realized something uncomfortable:
 
@@ -6844,7 +6844,7 @@ This is established science that the $12 billion productivity industry systemati
 
 Instead of asking "What's the best productivity system?", ask "What's the best system for my brain?"
 
-We've identified six distinct productivity archetypes:
+We've identified distinct productivity archetypes:
 
 **The Chaotic Creative** needs burst containment and momentum bridges—not rigid schedules.
 
@@ -7050,7 +7050,7 @@ To everyone who knows that pain: **you're not alone**. Guilt may be part of the 
 
 Each of us operates with a unique blend of structure preference, motivation style, cognitive focus, and relationship to tasks. These psychological differences explain why one person thrives with time-blocking while another shuts down from it.
 
-At Prolific Personalities, we've identified six distinct Productivity Archetypes, each rooted in cognitive science and motivational psychology. Here's what makes each one tick — and how to actually thrive in your natural rhythm.
+At Prolific Personalities, we've identified distinct Productivity Archetypes, each rooted in cognitive science and motivational psychology. Here's what makes each one tick — and how to actually thrive in your natural rhythm.
 
 ## 🌪️ 1. The Chaotic Creative
 

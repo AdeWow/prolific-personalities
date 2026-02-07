@@ -404,9 +404,9 @@ export const archetypes: Archetype[] = [
     tagline: 'You don\'t have one productivity style—you have many. Your superpower is matching approach to context.',
     icon: '',
     image: adaptiveGeneralistImage,
-    color: 'teal',
-    gradientFrom: 'from-teal-400',
-    gradientTo: 'to-cyan-400',
+    color: 'indigo',
+    gradientFrom: 'from-indigo-400',
+    gradientTo: 'to-purple-400',
     tags: ['Adaptable', 'Multi-Modal', 'Context-Aware'],
     struggle: [
       "You scored in the balanced range on most productivity axes. This means you don't strongly prefer one approach over another—you're highly adaptable and context-dependent.",

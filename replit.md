@@ -2,7 +2,7 @@
 
 ## Overview
 
-Prolific Personalities is a web application designed to help users identify their unique productivity archetype through a research-backed assessment. The platform analyzes user responses across four cognitive and behavioral dimensions to assign one of six distinct productivity archetypes. It then provides personalized strategies, tool recommendations, and insights tailored to their specific working style. The project aims to offer a user-friendly, mobile-responsive experience with immediate, shareable results, fostering improved personal productivity and understanding. The business vision is to become the leading platform for personalized productivity insights, leveraging market potential in self-improvement and professional development.
+Prolific Personalities is a web application designed to help users identify their unique productivity archetype through a research-backed assessment. The platform analyzes user responses across four cognitive and behavioral dimensions to assign one of several distinct productivity archetypes (6 primary + Adaptive Generalist for balanced scorers). It then provides personalized strategies, tool recommendations, and insights tailored to their specific working style. The project aims to offer a user-friendly, mobile-responsive experience with immediate, shareable results, fostering improved personal productivity and understanding. The business vision is to become the leading platform for personalized productivity insights, leveraging market potential in self-improvement and professional development.
 
 ## User Preferences
 
@@ -65,7 +65,7 @@ The application employs a monorepo structure, separating the React-based fronten
 **Assessment Design**: 28 questions across four dimensions: Structure Orientation, Motivation Style, Cognitive Focus, and Task Relationship.
 **Quiz Flow**: 5 questions per page, auto-advance on answer selection, auto-advance to next page after 5 questions.
 **Scoring Algorithm**: Answers contribute to a numeric score per axis, determining archetype via range matching and a distance-based fit scoring system (Manhattan distance), with edge case handling.
-**Archetypes**: Six distinct, scientifically-grounded archetypes.
+**Archetypes**: Seven distinct, scientifically-grounded archetypes (6 primary + Adaptive Generalist).
 
 ### UI/UX Decisions and Features
 

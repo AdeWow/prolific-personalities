@@ -127,7 +127,7 @@ export default function About() {
                 <span className="text-primary mt-1"><Check className="h-6 w-6" /></span>
                 <div>
                   <h3 className="font-semibold text-foreground text-lg mb-2">Personality-first approach</h3>
-                  <p className="text-muted-foreground text-base">Map to one of six productivity archetypes with tailored insights.</p>
+                  <p className="text-muted-foreground text-base">Map to your productivity archetype with tailored insights.</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
