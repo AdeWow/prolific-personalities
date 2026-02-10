@@ -6,17 +6,20 @@ const client = new Anthropic({
 
 async function run() {
   const response = await client.messages.create({
-    model: "claude-3-5-sonnet-20241022",
+    model: "claude-sonnet-4-5-20250929",
     max_tokens: 800,
     messages: [
-      {
-        role: "user",
-        content: "Refactor this code for clarity and performance."
-      }
+      { role: "user", content: "Refactor this code for clarity and performance." },
     ],
   });
 
-  console.log(response.content[0].text);
+  // response.content can contain multiple blocks; print any text blocks
+  for (const block of response.content) {
+    if (block.type === "text") console.log(block.text);
+  }
 }
 
-run();
+run().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
