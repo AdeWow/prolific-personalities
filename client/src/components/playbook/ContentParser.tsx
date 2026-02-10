@@ -428,6 +428,9 @@ export function ContentRenderer({ content, sectionId, archetype = '', session }:
           <DoThisNowBlock 
             action={doThisNowAction.action} 
             timeEstimate={doThisNowAction.time}
+            sectionId={sectionId}
+            archetype={archetype}
+            session={session}
           />
         </div>
       )}
