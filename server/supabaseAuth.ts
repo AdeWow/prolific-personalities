@@ -38,13 +38,15 @@ export const supabaseAuth: RequestHandler = async (req, res, next) => {
       try {
         const { storage } = await import("./storage");
         const metadata = user.user_metadata || {};
-        await storage.upsertUser({
+        console.log(`🔐 Auth middleware sync: supabaseId=${user.id}, email=${user.email}`);
+        const localUser = await storage.upsertUser({
           id: user.id,
           email: user.email || null,
           firstName: metadata.first_name || metadata.given_name || metadata.full_name?.split(' ')[0] || null,
           lastName: metadata.last_name || metadata.family_name || metadata.full_name?.split(' ').slice(1).join(' ') || null,
           profileImageUrl: metadata.avatar_url || metadata.picture || null,
         });
+        console.log(`🔐 Auth middleware sync result: localUserId=${localUser.id}, localEmail=${localUser.email}`);
         recentlySyncedUsers.set(user.id, now);
       } catch (syncError) {
         console.warn("Background user auto-sync failed (non-blocking):", syncError);
