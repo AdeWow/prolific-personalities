@@ -16,6 +16,7 @@ export interface IStorage {
   getQuizResultBySessionId(sessionId: string): Promise<QuizResult | undefined>;
   getQuizResultsByUserId(userId: string): Promise<QuizResult[]>;
   linkQuizResultToUser(sessionId: string, userId: string): Promise<QuizResult | undefined>;
+  claimUnclaimedQuizResultsByEmail(email: string, userId: string): Promise<number>;
   // Tools
   getTools(): Promise<Tool[]>;
   getToolsByArchetype(archetype: string, limit?: number): Promise<ToolWithFitScore[]>;
@@ -229,6 +230,30 @@ export class DatabaseStorage implements IStorage {
       .where(eq(quizResults.sessionId, sessionId))
       .returning();
     return result || undefined;
+  }
+
+  async claimUnclaimedQuizResultsByEmail(email: string, userId: string): Promise<number> {
+    const captures = await db
+      .select({ sessionId: emailCaptures.sessionId })
+      .from(emailCaptures)
+      .where(eq(emailCaptures.email, email));
+
+    let claimed = 0;
+    for (const capture of captures) {
+      if (!capture.sessionId) continue;
+      const result = await this.getQuizResultBySessionId(capture.sessionId);
+      if (result && result.userId === null) {
+        await db
+          .update(quizResults)
+          .set({ userId })
+          .where(eq(quizResults.sessionId, capture.sessionId));
+        await this.claimOrdersBySession(capture.sessionId, userId);
+        claimed++;
+        console.log(`✅ Auto-claimed quiz session ${capture.sessionId} for ${email}`);
+      }
+    }
+
+    return claimed;
   }
 
   // Memoized internal function to fetch all tools with caching

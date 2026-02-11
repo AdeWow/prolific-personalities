@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useRef, useCallback, type ReactNode } from "react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import type { User as SupabaseUser, Session } from "@supabase/supabase-js";
 
@@ -15,6 +15,7 @@ interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  isSynced: boolean;
   signOut: () => Promise<void>;
 }
 
@@ -34,10 +35,64 @@ function mapSupabaseUser(supabaseUser: SupabaseUser | null): AuthUser | null {
   };
 }
 
+async function syncUserToDatabase(session: Session, retries = 3): Promise<boolean> {
+  const user = session.user;
+  const metadata = user.user_metadata || {};
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch('/api/auth/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          id: user.id,
+          email: user.email,
+          firstName: metadata.first_name || metadata.given_name || null,
+          lastName: metadata.last_name || metadata.family_name || null,
+          profileImageUrl: metadata.avatar_url || metadata.picture || null,
+        }),
+      });
+
+      if (res.ok) {
+        return true;
+      }
+      console.warn(`Auth sync attempt ${attempt}/${retries} failed with status ${res.status}`);
+    } catch (error) {
+      console.warn(`Auth sync attempt ${attempt}/${retries} failed:`, error);
+    }
+
+    if (attempt < retries) {
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
+  }
+
+  console.error("Auth sync failed after all retries");
+  return false;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSynced, setIsSynced] = useState(false);
+  const syncInProgress = useRef(false);
+  const lastSyncedUserId = useRef<string | null>(null);
+
+  const handleSync = useCallback(async (currentSession: Session) => {
+    if (syncInProgress.current) return;
+    if (lastSyncedUserId.current === currentSession.user.id) return;
+
+    syncInProgress.current = true;
+    const success = await syncUserToDatabase(currentSession);
+    if (success) {
+      lastSyncedUserId.current = currentSession.user.id;
+      setIsSynced(true);
+    }
+    syncInProgress.current = false;
+  }, []);
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
@@ -49,6 +104,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(mapSupabaseUser(session?.user ?? null));
       setIsLoading(false);
+
+      if (session?.user) {
+        handleSync(session);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -58,31 +117,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(mapSupabaseUser(session?.user ?? null));
         setIsLoading(false);
 
-        if (event === 'SIGNED_IN' && session?.user) {
-          try {
-            await fetch('/api/auth/sync', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.access_token}`,
-              },
-              body: JSON.stringify({
-                id: session.user.id,
-                email: session.user.email,
-                firstName: session.user.user_metadata?.first_name || session.user.user_metadata?.given_name || null,
-                lastName: session.user.user_metadata?.last_name || session.user.user_metadata?.family_name || null,
-                profileImageUrl: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null,
-              }),
-            });
-          } catch (error) {
-            console.error("Failed to sync user to database:", error);
-          }
+        if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') && session?.user) {
+          handleSync(session);
+        }
+
+        if (event === 'SIGNED_OUT') {
+          lastSyncedUserId.current = null;
+          setIsSynced(false);
         }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [handleSync]);
 
   const signOut = async () => {
     if (isSupabaseConfigured) {
@@ -90,10 +137,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setUser(null);
     setSession(null);
+    setIsSynced(false);
+    lastSyncedUserId.current = null;
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, isAuthenticated: !!user, signOut }}>
+    <AuthContext.Provider value={{ user, session, isLoading, isAuthenticated: !!user, isSynced, signOut }}>
       {children}
     </AuthContext.Provider>
   );

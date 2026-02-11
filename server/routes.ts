@@ -418,13 +418,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const supabaseUser = req.supabaseUser;
       const { firstName, lastName, profileImageUrl } = req.body;
 
-      await storage.upsertUser({
+      const localUser = await storage.upsertUser({
         id: supabaseUser.id,
         email: supabaseUser.email || null,
         firstName: firstName || null,
         lastName: lastName || null,
         profileImageUrl: profileImageUrl || null,
       });
+
+      if (localUser.email) {
+        const claimed = await storage.claimUnclaimedQuizResultsByEmail(localUser.email, localUser.id);
+        if (claimed > 0) {
+          console.log(`🔗 Auth sync: auto-claimed ${claimed} quiz result(s) for ${localUser.email}`);
+        }
+      }
 
       res.json({ success: true });
     } catch (error) {
