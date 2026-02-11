@@ -520,7 +520,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
       });
       
+      console.log(`📊 Dashboard results: supabaseId=${supabaseUser.id}, localUserId=${localUser.id}, email=${localUser.email}`);
+      
+      if (localUser.email) {
+        await storage.claimUnclaimedQuizResultsByEmail(localUser.email, localUser.id);
+      }
+      
       const results = await storage.getQuizResultsByUserId(localUser.id);
+      console.log(`📊 Dashboard results: found ${results.length} results for user ${localUser.id}`);
       res.json(results);
     } catch (error) {
       console.error("Error fetching user results:", error);
