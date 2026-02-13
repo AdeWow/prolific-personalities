@@ -350,9 +350,9 @@ export default function Playbook() {
                 >
                   Try Again
                 </Button>
-                <Link href="/dashboard">
+                <Link href={user ? "/dashboard" : "/login"}>
                   <Button variant="outline" className="w-full" data-testid="button-dashboard">
-                    Back to Dashboard
+                    {user ? "Back to Dashboard" : "Log in to save / view dashboard"}
                   </Button>
                 </Link>
               </div>
@@ -451,9 +451,9 @@ export default function Playbook() {
                     Take the Quiz
                   </Button>
                 </Link>
-                <Link href="/dashboard">
+                <Link href={user ? "/dashboard" : "/login"}>
                   <Button variant="outline" className="w-full" data-testid="button-dashboard">
-                    View Dashboard
+                    {user ? "View Dashboard" : "Log in to save / view dashboard"}
                   </Button>
                 </Link>
               </div>
@@ -491,9 +491,9 @@ export default function Playbook() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Link href="/dashboard">
+              <Link href={user ? "/dashboard" : "/login"}>
                 <Button variant="ghost" size="sm" data-testid="button-dashboard">
-                  Dashboard
+                  {user ? "Dashboard" : "Log in to save / view dashboard"}
                 </Button>
               </Link>
             </div>
