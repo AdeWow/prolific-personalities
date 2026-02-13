@@ -42,6 +42,14 @@ import OpenAI from "openai";
 import { buildSystemPrompt } from "./archetypePrompts";
 
 const AI_ENABLED = process.env.ENABLE_AI_COACH === "true";
+
+function getPublicBaseUrl(): string {
+  const raw = process.env.SITE_URL || process.env.APP_URL;
+  if (!raw) {
+    throw new Error("Missing SITE_URL/APP_URL env var. Set SITE_URL in Railway.");
+  }
+  return raw.replace(/\/$/, "");
+}
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import {
@@ -232,11 +240,7 @@ export function registerWebhookRoute(app: Express) {
                 const pdfBase64 = pdfBuffer.toString("base64");
 
                 // Generate results URL - use environment variable or default
-                const baseUrl =
-                  process.env.APP_URL ||
-                  (process.env.NODE_ENV === "production"
-                    ? "https://prolificpersonalities.com"
-                    : "http://localhost:5000");
+                const baseUrl = getPublicBaseUrl();
                 const resultsUrl = `${baseUrl}/results/${sessionId}`;
 
                 // Generate email content
@@ -356,7 +360,7 @@ export function registerWebhookRoute(app: Express) {
                       html: `
                         <h2>Payment Failed</h2>
                         <p>We were unable to process your subscription payment. Please update your payment method to continue your Productivity Partner benefits.</p>
-                        <p><a href="https://prolificpersonalities.com/dashboard">Update Payment Method</a></p>
+                        <p><a href="${getPublicBaseUrl()}/dashboard">Update Payment Method</a></p>
                         <p>If you have questions, reply to this email.</p>
                       `,
                     });
@@ -741,7 +745,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         try {
           const archetypeInfo = getArchetypeInfo(validatedData.archetype);
           if (archetypeInfo) {
-            const baseUrl = process.env.APP_URL || "https://prolificpersonalities.com";
+            const baseUrl = getPublicBaseUrl();
 
             const { subject, html } = generateWelcomeEmail({
               recipientEmail: validatedData.email,
@@ -851,10 +855,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Generate results URL
-      const baseUrl =
-        process.env.NODE_ENV === "production"
-          ? "https://prolificpersonalities.com"
-          : `${req.protocol}://${req.get("host")}`;
+      const baseUrl = getPublicBaseUrl();
       const resultsUrl = `${baseUrl}/results/${sessionId}`;
 
       // Generate email content
@@ -893,7 +894,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
 
           // Send welcome email
-          const welcomeBaseUrl = process.env.APP_URL || "https://prolificpersonalities.com";
+          const welcomeBaseUrl = getPublicBaseUrl();
 
           const welcomeEmail = generateWelcomeEmail({
             recipientEmail: email,
@@ -1125,11 +1126,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 const pdfBuffer = fs.readFileSync(pdfPath);
                 const pdfBase64 = pdfBuffer.toString("base64");
 
-                const baseUrl =
-                  process.env.APP_URL ||
-                  (process.env.NODE_ENV === "production"
-                    ? "https://prolificpersonalities.com"
-                    : "http://localhost:5000");
+                const baseUrl = getPublicBaseUrl();
                 const resultsUrl = `${baseUrl}/results/${sessionId}`;
 
                 const { subject, html } = generatePremiumPlaybookEmail({
@@ -1212,11 +1209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             customerEmail: email || null,
           });
 
-          const baseUrl =
-            process.env.APP_URL ||
-            (process.env.NODE_ENV === "production"
-              ? "https://prolificpersonalities.com"
-              : "http://localhost:5000");
+          const baseUrl = getPublicBaseUrl();
 
           // Create Stripe checkout session with coupon
           const checkoutSession = await stripe.checkout.sessions.create({
@@ -1424,10 +1417,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return;
       }
 
-      const baseUrl =
-        process.env.NODE_ENV === "production"
-          ? "https://prolificpersonalities.com"
-          : `${req.protocol}://${req.get("host")}`;
+      const baseUrl = getPublicBaseUrl();
 
       // Create order record
       const order = await storage.createOrder({
@@ -1593,8 +1583,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               const pdfBuffer = fs.readFileSync(pdfPath);
               const pdfBase64 = pdfBuffer.toString("base64");
 
-              const baseUrl = process.env.APP_URL || 
-                (process.env.NODE_ENV === "production" ? "https://prolificpersonalities.com" : "http://localhost:5000");
+              const baseUrl = getPublicBaseUrl();
               const resultsUrl = `${baseUrl}/results/${sessionId}`;
 
               const { subject, html } = generatePremiumPlaybookEmail({
@@ -1644,10 +1633,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { email } = req.body;
 
-      const baseUrl =
-        process.env.NODE_ENV === "production"
-          ? "https://prolificpersonalities.com"
-          : `${req.protocol}://${req.get("host")}`;
+      const baseUrl = getPublicBaseUrl();
 
       // Check current purchase count to determine price
       const purchaseCount = await storage.getPlaybookPurchaseCount();
@@ -1821,10 +1807,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return;
         }
 
-        const baseUrl =
-          process.env.NODE_ENV === "production"
-            ? "https://prolificpersonalities.com"
-            : `${req.protocol}://${req.get("host")}`;
+        const baseUrl = getPublicBaseUrl();
 
         // Determine price based on billing period
         // Monthly: $7/month, Yearly: $75/year
@@ -2472,8 +2455,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const pdfBase64 = pdfBuffer.toString("base64");
 
         // Generate results URL
-        const baseUrl = process.env.APP_URL || 
-          (process.env.NODE_ENV === "production" ? "https://prolificpersonalities.com" : "http://localhost:5000");
+        const baseUrl = getPublicBaseUrl();
         const resultsUrl = sessionId ? `${baseUrl}/results/${sessionId}` : `${baseUrl}/dashboard`;
 
         // Generate and send email
@@ -2588,7 +2570,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
 
       let sentCount = 0;
-      const baseUrl = process.env.APP_URL || "https://prolificpersonalities.com";
+      const baseUrl = getPublicBaseUrl();
 
       for (const checkout of abandonedCheckouts) {
         if (!checkout.email) continue;
@@ -2685,7 +2667,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
         .parse(req.body);
 
-      const baseUrl = process.env.APP_URL || "https://prolificpersonalities.com";
+      const baseUrl = getPublicBaseUrl();
 
       // Sample archetype for testing
       const sampleArchetype = {
@@ -2925,10 +2907,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             continue;
           }
 
-          const baseUrl =
-            process.env.NODE_ENV === "production"
-              ? "https://prolificpersonalities.com"
-              : `${req.protocol}://${req.get("host")}`;
+          const baseUrl = getPublicBaseUrl();
 
           // Generate abandoned cart email
           const { subject, html } = generateAbandonedCartEmail({
@@ -3282,9 +3261,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // robots.txt for SEO
   app.get("/robots.txt", (req, res) => {
-    const baseUrl = process.env.NODE_ENV === "production"
-      ? "https://prolificpersonalities.com"
-      : `${req.protocol}://${req.get("host") || "localhost:5000"}`;
+    const baseUrl = getPublicBaseUrl();
 
     const robotsTxt = `User-agent: *
 Allow: /
@@ -3309,20 +3286,7 @@ Sitemap: ${baseUrl}/sitemap.xml
 
   // XML Sitemap for SEO
   app.get("/sitemap.xml", async (req, res) => {
-    // Use APP_URL if set, otherwise safely construct from request
-    let baseUrl = process.env.APP_URL;
-    if (!baseUrl) {
-      if (process.env.NODE_ENV === "production") {
-        baseUrl = "https://prolificpersonalities.com";
-      } else {
-        // Safely construct URL from request, defaulting to https
-        const protocol = req.protocol || "https";
-        const host = req.get("host") || "localhost:5000";
-        // Validate host to prevent injection
-        const safeHost = host.replace(/[^a-zA-Z0-9.:-]/g, "");
-        baseUrl = `${protocol}://${safeHost}`;
-      }
-    }
+    const baseUrl = getPublicBaseUrl();
 
     const staticPages = [
       { url: "/", priority: "1.0", changefreq: "weekly" },
@@ -3536,8 +3500,7 @@ Sitemap: ${baseUrl}/sitemap.xml
       });
 
       // Generate magic link URL
-      const baseUrl =
-        process.env.APP_URL || "https://prolificpersonalities.com";
+      const baseUrl = getPublicBaseUrl();
       const magicLink = `${baseUrl}/api/mobile/auth/verify?token=${token}`;
 
       // Send email with magic link

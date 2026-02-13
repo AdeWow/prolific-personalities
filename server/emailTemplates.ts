@@ -1,5 +1,13 @@
 import type { QuizScores } from "@shared/schema";
 
+function getPublicBaseUrl(): string {
+  const raw = process.env.SITE_URL || process.env.APP_URL;
+  if (!raw) {
+    throw new Error("Missing SITE_URL/APP_URL env var. Set SITE_URL in Railway.");
+  }
+  return raw.replace(/\/$/, "");
+}
+
 export interface EmailResultsData {
   recipientEmail: string;
   archetype: {
@@ -234,7 +242,7 @@ export function generateResultsEmail(data: EmailResultsData): { subject: string;
           </p>
           <p style="margin-top: 16px;">
             <a href="${resultsUrl}" class="footer-link">View Results</a> | 
-            <a href="https://prolificpersonalities.com" class="footer-link">Take Another Assessment</a>
+            <a href="${getPublicBaseUrl()}" class="footer-link">Take Another Assessment</a>
           </p>
         </div>
       </div>
@@ -425,7 +433,7 @@ export function generatePremiumPlaybookEmail(data: PremiumPlaybookEmailData): { 
           <p>Science-backed productivity insights tailored to your unique working style</p>
           <p style="margin-top: 16px;">
             <a href="${resultsUrl}" style="color: #3b82f6; text-decoration: none;">View Results</a> •
-            <a href="https://prolificpersonalities.com" style="color: #3b82f6; text-decoration: none;">Visit Website</a>
+            <a href="${getPublicBaseUrl()}" style="color: #3b82f6; text-decoration: none;">Visit Website</a>
           </p>
         </div>
       </div>
@@ -1210,7 +1218,7 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
           <p style="margin-bottom: 20px;">${theme.closingText}</p>
           
           <div style="text-align: center;">
-            <a href="https://prolificpersonalities.com/dashboard" style="display: inline-block; background: linear-gradient(135deg, #4f9a94 0%, #3d8b85 100%); color: white !important; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; margin-top: 20px;">${theme.ctaText}</a>
+            <a href="${getPublicBaseUrl()}/dashboard" style="display: inline-block; background: linear-gradient(135deg, #4f9a94 0%, #3d8b85 100%); color: white !important; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; margin-top: 20px;">${theme.ctaText}</a>
           </div>
           
           <p style="margin-top: 30px; color: #64748b; font-size: 14px;">Keep going — you're building something great,</p>
@@ -1222,7 +1230,7 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
           <p style="margin: 8px 0 0 0;">Your Partner in Productivity</p>
           <p style="margin-top: 16px; font-size: 12px;">
             You're receiving this as a Partner subscriber.<br>
-            <a href="https://prolificpersonalities.com/settings" style="color: #94a3b8;">Manage email preferences</a>
+            <a href="${getPublicBaseUrl()}/settings" style="color: #94a3b8;">Manage email preferences</a>
           </p>
         </div>
       </div>
@@ -1235,7 +1243,7 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
 
 import { getArchetypeContent, formatArchetypeName } from './email-content';
 
-const BASE_URL = process.env.APP_URL || 'https://prolificpersonalities.com';
+const BASE_URL = getPublicBaseUrl();
 
 function getEmailBaseStyles(): string {
   return `
