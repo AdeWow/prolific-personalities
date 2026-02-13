@@ -307,39 +307,6 @@ export default function Playbook() {
     return notesData?.find(n => n.sectionId === sectionId);
   };
 
-  const handleDownloadPDF = async () => {
-    if (!session?.access_token) {
-      alert("Please log in to download the PDF.");
-      return;
-    }
-    try {
-      const res = await fetch(`/api/playbook/${archetype}/pdf`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-      if (!res.ok) {
-        const text = await res.text();
-        console.error("PDF download failed:", text);
-        alert("PDF download failed. See console for details.");
-        return;
-      }
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${archetype}-playbook.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("PDF download error:", error);
-      alert("PDF download failed. Please try again.");
-    }
-  };
-
   // First-time user onboarding
   const { showOverlay, dismissOverlay } = useFirstTimeOverlay(archetype);
 
@@ -524,15 +491,6 @@ export default function Playbook() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDownloadPDF}
-                data-testid="button-download-pdf"
-              >
-                <Download className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">PDF</span>
-              </Button>
               <Link href="/dashboard">
                 <Button variant="ghost" size="sm" data-testid="button-dashboard">
                   Dashboard
