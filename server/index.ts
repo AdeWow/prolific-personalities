@@ -16,8 +16,8 @@ const allowedOrigins = [
   ...(process.env.NODE_ENV === 'development' ? [
     'http://localhost:5000',
     'http://localhost:3000',
-    /\.replit\.dev$/,
-    /\.repl\.co$/
+    /\.railway\.app$/,
+    /\.vercel\.app$/
   ] : [])
 ];
 

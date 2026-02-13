@@ -37,7 +37,7 @@ import {
   insertCheckoutAttemptSchema,
   insertUnsubscribeFeedbackSchema,
 } from "@shared/schema";
-import { registerChatRoutes } from "./replit_integrations/chat";
+import { registerChatRoutes } from "./integrations/chat";
 import OpenAI from "openai";
 import { buildSystemPrompt } from "./archetypePrompts";
 import jwt from "jsonwebtoken";
@@ -739,9 +739,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         try {
           const archetypeInfo = getArchetypeInfo(validatedData.archetype);
           if (archetypeInfo) {
-            const baseUrl = process.env.REPLIT_DEV_DOMAIN
-              ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-              : "https://prolificpersonalities.com";
+            const baseUrl = process.env.APP_URL || "https://prolificpersonalities.com";
 
             const { subject, html } = generateWelcomeEmail({
               recipientEmail: validatedData.email,
@@ -893,9 +891,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
 
           // Send welcome email
-          const welcomeBaseUrl = process.env.REPLIT_DEV_DOMAIN
-            ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-            : "https://prolificpersonalities.com";
+          const welcomeBaseUrl = process.env.APP_URL || "https://prolificpersonalities.com";
 
           const welcomeEmail = generateWelcomeEmail({
             recipientEmail: email,
@@ -2590,9 +2586,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
 
       let sentCount = 0;
-      const baseUrl = process.env.REPLIT_DEV_DOMAIN
-        ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-        : "https://prolificpersonalities.com";
+      const baseUrl = process.env.APP_URL || "https://prolificpersonalities.com";
 
       for (const checkout of abandonedCheckouts) {
         if (!checkout.email) continue;
@@ -2689,9 +2683,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
         .parse(req.body);
 
-      const baseUrl = process.env.REPLIT_DEV_DOMAIN
-        ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-        : "https://prolificpersonalities.com";
+      const baseUrl = process.env.APP_URL || "https://prolificpersonalities.com";
 
       // Sample archetype for testing
       const sampleArchetype = {

@@ -4,3 +4,16 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz.replit
+
+# Environment variables
+.env
+.env.*
+client/.env
+client/.env.*
+
+# Local dev metadata
+.local/
+
+# Database dumps
+database_backup.sql
+database_data_only.sql
