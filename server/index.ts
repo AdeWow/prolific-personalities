@@ -15,6 +15,10 @@ requireEnv("SUPABASE_SERVICE_ROLE_KEY");
 
 const app = express();
 
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // Trust proxy for correct client IP detection (required for rate limiting behind reverse proxies)
 app.set('trust proxy', 1);
 
