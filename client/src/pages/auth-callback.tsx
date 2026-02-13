@@ -25,7 +25,9 @@ export default function AuthCallback() {
         }
 
         if (data.session) {
-          setLocation("/dashboard");
+          const redirect = localStorage.getItem("loginRedirect");
+          localStorage.removeItem("loginRedirect");
+          setLocation(redirect || "/dashboard");
         } else {
           setLocation("/login");
         }

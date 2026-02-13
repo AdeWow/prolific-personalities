@@ -350,7 +350,7 @@ export default function Playbook() {
                 >
                   Try Again
                 </Button>
-                <Link href={user ? "/dashboard" : "/login"}>
+                <Link href={user ? "/dashboard" : `/login?redirect=${encodeURIComponent(`/playbook/${archetype}`)}`}>
                   <Button variant="outline" className="w-full" data-testid="button-dashboard">
                     {user ? "Back to Dashboard" : "Log in to save / view dashboard"}
                   </Button>
@@ -377,6 +377,7 @@ export default function Playbook() {
 
   // Not logged in and no session-based access
   if (!user && !sessionAccessData?.hasAccess) {
+    const loginUrl = `/login?redirect=${encodeURIComponent(`/playbook/${archetype}`)}`;
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
@@ -387,15 +388,15 @@ export default function Playbook() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  Login Required
+                  Please log in to view your playbook
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300">
-                  Please log in to access your premium playbook.
+                  Log in to access your premium playbook. You'll be redirected back here after signing in.
                 </p>
               </div>
               <div className="space-y-3">
-                <Link href="/login">
-                  <Button 
+                <Link href={loginUrl}>
+                  <Button
                     className="w-full"
                     data-testid="button-login"
                   >
@@ -451,7 +452,7 @@ export default function Playbook() {
                     Take the Quiz
                   </Button>
                 </Link>
-                <Link href={user ? "/dashboard" : "/login"}>
+                <Link href={user ? "/dashboard" : `/login?redirect=${encodeURIComponent(`/playbook/${archetype}`)}`}>
                   <Button variant="outline" className="w-full" data-testid="button-dashboard">
                     {user ? "View Dashboard" : "Log in to save / view dashboard"}
                   </Button>
@@ -491,7 +492,7 @@ export default function Playbook() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <Link href={user ? "/dashboard" : "/login"}>
+              <Link href={user ? "/dashboard" : `/login?redirect=${encodeURIComponent(`/playbook/${archetype}`)}`}>
                 <Button variant="ghost" size="sm" data-testid="button-dashboard">
                   {user ? "Dashboard" : "Log in to save / view dashboard"}
                 </Button>

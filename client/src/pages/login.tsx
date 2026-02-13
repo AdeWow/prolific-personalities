@@ -19,6 +19,12 @@ export default function Login() {
   const [isLoadingEmail, setIsLoadingEmail] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
+  // Persist redirect URL so it survives the OAuth/magic link round-trip
+  const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+  if (redirectParam) {
+    localStorage.setItem("loginRedirect", redirectParam);
+  }
+
   const handleGoogleSignIn = async () => {
     if (!isSupabaseConfigured) {
       toast({
