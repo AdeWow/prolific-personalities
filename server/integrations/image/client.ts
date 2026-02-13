@@ -2,19 +2,27 @@ import fs from "node:fs";
 import OpenAI, { toFile } from "openai";
 import { Buffer } from "node:buffer";
 
-export const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-});
+const AI_ENABLED = process.env.ENABLE_AI_COACH === "true";
+
+let openai: OpenAI | null = null;
+if (AI_ENABLED) {
+  openai = new OpenAI({
+    apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+  });
+}
 
 /**
  * Generate an image and return as Buffer.
- * Uses gpt-image-1 model via Replit AI Integrations.
+ * Uses gpt-image-1 model via OpenAI.
  */
 export async function generateImageBuffer(
   prompt: string,
   size: "1024x1024" | "512x512" | "256x256" = "1024x1024"
 ): Promise<Buffer> {
+  if (!openai) {
+    throw new Error("AI features are disabled");
+  }
   const response = await openai.images.generate({
     model: "gpt-image-1",
     prompt,
@@ -26,13 +34,16 @@ export async function generateImageBuffer(
 
 /**
  * Edit/combine multiple images into a composite.
- * Uses gpt-image-1 model via Replit AI Integrations.
+ * Uses gpt-image-1 model via OpenAI.
  */
 export async function editImages(
   imageFiles: string[],
   prompt: string,
   outputPath?: string
 ): Promise<Buffer> {
+  if (!openai) {
+    throw new Error("AI features are disabled");
+  }
   const images = await Promise.all(
     imageFiles.map((file) =>
       toFile(fs.createReadStream(file), file, {
@@ -56,4 +67,3 @@ export async function editImages(
 
   return imageBytes;
 }
-

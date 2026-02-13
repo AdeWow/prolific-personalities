@@ -40,6 +40,8 @@ import {
 import { registerChatRoutes } from "./integrations/chat";
 import OpenAI from "openai";
 import { buildSystemPrompt } from "./archetypePrompts";
+
+const AI_ENABLED = process.env.ENABLE_AI_COACH === "true";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import {
@@ -4215,10 +4217,13 @@ Sitemap: ${baseUrl}/sitemap.xml
   });
 
   // AI Coach endpoint - archetype-aware productivity coaching
-  const openai = new OpenAI({
-    apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  });
+  let openai: OpenAI | null = null;
+  if (AI_ENABLED) {
+    openai = new OpenAI({
+      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+    });
+  }
 
   const FREE_DAILY_LIMIT = 10;
 
@@ -4271,6 +4276,10 @@ Sitemap: ${baseUrl}/sitemap.xml
   });
 
   app.post("/api/ai-coach", aiCoachLimiter, async (req: any, res) => {
+    if (!openai) {
+      return res.status(501).json({ error: "AI coach is currently disabled" });
+    }
+
     try {
       const {
         message,
@@ -4399,6 +4408,10 @@ Sitemap: ${baseUrl}/sitemap.xml
 
   // Non-streaming version for mobile API
   app.post("/api/v1/ai-coach", aiCoachLimiter, async (req: any, res) => {
+    if (!openai) {
+      return res.status(501).json({ error: "AI coach is currently disabled" });
+    }
+
     try {
       const {
         message,
