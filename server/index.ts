@@ -3,6 +3,16 @@ import cors from "cors";
 import { registerRoutes, registerWebhookRoute } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing required environment variable: ${name}`);
+  return value;
+}
+
+requireEnv("DATABASE_URL");
+requireEnv("SUPABASE_URL");
+requireEnv("SUPABASE_SERVICE_ROLE_KEY");
+
 const app = express();
 
 // Trust proxy for correct client IP detection (required for rate limiting behind reverse proxies)
