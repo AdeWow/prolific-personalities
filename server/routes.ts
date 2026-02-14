@@ -89,6 +89,20 @@ const resend = process.env.RESEND_API_KEY
 
 // Register Stripe webhook handler with raw body parser (must be called before express.json())
 export function registerWebhookRoute(app: Express) {
+  // Surface missing webhook secret loudly at startup
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    if (process.env.NODE_ENV === "production") {
+      console.error(
+        "🚨 CRITICAL: STRIPE_WEBHOOK_SECRET is not set! " +
+        "All Stripe webhook requests will be REJECTED in production. " +
+        "Payments will NOT be processed. Set this variable immediately.",
+      );
+    } else {
+      console.warn(
+        "⚠️ STRIPE_WEBHOOK_SECRET not set — webhook signature verification disabled (dev only)",
+      );
+    }
+  }
   app.post(
     "/api/webhook/stripe",
     express.raw({ type: "application/json" }),
@@ -101,7 +115,7 @@ export function registerWebhookRoute(app: Express) {
       }
 
       try {
-        // Verify webhook signature if STRIPE_WEBHOOK_SECRET is set
+        // Verify webhook signature
         let event;
         if (process.env.STRIPE_WEBHOOK_SECRET) {
           event = stripe.webhooks.constructEvent(
@@ -109,10 +123,21 @@ export function registerWebhookRoute(app: Express) {
             sig,
             process.env.STRIPE_WEBHOOK_SECRET,
           );
+        } else if (process.env.NODE_ENV === "production") {
+          // PRODUCTION: refuse to process webhooks without signature verification
+          console.error(
+            "🚨 CRITICAL: STRIPE_WEBHOOK_SECRET is missing in production! " +
+            "Webhook requests will be rejected until this is configured. " +
+            "Set STRIPE_WEBHOOK_SECRET in your Railway environment variables.",
+          );
+          res.status(500).json({
+            error: "Webhook signature verification is not configured. Contact support.",
+          });
+          return;
         } else {
-          // Development mode - parse the event without verification
+          // DEV ONLY: allow unverified webhooks for local testing
           console.warn(
-            "⚠️ STRIPE_WEBHOOK_SECRET not set - webhook signature verification disabled (development only)",
+            "⚠️ STRIPE_WEBHOOK_SECRET not set — skipping signature verification (dev only)",
           );
           event = JSON.parse(req.body.toString());
         }
