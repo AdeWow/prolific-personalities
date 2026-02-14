@@ -92,27 +92,19 @@ export const archetypeProfiles: Record<string, NormalizedScores> = {
 };
 
 // Normalize scores to 0-100 range
-// Structure has 8 questions (range 8-40), others have 7 questions (range 7-35)
+// All 4 axes have 7 questions each (range 7-35)
 export function normalizeScores(scores: QuizScores): NormalizedScores {
-  const normalizeStandard = (score: number) => {
-    // Map 7-35 to 0-100 (for 7-question axes)
+  const normalize = (score: number) => {
     const min = 7;
     const max = 35;
     return Math.round(((score - min) / (max - min)) * 100);
   };
 
-  const normalizeStructure = (score: number) => {
-    // Map 8-40 to 0-100 (for 8-question Structure axis)
-    const min = 8;
-    const max = 40;
-    return Math.round(((score - min) / (max - min)) * 100);
-  };
-
   return {
-    structure: normalizeStructure(scores.structure),
-    motivation: normalizeStandard(scores.motivation),
-    cognitive: normalizeStandard(scores.cognitive),
-    task: normalizeStandard(scores.task),
+    structure: normalize(scores.structure),
+    motivation: normalize(scores.motivation),
+    cognitive: normalize(scores.cognitive),
+    task: normalize(scores.task),
   };
 }
 
