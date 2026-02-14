@@ -591,8 +591,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .status(400)
           .json({ message: "Invalid quiz data", errors: error.errors });
       } else {
-        console.error("Error saving quiz results:", error);
-        res.status(500).json({ message: "Failed to save quiz results" });
+        const err = error as Error;
+        console.error("QUIZ_RESULTS_SAVE_FAILED", {
+          message: err?.message,
+          name: err?.name,
+          stack: err?.stack,
+        });
+        res.status(500).json({ ok: false });
       }
     }
   });
