@@ -7,7 +7,7 @@ import memoize from "memoizee";
 const TOOLS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 export interface IStorage {
-  // User operations for Replit Auth
+  // User operations
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
@@ -101,7 +101,7 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  // User operations for Replit Auth
+  // User operations
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user || undefined;
