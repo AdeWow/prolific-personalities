@@ -705,8 +705,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { getPublishedPosts } = await import("./notion");
       const posts = await getPublishedPosts();
       res.json({ success: true, posts });
-    } catch (error) {
-      console.error("Failed to fetch blog posts:", error);
+    } catch (error: any) {
+      console.error("BLOG_POSTS_FETCH_FAILED", {
+        message: error?.message,
+        code: error?.code,
+        status: error?.status,
+        body: error?.body,
+        stack: error?.stack,
+      });
       res.status(500).json({ success: false, error: "Failed to fetch posts" });
     }
   });

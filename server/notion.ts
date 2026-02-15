@@ -1,9 +1,16 @@
 import { Client } from "@notionhq/client";
 
-const notion = new Client({ auth: process.env.NOTION_API_KEY });
-
-// Database ID will be set as env var
+const NOTION_API_KEY = process.env.NOTION_API_KEY;
 const BLOG_DATABASE_ID = process.env.NOTION_BLOG_DATABASE_ID;
+
+// Log config status on first import
+console.log("[Notion] Config check:", {
+  hasApiKey: !!NOTION_API_KEY,
+  hasDatabaseId: !!BLOG_DATABASE_ID,
+  databaseId: BLOG_DATABASE_ID ? `${BLOG_DATABASE_ID.slice(0, 8)}...` : "MISSING",
+});
+
+const notion = new Client({ auth: NOTION_API_KEY });
 
 // Cache for blog posts (5 minute TTL)
 let postsCache: { data: any[]; timestamp: number } | null = null;
