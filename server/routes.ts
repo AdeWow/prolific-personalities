@@ -1480,10 +1480,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({ sessionId: checkoutSession.id, url: checkoutSession.url });
     } catch (error: any) {
-      console.error("Error creating checkout session:", error);
-      res
-        .status(500)
-        .json({ message: "Error creating checkout session: " + error.message });
+      console.error("CHECKOUT_SESSION_CREATE_FAILED", {
+        message: error?.message,
+        name: error?.name,
+        stack: error?.stack,
+      });
+      res.status(500).json({ ok: false });
     }
   });
 
