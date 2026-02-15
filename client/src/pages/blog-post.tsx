@@ -1,9 +1,11 @@
 import { useRoute, Link } from 'wouter';
 import { useEffect, useRef, useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { blogPosts, BlogPost } from '@/data/blog-posts';
+import { NotionRenderer } from '@/components/notion-renderer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, ArrowRight, ChevronRight, ExternalLink } from 'lucide-react';
+import { Calendar, Clock, ArrowRight, ChevronRight, ExternalLink, Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { trackEvent } from '@/lib/analytics';
 import { SEOHead } from '@/components/seo-head';
@@ -37,30 +39,30 @@ function ReadingProgressBar() {
     const handleScroll = () => {
       const article = document.querySelector('article');
       if (!article) return;
-      
+
       const articleTop = article.offsetTop;
       const articleHeight = article.offsetHeight;
       const windowHeight = window.innerHeight;
       const scrollY = window.scrollY;
-      
+
       const start = articleTop;
       const end = articleTop + articleHeight - windowHeight;
       const current = scrollY - start;
       const total = end - start;
-      
+
       const percentage = Math.min(Math.max((current / total) * 100, 0), 100);
       setProgress(percentage);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <div className="fixed top-0 left-0 w-full h-[3px] bg-slate-200 z-50">
-      <div 
+      <div
         className="h-full bg-teal-500 transition-all duration-150 ease-out"
         style={{ width: `${progress}%` }}
       />
@@ -89,11 +91,11 @@ function Breadcrumbs({ postTitle }: { postTitle: string }) {
 function MidArticleCTA({ archetypeTags }: { archetypeTags: string[] }) {
   const isArchetypeSpecific = archetypeTags.length > 0;
   const archetype = archetypeTags[0];
-  
+
   return (
     <div className="my-10 mx-auto max-w-xl bg-slate-50 border border-slate-200 rounded-xl p-6 text-center">
       <p className="text-lg font-semibold text-slate-800 mb-2">
-        {isArchetypeSpecific 
+        {isArchetypeSpecific
           ? `Think you might be a ${archetype}?`
           : "Curious what's actually going on?"
         }
@@ -133,7 +135,7 @@ function EndOfArticleCTA() {
 
 function RelatedArchetypeLinks({ archetypeTags }: { archetypeTags: string[] }) {
   if (archetypeTags.length === 0) return null;
-  
+
   return (
     <div className="mt-8 pt-6 border-t border-slate-200">
       <p className="text-sm font-medium text-slate-500 mb-3">
@@ -160,28 +162,28 @@ function RelatedArchetypeLinks({ archetypeTags }: { archetypeTags: string[] }) {
 function RelatedPosts({ currentPost, allPosts }: { currentPost: BlogPost; allPosts: BlogPost[] }) {
   const relatedPosts = useMemo(() => {
     const otherPosts = allPosts.filter(p => p.id !== currentPost.id);
-    
+
     const scored = otherPosts.map(post => {
       let score = 0;
       const currentArchetypes = currentPost.tags.filter(t => ARCHETYPE_SLUGS[t]);
       const postArchetypes = post.tags.filter(t => ARCHETYPE_SLUGS[t]);
-      
+
       currentArchetypes.forEach(arch => {
         if (postArchetypes.includes(arch)) score += 10;
       });
-      
+
       currentPost.tags.forEach(tag => {
         if (post.tags.includes(tag) && !ARCHETYPE_SLUGS[tag]) score += 2;
       });
-      
+
       return { post, score };
     });
-    
+
     scored.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       return new Date(b.post.publishDate).getTime() - new Date(a.post.publishDate).getTime();
     });
-    
+
     return scored.slice(0, 3).map(s => s.post);
   }, [currentPost, allPosts]);
 
@@ -196,8 +198,8 @@ function RelatedPosts({ currentPost, allPosts }: { currentPost: BlogPost; allPos
             <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
               {post.image && (
                 <div className="h-32 overflow-hidden">
-                  <img 
-                    src={post.image} 
+                  <img
+                    src={post.image}
                     alt={post.title}
                     className="w-full h-full object-cover"
                   />
@@ -227,7 +229,7 @@ function insertMidArticleCTA(content: string, archetypeTags: string[]): { before
   const lines = content.split('\n');
   let headingCount = 0;
   let insertIndex = -1;
-  
+
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].startsWith('## ')) {
       headingCount++;
@@ -241,7 +243,7 @@ function insertMidArticleCTA(content: string, archetypeTags: string[]): { before
       }
     }
   }
-  
+
   if (insertIndex === -1) {
     let paragraphCount = 0;
     for (let i = 0; i < lines.length; i++) {
@@ -254,27 +256,96 @@ function insertMidArticleCTA(content: string, archetypeTags: string[]): { before
       }
     }
   }
-  
+
   if (insertIndex === -1) {
     insertIndex = Math.floor(lines.length * 0.4);
   }
-  
+
   return {
     before: lines.slice(0, insertIndex).join('\n'),
     after: lines.slice(insertIndex).join('\n')
   };
 }
 
+/** Split Notion blocks at roughly the 2nd heading for mid-article CTA insertion */
+function splitNotionBlocks(blocks: any[]): { before: any[]; after: any[] } {
+  let headingCount = 0;
+  let splitIndex = -1;
+
+  for (let i = 0; i < blocks.length; i++) {
+    const type = blocks[i].type;
+    if (type === 'heading_1' || type === 'heading_2') {
+      headingCount++;
+      if (headingCount === 2) {
+        // find end of this section (next heading or end)
+        let end = i + 1;
+        while (end < blocks.length && blocks[end].type !== 'heading_1' && blocks[end].type !== 'heading_2') {
+          end++;
+        }
+        splitIndex = end;
+        break;
+      }
+    }
+  }
+
+  if (splitIndex === -1) {
+    splitIndex = Math.floor(blocks.length * 0.4);
+  }
+
+  return {
+    before: blocks.slice(0, splitIndex),
+    after: blocks.slice(splitIndex),
+  };
+}
+
 export default function BlogPostPage() {
   const [, params] = useRoute('/blog/:slug');
-  const post = blogPosts.find(p => p.slug === params?.slug);
+  const slug = params?.slug;
+
+  // Try fetching from Notion API
+  const { data: notionPost, isLoading, isError } = useQuery({
+    queryKey: ["/api/blog/posts", slug],
+    queryFn: async () => {
+      const res = await fetch(`/api/blog/posts/${slug}`);
+      if (!res.ok) throw new Error("Not found");
+      const json = await res.json();
+      if (!json.success || !json.post) throw new Error("No post");
+      return json.post;
+    },
+    enabled: !!slug,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+
+  // Fall back to static post
+  const staticPost = blogPosts.find(p => p.slug === slug);
+
+  // Determine which source to use
+  const isNotion = !!notionPost?.content;
+  const post = isNotion
+    ? {
+        // Normalize Notion post into BlogPost shape for shared components
+        id: notionPost.id,
+        title: notionPost.title,
+        slug: notionPost.slug,
+        excerpt: notionPost.metaDescription || "",
+        content: "", // Notion content is blocks, not markdown
+        publishDate: notionPost.publishDate,
+        author: notionPost.author || "Prolific Personalities Team",
+        readTime: notionPost.readTime ? `${notionPost.readTime} min read` : "5 min read",
+        tags: [...(notionPost.archetypeTags || []), notionPost.category].filter(Boolean),
+        image: notionPost.featuredImage || undefined,
+        pinned: false,
+      } as BlogPost
+    : staticPost;
+
   const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (post) {
       trackEvent('blog_post_viewed', 'Blog', post.title);
       startTimeRef.current = Date.now();
-      
+
       return () => {
         if (startTimeRef.current) {
           const timeSpent = Math.floor((Date.now() - startTimeRef.current) / 1000);
@@ -285,6 +356,16 @@ export default function BlogPostPage() {
       };
     }
   }, [post]);
+
+  // Loading state
+  if (isLoading && !staticPost) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <span className="ml-2 text-muted-foreground">Loading post…</span>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -301,13 +382,14 @@ export default function BlogPostPage() {
 
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://prolificpersonalities.com';
   const canonicalUrl = `${origin}/blog/${post.slug}`;
-  const dynamicReadTime = calculateReadTime(post.content);
-  const wordCount = getWordCount(post.content);
   const archetypeTags = post.tags.filter(tag => ARCHETYPE_SLUGS[tag]);
-  const { before, after } = insertMidArticleCTA(post.content, archetypeTags);
-  
+
+  // For static posts, compute read time + split content for mid-CTA
+  const dynamicReadTime = isNotion ? post.readTime : calculateReadTime(post.content);
+  const wordCount = isNotion ? 0 : getWordCount(post.content);
+
   const publishDateISO = new Date(post.publishDate).toISOString();
-  const absoluteImageUrl = post.image 
+  const absoluteImageUrl = post.image
     ? (post.image.startsWith('http') ? post.image : `${origin}${post.image}`)
     : undefined;
 
@@ -336,7 +418,7 @@ export default function BlogPostPage() {
       "@type": "WebPage",
       "@id": canonicalUrl
     },
-    "wordCount": wordCount,
+    ...(wordCount > 0 && { "wordCount": wordCount }),
     "articleSection": post.tags[0] || "Productivity",
     "keywords": post.tags.join(", ")
   };
@@ -381,6 +463,42 @@ export default function BlogPostPage() {
     prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800 prose-pre:rounded-lg prose-pre:p-6
     prose-code:text-gray-800 dark:prose-code:text-gray-200`;
 
+  // Render content — Notion blocks or static markdown
+  const renderContent = () => {
+    if (isNotion && notionPost?.content) {
+      const { before, after } = splitNotionBlocks(notionPost.content);
+      return (
+        <>
+          <div className={proseClasses}>
+            <NotionRenderer blocks={before} />
+          </div>
+          <MidArticleCTA archetypeTags={archetypeTags} />
+          <div className={`${proseClasses} mb-16`}>
+            <NotionRenderer blocks={after} />
+          </div>
+        </>
+      );
+    }
+
+    // Static markdown fallback
+    const { before, after } = insertMidArticleCTA(post.content, archetypeTags);
+    return (
+      <>
+        <div className={proseClasses}>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {before}
+          </ReactMarkdown>
+        </div>
+        <MidArticleCTA archetypeTags={archetypeTags} />
+        <div className={`${proseClasses} mb-16`}>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {after}
+          </ReactMarkdown>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <ReadingProgressBar />
@@ -410,7 +528,7 @@ export default function BlogPostPage() {
                 </Badge>
               ))}
             </div>
-            
+
             <h1 id="post-title" className="text-4xl md:text-5xl font-bold mb-6 text-foreground leading-tight" data-testid="text-post-title">
               {post.title}
             </h1>
@@ -450,19 +568,7 @@ export default function BlogPostPage() {
             </div>
           )}
 
-          <div className={proseClasses}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {before}
-            </ReactMarkdown>
-          </div>
-
-          <MidArticleCTA archetypeTags={archetypeTags} />
-
-          <div className={`${proseClasses} mb-16`}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {after}
-            </ReactMarkdown>
-          </div>
+          {renderContent()}
 
           <EndOfArticleCTA />
 

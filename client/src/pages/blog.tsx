@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'wouter';
-import { blogPosts } from '@/data/blog-posts';
+import { useQuery } from '@tanstack/react-query';
+import { blogPosts as staticBlogPosts, BlogPost } from '@/data/blog-posts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +9,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Header } from '@/components/header';
 import { SEOHead } from '@/components/seo-head';
 import { EmailCaptureCard } from '@/components/email-capture-card';
-import { Calendar, Clock, Pin, ExternalLink } from 'lucide-react';
+import { Calendar, Clock, Pin, ExternalLink, Loader2 } from 'lucide-react';
 import { getArchetypeSlug } from '@/data/tools';
 
 const FILTER_CATEGORIES = [
@@ -61,32 +62,49 @@ function getPrioritizedTags(tags: string[], limit: number = 3): string[] {
 
 function matchesFilter(tags: string[], filter: string): boolean {
   if (filter === "All") return true;
-  
+
   if (filter === "Archetypes") {
     return tags.some(tag => ARCHETYPE_NAMES.includes(tag));
   }
-  
-  return tags.some(tag => 
+
+  return tags.some(tag =>
     tag.toLowerCase().includes(filter.toLowerCase()) ||
     filter.toLowerCase().includes(tag.toLowerCase())
   );
 }
 
-function TagBadge({ 
-  tag, 
+/** Normalize a Notion API post into the same shape as a static BlogPost */
+function notionPostToBlogPost(np: any): BlogPost {
+  return {
+    id: np.id,
+    title: np.title,
+    slug: np.slug,
+    excerpt: np.metaDescription || "",
+    content: "", // listing page doesn't need full content
+    publishDate: np.publishDate,
+    author: np.author || "Prolific Personalities Team",
+    readTime: np.readTime ? `${np.readTime} min read` : "5 min read",
+    tags: [...(np.archetypeTags || []), np.category].filter(Boolean),
+    image: np.featuredImage || undefined,
+    pinned: false,
+  };
+}
+
+function TagBadge({
+  tag,
   onClick,
   variant = "secondary"
-}: { 
-  tag: string; 
+}: {
+  tag: string;
   onClick: (tag: string) => void;
   variant?: "secondary" | "default";
 }) {
   const isArchetype = ARCHETYPE_NAMES.includes(tag);
   const archetypeSlug = isArchetype ? getArchetypeSlug(tag) : null;
-  
+
   return (
     <div className="relative group">
-      <Badge 
+      <Badge
         variant={variant}
         className="cursor-pointer hover:bg-primary/20 transition-colors"
         onClick={(e) => {
@@ -131,32 +149,48 @@ function DateReadTime({ date, readTime }: { date: string; readTime: string }) {
 
 export default function BlogPage() {
   const [activeFilter, setActiveFilter] = useState("All");
-  
+
+  // Fetch from Notion API, fall back to static data
+  const { data: notionPosts, isLoading } = useQuery<BlogPost[]>({
+    queryKey: ["/api/blog/posts"],
+    queryFn: async () => {
+      const res = await fetch("/api/blog/posts");
+      if (!res.ok) throw new Error("Failed to fetch posts");
+      const json = await res.json();
+      if (!json.success || !json.posts?.length) throw new Error("No posts");
+      return json.posts.map(notionPostToBlogPost);
+    },
+    staleTime: 5 * 60 * 1000, // 5 min — match server cache TTL
+    retry: 1,
+  });
+
+  // Use Notion posts if available, otherwise fall back to static
+  const allPosts: BlogPost[] = notionPosts || staticBlogPosts;
+
   const sortedPosts = useMemo(() => {
-    return [...blogPosts]
+    return [...allPosts]
       .filter(post => !post.pinned)
       .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
-  }, []);
-  
+  }, [allPosts]);
+
   const featuredPost = useMemo(() => {
-    return blogPosts.find(post => post.pinned);
-  }, []);
-  
+    return allPosts.find(post => post.pinned);
+  }, [allPosts]);
+
   const filteredPosts = useMemo(() => {
     if (activeFilter === "All") return sortedPosts;
     return sortedPosts.filter(post => matchesFilter(post.tags, activeFilter));
   }, [sortedPosts, activeFilter]);
-  
+
   const showFeaturedPost = useMemo(() => {
     if (!featuredPost) return false;
     if (activeFilter === "All") return true;
     return matchesFilter(featuredPost.tags, activeFilter);
   }, [featuredPost, activeFilter]);
-  
+
   const filterCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    const allPosts = [...blogPosts];
-    
+
     FILTER_CATEGORIES.forEach(filter => {
       if (filter === "All") {
         counts[filter] = allPosts.length;
@@ -164,15 +198,15 @@ export default function BlogPage() {
         counts[filter] = allPosts.filter(post => matchesFilter(post.tags, filter)).length;
       }
     });
-    
+
     return counts;
-  }, []);
-  
+  }, [allPosts]);
+
   const handleTagClick = (tag: string) => {
     if (ARCHETYPE_NAMES.includes(tag)) {
       setActiveFilter("Archetypes");
     } else {
-      const matchingFilter = FILTER_CATEGORIES.find(f => 
+      const matchingFilter = FILTER_CATEGORIES.find(f =>
         f.toLowerCase() === tag.toLowerCase() ||
         tag.toLowerCase().includes(f.toLowerCase())
       );
@@ -204,6 +238,14 @@ export default function BlogPage() {
             Research-backed strategies and insights to help you work with your natural productivity style
           </p>
         </div>
+
+        {/* Loading state */}
+        {isLoading && (
+          <div className="flex justify-center items-center py-12">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            <span className="ml-2 text-muted-foreground">Loading posts…</span>
+          </div>
+        )}
 
         {/* Filter Bar */}
         <div className="flex flex-wrap gap-2 justify-center mb-8 overflow-x-auto pb-2">
@@ -246,9 +288,9 @@ export default function BlogPage() {
                       Featured
                     </Badge>
                     {getPrioritizedTags(featuredPost.tags, 2).map((tag) => (
-                      <TagBadge 
-                        key={tag} 
-                        tag={tag} 
+                      <TagBadge
+                        key={tag}
+                        tag={tag}
                         onClick={handleTagClick}
                       />
                     ))}
@@ -290,9 +332,9 @@ export default function BlogPage() {
                 <CardHeader className="pb-2">
                   <div className="flex flex-wrap gap-2 mb-3">
                     {getPrioritizedTags(post.tags, 3).map((tag) => (
-                      <TagBadge 
-                        key={tag} 
-                        tag={tag} 
+                      <TagBadge
+                        key={tag}
+                        tag={tag}
                         onClick={handleTagClick}
                       />
                     ))}
@@ -312,11 +354,11 @@ export default function BlogPage() {
           ))}
         </div>
 
-        {filteredPosts.length === 0 && (
+        {filteredPosts.length === 0 && !isLoading && (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">No posts found for "{activeFilter}"</p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="mt-4"
               onClick={() => setActiveFilter("All")}
             >
@@ -327,7 +369,7 @@ export default function BlogPage() {
 
         {/* Email Capture */}
         <div className="mt-16 mb-8 max-w-3xl mx-auto">
-          <EmailCaptureCard 
+          <EmailCaptureCard
             title="Get productivity insights in your inbox"
             description="Subscribe for research-backed strategies, archetype deep-dives, and exclusive tips delivered weekly."
             buttonText="Subscribe Free"
@@ -341,7 +383,7 @@ export default function BlogPage() {
             Curious which archetype you are?
           </p>
           <Link href="/quiz">
-            <Button 
+            <Button
               className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-xl text-base font-medium"
               data-testid="button-take-quiz-blog"
             >

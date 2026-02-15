@@ -699,6 +699,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ── Blog API routes (Notion CMS) ────────────────────────────────
+  app.get("/api/blog/posts", async (req, res) => {
+    try {
+      const { getPublishedPosts } = await import("./notion");
+      const posts = await getPublishedPosts();
+      res.json({ success: true, posts });
+    } catch (error) {
+      console.error("Failed to fetch blog posts:", error);
+      res.status(500).json({ success: false, error: "Failed to fetch posts" });
+    }
+  });
+
+  app.get("/api/blog/posts/:slug", async (req, res) => {
+    try {
+      const { getPostBySlug } = await import("./notion");
+      const post = await getPostBySlug(req.params.slug);
+      if (!post) {
+        return res
+          .status(404)
+          .json({ success: false, error: "Post not found" });
+      }
+      res.json({ success: true, post });
+    } catch (error) {
+      console.error("Failed to fetch blog post:", error);
+      res
+        .status(500)
+        .json({ success: false, error: "Failed to fetch post" });
+    }
+  });
+
+  // Cache refresh endpoint (protected)
+  app.post("/api/blog/refresh-cache", async (req, res) => {
+    const secret =
+      req.headers["x-cron-secret"] ||
+      req.headers.authorization?.replace("Bearer ", "");
+    if (process.env.CRON_SECRET && secret !== process.env.CRON_SECRET) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const { clearBlogCache } = await import("./notion");
+    clearBlogCache();
+    res.json({ success: true, message: "Blog cache cleared" });
+  });
+
   // Seed tools database (one-time operation)
   app.post("/api/tools/seed", writeLimiter, async (req, res) => {
     try {
