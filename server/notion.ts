@@ -1,16 +1,28 @@
 import { Client } from "@notionhq/client";
 
-const NOTION_API_KEY = process.env.NOTION_API_KEY;
-const BLOG_DATABASE_ID = process.env.NOTION_BLOG_DATABASE_ID;
+// Lazily initialize the Notion client on first use
+// (ensures env vars are available and avoids esbuild bundling issues)
+let _notion: Client | null = null;
 
-// Log config status on first import
-console.log("[Notion] Config check:", {
-  hasApiKey: !!NOTION_API_KEY,
-  hasDatabaseId: !!BLOG_DATABASE_ID,
-  databaseId: BLOG_DATABASE_ID ? `${BLOG_DATABASE_ID.slice(0, 8)}...` : "MISSING",
-});
+function getNotionClient(): Client {
+  if (!_notion) {
+    const apiKey = process.env.NOTION_API_KEY;
+    if (!apiKey) {
+      throw new Error("NOTION_API_KEY is not set");
+    }
+    console.log("[Notion] Initializing client with API key:", `${apiKey.slice(0, 8)}...`);
+    _notion = new Client({ auth: apiKey });
+  }
+  return _notion;
+}
 
-const notion = new Client({ auth: NOTION_API_KEY });
+function getDatabaseId(): string {
+  const id = process.env.NOTION_BLOG_DATABASE_ID;
+  if (!id) {
+    throw new Error("NOTION_BLOG_DATABASE_ID is not set");
+  }
+  return id;
+}
 
 // Cache for blog posts (5 minute TTL)
 let postsCache: { data: any[]; timestamp: number } | null = null;
@@ -22,12 +34,13 @@ export async function getPublishedPosts() {
     return postsCache.data;
   }
 
-  if (!BLOG_DATABASE_ID) {
-    throw new Error("NOTION_BLOG_DATABASE_ID is not set");
-  }
+  const notion = getNotionClient();
+  const databaseId = getDatabaseId();
+
+  console.log("[Notion] Querying database:", `${databaseId.slice(0, 8)}...`);
 
   const response = await notion.databases.query({
-    database_id: BLOG_DATABASE_ID,
+    database_id: databaseId,
     filter: {
       and: [
         { property: "Status", select: { equals: "Published" } },
@@ -39,6 +52,8 @@ export async function getPublishedPosts() {
     },
     sorts: [{ property: "Publish Date", direction: "descending" }],
   });
+
+  console.log("[Notion] Query returned", response.results.length, "results");
 
   const posts = response.results.map((page: any) => ({
     id: page.id,
@@ -72,6 +87,7 @@ export async function getPostBySlug(slug: string) {
 }
 
 async function getPageBlocks(pageId: string) {
+  const notion = getNotionClient();
   const blocks: any[] = [];
   let cursor: string | undefined;
 
