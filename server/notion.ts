@@ -67,9 +67,9 @@ export async function getPublishedPosts() {
       ) || [],
     metaDescription:
       page.properties["Meta Description"]?.rich_text?.[0]?.plain_text || "",
-    featuredImage: page.properties["Featured Image"]?.url || "",
+    featuredImage: page.properties["Featured Image URL"]?.url || "",
     author: page.properties["Author"]?.select?.name || "",
-    readTime: page.properties["Read Time"]?.number || 5,
+    readTime: page.properties["Read Time (min)"]?.number || 5,
   }));
 
   postsCache = { data: posts, timestamp: Date.now() };
