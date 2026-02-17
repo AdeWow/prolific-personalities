@@ -70,7 +70,14 @@ export async function getPublishedPosts() {
     featuredImage: page.properties["Featured Image URL"]?.url || "",
     author: page.properties["Author"]?.select?.name || "",
     readTime: page.properties["Read Time (min)"]?.number || 5,
+    pinned: page.properties["Pinned"]?.checkbox === true,
   }));
+
+  // Sort: pinned first (by date desc), then non-pinned by date desc
+  posts.sort((a, b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    return new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime();
+  });
 
   postsCache = { data: posts, timestamp: Date.now() };
   return posts;

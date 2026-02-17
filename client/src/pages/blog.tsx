@@ -86,7 +86,7 @@ function notionPostToBlogPost(np: any): BlogPost {
     readTime: np.readTime ? `${np.readTime} min read` : "5 min read",
     tags: [...(np.archetypeTags || []), np.category].filter(Boolean),
     image: np.featuredImage || undefined,
-    pinned: false,
+    pinned: np.pinned === true,
   };
 }
 
