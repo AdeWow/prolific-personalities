@@ -40,6 +40,7 @@ import {
 import { registerChatRoutes } from "./integrations/chat";
 import OpenAI from "openai";
 import { buildSystemPrompt } from "./archetypePrompts";
+import { registerSeoRoutes } from "./seo";
 
 const AI_ENABLED = process.env.ENABLE_AI_COACH === "true";
 
@@ -386,6 +387,9 @@ export function registerWebhookRoute(app: Express) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // SEO: /robots.txt and /sitemap.xml
+  registerSeoRoutes(app);
+
   // Rate limiters for different types of endpoints
 
   // General API rate limiter - 100 requests per 15 minutes
