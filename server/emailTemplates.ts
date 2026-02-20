@@ -1230,7 +1230,7 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
           <p style="margin: 8px 0 0 0;">Your Partner in Productivity</p>
           <p style="margin-top: 16px; font-size: 12px;">
             You're receiving this as a Partner subscriber.<br>
-            <a href="${getPublicBaseUrl()}/settings" style="color: #94a3b8;">Manage email preferences</a>
+            <a href="${getPublicBaseUrl()}/unsubscribe" style="color: #94a3b8;">Manage email preferences</a>
           </p>
         </div>
       </div>
