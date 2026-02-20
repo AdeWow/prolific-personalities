@@ -41,6 +41,12 @@ import { registerChatRoutes } from "./integrations/chat";
 import OpenAI from "openai";
 import { buildSystemPrompt } from "./archetypePrompts";
 import { registerSeoRoutes } from "./seo";
+import {
+  getScheduledNewsletters,
+  getNewsletterContent,
+  getNewsletterSubject,
+  updateNewsletterStatus,
+} from "./newsletter";
 
 const AI_ENABLED = process.env.ENABLE_AI_COACH === "true";
 
@@ -59,6 +65,7 @@ import {
   magicLinkRateLimits,
   quizResults,
   orders,
+  emailCaptures,
 } from "@shared/schema";
 import { eq, and, gt, sql, desc, or } from "drizzle-orm";
 import { db } from "./db";
@@ -3178,6 +3185,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ─── Newsletter preview endpoint ───
+
+  app.post("/api/newsletter/preview", async (req, res) => {
+    if (!verifyCronAuth(req, res)) return;
+
+    try {
+      const { pageId, to } = z
+        .object({
+          pageId: z.string(),
+          to: z.string().email(),
+        })
+        .parse(req.body);
+
+      const [html, subject] = await Promise.all([
+        getNewsletterContent(pageId),
+        getNewsletterSubject(pageId),
+      ]);
+
+      const { data, error } = await resend!.emails.send({
+        from: "Prolific Personalities <support@prolificpersonalities.com>",
+        to,
+        subject: `[PREVIEW] ${subject}`,
+        html,
+      });
+
+      if (error) {
+        res.status(502).json({ success: false, error: (error as any).message || String(error) });
+        return;
+      }
+
+      res.json({ success: true, sentTo: to, subject, resendId: data?.id });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid request", errors: error.errors });
+      } else {
+        console.error("Error in newsletter preview:", error);
+        res.status(500).json({ message: "Failed to send newsletter preview" });
+      }
+    }
+  });
+
   // ─── Cron job core logic (extracted for reuse by /api/cron/daily) ───
 
   async function processAbandonedCarts() {
@@ -3402,6 +3450,162 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return { success: true, totalSent, totalFailed, results };
   }
 
+  // ─── Newsletter processing ─────────────────────────────────────────
+
+  async function processScheduledNewsletters() {
+    const newsletters = await getScheduledNewsletters();
+    if (newsletters.length === 0) {
+      console.log("📰 No scheduled newsletters to send");
+      return { processed: 0, totalSent: 0, totalFailed: 0, results: [] as any[] };
+    }
+
+    console.log(`📰 Found ${newsletters.length} scheduled newsletter(s)`);
+    const results: Array<{ id: string; title: string; sent: number; failed: number; status: string }> = [];
+    let totalSent = 0;
+    let totalFailed = 0;
+
+    for (const newsletter of newsletters) {
+      try {
+        // 1. Render the newsletter content to email HTML
+        const html = await getNewsletterContent(newsletter.id);
+        const subject = newsletter.subjectLine || newsletter.title;
+
+        // 2. Query recipients based on audience
+        let recipients: string[] = [];
+
+        if (newsletter.audience === "Partner Tier") {
+          const partners = await storage.getActivePartnerSubscribers();
+          recipients = partners.map((p) => p.email);
+        } else {
+          const allCaptures = await db.select().from(emailCaptures);
+          const subscribed = allCaptures.filter(
+            (r) => r.subscribed === 1 && r.unsubscribed === 0,
+          );
+
+          switch (newsletter.audience) {
+            case "All Subscribers":
+              recipients = subscribed.map((r) => r.email);
+              break;
+            case "Non-Buyers Only":
+              recipients = subscribed
+                .filter((r) => r.purchased === 0)
+                .map((r) => r.email);
+              break;
+            case "Buyers Only":
+              recipients = subscribed
+                .filter((r) => r.purchased === 1)
+                .map((r) => r.email);
+              break;
+            case "Specific Archetype": {
+              const slug = newsletter.archetypeFilter
+                .toLowerCase()
+                .replace(/^the\s+/, "")
+                .replace(/\s+/g, "-");
+              recipients = subscribed
+                .filter((r) => r.archetype === slug)
+                .map((r) => r.email);
+              break;
+            }
+            default:
+              recipients = subscribed.map((r) => r.email);
+          }
+        }
+
+        // Deduplicate
+        recipients = [...new Set(recipients)];
+
+        if (recipients.length === 0) {
+          console.log(`📰 Newsletter "${newsletter.title}" — no recipients for audience "${newsletter.audience}"`);
+          await updateNewsletterStatus(
+            newsletter.id,
+            "Sent",
+            0,
+            `No recipients matched audience "${newsletter.audience}" on ${new Date().toISOString().slice(0, 10)}`,
+          );
+          results.push({ id: newsletter.id, title: newsletter.title, sent: 0, failed: 0, status: "sent-empty" });
+          continue;
+        }
+
+        // 3. Send in batches of 50 via Resend batch API
+        let sent = 0;
+        let failed = 0;
+        const batchSize = 50;
+
+        for (let i = 0; i < recipients.length; i += batchSize) {
+          const batch = recipients.slice(i, i + batchSize);
+          const emails = batch.map((to) => ({
+            from: "Prolific Personalities <support@prolificpersonalities.com>",
+            to,
+            subject,
+            html,
+          }));
+
+          try {
+            const { data, error } = await resend!.batch.send(emails);
+            if (error) {
+              console.error(`📰 Batch send error for "${newsletter.title}":`, error);
+              failed += batch.length;
+            } else {
+              sent += batch.length;
+            }
+          } catch (batchErr: any) {
+            console.error(`📰 Batch send exception for "${newsletter.title}":`, batchErr);
+            failed += batch.length;
+          }
+
+          // 1-second delay between batches
+          if (i + batchSize < recipients.length) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+        }
+
+        totalSent += sent;
+        totalFailed += failed;
+
+        // 4. Update Notion status
+        const dateStr = new Date().toISOString().slice(0, 10);
+        if (failed === 0) {
+          await updateNewsletterStatus(
+            newsletter.id,
+            "Sent",
+            sent,
+            `Sent to ${sent} subscribers on ${dateStr}`,
+          );
+          results.push({ id: newsletter.id, title: newsletter.title, sent, failed, status: "sent" });
+        } else if (sent > 0) {
+          await updateNewsletterStatus(
+            newsletter.id,
+            "Sent",
+            sent,
+            `Sent to ${sent} subscribers on ${dateStr} (${failed} failed)`,
+          );
+          results.push({ id: newsletter.id, title: newsletter.title, sent, failed, status: "partial" });
+        } else {
+          await updateNewsletterStatus(
+            newsletter.id,
+            "Failed",
+            0,
+            `All ${failed} sends failed on ${dateStr}`,
+          );
+          results.push({ id: newsletter.id, title: newsletter.title, sent, failed, status: "failed" });
+        }
+
+        console.log(`📰 Newsletter "${newsletter.title}" — ${sent} sent, ${failed} failed`);
+      } catch (err: any) {
+        console.error(`📰 Newsletter "${newsletter.title}" processing error:`, err);
+        try {
+          await updateNewsletterStatus(newsletter.id, "Failed", 0, err.message || String(err));
+        } catch (updateErr) {
+          console.error("📰 Failed to update newsletter status:", updateErr);
+        }
+        results.push({ id: newsletter.id, title: newsletter.title, sent: 0, failed: 0, status: "error" });
+      }
+    }
+
+    console.log(`📰 Newsletter cron completed: ${newsletters.length} processed, ${totalSent} sent, ${totalFailed} failed`);
+    return { processed: newsletters.length, totalSent, totalFailed, results };
+  }
+
   // ─── Cron helper: auth + resend check ─────────────────────────────
 
   function verifyCronAuth(req: any, res: any): boolean {
@@ -3495,6 +3699,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (err: any) {
       console.error("Daily cron — onboarding sequence failed:", err);
       results.onboarding = { success: false, error: err.message || String(err) };
+    }
+
+    // 4. Newsletters
+    try {
+      const r = await processScheduledNewsletters();
+      results.newsletters = { success: true, sent: r.totalSent, processed: r.processed };
+    } catch (err: any) {
+      console.error("Daily cron — newsletters failed:", err);
+      results.newsletters = { success: false, error: err.message || String(err) };
     }
 
     console.log(`📧 Daily cron completed:`, JSON.stringify(results));
