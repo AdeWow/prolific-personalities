@@ -2904,10 +2904,233 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Abandoned Cart Email Cron Job - Call this endpoint daily via external cron service
-  // Example: Use cron-job.org to hit this endpoint daily with the CRON_SECRET header
-  app.post("/api/cron/abandoned-cart", async (req, res) => {
-    // Verify cron secret for security
+  // ─── Cron job core logic (extracted for reuse by /api/cron/daily) ───
+
+  async function processAbandonedCarts() {
+    const abandonedCheckouts = await storage.getAbandonedCheckouts();
+    const results = [];
+
+    for (const checkout of abandonedCheckouts) {
+      let email = checkout.email;
+
+      if (!email && checkout.stripeCheckoutSessionId && stripe) {
+        try {
+          const stripeSession = await stripe.checkout.sessions.retrieve(checkout.stripeCheckoutSessionId);
+          if (stripeSession.customer_details?.email) {
+            email = stripeSession.customer_details.email;
+            await storage.updateCheckoutAttemptEmail(checkout.id, email);
+          }
+        } catch (stripeError) {
+          console.error(`Failed to fetch email from Stripe for checkout ${checkout.id}:`, stripeError);
+        }
+      }
+
+      if (!email) {
+        results.push({ id: checkout.id, status: "skipped", reason: "No email available" });
+        continue;
+      }
+
+      try {
+        const archetypeInfo = getArchetypeInfo(checkout.archetype);
+        if (!archetypeInfo) {
+          results.push({ id: checkout.id, status: "skipped", reason: "Unknown archetype" });
+          continue;
+        }
+
+        const baseUrl = getPublicBaseUrl();
+        const { subject, html } = generateAbandonedCartEmail({
+          recipientEmail: email,
+          archetype: { id: checkout.archetype, title: archetypeInfo.title },
+          checkoutUrl: `${baseUrl}/results/${checkout.sessionId}#premium`,
+          unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
+        });
+
+        const { data, error } = await resend!.emails.send({
+          from: "Prolific Personalities <support@prolificpersonalities.com>",
+          to: email,
+          subject,
+          html,
+        });
+
+        if (error) {
+          console.error(`Resend error for ${email}:`, error);
+          results.push({ id: checkout.id, email, status: "failed", error: error.message });
+          continue;
+        }
+
+        await storage.markAbandonedEmailSent(checkout.id);
+        results.push({ id: checkout.id, email, status: "sent", resendId: data?.id });
+        console.log(`✅ Abandoned cart email sent to ${email} (${data?.id})`);
+      } catch (err) {
+        console.error(`Failed to send abandoned cart email to ${email}:`, err);
+        results.push({ id: checkout.id, email, status: "failed", error: String(err) });
+      }
+    }
+
+    const sent = results.filter((r) => r.status === "sent").length;
+    const skipped = results.filter((r) => r.status === "skipped").length;
+    const failed = results.filter((r) => r.status === "failed").length;
+    console.log(`📧 Abandoned cart cron completed: ${sent} sent, ${skipped} skipped, ${failed} failed`);
+    return { success: true, processed: abandonedCheckouts.length, sent, skipped, failed, results };
+  }
+
+  async function processWeeklyAccountability() {
+    const partnerSubscribers = await storage.getActivePartnerSubscribers();
+    const epochStart = new Date('2026-01-01').getTime();
+    const weeksSinceEpoch = Math.floor((Date.now() - epochStart) / (7 * 24 * 60 * 60 * 1000));
+    const weekNumber = (weeksSinceEpoch % 8) + 1;
+    const results = [];
+
+    for (const subscriber of partnerSubscribers) {
+      try {
+        const { subject, html } = generateWeeklyAccountabilityEmail({
+          firstName: subscriber.firstName,
+          archetype: subscriber.archetype,
+          weekNumber,
+        });
+
+        const { data, error } = await resend!.emails.send({
+          from: "Prolific Personalities <support@prolificpersonalities.com>",
+          to: [subscriber.email],
+          subject,
+          html,
+        });
+
+        if (error) {
+          console.error(`Failed to send weekly email to ${subscriber.email}:`, error);
+          results.push({ userId: subscriber.userId, email: subscriber.email, status: "failed", error: error.message });
+          continue;
+        }
+
+        results.push({ userId: subscriber.userId, email: subscriber.email, status: "sent", resendId: data?.id });
+        console.log(`✅ Weekly accountability email sent to ${subscriber.email} (${data?.id})`);
+      } catch (err) {
+        console.error(`Failed to send weekly email to ${subscriber.email}:`, err);
+        results.push({ userId: subscriber.userId, email: subscriber.email, status: "failed", error: String(err) });
+      }
+    }
+
+    const sent = results.filter((r) => r.status === "sent").length;
+    const failed = results.filter((r) => r.status === "failed").length;
+    console.log(`📧 Weekly accountability cron completed: ${sent} sent, ${failed} failed`);
+    return { success: true, weekNumber, processed: partnerSubscribers.length, sent, failed, results };
+  }
+
+  async function processNurtureSequence() {
+    const nurtureDays = [3, 5, 7, 10, 14];
+    const results: { day: number; sent: number; failed: number }[] = [];
+
+    for (const dayNumber of nurtureDays) {
+      const emailCaptures = await storage.getEmailCapturesForNurture(dayNumber);
+      let sent = 0;
+      let failed = 0;
+
+      for (const capture of emailCaptures) {
+        if (!capture.archetype) continue;
+
+        try {
+          const user = { email: capture.email, archetype: capture.archetype };
+          let emailContent;
+
+          switch (dayNumber) {
+            case 3: emailContent = generateDay3NurtureEmail(user); break;
+            case 5: emailContent = generateDay5NurtureEmail(user); break;
+            case 7: emailContent = generateDay7NurtureEmail(user); break;
+            case 10: emailContent = generateDay10NurtureEmail(user); break;
+            case 14: emailContent = generateDay14NurtureEmail(user); break;
+            default: continue;
+          }
+
+          const { data, error } = await resend!.emails.send({
+            from: "John from Prolific Personalities <support@prolificpersonalities.com>",
+            to: capture.email,
+            subject: emailContent.subject,
+            html: emailContent.html,
+          });
+
+          if (error) {
+            console.error(`Failed to send day ${dayNumber} nurture to ${capture.email}:`, error);
+            failed++;
+            continue;
+          }
+
+          await storage.markNurtureEmailSent(capture.id, dayNumber);
+          await storage.logEmail(capture.email, `nurture_day${dayNumber}`, capture.archetype, data?.id);
+          console.log(`✅ Day ${dayNumber} nurture email sent to ${capture.email}`);
+          sent++;
+        } catch (err) {
+          console.error(`Failed to send day ${dayNumber} nurture to ${capture.email}:`, err);
+          failed++;
+        }
+      }
+
+      results.push({ day: dayNumber, sent, failed });
+    }
+
+    const totalSent = results.reduce((acc, r) => acc + r.sent, 0);
+    const totalFailed = results.reduce((acc, r) => acc + r.failed, 0);
+    console.log(`📧 Nurture sequence cron completed: ${totalSent} sent, ${totalFailed} failed`);
+    return { success: true, totalSent, totalFailed, results };
+  }
+
+  async function processOnboardingSequence() {
+    const onboardDays = [3, 7, 30];
+    const results: { day: number; sent: number; failed: number }[] = [];
+
+    for (const dayNumber of onboardDays) {
+      const emailCaptures = await storage.getEmailCapturesForOnboarding(dayNumber);
+      let sent = 0;
+      let failed = 0;
+
+      for (const capture of emailCaptures) {
+        if (!capture.archetype) continue;
+
+        try {
+          const user = { email: capture.email, archetype: capture.archetype };
+          let emailContent;
+
+          switch (dayNumber) {
+            case 3: emailContent = generateDay3OnboardEmail(user); break;
+            case 7: emailContent = generateDay7OnboardEmail(user); break;
+            case 30: emailContent = generateDay30OnboardEmail(user); break;
+            default: continue;
+          }
+
+          const { data, error } = await resend!.emails.send({
+            from: "John from Prolific Personalities <support@prolificpersonalities.com>",
+            to: capture.email,
+            subject: emailContent.subject,
+            html: emailContent.html,
+          });
+
+          if (error) {
+            console.error(`Failed to send day ${dayNumber} onboard to ${capture.email}:`, error);
+            failed++;
+            continue;
+          }
+
+          await storage.markOnboardingEmailSent(capture.id, dayNumber);
+          await storage.logEmail(capture.email, `onboard_day${dayNumber}`, capture.archetype, data?.id);
+          console.log(`✅ Day ${dayNumber} onboard email sent to ${capture.email}`);
+          sent++;
+        } catch (err) {
+          console.error(`Failed to send day ${dayNumber} onboard to ${capture.email}:`, err);
+          failed++;
+        }
+      }
+
+      results.push({ day: dayNumber, sent, failed });
+    }
+
+    const totalSent = results.reduce((acc, r) => acc + r.sent, 0);
+    const totalFailed = results.reduce((acc, r) => acc + r.failed, 0);
+    console.log(`📧 Onboarding sequence cron completed: ${totalSent} sent, ${totalFailed} failed`);
+    return { success: true, totalSent, totalFailed, results };
+  }
+
+  // ─── Cron helper: auth + resend check ─────────────────────────────
+
+  function verifyCronAuth(req: any, res: any): boolean {
     const cronSecret = process.env.CRON_SECRET;
     const providedSecret =
       req.headers["x-cron-secret"] ||
@@ -2915,408 +3138,97 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     if (cronSecret && providedSecret !== cronSecret) {
       res.status(401).json({ error: "Unauthorized" });
-      return;
+      return false;
     }
-
     if (!resend) {
       res.status(503).json({ error: "Email service not configured" });
-      return;
+      return false;
     }
+    return true;
+  }
 
+  // ─── Individual cron routes ───────────────────────────────────────
+
+  app.post("/api/cron/abandoned-cart", async (req, res) => {
+    if (!verifyCronAuth(req, res)) return;
     try {
-      // Get abandoned checkouts (older than 1 hour, not completed, email not sent)
-      const abandonedCheckouts = await storage.getAbandonedCheckouts();
-
-      const results = [];
-
-      for (const checkout of abandonedCheckouts) {
-        let email = checkout.email;
-        
-        // If no email, try to get it from Stripe checkout session
-        if (!email && checkout.stripeCheckoutSessionId && stripe) {
-          try {
-            const stripeSession = await stripe.checkout.sessions.retrieve(checkout.stripeCheckoutSessionId);
-            if (stripeSession.customer_details?.email) {
-              email = stripeSession.customer_details.email;
-              // Update the checkout attempt with the email for future use
-              await storage.updateCheckoutAttemptEmail(checkout.id, email);
-            }
-          } catch (stripeError) {
-            console.error(`Failed to fetch email from Stripe for checkout ${checkout.id}:`, stripeError);
-          }
-        }
-        
-        if (!email) {
-          results.push({
-            id: checkout.id,
-            status: "skipped",
-            reason: "No email available",
-          });
-          continue;
-        }
-
-        try {
-          // Get archetype info
-          const archetypeInfo = getArchetypeInfo(checkout.archetype);
-          if (!archetypeInfo) {
-            results.push({
-              id: checkout.id,
-              status: "skipped",
-              reason: "Unknown archetype",
-            });
-            continue;
-          }
-
-          const baseUrl = getPublicBaseUrl();
-
-          // Generate abandoned cart email
-          const { subject, html } = generateAbandonedCartEmail({
-            recipientEmail: email,
-            archetype: {
-              id: checkout.archetype,
-              title: archetypeInfo.title,
-            },
-            checkoutUrl: `${baseUrl}/results/${checkout.sessionId}#premium`,
-            unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`,
-          });
-
-          // Send the email
-          const { data, error } = await resend.emails.send({
-            from: "Prolific Personalities <support@prolificpersonalities.com>",
-            to: email,
-            subject,
-            html,
-          });
-
-          // Check for Resend errors before marking as sent
-          if (error) {
-            console.error(`Resend error for ${email}:`, error);
-            results.push({
-              id: checkout.id,
-              email: email,
-              status: "failed",
-              error: error.message,
-            });
-            continue;
-          }
-
-          // Mark as sent only on success
-          await storage.markAbandonedEmailSent(checkout.id);
-          results.push({
-            id: checkout.id,
-            email: email,
-            status: "sent",
-            resendId: data?.id,
-          });
-          console.log(
-            `✅ Abandoned cart email sent to ${email} (${data?.id})`,
-          );
-        } catch (err) {
-          console.error(
-            `Failed to send abandoned cart email to ${email}:`,
-            err,
-          );
-          results.push({
-            id: checkout.id,
-            email: email,
-            status: "failed",
-            error: String(err),
-          });
-        }
-      }
-
-      console.log(
-        `📧 Abandoned cart cron completed: ${results.filter((r) => r.status === "sent").length} sent, ${results.filter((r) => r.status === "skipped").length} skipped, ${results.filter((r) => r.status === "failed").length} failed`,
-      );
-      res.json({
-        success: true,
-        processed: abandonedCheckouts.length,
-        sent: results.filter((r) => r.status === "sent").length,
-        skipped: results.filter((r) => r.status === "skipped").length,
-        failed: results.filter((r) => r.status === "failed").length,
-        results,
-      });
+      res.json(await processAbandonedCarts());
     } catch (error) {
       console.error("Abandoned cart cron error:", error);
       res.status(500).json({ error: "Failed to process abandoned carts" });
     }
   });
 
-  // Weekly Accountability Email Cron Job - Call this endpoint weekly via external cron service
-  // Example: Use cron-job.org to hit this endpoint every Monday at 9 AM with the CRON_SECRET header
   app.post("/api/cron/weekly-accountability", async (req, res) => {
-    // Verify cron secret for security
-    const cronSecret = process.env.CRON_SECRET;
-    const providedSecret =
-      req.headers["x-cron-secret"] ||
-      req.headers.authorization?.replace("Bearer ", "");
-
-    if (cronSecret && providedSecret !== cronSecret) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
-    }
-
-    if (!resend) {
-      res.status(503).json({ error: "Email service not configured" });
-      return;
-    }
-
+    if (!verifyCronAuth(req, res)) return;
     try {
-      // Get active Partner subscribers
-      const partnerSubscribers = await storage.getActivePartnerSubscribers();
-
-      // Calculate week number (1-8 rotating cycle based on weeks since a fixed date)
-      // Using Jan 1, 2026 as epoch for cleaner tracking
-      const epochStart = new Date('2026-01-01').getTime();
-      const weeksSinceEpoch = Math.floor((Date.now() - epochStart) / (7 * 24 * 60 * 60 * 1000));
-      const weekNumber = (weeksSinceEpoch % 8) + 1; // 1-8 rotating cycle
-      
-      const results = [];
-
-      for (const subscriber of partnerSubscribers) {
-        try {
-          // Generate weekly accountability email
-          const { subject, html } = generateWeeklyAccountabilityEmail({
-            firstName: subscriber.firstName,
-            archetype: subscriber.archetype,
-            weekNumber,
-          });
-
-          const { data, error } = await resend.emails.send({
-            from: "Prolific Personalities <support@prolificpersonalities.com>",
-            to: [subscriber.email],
-            subject,
-            html,
-          });
-
-          if (error) {
-            console.error(`Failed to send weekly email to ${subscriber.email}:`, error);
-            results.push({
-              userId: subscriber.userId,
-              email: subscriber.email,
-              status: "failed",
-              error: error.message,
-            });
-            continue;
-          }
-
-          results.push({
-            userId: subscriber.userId,
-            email: subscriber.email,
-            status: "sent",
-            resendId: data?.id,
-          });
-          console.log(`✅ Weekly accountability email sent to ${subscriber.email} (${data?.id})`);
-        } catch (err) {
-          console.error(`Failed to send weekly email to ${subscriber.email}:`, err);
-          results.push({
-            userId: subscriber.userId,
-            email: subscriber.email,
-            status: "failed",
-            error: String(err),
-          });
-        }
-      }
-
-      console.log(
-        `📧 Weekly accountability cron completed: ${results.filter((r) => r.status === "sent").length} sent, ${results.filter((r) => r.status === "failed").length} failed`
-      );
-      res.json({
-        success: true,
-        weekNumber,
-        processed: partnerSubscribers.length,
-        sent: results.filter((r) => r.status === "sent").length,
-        failed: results.filter((r) => r.status === "failed").length,
-        results,
-      });
+      res.json(await processWeeklyAccountability());
     } catch (error) {
       console.error("Weekly accountability cron error:", error);
       res.status(500).json({ error: "Failed to send weekly accountability emails" });
     }
   });
 
-  // Nurture sequence cron endpoint - sends nurture emails to non-buyers
   app.post("/api/cron/nurture-sequence", async (req, res) => {
-    const cronSecret = process.env.CRON_SECRET;
-    const providedSecret =
-      req.headers["x-cron-secret"] ||
-      req.headers.authorization?.replace("Bearer ", "");
-
-    if (cronSecret && providedSecret !== cronSecret) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
-    }
-
-    if (!resend) {
-      res.status(503).json({ error: "Email service not configured" });
-      return;
-    }
-
+    if (!verifyCronAuth(req, res)) return;
     try {
-      const nurtureDays = [3, 5, 7, 10, 14];
-      const results: { day: number; sent: number; failed: number }[] = [];
-
-      for (const dayNumber of nurtureDays) {
-        const emailCaptures = await storage.getEmailCapturesForNurture(dayNumber);
-        let sent = 0;
-        let failed = 0;
-
-        for (const capture of emailCaptures) {
-          if (!capture.archetype) continue;
-
-          try {
-            const user = { email: capture.email, archetype: capture.archetype };
-            let emailContent;
-
-            switch (dayNumber) {
-              case 3:
-                emailContent = generateDay3NurtureEmail(user);
-                break;
-              case 5:
-                emailContent = generateDay5NurtureEmail(user);
-                break;
-              case 7:
-                emailContent = generateDay7NurtureEmail(user);
-                break;
-              case 10:
-                emailContent = generateDay10NurtureEmail(user);
-                break;
-              case 14:
-                emailContent = generateDay14NurtureEmail(user);
-                break;
-              default:
-                continue;
-            }
-
-            const { data, error } = await resend.emails.send({
-              from: "John from Prolific Personalities <support@prolificpersonalities.com>",
-              to: capture.email,
-              subject: emailContent.subject,
-              html: emailContent.html,
-            });
-
-            if (error) {
-              console.error(`Failed to send day ${dayNumber} nurture to ${capture.email}:`, error);
-              failed++;
-              continue;
-            }
-
-            await storage.markNurtureEmailSent(capture.id, dayNumber);
-            await storage.logEmail(capture.email, `nurture_day${dayNumber}`, capture.archetype, data?.id);
-            console.log(`✅ Day ${dayNumber} nurture email sent to ${capture.email}`);
-            sent++;
-          } catch (err) {
-            console.error(`Failed to send day ${dayNumber} nurture to ${capture.email}:`, err);
-            failed++;
-          }
-        }
-
-        results.push({ day: dayNumber, sent, failed });
-      }
-
-      const totalSent = results.reduce((acc, r) => acc + r.sent, 0);
-      const totalFailed = results.reduce((acc, r) => acc + r.failed, 0);
-      
-      console.log(`📧 Nurture sequence cron completed: ${totalSent} sent, ${totalFailed} failed`);
-      res.json({
-        success: true,
-        totalSent,
-        totalFailed,
-        results,
-      });
+      res.json(await processNurtureSequence());
     } catch (error) {
       console.error("Nurture sequence cron error:", error);
       res.status(500).json({ error: "Failed to send nurture emails" });
     }
   });
 
-  // Onboarding sequence cron endpoint - sends onboarding emails to buyers
   app.post("/api/cron/onboarding-sequence", async (req, res) => {
-    const cronSecret = process.env.CRON_SECRET;
-    const providedSecret =
-      req.headers["x-cron-secret"] ||
-      req.headers.authorization?.replace("Bearer ", "");
-
-    if (cronSecret && providedSecret !== cronSecret) {
-      res.status(401).json({ error: "Unauthorized" });
-      return;
-    }
-
-    if (!resend) {
-      res.status(503).json({ error: "Email service not configured" });
-      return;
-    }
-
+    if (!verifyCronAuth(req, res)) return;
     try {
-      const onboardDays = [3, 7, 30];
-      const results: { day: number; sent: number; failed: number }[] = [];
-
-      for (const dayNumber of onboardDays) {
-        const emailCaptures = await storage.getEmailCapturesForOnboarding(dayNumber);
-        let sent = 0;
-        let failed = 0;
-
-        for (const capture of emailCaptures) {
-          if (!capture.archetype) continue;
-
-          try {
-            const user = { email: capture.email, archetype: capture.archetype };
-            let emailContent;
-
-            switch (dayNumber) {
-              case 3:
-                emailContent = generateDay3OnboardEmail(user);
-                break;
-              case 7:
-                emailContent = generateDay7OnboardEmail(user);
-                break;
-              case 30:
-                emailContent = generateDay30OnboardEmail(user);
-                break;
-              default:
-                continue;
-            }
-
-            const { data, error } = await resend.emails.send({
-              from: "John from Prolific Personalities <support@prolificpersonalities.com>",
-              to: capture.email,
-              subject: emailContent.subject,
-              html: emailContent.html,
-            });
-
-            if (error) {
-              console.error(`Failed to send day ${dayNumber} onboard to ${capture.email}:`, error);
-              failed++;
-              continue;
-            }
-
-            await storage.markOnboardingEmailSent(capture.id, dayNumber);
-            await storage.logEmail(capture.email, `onboard_day${dayNumber}`, capture.archetype, data?.id);
-            console.log(`✅ Day ${dayNumber} onboard email sent to ${capture.email}`);
-            sent++;
-          } catch (err) {
-            console.error(`Failed to send day ${dayNumber} onboard to ${capture.email}:`, err);
-            failed++;
-          }
-        }
-
-        results.push({ day: dayNumber, sent, failed });
-      }
-
-      const totalSent = results.reduce((acc, r) => acc + r.sent, 0);
-      const totalFailed = results.reduce((acc, r) => acc + r.failed, 0);
-      
-      console.log(`📧 Onboarding sequence cron completed: ${totalSent} sent, ${totalFailed} failed`);
-      res.json({
-        success: true,
-        totalSent,
-        totalFailed,
-        results,
-      });
+      res.json(await processOnboardingSequence());
     } catch (error) {
       console.error("Onboarding sequence cron error:", error);
       res.status(500).json({ error: "Failed to send onboarding emails" });
     }
+  });
+
+  // ─── Unified daily cron endpoint ──────────────────────────────────
+
+  app.post("/api/cron/daily", async (req, res) => {
+    if (!verifyCronAuth(req, res)) return;
+
+    const results: Record<string, any> = {};
+
+    // 1. Abandoned carts
+    try {
+      const r = await processAbandonedCarts();
+      results.abandonedCart = { success: true, sent: r.sent };
+    } catch (err: any) {
+      console.error("Daily cron — abandoned cart failed:", err);
+      results.abandonedCart = { success: false, error: err.message || String(err) };
+    }
+
+    // 2. Nurture sequence
+    try {
+      const r = await processNurtureSequence();
+      results.nurture = { success: true, sent: r.totalSent };
+    } catch (err: any) {
+      console.error("Daily cron — nurture sequence failed:", err);
+      results.nurture = { success: false, error: err.message || String(err) };
+    }
+
+    // 3. Onboarding sequence
+    try {
+      const r = await processOnboardingSequence();
+      results.onboarding = { success: true, sent: r.totalSent };
+    } catch (err: any) {
+      console.error("Daily cron — onboarding sequence failed:", err);
+      results.onboarding = { success: false, error: err.message || String(err) };
+    }
+
+    console.log(`📧 Daily cron completed:`, JSON.stringify(results));
+    res.json({
+      success: true,
+      timestamp: new Date().toISOString(),
+      results,
+    });
   });
 
   // robots.txt for SEO
