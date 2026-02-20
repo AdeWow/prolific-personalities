@@ -32,7 +32,7 @@ import {
   generateDay7OnboardEmail,
   generateDay30OnboardEmail,
 } from "./emailTemplates";
-import { getArchetypeInfo } from "./archetypeData";
+import { getArchetypeInfo, archetypeData } from "./archetypeData";
 import {
   insertCheckoutAttemptSchema,
   insertUnsubscribeFeedbackSchema,
@@ -2900,6 +2900,280 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         console.error("Error sending test emails:", error);
         res.status(500).json({ message: "Failed to send test emails" });
+      }
+    }
+  });
+
+  // ─── Dev-only email preview endpoints ───
+
+  app.get("/api/test/email-preview/list", (req, res) => {
+    if (process.env.NODE_ENV === "production") {
+      res.status(404).json({ message: "Not available in production" });
+      return;
+    }
+
+    res.json({
+      templates: [
+        "welcome",
+        "results",
+        "nurture-day3",
+        "nurture-day5",
+        "nurture-day7",
+        "nurture-day10",
+        "nurture-day14",
+        "abandoned-cart",
+        "playbook-delivery",
+        "onboarding-day3",
+        "onboarding-day7",
+        "onboarding-day30",
+        "weekly-accountability",
+        "payment-failure",
+      ],
+    });
+  });
+
+  app.post("/api/test/email-preview", async (req, res) => {
+    if (process.env.NODE_ENV === "production") {
+      res.status(404).json({ message: "Not available in production" });
+      return;
+    }
+
+    try {
+      if (!resend) {
+        res.status(503).json({ message: "Email service not configured (RESEND_API_KEY missing)" });
+        return;
+      }
+
+      const parsed = z
+        .object({
+          template: z.string(),
+          to: z.string().email(),
+          archetype: z.string().optional().default("Chaotic Creative"),
+        })
+        .parse(req.body);
+
+      const { template, to } = parsed;
+      const archetypeSlug = parsed.archetype
+        .toLowerCase()
+        .replace(/^the\s+/, "")
+        .replace(/\s+/g, "-");
+
+      const archetypeInfo = getArchetypeInfo(archetypeSlug);
+      if (!archetypeInfo) {
+        res.status(400).json({
+          message: `Unknown archetype: "${parsed.archetype}". Valid archetypes: ${Object.keys(archetypeData).join(", ")}`,
+        });
+        return;
+      }
+
+      const baseUrl = getPublicBaseUrl();
+      const resultsUrl = `${baseUrl}/results?session=test-preview-123`;
+      const unsubscribeUrl = `${baseUrl}/unsubscribe?email=${encodeURIComponent(to)}`;
+      const checkoutUrl = `${baseUrl}/quiz`;
+      const sampleScores = { structure: 28, motivation: 22, cognitive: 25, task: 30 };
+      const nurtureUser = { email: to, archetype: archetypeSlug };
+
+      let subject: string;
+      let html: string;
+      let from = "Prolific Personalities <support@prolificpersonalities.com>";
+      let attachments: Array<{ filename: string; content: string }> | undefined;
+
+      switch (template) {
+        case "welcome": {
+          const result = generateWelcomeEmail({
+            recipientEmail: to,
+            archetype: { id: archetypeInfo.id, title: archetypeInfo.title },
+            resultsUrl,
+            unsubscribeUrl,
+          });
+          subject = result.subject;
+          html = result.html;
+          break;
+        }
+
+        case "results": {
+          const result = generateResultsEmail({
+            recipientEmail: to,
+            archetype: archetypeInfo,
+            scores: sampleScores,
+            resultsUrl,
+          });
+          subject = result.subject;
+          html = result.html;
+          break;
+        }
+
+        case "nurture-day3": {
+          const result = generateDay3NurtureEmail(nurtureUser);
+          subject = result.subject;
+          html = result.html;
+          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          break;
+        }
+
+        case "nurture-day5": {
+          const result = generateDay5NurtureEmail(nurtureUser);
+          subject = result.subject;
+          html = result.html;
+          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          break;
+        }
+
+        case "nurture-day7": {
+          const result = generateDay7NurtureEmail(nurtureUser);
+          subject = result.subject;
+          html = result.html;
+          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          break;
+        }
+
+        case "nurture-day10": {
+          const result = generateDay10NurtureEmail(nurtureUser);
+          subject = result.subject;
+          html = result.html;
+          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          break;
+        }
+
+        case "nurture-day14": {
+          const result = generateDay14NurtureEmail(nurtureUser);
+          subject = result.subject;
+          html = result.html;
+          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          break;
+        }
+
+        case "abandoned-cart": {
+          const result = generateAbandonedCartEmail({
+            recipientEmail: to,
+            archetype: { id: archetypeInfo.id, title: archetypeInfo.title },
+            checkoutUrl,
+            unsubscribeUrl,
+          });
+          subject = result.subject;
+          html = result.html;
+          break;
+        }
+
+        case "playbook-delivery": {
+          const result = generatePremiumPlaybookEmail({
+            recipientEmail: to,
+            archetype: {
+              id: archetypeInfo.id,
+              title: archetypeInfo.title,
+              tagline: archetypeInfo.tagline,
+            },
+            resultsUrl,
+          });
+          subject = result.subject;
+          html = result.html;
+
+          try {
+            const pdfAsset = getPremiumAssetForArchetype(archetypeSlug);
+            if (pdfAsset) {
+              const pdfPath = path.join(process.cwd(), "attached_assets", pdfAsset.pdfFilename);
+              if (fs.existsSync(pdfPath)) {
+                const pdfBuffer = fs.readFileSync(pdfPath);
+                attachments = [{ filename: pdfAsset.pdfFilename, content: pdfBuffer.toString("base64") }];
+              } else {
+                console.warn(`⚠️ PDF not found at ${pdfPath}, sending without attachment`);
+              }
+            }
+          } catch (pdfErr) {
+            console.warn("⚠️ Could not attach PDF, sending without:", pdfErr);
+          }
+          break;
+        }
+
+        case "onboarding-day3": {
+          const result = generateDay3OnboardEmail(nurtureUser);
+          subject = result.subject;
+          html = result.html;
+          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          break;
+        }
+
+        case "onboarding-day7": {
+          const result = generateDay7OnboardEmail(nurtureUser);
+          subject = result.subject;
+          html = result.html;
+          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          break;
+        }
+
+        case "onboarding-day30": {
+          const result = generateDay30OnboardEmail(nurtureUser);
+          subject = result.subject;
+          html = result.html;
+          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          break;
+        }
+
+        case "weekly-accountability": {
+          const result = generateWeeklyAccountabilityEmail({
+            firstName: null,
+            archetype: archetypeInfo.title,
+            weekNumber: 1,
+          });
+          subject = result.subject;
+          html = result.html;
+          break;
+        }
+
+        case "payment-failure": {
+          subject = "Action Required: Payment Failed for Your Productivity Partner Subscription";
+          html = `
+            <h2>Payment Failed</h2>
+            <p>We were unable to process your subscription payment. Please update your payment method to continue your Productivity Partner benefits.</p>
+            <p><a href="${baseUrl}/dashboard">Update Payment Method</a></p>
+            <p>If you have questions, reply to this email.</p>
+          `;
+          break;
+        }
+
+        default:
+          res.status(400).json({
+            message: `Unknown template: "${template}". Use GET /api/test/email-preview/list for valid names.`,
+          });
+          return;
+      }
+
+      const sendPayload: any = {
+        from,
+        to,
+        subject: `[TEST] ${subject}`,
+        html,
+      };
+
+      if (attachments) {
+        sendPayload.attachments = attachments;
+      }
+
+      const { data, error } = await resend.emails.send(sendPayload);
+
+      if (error) {
+        res.status(502).json({
+          success: false,
+          template,
+          error: (error as any).message || String(error),
+        });
+        return;
+      }
+
+      res.json({
+        success: true,
+        template,
+        sentTo: to,
+        archetype: archetypeSlug,
+        resendId: data?.id,
+        hasAttachment: !!attachments,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid request", errors: error.errors });
+      } else {
+        console.error("Error in email preview:", error);
+        res.status(500).json({ message: "Failed to send test email" });
       }
     }
   });
