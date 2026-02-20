@@ -73,7 +73,7 @@ async function main() {
   const nurtureUser = { email: to, archetype: archetypeSlug };
 
   const STANDARD_FROM = "Prolific Personalities <support@prolificpersonalities.com>";
-  const JOHN_FROM = "John from Prolific Personalities <support@prolificpersonalities.com>";
+  // All emails use the same from address
 
   // Build all 14 templates
   const templates: Array<{
@@ -111,7 +111,7 @@ async function main() {
   ];
   for (const { name, fn } of nurtureGenerators) {
     const r = fn(nurtureUser);
-    templates.push({ name, from: JOHN_FROM, ...r });
+    templates.push({ name, from: STANDARD_FROM, ...r });
   }
 
   // 8. abandoned-cart
@@ -143,7 +143,7 @@ async function main() {
   ];
   for (const { name, fn } of onboardGenerators) {
     const r = fn(nurtureUser);
-    templates.push({ name, from: JOHN_FROM, ...r });
+    templates.push({ name, from: STANDARD_FROM, ...r });
   }
 
   // 13. weekly-accountability

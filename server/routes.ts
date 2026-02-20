@@ -3007,7 +3007,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const result = generateDay3NurtureEmail(nurtureUser);
           subject = result.subject;
           html = result.html;
-          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          from = "Prolific Personalities <support@prolificpersonalities.com>";
           break;
         }
 
@@ -3015,7 +3015,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const result = generateDay5NurtureEmail(nurtureUser);
           subject = result.subject;
           html = result.html;
-          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          from = "Prolific Personalities <support@prolificpersonalities.com>";
           break;
         }
 
@@ -3023,7 +3023,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const result = generateDay7NurtureEmail(nurtureUser);
           subject = result.subject;
           html = result.html;
-          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          from = "Prolific Personalities <support@prolificpersonalities.com>";
           break;
         }
 
@@ -3031,7 +3031,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const result = generateDay10NurtureEmail(nurtureUser);
           subject = result.subject;
           html = result.html;
-          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          from = "Prolific Personalities <support@prolificpersonalities.com>";
           break;
         }
 
@@ -3039,7 +3039,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const result = generateDay14NurtureEmail(nurtureUser);
           subject = result.subject;
           html = result.html;
-          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          from = "Prolific Personalities <support@prolificpersonalities.com>";
           break;
         }
 
@@ -3089,7 +3089,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const result = generateDay3OnboardEmail(nurtureUser);
           subject = result.subject;
           html = result.html;
-          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          from = "Prolific Personalities <support@prolificpersonalities.com>";
           break;
         }
 
@@ -3097,7 +3097,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const result = generateDay7OnboardEmail(nurtureUser);
           subject = result.subject;
           html = result.html;
-          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          from = "Prolific Personalities <support@prolificpersonalities.com>";
           break;
         }
 
@@ -3105,7 +3105,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const result = generateDay30OnboardEmail(nurtureUser);
           subject = result.subject;
           html = result.html;
-          from = "John from Prolific Personalities <support@prolificpersonalities.com>";
+          from = "Prolific Personalities <support@prolificpersonalities.com>";
           break;
         }
 
@@ -3316,7 +3316,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
 
           const { data, error } = await resend!.emails.send({
-            from: "John from Prolific Personalities <support@prolificpersonalities.com>",
+            from: "Prolific Personalities <support@prolificpersonalities.com>",
             to: capture.email,
             subject: emailContent.subject,
             html: emailContent.html,
@@ -3371,7 +3371,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
 
           const { data, error } = await resend!.emails.send({
-            from: "John from Prolific Personalities <support@prolificpersonalities.com>",
+            from: "Prolific Personalities <support@prolificpersonalities.com>",
             to: capture.email,
             subject: emailContent.subject,
             html: emailContent.html,
