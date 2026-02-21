@@ -90,7 +90,7 @@ export function serveStatic(app: Express) {
     "utf-8",
   );
 
-  app.use(express.static(distPath));
+  app.use(express.static(distPath, { index: false }));
 
   // fall through to index.html with dynamic meta injection
   app.use("*", async (req, res) => {
