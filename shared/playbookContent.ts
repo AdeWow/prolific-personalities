@@ -720,7 +720,7 @@ These are subjective and infinite. Stick to objective criteria.
 **The Good Enough Contract:**
 Before starting, write: "I commit to shipping when criteria are met, regardless of how I feel about it."
 
-Sign it. Put it where you can see it while working.`
+Commit to this. Revisit it whenever perfectionism strikes.`
         },
         {
           id: "time-boxing",
@@ -1460,7 +1460,7 @@ That's it. Everything else is procrastination disguised as preparation.
 **Permission Slip:**
 "I give myself permission to execute an imperfect plan. I will learn from doing, not from planning."
 
-Write this somewhere visible.`
+Keep this as your mantra.`
         }
       ]
     },
@@ -1614,7 +1614,7 @@ Strategic Planners who execute become unstoppable. Your strategic mind + action 
     { id: "day3", day: 3, task: "Practice the 2-Minute Action Rule", description: "Before any planning today, complete a 2-minute action first." },
     { id: "day4", day: 4, task: "Time-Box Your Planning", description: "For any project, limit planning to 15 minutes. Then execute." },
     { id: "day5", day: 5, task: "Ship Something Small", description: "Publish, send, or deliver something today. Size doesn't matter. Shipping does." },
-    { id: "day6", day: 6, task: "Write Your Permission Slip", description: "Write down: 'I give myself permission to execute imperfectly.' Put it where you'll see it." },
+    { id: "day6", day: 6, task: "Write Your Permission Slip", description: "Commit to this: 'I give myself permission to execute imperfectly.' Revisit it whenever planning starts to feel like procrastination." },
     { id: "day7", day: 7, task: "Week 1 Review", description: "How did your ratio change? What did you ship? Where did planning become procrastination?" },
     { id: "day8", day: 8, task: "Create Implementation Intentions", description: "For your 3 most important tasks, write specific when/where/what statements." },
     { id: "day9", day: 9, task: "The Minimum Viable Plan", description: "Start a project with only: What, Who, When, First Action. Nothing more." },
@@ -1753,20 +1753,20 @@ Every 2 hours, log:
 **Track These Variables:**
 
 **Time of Day:**
-- Morning (6-10am): Usually ___ energy
-- Midday (10am-2pm): Usually ___ energy
-- Afternoon (2-6pm): Usually ___ energy
-- Evening (6-10pm): Usually ___ energy
+- Morning (6-10am): Your typical energy level
+- Midday (10am-2pm): Your typical energy level
+- Afternoon (2-6pm): Your typical energy level
+- Evening (6-10pm): Your typical energy level
 
 **Day of Week:**
 - Some days may be consistently higher/lower
 - Notice weekly patterns
 
 **After Activities:**
-- After meetings: ___ energy
-- After exercise: ___ energy
-- After social time: ___ energy
-- After deep work: ___ energy
+- After meetings: How does your energy shift?
+- After exercise: How does your energy shift?
+- After social time: How does your energy shift?
+- After deep work: How does your energy shift?
 
 By Day 7, you'll see patterns. Morning person or evening person? Energy dips after certain activities? Days that are consistently better?`
         },
@@ -1840,7 +1840,7 @@ That's it. This maintains momentum without forcing unsustainable effort.
 **The MVD Contract:**
 "On days when energy is low, I commit to [ONE SPECIFIC SMALL ACTION]. This is enough. I am not required to do more."
 
-Write this down. Refer to it on hard days.
+Refer back to this on hard days.
 
 **Intensity Cycling:**
 - High energy day: Work 4-8 hours (ride the wave)
@@ -2117,7 +2117,7 @@ Different combinations call for different approaches.`
 ☐ Execution (implementation, building)
 ☐ Exploratory (learning, experimenting)
 
-**ENERGY LEVEL (1-10):** ___
+**ENERGY LEVEL (1-10):**
 
 **PRESSURE LEVEL:**
 ☐ High (urgent)
@@ -2129,8 +2129,8 @@ Different combinations call for different approaches.`
 ☐ Medium
 ☐ Low (ambiguous)
 
-**RECOMMENDED APPROACH:** _______________
-(Based on above answers)
+**RECOMMENDED APPROACH:**
+(Based on your answers above)
 
 **Project Type Approaches:**
 
@@ -2236,50 +2236,30 @@ Commit: Follow chosen method fully for 7 days.`
         {
           id: "personal-playbook",
           title: "Creating Your Personal Playbook",
-          content: `By end of 30 days, you'll know what works for you in different contexts.
+          content: `By end of 30 days, you'll know what works for you in different contexts. Use the prompts below to build your personalized system based on what you've learned.
 
 **Your Personal Playbook Template:**
 
-**When I'm working on [CREATIVE] projects:**
-Best approach: _______________
-Key tactics: _______________
-Watch out for: _______________
+**By project type, identify your best approach:**
 
-**When I'm working on [ANALYTICAL] projects:**
-Best approach: _______________
-Key tactics: _______________
-Watch out for: _______________
+1. **CREATIVE projects** — What approach works best? What tactics help? What to watch out for?
+2. **ANALYTICAL projects** — What approach works best? What tactics help? What to watch out for?
+3. **EXECUTION projects** — What approach works best? What tactics help? What to watch out for?
 
-**When I'm working on [EXECUTION] projects:**
-Best approach: _______________
-Key tactics: _______________
-Watch out for: _______________
+**By energy level, know your playbook:**
 
-**When energy is HIGH:**
-I should: _______________
-I should avoid: _______________
+4. **When energy is HIGH** — What should you lean into? What should you avoid?
+5. **When energy is LOW** — What should you lean into? What should you avoid?
+6. **When pressure is HIGH** — What should you lean into? What should you avoid?
 
-**When energy is LOW:**
-I should: _______________
-I should avoid: _______________
+**Your default tools:**
 
-**When pressure is HIGH:**
-I should: _______________
-I should avoid: _______________
+7. Which tools serve you best for structure, flexibility, accountability, and focus?
 
-**My Default Tools:**
-- For structure: _______________
-- For flexibility: _______________
-- For accountability: _______________
-- For focus: _______________
+**Your warning signs:**
 
-**My Warning Signs (When Current Approach Isn't Working):**
-1. _______________
-2. _______________
-3. _______________
-
-**When warning signs appear, I should:**
-_______________`
+8. What are 3 signs that your current approach isn't working?
+9. When those signs appear, what's your recovery plan?`
         }
       ]
     },
