@@ -36,6 +36,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   const [showCelebration, setShowCelebration] = useState<1 | 2 | null>(null);
   const [celebrationsShown, setCelebrationsShown] = useState<Set<number>>(new Set());
   const [pendingPageAdvance, setPendingPageAdvance] = useState(false);
+  const [showValidation, setShowValidation] = useState(false);
   const [, setLocation] = useLocation();
   const searchString = useSearch();
   const { toast } = useToast();
@@ -168,7 +169,10 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     if (question && validateAnswer(question, value)) {
       const questionNumber = startIndex + questionIndexInPage + 1;
       trackQuizQuestionAnswered(questionNumber, questions.length, question.axis);
-      
+
+      // Clear validation state when a question is answered
+      if (showValidation) setShowValidation(false);
+
       setAnswers(prev => {
         const newAnswers = {
           ...prev,
@@ -208,26 +212,25 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     // Only validate on manual button clicks, not auto-advance (state might not be updated yet)
     if (!isAutoAdvance) {
       const unansweredQuestions = currentQuestions.filter(q => answers[q.id] === undefined);
-      
+
       if (unansweredQuestions.length > 0) {
+        // Show persistent validation badges on unanswered questions
+        setShowValidation(true);
+
         // Find the first unanswered question and scroll to it
         const firstUnanswered = unansweredQuestions[0];
         const questionIndex = currentQuestions.findIndex(q => q.id === firstUnanswered.id);
         setActiveQuestionIndex(questionIndex);
-        
+
         // Scroll to the unanswered question
         const questionElement = questionRefs.current[questionIndex];
         if (questionElement) {
           questionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          questionElement.classList.add('ring-2', 'ring-red-500', 'ring-offset-2');
-          setTimeout(() => {
-            questionElement.classList.remove('ring-2', 'ring-red-500', 'ring-offset-2');
-          }, 2000);
         }
-        
+
         toast({
           title: "Please answer all questions",
-          description: `You missed ${unansweredQuestions.length} question${unansweredQuestions.length > 1 ? 's' : ''} on this page. We've highlighted the first one.`,
+          description: `You missed ${unansweredQuestions.length} question${unansweredQuestions.length > 1 ? 's' : ''} on this page.`,
           variant: "destructive",
         });
         return;
@@ -255,6 +258,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
 
   const handlePreviousPage = () => {
     if (currentPage > 0) {
+      setShowValidation(false);
       setCurrentPage(prev => prev - 1);
       setActiveQuestionIndex(0);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -413,6 +417,8 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
           const isAnswered = answers[question.id] !== undefined;
           const isActive = indexInPage === activeQuestionIndex;
 
+          const needsAttention = showValidation && !isAnswered;
+
           return (
             <Card
               key={question.id}
@@ -420,7 +426,9 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
               data-testid={`question-card-${question.id}`}
               className={cn(
                 "transition-all duration-300 border-2",
-                isActive && !isAnswered
+                needsAttention
+                  ? "border-red-400 dark:border-red-500 bg-red-50/50 dark:bg-red-900/10 shadow-lg shadow-red-100 dark:shadow-red-900/20"
+                  : isActive && !isAnswered
                   ? "border-primary shadow-lg shadow-primary/20 dark:shadow-primary/10"
                   : isAnswered
                   ? "border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/10"
@@ -432,7 +440,9 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
                 <div className="flex items-start gap-3 mb-4">
                   <div className={cn(
                     "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
-                    isAnswered
+                    needsAttention
+                      ? "bg-red-500 text-white animate-pulse"
+                      : isAnswered
                       ? "bg-green-500 text-white"
                       : isActive
                       ? "bg-primary text-white"
@@ -440,11 +450,18 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
                   )}>
                     {isAnswered ? "✓" : globalIndex + 1}
                   </div>
-                  <h3 className="text-base sm:text-lg font-medium text-foreground dark:text-foreground leading-relaxed flex-1">
-                    {question.text}
-                  </h3>
+                  <div className="flex-1">
+                    <h3 className="text-base sm:text-lg font-medium text-foreground dark:text-foreground leading-relaxed">
+                      {question.text}
+                    </h3>
+                    {needsAttention && (
+                      <p className="text-sm text-red-600 dark:text-red-400 font-medium mt-1">
+                        ↑ Please answer this question
+                      </p>
+                    )}
+                  </div>
                 </div>
-                
+
                 {renderQuestionOptions(question, indexInPage)}
               </CardContent>
             </Card>
@@ -476,6 +493,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
                 key={idx}
                 onClick={() => {
                   if (idx > currentPage && !pageQuestionsAnswered) {
+                    setShowValidation(true);
                     toast({
                       title: "Please complete this page",
                       description: "Answer all questions on this page before moving forward.",
@@ -483,6 +501,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
                     });
                     return;
                   }
+                  setShowValidation(false);
                   setCurrentPage(idx);
                   setActiveQuestionIndex(0);
                   window.scrollTo({ top: 0, behavior: 'smooth' });

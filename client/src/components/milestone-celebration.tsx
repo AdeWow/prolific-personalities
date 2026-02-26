@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface MilestoneCelebrationProps {
@@ -22,24 +22,37 @@ const milestoneData = {
 export function MilestoneCelebration({ milestone, onComplete }: MilestoneCelebrationProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const completedRef = useRef(false);
   const data = milestoneData[milestone];
+
+  // Wrap onComplete to guarantee it only fires once
+  const safeComplete = () => {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    setIsFadingOut(true);
+    setTimeout(onComplete, 300);
+  };
 
   useEffect(() => {
     requestAnimationFrame(() => {
       setIsVisible(true);
     });
 
-    const timer = setTimeout(() => {
-      setIsFadingOut(true);
-      setTimeout(onComplete, 300);
-    }, 2000);
+    // Normal auto-dismiss after 2 seconds
+    const timer = setTimeout(safeComplete, 2000);
 
-    return () => clearTimeout(timer);
-  }, [onComplete]);
+    // Hard safety fallback — guarantees dismissal even if re-renders
+    // clear the normal timer (e.g. due to onComplete reference changing)
+    const safetyTimer = setTimeout(safeComplete, 5000);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(safetyTimer);
+    };
+  }, []); // Empty deps — run once on mount, never re-run
 
   const handleSkip = () => {
-    setIsFadingOut(true);
-    setTimeout(onComplete, 300);
+    safeComplete();
   };
 
   return (
