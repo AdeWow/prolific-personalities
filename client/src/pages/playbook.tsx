@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useLocation, useRoute, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,22 +20,26 @@ import { GuidedNotes } from "@/components/playbook/GuidedNotes";
 import { MobileAppBanner } from "@/components/playbook/MobileAppBanner";
 import { FirstTimeOverlay, useFirstTimeOverlay } from "@/components/playbook/FirstTimeOverlay";
 import { ContentRenderer } from "@/components/playbook/ContentParser";
-import { 
-  Loader2, 
-  Lock, 
-  LogIn, 
-  AlertCircle, 
-  BookOpen, 
-  CheckCircle2, 
-  Circle, 
-  Download, 
+import {
+  Loader2,
+  Lock,
+  LogIn,
+  AlertCircle,
+  BookOpen,
+  CheckCircle2,
+  Circle,
+  CircleDot,
+  Download,
   ChevronRight,
+  ChevronLeft,
+  Clock,
   Calendar,
   Wrench,
   FileText,
   Menu,
   X
 } from "lucide-react";
+import { buildFlatSectionList, calculateReadingTime, useSubsectionProgress } from "@/components/playbook/usePlaybookNavigation";
 
 export default function Playbook() {
   const [, params] = useRoute("/playbook/:archetype");
@@ -97,6 +101,16 @@ export default function Playbook() {
   const [noteSaveStatus, setNoteSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [activeTab, setActiveTab] = useState<string>('content');
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const contentTopRef = useRef<HTMLDivElement>(null);
+
+  // Build flat section list for sequential navigation
+  const flatSections = useMemo(
+    () => playbook ? buildFlatSectionList(playbook) : [],
+    [playbook]
+  );
+
+  // Subsection-level progress tracking (localStorage)
+  const { completedSections, markComplete, isComplete: isSectionComplete, completedCount } = useSubsectionProgress(archetype);
 
   // Set page title
   useEffect(() => {
@@ -264,10 +278,13 @@ export default function Playbook() {
   // Calculated values
   const selectedChapter = playbook?.chapters.find(c => c.id === selectedChapterId);
   const selectedSection = selectedChapter?.sections.find(s => s.id === selectedSectionId);
-  // Only count chapters that are actually marked as completed (completed === true or 1)
-  const completedChapters = (progressData ?? []).filter(p => p.completed).length;
-  const totalChapters = playbook?.chapters.length || 1;
-  const progressPercentage = Math.round((completedChapters / totalChapters) * 100);
+
+  // Navigation: flat section index and neighbors
+  const currentFlatIndex = flatSections.findIndex(s => s.sectionId === selectedSectionId);
+  const currentFlat = flatSections[currentFlatIndex];
+  const prevFlat = currentFlatIndex > 0 ? flatSections[currentFlatIndex - 1] : null;
+  const nextFlat = currentFlatIndex < flatSections.length - 1 ? flatSections[currentFlatIndex + 1] : null;
+  const currentReadingTime = currentFlat ? calculateReadingTime(currentFlat.content, currentFlat.sectionId) : null;
 
   const handleNoteSave = (sectionId: string, content: string) => {
     // Clear any existing timer
@@ -289,6 +306,43 @@ export default function Playbook() {
     debounceTimerRef.current = timer;
   };
 
+  // Navigation handlers
+  const handleNext = useCallback(() => {
+    if (!nextFlat) return;
+    // Auto-mark current section complete
+    if (currentFlat) {
+      markComplete(currentFlat.sectionId);
+    }
+    // If moving to a new chapter, update chapterId
+    if (nextFlat.chapterId !== selectedChapterId) {
+      setSelectedChapterId(nextFlat.chapterId);
+    }
+    setSelectedSectionId(nextFlat.sectionId);
+    setSidebarOpen(false);
+    // Scroll to top of content
+    contentTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Check if all sections in the CURRENT chapter are now complete → sync to DB
+    if (currentFlat && user) {
+      const chapterSections = flatSections.filter(s => s.chapterId === currentFlat.chapterId);
+      const allSectionIds = chapterSections.map(s => s.sectionId);
+      const allComplete = allSectionIds.every(id => id === currentFlat.sectionId || completedSections.has(id));
+      if (allComplete && !progressData?.some(p => p.chapterId === currentFlat.chapterId && p.completed)) {
+        toggleChapterMutation.mutate({ chapterId: currentFlat.chapterId, completed: true });
+      }
+    }
+  }, [nextFlat, currentFlat, selectedChapterId, markComplete, flatSections, completedSections, user, toggleChapterMutation, progressData]);
+
+  const handlePrevious = useCallback(() => {
+    if (!prevFlat) return;
+    if (prevFlat.chapterId !== selectedChapterId) {
+      setSelectedChapterId(prevFlat.chapterId);
+    }
+    setSelectedSectionId(prevFlat.sectionId);
+    setSidebarOpen(false);
+    contentTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [prevFlat, selectedChapterId]);
+
   const isChapterComplete = (chapterId: string) => {
     return progressData?.some(p => p.chapterId === chapterId);
   };
@@ -309,6 +363,18 @@ export default function Playbook() {
 
   // First-time user onboarding
   const { showOverlay, dismissOverlay } = useFirstTimeOverlay(archetype);
+
+  // Hydrate localStorage subsection progress from DB chapter progress (backward compat)
+  useEffect(() => {
+    if (progressData && flatSections.length > 0) {
+      const completedChapterIds = progressData.filter(p => p.completed).map(p => p.chapterId);
+      completedChapterIds.forEach(chapterId => {
+        const chapterSections = flatSections.filter(s => s.chapterId === chapterId);
+        chapterSections.forEach(s => markComplete(s.sectionId));
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progressData, flatSections]);
 
   // CONDITIONAL RENDERING SECTION
 
@@ -500,9 +566,9 @@ export default function Playbook() {
             </div>
           </div>
           <div className="mt-4">
-            <ProgressMilestones 
-              completedChapters={completedChapters}
-              totalChapters={totalChapters}
+            <ProgressMilestones
+              completedSections={completedCount}
+              totalSections={flatSections.length}
             />
           </div>
         </div>
@@ -528,7 +594,10 @@ export default function Playbook() {
         `}>
           <div className="p-4 space-y-2">
             {playbook?.chapters.map((chapter, idx) => {
-              const isComplete = isChapterComplete(chapter.id);
+              const chapterSectionIds = chapter.sections.map(s => s.id);
+              const chapterCompletedCount = chapterSectionIds.filter(id => isSectionComplete(id)).length;
+              const chapterAllComplete = chapterCompletedCount === chapterSectionIds.length;
+              const chapterPartial = chapterCompletedCount > 0 && !chapterAllComplete;
               const isActive = chapter.id === selectedChapterId;
               return (
                 <div key={chapter.id}>
@@ -545,10 +614,12 @@ export default function Playbook() {
                     data-testid={`chapter-${chapter.id}`}
                   >
                     <div className="flex items-center space-x-2">
-                      {isComplete ? (
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      {chapterAllComplete ? (
+                        <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
+                      ) : chapterPartial ? (
+                        <CircleDot className="h-5 w-5 text-amber-500 shrink-0" />
                       ) : (
-                        <Circle className="h-5 w-5" />
+                        <Circle className="h-5 w-5 shrink-0" />
                       )}
                       <span className="font-medium">{idx + 1}. {chapter.title}</span>
                     </div>
@@ -559,14 +630,24 @@ export default function Playbook() {
                       {chapter.sections.map(section => (
                         <button
                           key={section.id}
-                          onClick={() => setSelectedSectionId(section.id)}
+                          onClick={() => { setSelectedSectionId(section.id); setSidebarOpen(false); }}
                           className={`
-                            w-full text-left px-3 py-1.5 rounded text-sm
+                            w-full text-left px-3 py-1.5 rounded text-sm flex items-center justify-between
                             ${selectedSectionId === section.id ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'}
                           `}
                           data-testid={`section-${section.id}`}
                         >
-                          {section.title}
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            {isSectionComplete(section.id) ? (
+                              <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0" />
+                            ) : (
+                              <Circle className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                            )}
+                            <span className="truncate">{section.title}</span>
+                          </div>
+                          <span className="text-[10px] text-muted-foreground ml-2 shrink-0">
+                            {calculateReadingTime(section.content, section.id)}
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -610,11 +691,19 @@ export default function Playbook() {
               {selectedSection && (
                 <Card>
                   <CardHeader>
-                    <div>
+                    <div ref={contentTopRef}>
                       <CardTitle className="text-2xl">{selectedSection.title}</CardTitle>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        {selectedChapter?.title}
-                      </p>
+                      <div className="flex items-center gap-3 mt-1">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {selectedChapter?.title}
+                        </p>
+                        {currentReadingTime && (
+                          <Badge variant="secondary" className="text-xs gap-1">
+                            <Clock className="h-3 w-3" />
+                            {currentReadingTime}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-6">
@@ -625,37 +714,66 @@ export default function Playbook() {
                       session={session}
                     />
                     
-                    {/* Mark Complete Button - More prominent at bottom of content */}
-                    <div className="pt-6 border-t border-muted">
-                      <Button
-                        variant={isChapterComplete(selectedChapterId) ? "outline" : "default"}
-                        className={`w-full h-12 text-base font-medium transition-all ${
-                          isChapterComplete(selectedChapterId) 
-                            ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900" 
-                            : "bg-primary hover:bg-primary/90"
-                        }`}
-                        onClick={() => {
-                          toggleChapterMutation.mutate({ 
-                            chapterId: selectedChapterId, 
-                            completed: !isChapterComplete(selectedChapterId) 
-                          });
-                        }}
-                        disabled={toggleChapterMutation.isPending}
-                        data-testid="button-complete-chapter"
-                      >
-                        {toggleChapterMutation.isPending ? (
-                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                        ) : isChapterComplete(selectedChapterId) ? (
-                          <CheckCircle2 className="h-5 w-5 mr-2" />
-                        ) : (
-                          <Circle className="h-5 w-5 mr-2" />
+                    {/* Navigation */}
+                    <div className="pt-6 border-t border-muted space-y-4">
+                      {/* Completion indicator */}
+                      {currentFlat && isSectionComplete(currentFlat.sectionId) && (
+                        <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400 text-sm">
+                          <CheckCircle2 className="h-4 w-4" />
+                          <span>Section complete</span>
+                        </div>
+                      )}
+
+                      {/* Nav buttons */}
+                      <div className="flex gap-3">
+                        {prevFlat && (
+                          <Button
+                            variant="outline"
+                            className="flex-1 h-12"
+                            onClick={handlePrevious}
+                          >
+                            <ChevronLeft className="h-4 w-4 mr-2" />
+                            <span className="truncate">Previous</span>
+                          </Button>
                         )}
-                        {isChapterComplete(selectedChapterId) 
-                          ? "Completed! Click to undo" 
-                          : "Mark this section complete"}
-                      </Button>
-                      <p className="text-xs text-center text-muted-foreground mt-2">
-                        Track your progress through the playbook
+                        {nextFlat ? (
+                          <Button
+                            className="flex-1 h-12"
+                            onClick={handleNext}
+                          >
+                            <span className="truncate">
+                              {nextFlat.chapterId !== selectedChapterId
+                                ? `Start: ${nextFlat.chapterTitle}`
+                                : "Next"}
+                            </span>
+                            <ChevronRight className="h-4 w-4 ml-2" />
+                          </Button>
+                        ) : (
+                          <Button
+                            className="flex-1 h-12 bg-green-600 hover:bg-green-700"
+                            onClick={() => {
+                              if (currentFlat) markComplete(currentFlat.sectionId);
+                              // Sync final chapter to DB if all sections done
+                              if (currentFlat && user) {
+                                const chapterSections = flatSections.filter(s => s.chapterId === currentFlat.chapterId);
+                                const allSectionIds = chapterSections.map(s => s.sectionId);
+                                const allComplete = allSectionIds.every(id => id === currentFlat.sectionId || completedSections.has(id));
+                                if (allComplete && !isChapterComplete(currentFlat.chapterId)) {
+                                  toggleChapterMutation.mutate({ chapterId: currentFlat.chapterId, completed: true });
+                                }
+                              }
+                              toast({ description: "Congratulations! You've completed the playbook!" });
+                            }}
+                          >
+                            <CheckCircle2 className="h-4 w-4 mr-2" />
+                            Complete Playbook
+                          </Button>
+                        )}
+                      </div>
+
+                      {/* Progress counter */}
+                      <p className="text-xs text-center text-muted-foreground">
+                        Section {currentFlatIndex + 1} of {flatSections.length}
                       </p>
                     </div>
                   </CardContent>

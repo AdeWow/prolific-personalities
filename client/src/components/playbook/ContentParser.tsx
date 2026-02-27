@@ -438,7 +438,7 @@ export function ContentRenderer({ content, sectionId, archetype = '', session }:
   );
 }
 
-function getDoThisNowAction(sectionId?: string): { action: string; time: string } | null {
+export function getDoThisNowAction(sectionId?: string): { action: string; time: string } | null {
   const actions: Record<string, { action: string; time: string }> = {
     "core-traits": {
       action: "Choose the one trait above that feels most accurate for you right now.",

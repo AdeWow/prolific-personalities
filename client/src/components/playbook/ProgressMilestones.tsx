@@ -2,13 +2,13 @@ import { CheckCircle2, Circle, Zap, Target, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProgressMilestonesProps {
-  completedChapters: number;
-  totalChapters: number;
+  completedSections: number;
+  totalSections: number;
   className?: string;
 }
 
-export function ProgressMilestones({ completedChapters, totalChapters, className }: ProgressMilestonesProps) {
-  const progressPercentage = Math.round((completedChapters / totalChapters) * 100);
+export function ProgressMilestones({ completedSections, totalSections, className }: ProgressMilestonesProps) {
+  const progressPercentage = totalSections > 0 ? Math.round((completedSections / totalSections) * 100) : 0;
   
   const milestones = [
     { 
@@ -42,7 +42,7 @@ export function ProgressMilestones({ completedChapters, totalChapters, className
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-foreground">Your Journey</span>
         <span className="text-sm text-muted-foreground">
-          {completedChapters}/{totalChapters} chapters
+          {completedSections}/{totalSections} sections
         </span>
       </div>
       
