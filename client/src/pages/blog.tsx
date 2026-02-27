@@ -12,18 +12,6 @@ import { EmailCaptureCard } from '@/components/email-capture-card';
 import { Calendar, Clock, Pin, ExternalLink, Loader2 } from 'lucide-react';
 import { getArchetypeSlug } from '@/data/tools';
 
-const FILTER_CATEGORIES = [
-  "All",
-  "Archetypes",
-  "Research",
-  "Productivity",
-  "Focus",
-  "ADHD",
-  "Psychology",
-  "Tools",
-  "Founder Story"
-];
-
 const ARCHETYPE_NAMES = [
   "Chaotic Creative",
   "Anxious Perfectionist",
@@ -34,27 +22,11 @@ const ARCHETYPE_NAMES = [
   "Adaptive Generalist"
 ];
 
-const TAG_PRIORITY: Record<string, number> = {
-  "Chaotic Creative": 1,
-  "Anxious Perfectionist": 1,
-  "Structured Achiever": 1,
-  "Novelty Seeker": 1,
-  "Strategic Planner": 1,
-  "Flexible Improviser": 1,
-  "Adaptive Generalist": 1,
-  "Research": 2,
-  "Productivity": 2,
-  "Focus": 2,
-  "ADHD": 2,
-  "Psychology": 3,
-  "Tools": 3,
-  "Founder Story": 2,
-};
-
+/** Archetype tags display first on cards, then other categories */
 function getPrioritizedTags(tags: string[], limit: number = 3): string[] {
   const sorted = [...tags].sort((a, b) => {
-    const priorityA = TAG_PRIORITY[a] || 10;
-    const priorityB = TAG_PRIORITY[b] || 10;
+    const priorityA = ARCHETYPE_NAMES.includes(a) ? 1 : 2;
+    const priorityB = ARCHETYPE_NAMES.includes(b) ? 1 : 2;
     return priorityA - priorityB;
   });
   return sorted.slice(0, limit);
@@ -67,10 +39,37 @@ function matchesFilter(tags: string[], filter: string): boolean {
     return tags.some(tag => ARCHETYPE_NAMES.includes(tag));
   }
 
-  return tags.some(tag =>
-    tag.toLowerCase().includes(filter.toLowerCase()) ||
-    filter.toLowerCase().includes(tag.toLowerCase())
+  // Exact match against the category name from Notion
+  return tags.some(tag => tag === filter);
+}
+
+/** Build dynamic filter categories from post data */
+function buildFilterCategories(posts: BlogPost[]): string[] {
+  const categories: string[] = ["All"];
+
+  // Add "Archetypes" if any posts have archetype tags
+  const hasArchetypePosts = posts.some(post =>
+    post.tags.some(tag => ARCHETYPE_NAMES.includes(tag))
   );
+  if (hasArchetypePosts) {
+    categories.push("Archetypes");
+  }
+
+  // Extract unique non-archetype tags (these are the category values from Notion)
+  const uniqueCategories = new Set<string>();
+  posts.forEach(post => {
+    post.tags.forEach(tag => {
+      if (!ARCHETYPE_NAMES.includes(tag)) {
+        uniqueCategories.add(tag);
+      }
+    });
+  });
+
+  // Sort alphabetically and append
+  const sorted = [...uniqueCategories].sort((a, b) => a.localeCompare(b));
+  categories.push(...sorted);
+
+  return categories;
 }
 
 /** Normalize a Notion API post into the same shape as a static BlogPost */
@@ -188,10 +187,13 @@ export default function BlogPage() {
     return matchesFilter(featuredPost.tags, activeFilter);
   }, [featuredPost, activeFilter]);
 
+  // Dynamic filter categories derived from actual post data
+  const filterCategories = useMemo(() => buildFilterCategories(allPosts), [allPosts]);
+
   const filterCounts = useMemo(() => {
     const counts: Record<string, number> = {};
 
-    FILTER_CATEGORIES.forEach(filter => {
+    filterCategories.forEach(filter => {
       if (filter === "All") {
         counts[filter] = allPosts.length;
       } else {
@@ -200,21 +202,14 @@ export default function BlogPage() {
     });
 
     return counts;
-  }, [allPosts]);
+  }, [allPosts, filterCategories]);
 
   const handleTagClick = (tag: string) => {
     if (ARCHETYPE_NAMES.includes(tag)) {
       setActiveFilter("Archetypes");
     } else {
-      const matchingFilter = FILTER_CATEGORIES.find(f =>
-        f.toLowerCase() === tag.toLowerCase() ||
-        tag.toLowerCase().includes(f.toLowerCase())
-      );
-      if (matchingFilter) {
-        setActiveFilter(matchingFilter);
-      } else {
-        setActiveFilter("All");
-      }
+      // Set to exact tag name — it matches a dynamic filter category
+      setActiveFilter(tag);
     }
   };
 
@@ -249,7 +244,7 @@ export default function BlogPage() {
 
         {/* Filter Bar */}
         <div className="flex flex-wrap gap-2 justify-center mb-8 overflow-x-auto pb-2">
-          {FILTER_CATEGORIES.map((filter) => (
+          {filterCategories.map((filter) => (
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
