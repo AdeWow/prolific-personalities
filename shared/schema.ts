@@ -191,7 +191,9 @@ export const playbookProgress = pgTable("playbook_progress", {
   completed: integer("completed").notNull().default(0), // 0 = not started, 1 = completed
   completedAt: timestamp("completed_at"),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  uniqueUserArchetypeChapter: unique("playbook_progress_user_archetype_chapter_unique").on(table.userId, table.archetype, table.chapterId),
+}));
 
 export const actionPlanProgress = pgTable("action_plan_progress", {
   id: serial("id").primaryKey(),
@@ -202,7 +204,9 @@ export const actionPlanProgress = pgTable("action_plan_progress", {
   completed: integer("completed").notNull().default(0), // 0 = not done, 1 = done
   completedAt: timestamp("completed_at"),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  uniqueUserArchetypeDayTask: unique("action_plan_progress_user_archetype_day_task_unique").on(table.userId, table.archetype, table.dayNumber, table.taskId),
+}));
 
 export const toolTracking = pgTable("tool_tracking", {
   id: serial("id").primaryKey(),
@@ -213,7 +217,9 @@ export const toolTracking = pgTable("tool_tracking", {
   notes: text("notes"),
   startedAt: timestamp("started_at"),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  uniqueUserArchetypeTool: unique("tool_tracking_user_archetype_tool_unique").on(table.userId, table.archetype, table.toolId),
+}));
 
 export const playbookNotes = pgTable("playbook_notes", {
   id: serial("id").primaryKey(),
