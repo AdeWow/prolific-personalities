@@ -65,7 +65,9 @@ export default function Dashboard() {
   // Compute premium access status - user has any completed order
   const hasPremiumAccess = orders && orders.some(o => o.status === 'completed');
 
-  if (authLoading || resultsLoading || isClaimingQuiz) {
+  // Show loading if auth is loading, results are loading, quiz is being claimed,
+  // OR if user is authenticated but results haven't been fetched yet (query was just enabled)
+  if (authLoading || resultsLoading || isClaimingQuiz || (isAuthenticated && results === undefined)) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center">
         <div className="text-center">

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import type { PlaybookContent } from "@shared/playbookContent";
 import { getDoThisNowAction } from "./ContentParser";
 
@@ -70,6 +70,7 @@ function getStorageKey(archetype: string): string {
 }
 
 function loadCompletedSections(archetype: string): Set<string> {
+  if (!archetype) return new Set(); // Guard against empty archetype key
   try {
     const stored = localStorage.getItem(getStorageKey(archetype));
     if (stored) {
@@ -85,6 +86,7 @@ function loadCompletedSections(archetype: string): Set<string> {
 }
 
 function saveCompletedSections(archetype: string, sections: Set<string>): void {
+  if (!archetype) return; // Guard against empty archetype key
   try {
     localStorage.setItem(getStorageKey(archetype), JSON.stringify([...sections]));
   } catch {
@@ -101,9 +103,15 @@ export function useSubsectionProgress(archetype: string) {
     () => loadCompletedSections(archetype)
   );
 
-  // Re-load when archetype changes
+  // Track initial archetype to avoid redundant re-reads on mount.
+  // Only re-load from localStorage when archetype actually CHANGES (e.g., user navigates
+  // to a different playbook), not on the initial mount (useState already handled that).
+  const mountedArchetypeRef = useRef(archetype);
   useEffect(() => {
-    setCompletedSections(loadCompletedSections(archetype));
+    if (archetype && archetype !== mountedArchetypeRef.current) {
+      mountedArchetypeRef.current = archetype;
+      setCompletedSections(loadCompletedSections(archetype));
+    }
   }, [archetype]);
 
   const markComplete = useCallback((sectionId: string) => {

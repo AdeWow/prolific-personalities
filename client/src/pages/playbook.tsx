@@ -306,6 +306,18 @@ export default function Playbook() {
     debounceTimerRef.current = timer;
   };
 
+  // Silent background sync: write chapter completion to DB without showing error toasts.
+  // localStorage is the source of truth for the UI; DB sync is for cross-device persistence.
+  const syncChapterToDb = useCallback(async (chapterId: string) => {
+    try {
+      await authPost(`/api/playbook/${archetype}/progress/chapter`, { chapterId, completed: true });
+      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/progress`] });
+    } catch (err) {
+      // Silent failure — localStorage already has the progress
+      console.warn('[Playbook] Background chapter sync failed:', err);
+    }
+  }, [authPost, archetype]);
+
   // Navigation handlers
   const handleNext = useCallback(() => {
     if (!nextFlat) return;
@@ -322,16 +334,16 @@ export default function Playbook() {
     // Scroll to top of content
     contentTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    // Check if all sections in the CURRENT chapter are now complete → sync to DB
+    // Check if all sections in the CURRENT chapter are now complete → silently sync to DB
     if (currentFlat && user) {
       const chapterSections = flatSections.filter(s => s.chapterId === currentFlat.chapterId);
       const allSectionIds = chapterSections.map(s => s.sectionId);
       const allComplete = allSectionIds.every(id => id === currentFlat.sectionId || completedSections.has(id));
       if (allComplete && !progressData?.some(p => p.chapterId === currentFlat.chapterId && p.completed)) {
-        toggleChapterMutation.mutate({ chapterId: currentFlat.chapterId, completed: true });
+        syncChapterToDb(currentFlat.chapterId);
       }
     }
-  }, [nextFlat, currentFlat, selectedChapterId, markComplete, flatSections, completedSections, user, toggleChapterMutation, progressData]);
+  }, [nextFlat, currentFlat, selectedChapterId, markComplete, flatSections, completedSections, user, syncChapterToDb, progressData]);
 
   const handlePrevious = useCallback(() => {
     if (!prevFlat) return;
@@ -753,13 +765,13 @@ export default function Playbook() {
                             className="flex-1 h-12 bg-green-600 hover:bg-green-700"
                             onClick={() => {
                               if (currentFlat) markComplete(currentFlat.sectionId);
-                              // Sync final chapter to DB if all sections done
+                              // Silently sync final chapter to DB
                               if (currentFlat && user) {
                                 const chapterSections = flatSections.filter(s => s.chapterId === currentFlat.chapterId);
                                 const allSectionIds = chapterSections.map(s => s.sectionId);
                                 const allComplete = allSectionIds.every(id => id === currentFlat.sectionId || completedSections.has(id));
                                 if (allComplete && !isChapterComplete(currentFlat.chapterId)) {
-                                  toggleChapterMutation.mutate({ chapterId: currentFlat.chapterId, completed: true });
+                                  syncChapterToDb(currentFlat.chapterId);
                                 }
                               }
                               toast({ description: "Congratulations! You've completed the playbook!" });
