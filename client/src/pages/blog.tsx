@@ -22,6 +22,25 @@ const ARCHETYPE_NAMES = [
   "Adaptive Generalist"
 ];
 
+/** Reader-friendly display names for Notion category values */
+const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
+  "Archetype Deep-Dive": "Archetypes",
+  "Assessment Hub": "Quizzes & Tools",
+  "Founder Story": "Founder Stories",
+  "Problem-Aware": "Challenges",
+  "Research & Science": "Research",
+};
+
+/** Get reader-friendly label for a category (falls back to raw value) */
+function getCategoryDisplayName(category: string): string {
+  return CATEGORY_DISPLAY_NAMES[category] || category;
+}
+
+/** Extract the Notion category (the non-archetype tag) from a post's tags array */
+function getPostCategory(tags: string[]): string | null {
+  return tags.find(tag => !ARCHETYPE_NAMES.includes(tag)) || null;
+}
+
 /** Archetype tags display first on cards, then other categories */
 function getPrioritizedTags(tags: string[], limit: number = 3): string[] {
   const sorted = [...tags].sort((a, b) => {
@@ -32,44 +51,27 @@ function getPrioritizedTags(tags: string[], limit: number = 3): string[] {
   return sorted.slice(0, limit);
 }
 
+/** Check if a post matches the active filter (matches on original Notion category value) */
 function matchesFilter(tags: string[], filter: string): boolean {
   if (filter === "All") return true;
-
-  if (filter === "Archetypes") {
-    return tags.some(tag => ARCHETYPE_NAMES.includes(tag));
-  }
-
-  // Exact match against the category name from Notion
-  return tags.some(tag => tag === filter);
+  return getPostCategory(tags) === filter;
 }
 
-/** Build dynamic filter categories from post data */
+/** Build filter categories from the actual Notion "Category" values on posts */
 function buildFilterCategories(posts: BlogPost[]): string[] {
-  const categories: string[] = ["All"];
-
-  // Add "Archetypes" if any posts have archetype tags
-  const hasArchetypePosts = posts.some(post =>
-    post.tags.some(tag => ARCHETYPE_NAMES.includes(tag))
-  );
-  if (hasArchetypePosts) {
-    categories.push("Archetypes");
-  }
-
-  // Extract unique non-archetype tags (these are the category values from Notion)
   const uniqueCategories = new Set<string>();
   posts.forEach(post => {
-    post.tags.forEach(tag => {
-      if (!ARCHETYPE_NAMES.includes(tag)) {
-        uniqueCategories.add(tag);
-      }
-    });
+    const category = getPostCategory(post.tags);
+    if (category) {
+      uniqueCategories.add(category);
+    }
   });
 
-  // Sort alphabetically and append
-  const sorted = [...uniqueCategories].sort((a, b) => a.localeCompare(b));
-  categories.push(...sorted);
-
-  return categories;
+  // Sort by display name alphabetically, then prepend "All"
+  const sorted = [...uniqueCategories].sort((a, b) =>
+    getCategoryDisplayName(a).localeCompare(getCategoryDisplayName(b))
+  );
+  return ["All", ...sorted];
 }
 
 /** Normalize a Notion API post into the same shape as a static BlogPost */
@@ -206,9 +208,10 @@ export default function BlogPage() {
 
   const handleTagClick = (tag: string) => {
     if (ARCHETYPE_NAMES.includes(tag)) {
-      setActiveFilter("Archetypes");
+      // Archetype badge clicked → filter to the "Archetype Deep-Dive" category
+      setActiveFilter("Archetype Deep-Dive");
     } else {
-      // Set to exact tag name — it matches a dynamic filter category
+      // Category tag clicked — set the original Notion value directly
       setActiveFilter(tag);
     }
   };
@@ -255,7 +258,7 @@ export default function BlogPage() {
               }`}
               data-testid={`filter-${filter.toLowerCase().replace(/\s+/g, '-')}`}
             >
-              {filter} ({filterCounts[filter] || 0})
+              {getCategoryDisplayName(filter)} ({filterCounts[filter] || 0})
             </button>
           ))}
         </div>
@@ -351,7 +354,7 @@ export default function BlogPage() {
 
         {filteredPosts.length === 0 && !isLoading && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No posts found for "{activeFilter}"</p>
+            <p className="text-muted-foreground text-lg">No posts found for "{getCategoryDisplayName(activeFilter)}"</p>
             <Button
               variant="outline"
               className="mt-4"
