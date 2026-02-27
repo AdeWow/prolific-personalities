@@ -15,31 +15,31 @@ export interface PremiumAsset {
 export const PREMIUM_ASSETS: Record<ArchetypeSlug, PremiumAsset> = {
   "adaptive-generalist": {
     displayName: "Adaptive Generalist Complete Playbook",
-    pdfFilename: "Adaptive Generalist Premium_1762886907832.pdf"
+    pdfFilename: "Adaptive-Generalist-Core-Playbook.pdf"
   },
   "anxious-perfectionist": {
     displayName: "Anxious Perfectionist Complete Playbook",
-    pdfFilename: "Anxious Perfectionist Premium_1762886907847.pdf"
+    pdfFilename: "Anxious-Perfectionist-Core-Playbook.pdf"
   },
   "chaotic-creative": {
     displayName: "Chaotic Creative Complete Playbook",
-    pdfFilename: "Chaotic Creative Premium_1762886907848.pdf"
+    pdfFilename: "Chaotic-Creative-Core-Playbook.pdf"
   },
   "flexible-improviser": {
     displayName: "Flexible Improviser Complete Playbook",
-    pdfFilename: "Flexible Improviser Premium_1762886907848.pdf"
+    pdfFilename: "Flexible-Improviser-Core-Playbook.pdf"
   },
   "novelty-seeker": {
     displayName: "Novelty Seeker Complete Playbook",
-    pdfFilename: "Novelty Seeker Premium_1762886907848.pdf"
+    pdfFilename: "Novelty-Seeker-Core-Playbook.pdf"
   },
   "strategic-planner": {
     displayName: "Strategic Planner Complete Playbook",
-    pdfFilename: "Strategic Planner Premium_1762886907849.pdf"
+    pdfFilename: "Strategic-Planner-Core-Playbook.pdf"
   },
   "structured-achiever": {
     displayName: "Structured Achiever Complete Playbook",
-    pdfFilename: "Structured Achiever Premium_1762886907850.pdf"
+    pdfFilename: "Structured-Achiever-Core-Playbook.pdf"
   }
 };
 
