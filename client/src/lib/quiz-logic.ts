@@ -61,7 +61,7 @@ export const archetypeProfiles: Record<string, NormalizedScores> = {
   },
   'anxious-perfectionist': {
     structure: 80,    // HIGH structure
-    motivation: 75,   // HIGH extrinsic (fear-driven)
+    motivation: 40,   // LOW-MEDIUM (fear/anxiety-driven, not classic extrinsic)
     cognitive: 20,    // LOW (detail-focused)
     task: 80,         // HIGH (over-planning, procrastination)
   },
@@ -69,13 +69,13 @@ export const archetypeProfiles: Record<string, NormalizedScores> = {
     structure: 80,    // HIGH structure
     motivation: 75,   // HIGH extrinsic
     cognitive: 85,    // HIGH (big picture)
-    task: 85,         // HIGH (planning)
+    task: 60,         // MEDIUM (plans then executes, not avoidant)
   },
   'novelty-seeker': {
     structure: 20,    // LOW structure
-    motivation: 20,   // LOW (intrinsic)
+    motivation: 80,   // HIGH extrinsic (needs external stakes/novelty)
     cognitive: 75,    // HIGH (big picture)
-    task: 30,         // LOW (execution)
+    task: 75,         // HIGH (avoidant when bored, procrastinates routine)
   },
   'flexible-improviser': {
     structure: 15,    // LOW structure
@@ -276,9 +276,10 @@ function isAdaptiveGeneralist(normalizedScores: NormalizedScores, allFitScores: 
   const coreArchetypeFits = allFitScores.filter(fit => fit.archetype.id !== 'adaptive-generalist');
   const noLargeDifferences = coreArchetypeFits.every(fit => fit.fitPercentage >= 45 && fit.fitPercentage <= 55);
   
-  // Alternative: check that top match is less than 55% (no clear winner)
+  // Alternative: check that top core match is below 80% (no truly dominant archetype)
+  // With balanced (40-60) scores, core archetypes typically score 65-78% due to Manhattan distance math
   const topCoreMatch = coreArchetypeFits[0];
-  const noStrongWinner = topCoreMatch && topCoreMatch.fitPercentage < 60;
+  const noStrongWinner = topCoreMatch && topCoreMatch.fitPercentage < 80;
   
   return allAxesBalanced && (noLargeDifferences || noStrongWinner);
 }
@@ -288,59 +289,32 @@ export function determineArchetypeEnhanced(scores: QuizScores): ArchetypeResult 
   const categorization = categorizeScores(scores);
   const normalizedScores = normalizeScores(scores);
   const allFitScores = calculateAllArchetypeFits(normalizedScores);
-  
-  const topFit = allFitScores[0];
-  const secondFit = allFitScores[1];
-  const thirdFit = allFitScores[2];
-  
+
   const notes: string[] = [];
-  let confidenceLevel: 'exact' | 'strong' | 'moderate' | 'weak';
-  let confidence = topFit.fitPercentage;
   const secondary: Archetype[] = [];
-  
-  // Determine confidence level and handle edge cases
-  
-  // Scenario 1: Two archetypes within 10% of each other (co-primary blend)
-  if (secondFit && Math.abs(topFit.fitPercentage - secondFit.fitPercentage) <= 10) {
-    confidenceLevel = 'moderate';
-    confidence = topFit.fitPercentage;
-    secondary.push(secondFit.archetype);
-    notes.push(`You blend characteristics of both ${topFit.archetype.name} and ${secondFit.archetype.name} (${topFit.fitPercentage}% vs ${secondFit.fitPercentage}% match).`);
-    notes.push(`This close match suggests you can draw from both productivity styles depending on the context.`);
-    
-  // Scenario 2: Three or more archetypes within 15% (multiple moderate matches)
-  } else if (thirdFit && Math.abs(topFit.fitPercentage - thirdFit.fitPercentage) <= 15) {
-    confidenceLevel = 'weak';
-    confidence = topFit.fitPercentage;
-    secondary.push(secondFit.archetype, thirdFit.archetype);
-    notes.push(`You show moderate matches across multiple archetypes. This suggests you're in transition or highly adaptive.`);
-    notes.push(`Try ${topFit.archetype.name} frameworks first (${topFit.fitPercentage}% match), then explore ${secondFit.archetype.name} if needed.`);
-    
-  // Scenario 3: Adaptive Generalist
-  // Trigger when: ALL 4 axes in balanced range (40-60%) AND all matches 45-55% (no clear winner)
-  } else if (isAdaptiveGeneralist(normalizedScores, allFitScores)) {
+
+  // ── Scenario 1: Adaptive Generalist (checked FIRST — before co-primary/multi-match) ──
+  // Trigger: ALL 4 axes in balanced range (40-60%) AND no clear winner among core archetypes
+  if (isAdaptiveGeneralist(normalizedScores, allFitScores)) {
     const adaptiveGeneralist = archetypes.find(a => a.id === 'adaptive-generalist');
     if (adaptiveGeneralist) {
-      // Calculate fit for adaptive-generalist
       const generalistProfile = archetypeProfiles['adaptive-generalist'];
       const generalistFit = calculateArchetypeFit(normalizedScores, generalistProfile);
-      
-      confidenceLevel = 'strong';
-      confidence = generalistFit;
-      
-      // Add top fits as secondary options for context-specific use
-      if (topFit) secondary.push(topFit.archetype);
-      if (secondFit) secondary.push(secondFit.archetype);
-      
+
+      // Top core fits as secondary options for context-specific strategies
+      const coreFits = allFitScores.filter(f => f.archetype.id !== 'adaptive-generalist');
+      if (coreFits[0]) secondary.push(coreFits[0].archetype);
+      if (coreFits[1]) secondary.push(coreFits[1].archetype);
+
       notes.push(`You scored in the balanced range (40-60%) on all 4 axes.`);
       notes.push(`This makes you an Adaptive Generalist - a "productivity chameleon" who can match approach to context.`);
       notes.push(`You're not broken or indecisive. You're sophisticated and adaptive. Different projects need different approaches - that's your superpower.`);
-      notes.push(`You can borrow strategies from ${topFit.archetype.name} and ${secondFit?.archetype.name || 'other archetypes'} depending on the situation.`);
-      
+      notes.push(`You can borrow strategies from ${coreFits[0]?.archetype.name || 'other archetypes'} and ${coreFits[1]?.archetype.name || 'other archetypes'} depending on the situation.`);
+
       return {
         primary: adaptiveGeneralist,
-        confidence,
-        confidenceLevel,
+        confidence: generalistFit,
+        confidenceLevel: 'strong',
         secondary: secondary.length > 0 ? secondary : undefined,
         categorization,
         notes,
@@ -348,58 +322,71 @@ export function determineArchetypeEnhanced(scores: QuizScores): ArchetypeResult 
         normalizedScores,
       };
     }
-    // Fallback if adaptive-generalist not found (shouldn't happen)
+  }
+
+  // ── AG detection failed (or archetype not found) — exclude AG from normal ranking ──
+  // AG can only win via the explicit detection above, never through distance ranking
+  const coreFitScores = allFitScores.filter(fit => fit.archetype.id !== 'adaptive-generalist');
+  const topFit = coreFitScores[0];
+  const secondFit = coreFitScores[1];
+  const thirdFit = coreFitScores[2];
+
+  let confidenceLevel: 'exact' | 'strong' | 'moderate' | 'weak';
+  let confidence = topFit.fitPercentage;
+
+  // Scenario 2: Co-primary blend — two archetypes within 10% of each other
+  if (secondFit && Math.abs(topFit.fitPercentage - secondFit.fitPercentage) <= 10) {
+    confidenceLevel = 'moderate';
+    confidence = topFit.fitPercentage;
+    secondary.push(secondFit.archetype);
+    notes.push(`You blend characteristics of both ${topFit.archetype.name} and ${secondFit.archetype.name} (${topFit.fitPercentage}% vs ${secondFit.fitPercentage}% match).`);
+    notes.push(`This close match suggests you can draw from both productivity styles depending on the context.`);
+
+  // Scenario 3: Multi-match — three or more archetypes within 15%
+  } else if (thirdFit && Math.abs(topFit.fitPercentage - thirdFit.fitPercentage) <= 15) {
     confidenceLevel = 'weak';
     confidence = topFit.fitPercentage;
-    if (secondFit) secondary.push(secondFit.archetype);
-    if (thirdFit) secondary.push(thirdFit.archetype);
-    notes.push(`You scored in the balanced range on multiple axes. This indicates high adaptability.`);
-    
-  // Standard scenarios based on top fit percentage
+    secondary.push(secondFit.archetype, thirdFit.archetype);
+    notes.push(`You show moderate matches across multiple archetypes. This suggests you're in transition or highly adaptive.`);
+    notes.push(`Try ${topFit.archetype.name} frameworks first (${topFit.fitPercentage}% match), then explore ${secondFit.archetype.name} if needed.`);
+
+  // Standard: exact match (≥80%)
   } else if (topFit.fitPercentage >= 80) {
-    // Strong exact match
     confidenceLevel = 'exact';
     confidence = topFit.fitPercentage;
     notes.push(`Strong match! You clearly identify with ${topFit.archetype.name} patterns.`);
-    
-    // Show secondary influence if > 60%
     if (secondFit && secondFit.fitPercentage > 60) {
       secondary.push(secondFit.archetype);
       notes.push(`You also show some ${secondFit.archetype.name} traits (${secondFit.fitPercentage}% match).`);
     }
-    
+
+  // Standard: strong match (≥65%)
   } else if (topFit.fitPercentage >= 65) {
-    // Good match with some variance
     confidenceLevel = 'strong';
     confidence = topFit.fitPercentage;
-    
     if (secondFit && secondFit.fitPercentage > 60) {
       secondary.push(secondFit.archetype);
       notes.push(`You primarily align with ${topFit.archetype.name}, with influences from ${secondFit.archetype.name}.`);
     }
-    
+
+  // Standard: moderate match (≥50%)
   } else if (topFit.fitPercentage >= 50) {
-    // Moderate match
     confidenceLevel = 'moderate';
     confidence = topFit.fitPercentage;
-    
     if (secondFit) secondary.push(secondFit.archetype);
     if (thirdFit && thirdFit.fitPercentage > 45) secondary.push(thirdFit.archetype);
-    
     notes.push(`You show moderate alignment with ${topFit.archetype.name}. Your productivity style may be still developing or context-dependent.`);
-    
+
+  // Standard: weak match (<50%)
   } else {
-    // Weak match
     confidenceLevel = 'weak';
     confidence = topFit.fitPercentage;
-    
     if (secondFit) secondary.push(secondFit.archetype);
     if (thirdFit) secondary.push(thirdFit.archetype);
-    
     notes.push(`No strong archetype match found. You may be highly adaptive or exploring different productivity approaches.`);
   }
-  
-  // Add specific notes based on balanced axes
+
+  // Add balanced axis notes
   if (categorization.structure === 'MEDIUM') {
     notes.push('You balance structure and flexibility depending on the situation.');
   }

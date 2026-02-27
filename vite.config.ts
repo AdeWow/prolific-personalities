@@ -24,4 +24,10 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
+  test: {
+    // Vitest configuration
+    globals: true,
+    environment: 'node',
+    include: ['src/**/__tests__/**/*.test.ts'],
+  },
 });
