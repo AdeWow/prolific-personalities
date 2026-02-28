@@ -31,6 +31,7 @@ export interface BlogPost {
   author: string;
   readTime: string;
   tags: string[];
+  category?: string;
   image?: string;
   pinned?: boolean;
 }

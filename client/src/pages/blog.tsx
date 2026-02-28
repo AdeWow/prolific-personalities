@@ -36,11 +36,6 @@ function getCategoryDisplayName(category: string): string {
   return CATEGORY_DISPLAY_NAMES[category] || category;
 }
 
-/** Extract the Notion category (the non-archetype tag) from a post's tags array */
-function getPostCategory(tags: string[]): string | null {
-  return tags.find(tag => !ARCHETYPE_NAMES.includes(tag)) || null;
-}
-
 /** Archetype tags display first on cards, then other categories */
 function getPrioritizedTags(tags: string[], limit: number = 3): string[] {
   const sorted = [...tags].sort((a, b) => {
@@ -51,19 +46,22 @@ function getPrioritizedTags(tags: string[], limit: number = 3): string[] {
   return sorted.slice(0, limit);
 }
 
-/** Check if a post matches the active filter (matches on original Notion category value) */
-function matchesFilter(tags: string[], filter: string): boolean {
+/** Check if a post matches the active filter using its category field directly */
+function matchesFilter(category: string | undefined, filter: string): boolean {
   if (filter === "All") return true;
-  return getPostCategory(tags) === filter;
+  return category === filter;
 }
 
-/** Build filter categories from the actual Notion "Category" values on posts */
+/**
+ * Build filter categories from the post.category field (set by notionPostToBlogPost).
+ * This uses ONLY the Notion "Category" single-select — never archetypeTags.
+ * Static fallback posts without a category field are excluded from filters.
+ */
 function buildFilterCategories(posts: BlogPost[]): string[] {
   const uniqueCategories = new Set<string>();
   posts.forEach(post => {
-    const category = getPostCategory(post.tags);
-    if (category) {
-      uniqueCategories.add(category);
+    if (post.category) {
+      uniqueCategories.add(post.category);
     }
   });
 
@@ -76,6 +74,12 @@ function buildFilterCategories(posts: BlogPost[]): string[] {
 
 /** Normalize a Notion API post into the same shape as a static BlogPost */
 function notionPostToBlogPost(np: any): BlogPost {
+  // Only include recognized archetype names in the tags array (for badge display).
+  // "All Archetypes" and other non-standard values from archetypeTags are excluded.
+  const archetypeTags = (np.archetypeTags || []).filter(
+    (t: string) => ARCHETYPE_NAMES.includes(t)
+  );
+
   return {
     id: np.id,
     title: np.title,
@@ -85,7 +89,8 @@ function notionPostToBlogPost(np: any): BlogPost {
     publishDate: np.publishDate,
     author: np.author || "Prolific Personalities Team",
     readTime: np.readTime ? `${np.readTime} min read` : "5 min read",
-    tags: [...(np.archetypeTags || []), np.category].filter(Boolean),
+    tags: [...archetypeTags, np.category].filter(Boolean),
+    category: np.category || undefined,
     image: np.featuredImage || undefined,
     pinned: np.pinned === true,
   };
@@ -180,13 +185,13 @@ export default function BlogPage() {
 
   const filteredPosts = useMemo(() => {
     if (activeFilter === "All") return sortedPosts;
-    return sortedPosts.filter(post => matchesFilter(post.tags, activeFilter));
+    return sortedPosts.filter(post => matchesFilter(post.category, activeFilter));
   }, [sortedPosts, activeFilter]);
 
   const showFeaturedPost = useMemo(() => {
     if (!featuredPost) return false;
     if (activeFilter === "All") return true;
-    return matchesFilter(featuredPost.tags, activeFilter);
+    return matchesFilter(featuredPost.category, activeFilter);
   }, [featuredPost, activeFilter]);
 
   // Dynamic filter categories derived from actual post data
@@ -199,7 +204,7 @@ export default function BlogPage() {
       if (filter === "All") {
         counts[filter] = allPosts.length;
       } else {
-        counts[filter] = allPosts.filter(post => matchesFilter(post.tags, filter)).length;
+        counts[filter] = allPosts.filter(post => matchesFilter(post.category, filter)).length;
       }
     });
 
