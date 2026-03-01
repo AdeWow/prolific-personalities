@@ -53,6 +53,9 @@ const AI_ENABLED = process.env.ENABLE_AI_COACH === "true";
 function getPublicBaseUrl(): string {
   const raw = process.env.SITE_URL || process.env.APP_URL;
   if (!raw) {
+    if (process.env.NODE_ENV === "development") {
+      return "http://localhost:5000";
+    }
     throw new Error("Missing SITE_URL/APP_URL env var. Set SITE_URL in Railway.");
   }
   return raw.replace(/\/$/, "");
@@ -70,13 +73,13 @@ import {
 import { eq, and, gt, sql, desc, or } from "drizzle-orm";
 import { db } from "./db";
 
-if (!process.env.STRIPE_SECRET_KEY) {
+if (!process.env.STRIPE_SECRET_KEY && process.env.NODE_ENV !== "development") {
   throw new Error("Missing required Stripe secret: STRIPE_SECRET_KEY");
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-10-29.clover",
-});
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2025-10-29.clover" })
+  : null;
 
 // Initialize Resend client for email sending
 if (!process.env.RESEND_API_KEY) {

@@ -1,10 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 import { RequestHandler } from "express";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "";
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || "";
+
+const supabase = supabaseUrl && supabaseKey
+  ? createClient(supabaseUrl, supabaseKey)
+  : null;
 
 export const supabaseAdmin = supabase;
 
@@ -12,6 +14,10 @@ const recentlySyncedUsers = new Map<string, number>();
 const SYNC_COOLDOWN_MS = 5 * 60 * 1000;
 
 export const supabaseAuth: RequestHandler = async (req, res, next) => {
+  if (!supabase) {
+    return res.status(503).json({ success: false, error: "Auth service unavailable" });
+  }
+
   const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith("Bearer ")) {

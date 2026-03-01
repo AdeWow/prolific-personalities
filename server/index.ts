@@ -3,15 +3,24 @@ import cors from "cors";
 import { registerRoutes, registerWebhookRoute } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
-function requireEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing required environment variable: ${name}`);
+function requireEnv(name: string, ...fallbacks: string[]): string {
+  const value = process.env[name] || fallbacks.reduce<string | undefined>((v, fb) => v || process.env[fb], undefined);
+  if (!value) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn(`⚠️  Missing env var: ${name} (server features that need it will be unavailable)`);
+      return "";
+    }
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+  if (!process.env[name] && value) {
+    process.env[name] = value; // propagate fallback so downstream code sees it
+  }
   return value;
 }
 
 requireEnv("DATABASE_URL");
-requireEnv("SUPABASE_URL");
-requireEnv("SUPABASE_SERVICE_ROLE_KEY");
+requireEnv("SUPABASE_URL", "VITE_SUPABASE_URL");
+requireEnv("SUPABASE_SERVICE_ROLE_KEY", "VITE_SUPABASE_ANON_KEY");
 
 const app = express();
 
@@ -115,14 +124,13 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
+  // Serve both API and client on a single port.
+  // Use PORT env var if set (for preview tools), otherwise default to 5000.
+  const port = parseInt(process.env.PORT || "5000", 10);
   server.listen({
     port,
     host: "0.0.0.0",
-    reusePort: true,
+    ...(process.env.NODE_ENV !== "development" && { reusePort: true }),
   }, () => {
     log(`serving on port ${port}`);
   });

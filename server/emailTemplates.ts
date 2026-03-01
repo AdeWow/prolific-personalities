@@ -3,6 +3,9 @@ import type { QuizScores } from "@shared/schema";
 function getPublicBaseUrl(): string {
   const raw = process.env.SITE_URL || process.env.APP_URL;
   if (!raw) {
+    if (process.env.NODE_ENV === "development") {
+      return "http://localhost:5000";
+    }
     throw new Error("Missing SITE_URL/APP_URL env var. Set SITE_URL in Railway.");
   }
   return raw.replace(/\/$/, "");
