@@ -703,6 +703,8 @@ export default function Playbook() {
                       sectionId={selectedSectionId}
                       archetype={archetype}
                       session={session}
+                      recommendedTools={playbook?.recommendedTools || []}
+                      isFrameworkChapter={selectedChapter?.title?.includes("Framework") || false}
                     />
 
                     {/* Inline section note */}

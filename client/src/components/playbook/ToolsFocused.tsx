@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronDown, ChevronUp, Star, ExternalLink, Wrench, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toolInfo } from "./toolData";
 
 interface ToolData {
   toolId: string;
@@ -19,59 +20,6 @@ interface ToolsFocusedProps {
   onUpdateTool: (toolId: string, status: string, notes?: string) => void;
   isPending?: boolean;
 }
-
-const toolInfo: Record<string, { name: string; tagline: string; why: string }> = {
-  "todoist": { 
-    name: "Todoist", 
-    tagline: "Smart task management for structured minds",
-    why: "Perfect for breaking down projects into actionable steps with deadlines"
-  },
-  "notion": { 
-    name: "Notion", 
-    tagline: "All-in-one workspace for organized thinking",
-    why: "Ideal for creating interconnected systems and knowledge bases"
-  },
-  "google-calendar": { 
-    name: "Google Calendar", 
-    tagline: "Time blocking made simple",
-    why: "Essential for protecting focus time and creating daily structure"
-  },
-  "toggl-track": { 
-    name: "Toggl Track", 
-    tagline: "Understand where your time really goes",
-    why: "Reveals patterns in how you spend your productive hours"
-  },
-  "forest": { 
-    name: "Forest", 
-    tagline: "Gamified focus sessions",
-    why: "Adds fun to focus blocks - grow trees by staying on task"
-  },
-  "rescuetime": { 
-    name: "RescueTime", 
-    tagline: "Automatic time tracking",
-    why: "Runs in background to show your true productivity patterns"
-  },
-  "focusmate": { 
-    name: "Focusmate", 
-    tagline: "Virtual coworking sessions",
-    why: "Body doubling accountability that gets you started on hard tasks"
-  },
-  "freedom": { 
-    name: "Freedom", 
-    tagline: "Block distracting sites",
-    why: "Creates boundaries when willpower alone isn't enough"
-  },
-  "cold-turkey": { 
-    name: "Cold Turkey", 
-    tagline: "Unbreakable website blocker",
-    why: "The nuclear option when you need serious focus protection"
-  },
-  "sunsama": { 
-    name: "Sunsama", 
-    tagline: "Calm daily planning",
-    why: "Brings mindfulness to your daily task review"
-  }
-};
 
 const STATUS_MAP: Record<string, string> = {
   "not_started": "Not Started",
@@ -238,6 +186,10 @@ export function ToolsFocused({ recommendedTools, toolsData, onUpdateTool, isPend
           )}
         </div>
       )}
+
+      <p className="text-xs text-center text-muted-foreground pt-2">
+        These tools are also highlighted inline as you read through your playbook.
+      </p>
     </div>
   );
 }

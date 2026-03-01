@@ -14,9 +14,12 @@ import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { InteractiveCheckbox } from "./InteractiveElements";
+import { findToolInsertionPoints } from "./toolMatcher";
+import { InlineToolCardGroup, RecommendedToolsBlock } from "./InlineToolCard";
 import { Star, TrendingUp } from "lucide-react";
+import React from "react";
 
-interface ParsedContent {
+export interface ParsedContent {
   type: 'paragraph' | 'header' | 'insight' | 'action' | 'why' | 'warning' | 'doNow' | 'traits' | 'bullets' | 'question' | 'citation' | 'table' | 'checklist' | 'pattern' | 'superpowers-growth';
   content: string;
   metadata?: Record<string, any>;
@@ -285,6 +288,8 @@ interface ContentRendererProps {
   sectionId?: string;
   archetype?: string;
   session?: Session | null;
+  recommendedTools?: string[];
+  isFrameworkChapter?: boolean;
 }
 
 const traitDescriptions: Record<string, { explanation: string; dayMeaning: string }> = {
@@ -306,15 +311,18 @@ const traitDescriptions: Record<string, { explanation: string; dayMeaning: strin
   }
 };
 
-export function ContentRenderer({ content, sectionId, archetype = '', session }: ContentRendererProps) {
+export function ContentRenderer({ content, sectionId, archetype = '', session, recommendedTools = [], isFrameworkChapter = false }: ContentRendererProps) {
   const blocks = parseMarkdownContent(content);
-  
+  const toolInsertions = findToolInsertionPoints(blocks, recommendedTools);
+  const hasInlineTools = toolInsertions.size > 0;
+
   const doThisNowAction = getDoThisNowAction(sectionId);
 
   return (
     <div className="space-y-6">
       {blocks.map((block, idx) => {
-        switch (block.type) {
+        const toolIds = toolInsertions.get(idx);
+        const blockElement = (() => { switch (block.type) {
           case 'header':
             return (
               <h4 key={idx} className="text-xl font-semibold text-foreground mt-10 mb-3 first:mt-0">
@@ -560,7 +568,16 @@ export function ContentRenderer({ content, sectionId, archetype = '', session }:
                 {cleanContent}
               </p>
             );
-        }
+        } })();
+
+        return (
+          <React.Fragment key={idx}>
+            {blockElement}
+            {toolIds && toolIds.length > 0 && (
+              <InlineToolCardGroup toolIds={toolIds} />
+            )}
+          </React.Fragment>
+        );
       })}
 
       {doThisNowAction && (
@@ -573,6 +590,11 @@ export function ContentRenderer({ content, sectionId, archetype = '', session }:
             session={session}
           />
         </div>
+      )}
+
+      {/* Fallback: Recommended Tools at end of Framework chapters with no inline mentions */}
+      {isFrameworkChapter && !hasInlineTools && recommendedTools.length > 0 && (
+        <RecommendedToolsBlock toolIds={recommendedTools} />
       )}
     </div>
   );
