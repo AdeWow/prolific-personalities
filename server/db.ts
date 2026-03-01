@@ -18,4 +18,12 @@ if (!process.env.DATABASE_URL) {
 export const pool = process.env.DATABASE_URL
   ? new Pool({ connectionString: process.env.DATABASE_URL })
   : null;
+
+// Prevent unhandled 'error' events on idle pool clients from crashing the process
+if (pool) {
+  pool.on("error", (err) => {
+    console.error("[db] Unexpected pool error:", err.message);
+  });
+}
+
 export const db = pool ? drizzle({ client: pool, schema }) : null;
