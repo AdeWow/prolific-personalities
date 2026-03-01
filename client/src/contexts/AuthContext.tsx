@@ -21,6 +21,30 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// ─── Dev-mode mock (tree-shaken from production builds) ───
+const DEV_MOCK_USER: AuthUser = {
+  id: "dev-user-00000000-0000-0000-0000-000000000000",
+  email: "dev@localhost",
+  firstName: "Dev",
+  lastName: "User",
+  profileImageUrl: null,
+};
+
+const DEV_MOCK_SESSION = {
+  access_token: "dev-bypass-token",
+  refresh_token: "",
+  expires_in: 999999,
+  token_type: "bearer",
+  user: {
+    id: DEV_MOCK_USER.id,
+    email: DEV_MOCK_USER.email,
+    user_metadata: {},
+    app_metadata: {},
+    aud: "authenticated",
+    created_at: "",
+  },
+} as unknown as Session;
+
 function mapSupabaseUser(supabaseUser: SupabaseUser | null): AuthUser | null {
   if (!supabaseUser) return null;
   
@@ -95,12 +119,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // In dev mode without Supabase configured, use mock user/session
     if (!isSupabaseConfigured) {
+      if (import.meta.env.DEV) {
+        console.log("🔓 Dev mode: using mock auth (no Supabase configured)");
+        setUser(DEV_MOCK_USER);
+        setSession(DEV_MOCK_SESSION);
+        setIsSynced(true);
+      }
       setIsLoading(false);
       return;
     }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
+      // In dev mode, if no real session exists, use mock
+      if (!session && import.meta.env.DEV) {
+        console.log("🔓 Dev mode: using mock auth (no active session)");
+        setUser(DEV_MOCK_USER);
+        setSession(DEV_MOCK_SESSION);
+        setIsSynced(true);
+        setIsLoading(false);
+        return;
+      }
+
       setSession(session);
       setUser(mapSupabaseUser(session?.user ?? null));
       setIsLoading(false);
@@ -113,6 +154,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth state changed:", event);
+
+        // In dev mode, if Supabase reports no session, keep mock auth
+        if (!session && import.meta.env.DEV) {
+          setIsLoading(false);
+          return;
+        }
+
         setSession(session);
         setUser(mapSupabaseUser(session?.user ?? null));
         setIsLoading(false);
@@ -124,6 +172,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (event === 'SIGNED_OUT') {
           lastSyncedUserId.current = null;
           setIsSynced(false);
+          // In dev mode, restore mock after sign out
+          if (import.meta.env.DEV) {
+            setUser(DEV_MOCK_USER);
+            setSession(DEV_MOCK_SESSION);
+            setIsSynced(true);
+          }
         }
       }
     );

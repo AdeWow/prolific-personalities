@@ -2074,6 +2074,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Middleware to check premium access (pay once, lifetime access to ALL archetypes)
   const hasPremiumAccess = async (req: any, res: any, next: any) => {
+    // Dev mode: auto-grant access with a stable user ID
+    if (process.env.NODE_ENV === "development") {
+      req.localUserId = 1;
+      return next();
+    }
+
     try {
       const supabaseUser = req.supabaseUser;
       const archetype = req.params.archetype || req.body.archetype;
@@ -2459,6 +2465,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     supabaseAuth,
     async (req: any, res) => {
       try {
+        // Dev mode: auto-grant access
+        if (process.env.NODE_ENV === "development") {
+          return res.json({ hasAccess: true });
+        }
+
         const supabaseUser = req.supabaseUser;
         const { archetype } = req.params;
         const sessionId = req.query.sessionId as string | undefined;
@@ -2472,7 +2483,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastName: supabaseUser.user_metadata?.full_name?.split(' ').slice(1).join(' ') || null,
           profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
         });
-        
+
         // Use the local user's ID (which may differ from Supabase ID if user existed before)
         const userId = localUser.id;
         console.log('[Playbook Access Debug] supabaseId:', supabaseUser.id, '| localUserId:', userId, '| archetype:', archetype, '| sessionId:', sessionId);

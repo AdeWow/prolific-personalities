@@ -14,6 +14,16 @@ const recentlySyncedUsers = new Map<string, number>();
 const SYNC_COOLDOWN_MS = 5 * 60 * 1000;
 
 export const supabaseAuth: RequestHandler = async (req, res, next) => {
+  // Dev mode: skip Supabase token validation entirely
+  if (process.env.NODE_ENV === "development") {
+    (req as any).supabaseUser = {
+      id: "dev-user-00000000-0000-0000-0000-000000000000",
+      email: "dev@localhost",
+      user_metadata: { full_name: "Dev User" },
+    };
+    return next();
+  }
+
   if (!supabase) {
     return res.status(503).json({ success: false, error: "Auth service unavailable" });
   }
