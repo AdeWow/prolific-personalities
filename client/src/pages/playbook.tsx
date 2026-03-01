@@ -20,6 +20,8 @@ import { GuidedNotes } from "@/components/playbook/GuidedNotes";
 import { MobileAppBanner } from "@/components/playbook/MobileAppBanner";
 import { FirstTimeOverlay, useFirstTimeOverlay } from "@/components/playbook/FirstTimeOverlay";
 import { ContentRenderer } from "@/components/playbook/ContentParser";
+import { InlineSectionNote } from "@/components/playbook/InlineSectionNote";
+import { useInlineNotes } from "@/components/playbook/useInlineNotes";
 import {
   Loader2,
   Lock,
@@ -98,9 +100,7 @@ export default function Playbook() {
   const [selectedChapterId, setSelectedChapterId] = useState("");
   const [selectedSectionId, setSelectedSectionId] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [noteSaveStatus, setNoteSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [activeTab, setActiveTab] = useState<string>('content');
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const contentTopRef = useRef<HTMLDivElement>(null);
 
   // Build flat section list for sequential navigation
@@ -205,6 +205,15 @@ export default function Playbook() {
     enabled: !!user && !!archetype && !!accessData?.hasAccess && !!session?.access_token,
   });
 
+  // Inline notes: localStorage-first with background DB sync
+  const {
+    getNoteForSection,
+    updateNote: updateInlineNote,
+    flushNote,
+    getAllNotes,
+    saveStatus: inlineNoteSaveStatus,
+  } = useInlineNotes({ archetype, session, dbNotes: notesData });
+
   // Mutations - always declare these
   const toggleChapterMutation = useMutation({
     mutationFn: ({ chapterId, completed }: { chapterId: string; completed: boolean }) => 
@@ -253,28 +262,6 @@ export default function Playbook() {
     },
   });
 
-  // Debounced note save
-  const saveNoteMutation = useMutation({
-    mutationFn: ({ sectionId, content }: { sectionId: string; content: string }) => 
-      authPost(`/api/playbook/${archetype}/notes`, { sectionId, content }),
-    onMutate: () => {
-      setNoteSaveStatus('saving');
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/notes`] });
-      setNoteSaveStatus('saved');
-      setTimeout(() => setNoteSaveStatus('idle'), 2000);
-    },
-    onError: () => {
-      setNoteSaveStatus('error');
-      toast({ 
-        variant: "destructive", 
-        title: "Error", 
-        description: "Failed to save note. Please try again." 
-      });
-    },
-  });
-
   // Calculated values
   const selectedChapter = playbook?.chapters.find(c => c.id === selectedChapterId);
   const selectedSection = selectedChapter?.sections.find(s => s.id === selectedSectionId);
@@ -285,26 +272,6 @@ export default function Playbook() {
   const prevFlat = currentFlatIndex > 0 ? flatSections[currentFlatIndex - 1] : null;
   const nextFlat = currentFlatIndex < flatSections.length - 1 ? flatSections[currentFlatIndex + 1] : null;
   const currentReadingTime = currentFlat ? calculateReadingTime(currentFlat.content, currentFlat.sectionId) : null;
-
-  const handleNoteSave = (sectionId: string, content: string) => {
-    // Clear any existing timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-    
-    // Reset status to idle while user is typing
-    setNoteSaveStatus('idle');
-    
-    // Set new timer
-    const timer = setTimeout(() => {
-      if (content.trim()) {
-        saveNoteMutation.mutate({ sectionId, content });
-      }
-    }, 1000);
-    
-    // Store timer reference
-    debounceTimerRef.current = timer;
-  };
 
   // Silent background sync: write chapter completion to DB without showing error toasts.
   // localStorage is the source of truth for the UI; DB sync is for cross-device persistence.
@@ -367,10 +334,6 @@ export default function Playbook() {
     const status = toolsData?.find(t => t.toolId === toolId)?.status || "not_started";
     // Convert backend format (not_started) to UI format (Not Started)
     return status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  };
-
-  const getSectionNote = (sectionId: string) => {
-    return notesData?.find(n => n.sectionId === sectionId);
   };
 
   // First-time user onboarding
@@ -735,13 +698,22 @@ export default function Playbook() {
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-6 pt-0">
-                    <ContentRenderer 
+                    <ContentRenderer
                       content={selectedSection.content}
                       sectionId={selectedSectionId}
                       archetype={archetype}
                       session={session}
                     />
-                    
+
+                    {/* Inline section note */}
+                    <InlineSectionNote
+                      sectionId={selectedSectionId}
+                      noteContent={getNoteForSection(selectedSectionId)}
+                      saveStatus={inlineNoteSaveStatus[selectedSectionId] || "idle"}
+                      onNoteChange={updateInlineNote}
+                      onBlur={flushNote}
+                    />
+
                     {/* Navigation */}
                     <div className="pt-6 border-t border-muted space-y-4">
                       {/* Completion indicator */}
@@ -844,18 +816,105 @@ export default function Playbook() {
             </TabsContent>
 
             <TabsContent value="notes" className="space-y-4">
+              {/* Current section guided notes */}
               <Card>
                 <CardContent className="pt-6">
                   <GuidedNotes
                     sectionId={selectedSectionId}
                     sectionTitle={selectedSection?.title || ""}
-                    existingNote={getSectionNote(selectedSectionId)?.content}
-                    onSave={handleNoteSave}
-                    saveStatus={noteSaveStatus}
-                    disabled={saveNoteMutation.isPending}
+                    existingNote={getNoteForSection(selectedSectionId)}
+                    onSave={(sectionId, content) => {
+                      updateInlineNote(sectionId, content);
+                      flushNote(sectionId);
+                    }}
+                    saveStatus={inlineNoteSaveStatus[selectedSectionId] || "idle"}
+                    disabled={false}
                   />
                 </CardContent>
               </Card>
+
+              {/* All notes aggregator */}
+              {(() => {
+                const allNotes = getAllNotes().filter(
+                  (n) => n.sectionId !== selectedSectionId
+                );
+                if (allNotes.length === 0) return null;
+
+                // Group notes by chapter
+                const notesByChapter: Record<
+                  string,
+                  { chapterTitle: string; notes: typeof allNotes }
+                > = {};
+                for (const note of allNotes) {
+                  const flat = flatSections.find(
+                    (s) => s.sectionId === note.sectionId
+                  );
+                  if (!flat) continue;
+                  if (!notesByChapter[flat.chapterId]) {
+                    notesByChapter[flat.chapterId] = {
+                      chapterTitle: flat.chapterTitle,
+                      notes: [],
+                    };
+                  }
+                  notesByChapter[flat.chapterId].notes.push(note);
+                }
+
+                const chapterOrder = playbook?.chapters.map((c) => c.id) || [];
+
+                return (
+                  <>
+                    <div className="flex items-center gap-3 pt-2">
+                      <div className="flex-1 h-px bg-border" />
+                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        Notes from other sections
+                      </span>
+                      <div className="flex-1 h-px bg-border" />
+                    </div>
+
+                    {chapterOrder
+                      .filter((cId) => notesByChapter[cId])
+                      .map((chapterId) => {
+                        const group = notesByChapter[chapterId];
+                        return (
+                          <div key={chapterId} className="space-y-2">
+                            <h4 className="text-sm font-semibold text-muted-foreground">
+                              {group.chapterTitle}
+                            </h4>
+                            {group.notes.map((note) => {
+                              const flat = flatSections.find(
+                                (s) => s.sectionId === note.sectionId
+                              );
+                              const preview =
+                                note.content.split("\n")[0].slice(0, 120) +
+                                (note.content.length > 120 ? "..." : "");
+                              return (
+                                <button
+                                  key={note.sectionId}
+                                  type="button"
+                                  className="w-full text-left p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+                                  onClick={() => {
+                                    if (flat) {
+                                      setSelectedChapterId(flat.chapterId);
+                                      setSelectedSectionId(flat.sectionId);
+                                      setActiveTab("content");
+                                    }
+                                  }}
+                                >
+                                  <p className="text-xs text-muted-foreground mb-1">
+                                    {flat?.sectionTitle || note.sectionId}
+                                  </p>
+                                  <p className="text-sm text-foreground leading-relaxed">
+                                    {preview}
+                                  </p>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                  </>
+                );
+              })()}
             </TabsContent>
 
             <TabsContent value="pdf" className="space-y-4">
