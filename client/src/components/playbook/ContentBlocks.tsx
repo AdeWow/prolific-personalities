@@ -14,7 +14,7 @@ interface BlockProps {
 export function InsightBlock({ title, children, className = "" }: BlockProps) {
   return (
     <Card className={`border-l-4 border-l-amber-400 bg-amber-50/50 dark:bg-amber-950/20 animate-fade-in-up hover:shadow-md transition-shadow duration-200 ${className}`}>
-      <CardContent className="p-4">
+      <CardContent className="p-5">
         <div className="flex gap-3">
           <div className="flex-shrink-0">
             <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
@@ -23,9 +23,9 @@ export function InsightBlock({ title, children, className = "" }: BlockProps) {
           </div>
           <div className="flex-1">
             {title && (
-              <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-1">{title}</h4>
+              <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">{title}</h4>
             )}
-            <div className="text-sm text-amber-800 dark:text-amber-200">{children}</div>
+            <div className="text-sm text-amber-800 dark:text-amber-200 leading-relaxed">{children}</div>
           </div>
         </div>
       </CardContent>
@@ -36,7 +36,7 @@ export function InsightBlock({ title, children, className = "" }: BlockProps) {
 export function ActionBlock({ title, children, className = "" }: BlockProps) {
   return (
     <Card className={`border-l-4 border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 animate-fade-in-up hover:shadow-md transition-shadow duration-200 ${className}`}>
-      <CardContent className="p-4">
+      <CardContent className="p-5">
         <div className="flex gap-3">
           <div className="flex-shrink-0">
             <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
@@ -45,9 +45,9 @@ export function ActionBlock({ title, children, className = "" }: BlockProps) {
           </div>
           <div className="flex-1">
             {title && (
-              <h4 className="font-semibold text-emerald-900 dark:text-emerald-100 mb-1">{title}</h4>
+              <h4 className="font-semibold text-emerald-900 dark:text-emerald-100 mb-2">{title}</h4>
             )}
-            <div className="text-sm text-emerald-800 dark:text-emerald-200">{children}</div>
+            <div className="text-sm text-emerald-800 dark:text-emerald-200 leading-relaxed">{children}</div>
           </div>
         </div>
       </CardContent>
@@ -80,7 +80,7 @@ export function WhyItMattersBlock({ title, children, className = "" }: BlockProp
 export function CommonMistakeBlock({ title, children, className = "" }: BlockProps) {
   return (
     <Card className={`border-l-4 border-l-orange-500 bg-orange-50/50 dark:bg-orange-950/20 animate-fade-in-up hover:shadow-md transition-shadow duration-200 ${className}`}>
-      <CardContent className="p-4">
+      <CardContent className="p-5">
         <div className="flex gap-3">
           <div className="flex-shrink-0">
             <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center">
@@ -89,9 +89,9 @@ export function CommonMistakeBlock({ title, children, className = "" }: BlockPro
           </div>
           <div className="flex-1">
             {title && (
-              <h4 className="font-semibold text-orange-900 dark:text-orange-100 mb-1">{title}</h4>
+              <h4 className="font-semibold text-orange-900 dark:text-orange-100 mb-2">{title}</h4>
             )}
-            <div className="text-sm text-orange-800 dark:text-orange-200">{children}</div>
+            <div className="text-sm text-orange-800 dark:text-orange-200 leading-relaxed">{children}</div>
           </div>
         </div>
       </CardContent>

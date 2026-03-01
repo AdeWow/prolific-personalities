@@ -620,48 +620,64 @@ export default function Playbook() {
                       setSidebarOpen(false);
                     }}
                     className={`
-                      w-full text-left px-3 py-2 rounded-lg flex items-center justify-between
-                      ${isActive ? 'bg-primary/10 dark:bg-primary/20 text-primary' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}
+                      w-full text-left px-3 py-2.5 rounded-lg flex items-center justify-between transition-all duration-150
+                      ${isActive
+                        ? 'bg-primary/10 dark:bg-primary/20 text-primary font-semibold'
+                        : chapterAllComplete
+                          ? 'text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'
+                          : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'}
                     `}
                     data-testid={`chapter-${chapter.id}`}
                   >
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2.5">
                       {chapterAllComplete ? (
                         <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
                       ) : chapterPartial ? (
                         <CircleDot className="h-5 w-5 text-amber-500 shrink-0" />
+                      ) : isActive ? (
+                        <CircleDot className="h-5 w-5 text-primary shrink-0" />
                       ) : (
-                        <Circle className="h-5 w-5 shrink-0" />
+                        <Circle className="h-5 w-5 text-gray-300 dark:text-gray-600 shrink-0" />
                       )}
-                      <span className="font-medium">{idx + 1}. {chapter.title}</span>
+                      <span className={chapterAllComplete && !isActive ? 'line-through decoration-1' : ''}>{chapter.title}</span>
                     </div>
-                    <ChevronRight className={`h-4 w-4 ${isActive ? '' : 'opacity-0'}`} />
+                    <ChevronRight className={`h-4 w-4 transition-opacity ${isActive ? 'opacity-100' : 'opacity-0'}`} />
                   </button>
                   {isActive && (
-                    <div className="ml-7 mt-1 space-y-1">
-                      {chapter.sections.map(section => (
-                        <button
-                          key={section.id}
-                          onClick={() => { setSelectedSectionId(section.id); setSidebarOpen(false); }}
-                          className={`
-                            w-full text-left px-3 py-1.5 rounded text-sm flex items-center justify-between
-                            ${selectedSectionId === section.id ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'}
-                          `}
-                          data-testid={`section-${section.id}`}
-                        >
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            {isSectionComplete(section.id) ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0" />
-                            ) : (
-                              <Circle className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                            )}
-                            <span className="truncate">{section.title}</span>
-                          </div>
-                          <span className="text-[10px] text-muted-foreground ml-2 shrink-0">
-                            {calculateReadingTime(section.content, section.id)}
-                          </span>
-                        </button>
-                      ))}
+                    <div className="ml-7 mt-1 space-y-0.5 pb-1">
+                      {chapter.sections.map(section => {
+                        const sectionDone = isSectionComplete(section.id);
+                        const sectionActive = selectedSectionId === section.id;
+                        return (
+                          <button
+                            key={section.id}
+                            onClick={() => { setSelectedSectionId(section.id); setSidebarOpen(false); }}
+                            className={`
+                              w-full text-left px-3 py-2 rounded-md text-sm flex items-center justify-between transition-all duration-150
+                              ${sectionActive
+                                ? 'bg-primary/8 dark:bg-primary/15 text-foreground font-medium'
+                                : sectionDone
+                                  ? 'text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'}
+                            `}
+                            data-testid={`section-${section.id}`}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              {sectionDone ? (
+                                <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0" />
+                              ) : sectionActive ? (
+                                <CircleDot className="h-3.5 w-3.5 text-primary shrink-0" />
+                              ) : (
+                                <Circle className="h-3.5 w-3.5 text-gray-300 dark:text-gray-600 shrink-0" />
+                              )}
+                              <span className={`truncate ${sectionDone && !sectionActive ? 'line-through decoration-1' : ''}`}>{section.title}</span>
+                            </div>
+                            <span className="text-[10px] text-gray-300 dark:text-gray-600 ml-2 shrink-0 tabular-nums">
+                              {calculateReadingTime(section.content, section.id)}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -701,24 +717,24 @@ export default function Playbook() {
               <MobileAppBanner className="lg:hidden" />
               
               {selectedSection && (
-                <Card>
-                  <CardHeader>
+                <Card className="shadow-sm">
+                  <CardHeader className="pb-4">
                     <div ref={contentTopRef}>
-                      <CardTitle className="text-2xl">{selectedSection.title}</CardTitle>
-                      <div className="flex items-center gap-3 mt-1">
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {selectedChapter?.title}
-                        </p>
-                        {currentReadingTime && (
-                          <Badge variant="secondary" className="text-xs gap-1">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5">
+                        {selectedChapter?.title}
+                      </p>
+                      <CardTitle className="text-2xl sm:text-[1.7rem] leading-tight">{selectedSection.title}</CardTitle>
+                      {currentReadingTime && (
+                        <div className="flex items-center gap-1.5 mt-3">
+                          <Badge variant="secondary" className="text-xs gap-1 font-normal text-muted-foreground">
                             <Clock className="h-3 w-3" />
                             {currentReadingTime}
                           </Badge>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-6">
+                  <CardContent className="space-y-6 pt-0">
                     <ContentRenderer 
                       content={selectedSection.content}
                       sectionId={selectedSectionId}
