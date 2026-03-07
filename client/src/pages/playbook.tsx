@@ -187,7 +187,7 @@ export default function Playbook() {
     enabled: !!user && !!archetype && !!accessData?.hasAccess && !!session?.access_token,
   });
 
-  const { data: actionPlanData } = useQuery<{ dayNumber: number; taskId: string; completedAt: string }[]>({
+  const { data: actionPlanData } = useQuery<{ dayNumber: number; taskId: string; completed: number; completedAt: string }[]>({
     queryKey: [`/api/playbook/${archetype}/action-plan`, session?.access_token],
     queryFn: () => authFetch(`/api/playbook/${archetype}/action-plan`),
     enabled: !!user && !!archetype && !!accessData?.hasAccess && !!session?.access_token,
@@ -791,9 +791,9 @@ export default function Playbook() {
             <TabsContent value="action-plan" className="space-y-4">
               <ActionPlanGame
                 tasks={playbook?.actionPlan || []}
-                completedTasks={(actionPlanData || []).map(t => ({ 
-                  dayNumber: t.dayNumber, 
-                  taskId: t.taskId 
+                completedTasks={(actionPlanData || []).filter(t => t.completed === 1).map(t => ({
+                  dayNumber: t.dayNumber,
+                  taskId: t.taskId
                 }))}
                 onToggleTask={(dayNumber, taskId, completed) => {
                   toggleActionPlanMutation.mutate({ dayNumber, taskId, completed });

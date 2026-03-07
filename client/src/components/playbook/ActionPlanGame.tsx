@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   ChevronDown,
   ChevronUp,
+  ChevronRight,
   Target,
   Clock,
   Brain,
@@ -183,23 +184,91 @@ export function ActionPlanGame({ tasks, completedTasks, onToggleTask, isPending 
               <p className="text-xs text-muted-foreground/70 italic px-3 pb-1">
                 Work at your own pace — complete as many as you'd like
               </p>
-              {futureTasks.map(task => (
-                <div
-                  key={task.id}
-                  className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 opacity-75 hover:opacity-100 transition-opacity"
-                >
-                  <Checkbox
-                    checked={isTaskComplete(task.day, task.id)}
-                    onCheckedChange={(checked) => {
-                      onToggleTask(task.day, task.id, !!checked);
-                    }}
-                    disabled={isPending}
-                    data-testid={`task-future-${task.day}`}
-                  />
-                  <Badge variant="outline" className="text-xs text-muted-foreground">Day {task.day}</Badge>
-                  <span className="text-sm text-muted-foreground flex-1">{task.task}</span>
-                </div>
-              ))}
+              {futureTasks.map(task => {
+                const isExpanded = expandedDays.has(task.day);
+                const isComplete = isTaskComplete(task.day, task.id);
+                return (
+                  <div
+                    key={task.id}
+                    className={cn(
+                      "rounded-lg border transition-all",
+                      isComplete
+                        ? "bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200/50 dark:border-emerald-800/30"
+                        : isExpanded
+                          ? "bg-background border-border shadow-sm"
+                          : "bg-muted/30 border-transparent hover:bg-muted/50 hover:border-border/50 cursor-pointer"
+                    )}
+                  >
+                    <div
+                      className="flex items-center gap-3 p-3"
+                      onClick={() => !isComplete && toggleExpand(task.day)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleExpand(task.day); } }}
+                    >
+                      {isComplete ? (
+                        <Checkbox
+                          checked={true}
+                          onCheckedChange={() => { onToggleTask(task.day, task.id, false); }}
+                          disabled={isPending}
+                          onClick={(e) => e.stopPropagation()}
+                          data-testid={`task-future-${task.day}`}
+                        />
+                      ) : (
+                        <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                          {isExpanded ? (
+                            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                          ) : (
+                            <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
+                          )}
+                        </div>
+                      )}
+                      <Badge variant="outline" className={cn(
+                        "text-xs",
+                        isComplete ? "text-emerald-600 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700" : "text-muted-foreground"
+                      )}>Day {task.day}</Badge>
+                      <span className={cn(
+                        "text-sm flex-1",
+                        isComplete ? "line-through text-muted-foreground" : "text-foreground/80"
+                      )}>{task.task}</span>
+                      {isComplete && <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />}
+                    </div>
+
+                    {isExpanded && !isComplete && (
+                      <div className="px-3 pb-4 pt-1 border-t border-border/50">
+                        <div className="pl-8">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {getTimeEstimate(task.day)}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
+                          <div className="flex items-start gap-2 p-2.5 bg-muted/40 rounded-lg mb-3">
+                            <Brain className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
+                            <div>
+                              <span className="text-xs font-medium text-foreground">Why this matters: </span>
+                              <span className="text-xs text-muted-foreground">{getTaskWhyText(task.day)}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              checked={false}
+                              onCheckedChange={(checked) => {
+                                onToggleTask(task.day, task.id, !!checked);
+                              }}
+                              disabled={isPending}
+                              data-testid={`task-future-${task.day}`}
+                              className="h-5 w-5"
+                            />
+                            <span className="text-sm font-medium text-foreground">Mark complete</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
