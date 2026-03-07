@@ -3,15 +3,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { 
-  ChevronDown, 
-  ChevronUp, 
-  Target, 
-  Clock, 
+import {
+  ChevronDown,
+  ChevronUp,
+  Target,
+  Clock,
   Brain,
   Sparkles,
   CheckCircle2,
-  Lock
+  CalendarDays
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ActionPlanTask } from "@shared/playbookContent";
@@ -172,20 +172,30 @@ export function ActionPlanGame({ tasks, completedTasks, onToggleTask, isPending 
             onClick={() => toggleExpand(999)}
           >
             <span className="text-sm flex items-center gap-2">
-              <Lock className="w-3 h-3" />
+              <CalendarDays className="w-3 h-3" />
               Coming Up ({futureTasks.length} days)
             </span>
             {expandedDays.has(999) ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </Button>
-          
+
           {expandedDays.has(999) && (
-            <div className="space-y-2 pl-2 opacity-60">
+            <div className="space-y-2 pl-2">
+              <p className="text-xs text-muted-foreground/70 italic px-3 pb-1">
+                Work at your own pace — complete as many as you'd like
+              </p>
               {futureTasks.map(task => (
                 <div
                   key={task.id}
-                  className="flex items-center gap-3 p-3 rounded-lg bg-muted/20"
+                  className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 opacity-75 hover:opacity-100 transition-opacity"
                 >
-                  <div className="w-5 h-5 rounded border border-dashed border-muted-foreground/30" />
+                  <Checkbox
+                    checked={isTaskComplete(task.day, task.id)}
+                    onCheckedChange={(checked) => {
+                      onToggleTask(task.day, task.id, !!checked);
+                    }}
+                    disabled={isPending}
+                    data-testid={`task-future-${task.day}`}
+                  />
                   <Badge variant="outline" className="text-xs text-muted-foreground">Day {task.day}</Badge>
                   <span className="text-sm text-muted-foreground flex-1">{task.task}</span>
                 </div>
