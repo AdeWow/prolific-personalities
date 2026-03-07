@@ -508,7 +508,7 @@ export default function Playbook() {
 
   // User has access - render the actual playbook
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -557,7 +557,7 @@ export default function Playbook() {
         />
       )}
 
-      <div className="flex max-w-7xl mx-auto">
+      <div className="flex max-w-7xl mx-auto overflow-x-hidden">
         {/* Sidebar - Only visible on Content tab */}
         <aside className={`
           ${sidebarOpen ? 'block' : 'hidden'} 
@@ -650,7 +650,7 @@ export default function Playbook() {
         </aside>
 
         {/* Main Content */}
-        <main id="main-content" role="main" className={`flex-1 p-4 sm:p-6 lg:p-8 transition-all duration-200 ${activeTab !== 'content' ? 'lg:max-w-none' : ''}`}>
+        <main id="main-content" role="main" className={`flex-1 min-w-0 p-4 sm:p-6 lg:p-8 transition-all duration-200 ${activeTab !== 'content' ? 'lg:max-w-none' : ''}`}>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-5 max-w-3xl">
               <TabsTrigger value="content" data-testid="tab-content">
@@ -697,7 +697,7 @@ export default function Playbook() {
                       )}
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-6 pt-0">
+                  <CardContent className="space-y-6 pt-0 overflow-hidden" style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>
                     <ContentRenderer
                       content={selectedSection.content}
                       sectionId={selectedSectionId}
