@@ -40,7 +40,7 @@ export default function PaymentSuccess() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Payment Successful - Prolific Personalities"
+        title="Payment Successful"
         description="Your premium report purchase was successful"
       />
       <Header />

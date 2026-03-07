@@ -123,8 +123,8 @@ export default function ArchetypeDetail() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title={`${archetype.name} | Prolific Personalities`}
-        description={details.description}
+        title={archetype.name}
+        description={details.description.slice(0, 155)}
         keywords={`${archetype.name.toLowerCase()}, productivity archetype, productivity type, ${archetype.tags.join(', ').toLowerCase()}`}
         canonicalUrl={typeof window !== 'undefined' ? `${window.location.origin}/archetypes/${slug}` : undefined}
       />

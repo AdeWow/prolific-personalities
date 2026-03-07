@@ -251,8 +251,8 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Pricing - Free Productivity Test + Premium Playbook | Prolific Personalities"
-        description={`Take our free productivity test and quiz. Upgrade to Complete Playbook (${currentPrice}) for 35+ pages of personalized strategies, implementation guides, and lifetime access.`}
+        title="Pricing"
+        description="Take our free productivity quiz. Upgrade to the Complete Playbook for 35+ pages of personalized strategies, a 30-day action plan, and lifetime access."
         keywords="free productivity test, productivity quiz pricing, productivity assessment cost, personalized productivity strategies, productivity playbook"
         canonicalUrl={`${origin}/pricing`}
         structuredData={combinedStructuredData}

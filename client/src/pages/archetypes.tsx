@@ -80,8 +80,8 @@ export default function Archetypes() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Productivity Archetypes | Prolific Personalities"
-        description="Discover the productivity personalities. Learn which archetype matches how you naturally focus, plan, and follow through."
+        title="Productivity Archetypes"
+        description="Explore all 7 productivity archetypes. Learn which type matches how you naturally focus, plan, and follow through — then take the free quiz to find yours."
         keywords="productivity archetypes, productivity types, work style types, structured achiever, chaotic creative, strategic planner, anxious perfectionist, novelty seeker, flexible improviser"
         canonicalUrl={typeof window !== 'undefined' ? `${window.location.origin}/archetypes` : undefined}
       />

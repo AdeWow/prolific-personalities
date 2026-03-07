@@ -11,8 +11,8 @@ export default function Science() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:from-card dark:to-background">
       <SEOHead
-        title="The Science | Prolific Personalities"
-        description="The peer-reviewed research behind personalized productivity. Built on executive function theory, cognitive load science, and motivation psychology."
+        title="The Research Behind Your Results"
+        description="Explore the peer-reviewed research behind Prolific Personalities. Built on executive function theory, cognitive load science, and motivation psychology."
         keywords="productivity science, cognitive science, executive function, motivation psychology, productivity research, personalized productivity"
       />
       <Header />

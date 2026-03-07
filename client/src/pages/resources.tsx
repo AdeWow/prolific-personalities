@@ -256,8 +256,8 @@ export default function Resources() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       <SEOHead
-        title="Tools & Resources | Prolific Personalities"
-        description="Curated productivity tools matched to your archetype. Find the perfect stack for how your brain actually works."
+        title="Tools & Resources"
+        description="Curated productivity tools and apps matched to your archetype. Find the perfect stack for focus, time management, task planning, and deep work support."
         keywords="productivity tools, best productivity apps, time management tools, focus apps, task management software, productivity resources"
       />
       <Header />

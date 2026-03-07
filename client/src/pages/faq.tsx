@@ -57,7 +57,7 @@ export default function FAQ() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
         title="Frequently Asked Questions"
-        description="Find answers to common questions about Prolific Personalities productivity assessment. Learn how it works, what makes it different, and how it can help you."
+        description="Answers to common questions about the Prolific Personalities productivity assessment. Learn how it works, what makes it different, and how it helps you."
         keywords="productivity FAQ, personality assessment questions, productivity quiz help, prolific personalities FAQ"
       />
       <Header />

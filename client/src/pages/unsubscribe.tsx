@@ -125,7 +125,7 @@ export default function Unsubscribe() {
     return (
       <>
         <SEOHead
-          title="Unsubscribed | Prolific Personalities"
+          title="Unsubscribed"
           description="You have been successfully unsubscribed from Prolific Personalities emails."
         />
         <div className="min-h-screen bg-gradient-to-b from-background to-muted py-8 sm:py-16">
@@ -179,7 +179,7 @@ export default function Unsubscribe() {
   return (
     <>
       <SEOHead
-        title="Unsubscribe | Prolific Personalities"
+        title="Unsubscribe"
         description="Unsubscribe from Prolific Personalities emails."
       />
       <div className="min-h-screen bg-gradient-to-b from-background to-muted py-8 sm:py-16">

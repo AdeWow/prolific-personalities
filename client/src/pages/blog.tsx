@@ -224,8 +224,8 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Productivity Insights Blog | Prolific Personalities"
-        description="Research-backed strategies for every productivity style. Explore archetype-specific tips, psychology insights, and actionable advice for how your brain actually works."
+        title="Productivity Insights Blog"
+        description="Research-backed productivity strategies for every work style. Explore archetype-specific tips, psychology insights, and actionable advice for your brain."
         keywords="productivity blog, productivity tips, productivity strategies, time management tips, focus techniques, ADHD productivity, productivity research, work style optimization"
         canonicalUrl={typeof window !== 'undefined' ? `${window.location.origin}/blog` : undefined}
       />

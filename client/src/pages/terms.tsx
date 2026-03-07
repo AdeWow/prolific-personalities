@@ -10,7 +10,7 @@ export default function Terms() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Terms of Service | Prolific Personalities"
+        title="Terms of Service"
         description="Terms and conditions for using Prolific Personalities productivity assessment platform."
         canonicalUrl={`${origin}/terms`}
       />

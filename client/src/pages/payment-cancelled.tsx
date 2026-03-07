@@ -9,7 +9,7 @@ export default function PaymentCancelled() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Payment Cancelled - Prolific Personalities"
+        title="Payment Cancelled"
         description="Your payment was cancelled"
       />
       <Header />

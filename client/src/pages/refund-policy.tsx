@@ -7,7 +7,7 @@ export default function RefundPolicy() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Refund Policy - Prolific Personalities"
+        title="Refund Policy"
         description="Our refund policy for premium playbook purchases. We offer a 30-day satisfaction guarantee on all digital products."
       />
       <Header />

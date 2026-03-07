@@ -9,7 +9,7 @@ export default function Privacy() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       <SEOHead
-        title="Privacy Policy | Prolific Personalities"
+        title="Privacy Policy"
         description="Learn how Prolific Personalities collects, uses, and protects your personal information."
         canonicalUrl={`${origin}/privacy`}
       />

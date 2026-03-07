@@ -9,8 +9,8 @@ export default function About() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:from-card dark:to-background">
       <SEOHead
-        title="About | Prolific Personalities"
-        description="Learn why we built Prolific Personalities — a research-backed platform that matches productivity strategies to how your brain actually works."
+        title="About"
+        description="Learn why we built Prolific Personalities — a research-backed productivity platform matching strategies to how your brain actually works. Meet the founder."
         keywords="about prolific personalities, productivity platform, personalized productivity, research-backed assessment"
       />
       <Header />

@@ -29,7 +29,7 @@ export function SEOHead({
   article,
 }: SEOHeadProps) {
   useEffect(() => {
-    document.title = `${title} | Prolific Personalities`;
+    document.title = `${title} — Prolific Personalities`;
 
     const setMetaTag = (name: string, content: string, useProperty = false) => {
       const attribute = useProperty ? 'property' : 'name';

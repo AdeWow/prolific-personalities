@@ -67,7 +67,7 @@ export default function Feedback() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted dark:from-card dark:to-background">
       <SEOHead
-        title="Send Feedback | Prolific Personalities"
+        title="Send Feedback"
         description="Share your thoughts, suggestions, or feature requests. We read everything."
         keywords="feedback, contact, suggestions, feature requests"
       />

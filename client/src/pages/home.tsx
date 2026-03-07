@@ -58,7 +58,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <SEOHead
         title="Free Productivity Test - Discover Your Work Style in 5 Minutes"
-        description="Take our free productivity test and quiz to discover your unique productivity archetype. Get personalized strategies based on science-backed research. Find out why traditional productivity advice doesn't work for you."
+        description="Take our free 5-minute productivity quiz and discover your unique archetype. Get personalized, science-backed strategies matched to how your brain works."
         keywords="productivity test, productivity quiz, free productivity assessment, work style quiz, productivity archetype, time management test, focus assessment, procrastination quiz, executive function test, ADHD productivity"
         canonicalUrl={origin}
         structuredData={structuredData}
