@@ -229,17 +229,17 @@ export function ExitIntentPopup() {
           </div>
 
           <div className="bg-primary/5 dark:bg-primary/10 rounded-lg p-4 mb-6">
-            <p className="text-sm font-medium text-primary mb-2">What you'll get:</p>
+            <p className="text-sm font-medium text-primary-accessible mb-2">What you'll get:</p>
             <ul className="space-y-2" aria-label="Benefits list">
-              <li className="flex items-center text-sm text-primary/80">
+              <li className="flex items-center text-sm text-primary-accessible">
                 <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" aria-hidden="true" />
                 Personalized tips for your archetype
               </li>
-              <li className="flex items-center text-sm text-primary/80">
+              <li className="flex items-center text-sm text-primary-accessible">
                 <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" aria-hidden="true" />
                 Tool recommendations that actually work
               </li>
-              <li className="flex items-center text-sm text-primary/80">
+              <li className="flex items-center text-sm text-primary-accessible">
                 <CheckCircle className="w-4 h-4 mr-2 text-primary flex-shrink-0" aria-hidden="true" />
                 Weekly micro-challenges to build habits
               </li>

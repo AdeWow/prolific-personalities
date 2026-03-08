@@ -262,7 +262,7 @@ export default function Pricing() {
         {/* Hero Section */}
         <section className="py-20" aria-labelledby="pricing-title">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <Badge className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full text-sm font-medium text-primary mb-6">
+            <Badge className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full text-sm font-medium text-primary-accessible mb-6">
               <Sparkles className="w-4 h-4 mr-2" />
               Choose Your Plan
             </Badge>
@@ -491,7 +491,7 @@ export default function Pricing() {
                             <span className="text-muted-foreground">—</span>
                           )
                         ) : (
-                          <span className="text-sm text-primary font-medium">{feature.playbook}</span>
+                          <span className="text-sm text-primary-accessible font-medium">{feature.playbook}</span>
                         )}
                       </td>
                     </tr>

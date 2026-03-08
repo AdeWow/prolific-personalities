@@ -87,8 +87,8 @@ export function ToolCard({ tool, archetypeName }: ToolCardProps) {
             <div className="flex items-start gap-2">
               <Lightbulb className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-semibold text-primary mb-1">Why this fits you:</p>
-                <p className="text-xs text-primary/80">{getArchetypeExplanation()}</p>
+                <p className="text-xs font-semibold text-primary-accessible mb-1">Why this fits you:</p>
+                <p className="text-xs text-primary-accessible">{getArchetypeExplanation()}</p>
               </div>
             </div>
           </div>

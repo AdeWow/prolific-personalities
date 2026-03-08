@@ -18,6 +18,8 @@
   /* Primary: Muted Teal from logo */
   --primary: hsl(172, 34%, 43%);
   --primary-foreground: hsl(0, 0%, 100%);
+  /* Darkened primary for small text — passes WCAG AA 4.5:1 on cream/white */
+  --primary-accessible: hsl(172, 37%, 31%);
   
   /* Secondary: Dusty Rose/Coral from logo */
   --secondary: hsl(16, 38%, 62%);
@@ -65,6 +67,7 @@
   /* Primary: Muted Teal - slightly brighter for dark mode */
   --primary: hsl(172, 38%, 48%);
   --primary-foreground: hsl(206, 24%, 8%);
+  --primary-accessible: hsl(172, 38%, 48%);
   
   /* Secondary: Dusty Rose */
   --secondary: hsl(16, 42%, 58%);

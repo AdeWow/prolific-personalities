@@ -57,7 +57,7 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
         </div>
 
         {clickable && (
-          <p className="text-primary font-medium text-sm">
+          <p className="text-primary-accessible font-medium text-sm">
             View archetype →
           </p>
         )}

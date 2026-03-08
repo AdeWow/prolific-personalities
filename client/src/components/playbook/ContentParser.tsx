@@ -369,7 +369,7 @@ export function ContentRenderer({ content, sectionId, archetype = '', session, r
                           {/* Step number circle */}
                           <div className="absolute -left-8 top-1 flex items-center justify-center">
                             <div className="w-[22px] h-[22px] rounded-full bg-white dark:bg-slate-800 border-2 border-primary/50 group-hover:border-primary flex items-center justify-center transition-colors z-10">
-                              <span className="text-[10px] font-bold text-primary">{i + 1}</span>
+                              <span className="text-[10px] font-bold text-primary-accessible">{i + 1}</span>
                             </div>
                           </div>
                           {/* Step content */}

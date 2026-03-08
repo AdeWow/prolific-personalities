@@ -403,7 +403,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
             <span className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
               Page {currentPage + 1} of {totalPages}
             </span>
-            <span className="text-sm font-medium text-primary">
+            <span className="text-sm font-medium text-primary-accessible">
               {answeredCount} of {questions.length} answered
             </span>
           </div>

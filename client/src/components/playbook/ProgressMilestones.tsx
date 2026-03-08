@@ -54,9 +54,9 @@ export function ProgressMilestones({ completedSections, totalSections, className
 
       {/* Stage labels */}
       <div className="flex justify-between text-[10px] text-muted-foreground pt-0.5">
-        <span className={cn(progressPercentage >= 25 && "text-primary/70")}>Clarity</span>
-        <span className={cn(progressPercentage >= 50 && "text-primary/70")}>Momentum</span>
-        <span className={cn(progressPercentage >= 100 && "text-primary/70")}>System Installed</span>
+        <span className={cn(progressPercentage >= 25 && "text-primary-accessible")}>Clarity</span>
+        <span className={cn(progressPercentage >= 50 && "text-primary-accessible")}>Momentum</span>
+        <span className={cn(progressPercentage >= 100 && "text-primary-accessible")}>System Installed</span>
       </div>
     </div>
   );

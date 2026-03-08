@@ -70,7 +70,7 @@ export function ActionPlanGame({ tasks, completedTasks, onToggleTask, isPending 
             <div className="bg-primary/10 px-4 py-2 border-b border-primary/20">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-primary">Today's Focus</span>
+                <span className="text-sm font-semibold text-primary-accessible">Today's Focus</span>
               </div>
             </div>
             <div className="p-5">

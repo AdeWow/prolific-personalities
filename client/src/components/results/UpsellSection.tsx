@@ -115,7 +115,7 @@ export function UpsellSection({
                   <button
                     type="button"
                     onClick={() => setShowPromoInput(true)}
-                    className="text-sm text-primary hover:underline"
+                    className="text-sm text-primary-accessible hover:underline"
                     data-testid="button-show-promo"
                   >
                     Have a promo code?

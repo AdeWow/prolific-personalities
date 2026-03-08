@@ -161,7 +161,7 @@ export function GuidedNotes({ sectionId, sectionTitle, existingNote, onSave, sav
         {noteContent && (
           <button
             onClick={() => setShowPrompts(!showPrompts)}
-            className="text-xs text-primary hover:underline"
+            className="text-xs text-primary-accessible hover:underline"
           >
             {showPrompts ? 'Hide prompts' : 'Show prompts'}
           </button>

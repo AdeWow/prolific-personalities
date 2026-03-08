@@ -520,8 +520,9 @@ export default function Playbook() {
                 className="lg:hidden"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 data-testid="button-menu"
+                aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
               >
-                {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {sidebarOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
               </Button>
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">

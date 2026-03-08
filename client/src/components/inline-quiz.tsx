@@ -26,7 +26,7 @@ export function InlineQuiz() {
             <div className="space-y-8">
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-sm font-semibold text-primary uppercase tracking-wide">
+                  <span className="text-sm font-semibold text-primary-accessible uppercase tracking-wide">
                     Sample Question
                   </span>
                   <span className="text-sm text-muted-foreground">

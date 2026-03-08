@@ -34,7 +34,7 @@ export function InlineToolCard({ toolId }: InlineToolCardProps) {
           href={info.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0 mt-1 transition-colors"
+          className="flex items-center gap-1 text-xs text-primary-accessible hover:text-primary font-medium flex-shrink-0 mt-1 transition-colors"
         >
           Try this
           <ExternalLink className="w-3 h-3" />

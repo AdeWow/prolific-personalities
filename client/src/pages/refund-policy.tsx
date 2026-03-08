@@ -70,7 +70,7 @@ export default function RefundPolicy() {
                 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0 text-sm font-bold text-primary">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0 text-sm font-bold text-primary-accessible">
                       1
                     </div>
                     <div>
@@ -90,7 +90,7 @@ export default function RefundPolicy() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0 text-sm font-bold text-primary">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0 text-sm font-bold text-primary-accessible">
                       2
                     </div>
                     <div>
@@ -102,7 +102,7 @@ export default function RefundPolicy() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0 text-sm font-bold text-primary">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0 text-sm font-bold text-primary-accessible">
                       3
                     </div>
                     <div>

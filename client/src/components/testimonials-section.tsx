@@ -107,7 +107,7 @@ export function TestimonialsSection({
                 
                 {testimonial.archetype && variant === "full" && (
                   <div className="mt-3">
-                    <span className="inline-block px-3 py-1 bg-primary/5 text-primary text-xs font-medium rounded-full">
+                    <span className="inline-block px-3 py-1 bg-primary/5 text-primary-accessible text-xs font-medium rounded-full">
                       {testimonial.archetype}
                     </span>
                   </div>

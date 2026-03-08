@@ -111,7 +111,7 @@ export function ContextAssessment({ archetype, sectionId, session, className }: 
           <div className="flex items-center gap-2">
             <Battery className="h-4 w-4 text-amber-500" />
             <Label className="font-medium">Energy Level</Label>
-            <span className="ml-auto text-sm font-medium text-primary">{energy}/10</span>
+            <span className="ml-auto text-sm font-medium text-primary-accessible">{energy}/10</span>
           </div>
           <Slider
             value={[energy]}
@@ -200,7 +200,7 @@ export function ContextAssessment({ archetype, sectionId, session, className }: 
         <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-xl">
           <div className="flex items-center gap-2 mb-2">
             <Lightbulb className="h-5 w-5 text-primary" />
-            <span className="text-sm font-semibold text-primary uppercase tracking-wide">
+            <span className="text-sm font-semibold text-primary-accessible uppercase tracking-wide">
               Your Recommended Approach
             </span>
           </div>

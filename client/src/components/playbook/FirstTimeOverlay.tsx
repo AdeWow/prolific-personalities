@@ -93,7 +93,7 @@ export function FirstTimeOverlay({ archetype, onDismiss }: FirstTimeOverlayProps
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium text-primary">Quick Start Guide</span>
+              <span className="text-sm font-medium text-primary-accessible">Quick Start Guide</span>
             </div>
             <button
               onClick={handleDismiss}

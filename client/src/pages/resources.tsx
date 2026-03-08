@@ -315,7 +315,7 @@ export default function Resources() {
                         <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
                           <ArchetypeLink name={archetype.name} className="hover:text-teal-600" />
                           {isUserArchetype && (
-                            <Badge className="ml-2 bg-primary/10 text-primary text-xs">Your Archetype</Badge>
+                            <Badge className="ml-2 bg-primary/10 text-primary-accessible text-xs">Your Archetype</Badge>
                           )}
                         </CardTitle>
                       </CardHeader>
@@ -340,7 +340,7 @@ export default function Resources() {
                         </div>
                         <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                           <p className="text-sm text-gray-700 dark:text-gray-300">
-                            <strong className="text-primary">Why These:</strong> {archetype.why}
+                            <strong className="text-primary-accessible">Why These:</strong> {archetype.why}
                           </p>
                         </div>
                       </CardContent>
@@ -355,7 +355,7 @@ export default function Resources() {
                   <h3 className="text-xl font-bold text-neutral-800">Adaptive Generalist</h3>
                 </div>
                 
-                <p className="text-sm font-semibold text-primary mb-3">Your Approach: Context-Dependent</p>
+                <p className="text-sm font-semibold text-primary-accessible mb-3">Your Approach: Context-Dependent</p>
                 
                 <p className="text-neutral-600 mb-4">
                   Your toolkit changes based on what you're working on. Browse tools from the archetypes that match your current project:
