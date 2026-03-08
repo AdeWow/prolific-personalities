@@ -26,19 +26,19 @@ const desktopPositions: Array<{
   top: string; left: string; rotate: string; floatClass?: string;
 }> = [
   // 0 — Chaotic Creative (top-left, slight tilt)
-  { top: "2%",  left: "8%",  rotate: "-8deg", floatClass: "animate-float-slow" },
+  { top: "14%", left: "18%", rotate: "-8deg", floatClass: "animate-float-slow" },
   // 1 — Novelty Seeker (top-center, peeking behind main)
-  { top: "0%",  left: "40%", rotate: "3deg",  floatClass: "animate-float-mid" },
+  { top: "10%", left: "42%", rotate: "3deg",  floatClass: "animate-float-mid" },
   // 2 — Strategic Planner (top-right)
-  { top: "5%",  left: "72%", rotate: "6deg" },
+  { top: "16%", left: "64%", rotate: "6deg" },
   // 3 — Structured Achiever (right)
-  { top: "42%", left: "80%", rotate: "-4deg", floatClass: "animate-float-fast" },
+  { top: "44%", left: "70%", rotate: "-4deg", floatClass: "animate-float-fast" },
   // 4 — Anxious Perfectionist (bottom-right)
-  { top: "72%", left: "68%", rotate: "5deg" },
+  { top: "66%", left: "62%", rotate: "5deg" },
   // 5 — Flexible Improviser (bottom-left)
-  { top: "70%", left: "10%", rotate: "-6deg" },
+  { top: "64%", left: "20%", rotate: "-6deg" },
   // 6 — Adaptive Generalist (left)
-  { top: "40%", left: "0%",  rotate: "4deg" },
+  { top: "42%", left: "12%", rotate: "4deg" },
 ];
 
 /* Mobile: main Proli + 3 variants above the headline */
@@ -98,7 +98,7 @@ export function ProliHeroComposition() {
           alt="Proli, the Prolific Personalities mascot"
           loading="eager"
           draggable={false}
-          className="absolute w-[180px] lg:w-[220px] h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 select-none drop-shadow-lg transition-transform duration-500 group-hover:scale-[1.02]"
+          className="absolute w-[210px] lg:w-[260px] h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 select-none drop-shadow-lg transition-transform duration-500 group-hover:scale-[1.02]"
         />
       </div>
 
