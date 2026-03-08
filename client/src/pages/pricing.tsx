@@ -8,6 +8,7 @@ import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { CheckCircle2, Sparkles, Lock, Zap, Target, RefreshCw, Loader2, ChevronDown, ArrowRight } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { testimonials } from "@/data/testimonials";
 import { trackPaywallView } from "@/lib/posthog";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -540,6 +541,30 @@ export default function Pricing() {
                 </p>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section className="py-16">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-foreground text-center mb-12">
+              What early users are saying
+            </h2>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {testimonials.map((t) => (
+                <div key={t.name} className="border-l-2 border-primary pl-6">
+                  <p className="text-base italic text-foreground leading-relaxed">
+                    "{t.quote}"
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-3">— {t.name}</p>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-center text-muted-foreground text-base mt-14 max-w-xl mx-auto">
+              Built on 35+ peer-reviewed studies. Your playbook is personalized to your archetype — not generic advice repackaged.
+            </p>
           </div>
         </section>
 

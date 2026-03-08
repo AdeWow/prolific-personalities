@@ -9,6 +9,7 @@ import { Link } from "wouter";
 import { Brain, Target, Zap, Clock, ChevronRight, Users, AlertTriangle, Fingerprint, ClipboardList, BookOpen } from "lucide-react";
 import { FooterNewsletter } from "@/components/footer-newsletter";
 import { HeroBrainIllustration } from "@/components/hero-brain-illustration";
+import { testimonials } from "@/data/testimonials";
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
 export default function Home() {
@@ -305,24 +306,14 @@ export default function Home() {
         <section className="py-20 bg-muted/30">
           <div className="max-w-3xl mx-auto px-6">
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="border-l-2 border-primary pl-6">
-                <p className="text-base italic text-foreground leading-relaxed">
-                  "The playbook read me. Because I can see examples that resonate, I actually follow through."
-                </p>
-                <p className="text-sm text-muted-foreground mt-3">— Stephen</p>
-              </div>
-              <div className="border-l-2 border-primary pl-6">
-                <p className="text-base italic text-foreground leading-relaxed">
-                  "Over-planning is sophisticated procrastination. This helped me see that and fix it."
-                </p>
-                <p className="text-sm text-muted-foreground mt-3">— Temi</p>
-              </div>
-              <div className="border-l-2 border-primary pl-6">
-                <p className="text-base italic text-foreground leading-relaxed">
-                  "I've read every productivity book out there. This is the first thing that felt personal."
-                </p>
-                <p className="text-sm text-muted-foreground mt-3">— Bree</p>
-              </div>
+              {testimonials.map((t) => (
+                <div key={t.name} className="border-l-2 border-primary pl-6">
+                  <p className="text-base italic text-foreground leading-relaxed">
+                    "{t.quote}"
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-3">— {t.name}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
