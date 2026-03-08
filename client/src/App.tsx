@@ -38,6 +38,7 @@ import DevTools from "@/pages/dev-tools";
 import AdminTestFlows from "@/pages/admin-test-flows";
 import Login from "@/pages/login";
 import AuthCallback from "@/pages/auth-callback";
+import NotFound from "@/pages/not-found";
 
 function Router() {
   const [location] = useLocation();
@@ -79,6 +80,7 @@ function Router() {
       <Route path="/auth/callback" component={AuthCallback} />
       <Route path="/results/:sessionId" component={Results} />
       <Route path="/results" component={Results} />
+      <Route component={NotFound} />
     </Switch>
   );
 }
