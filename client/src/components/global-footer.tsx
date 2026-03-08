@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import logoImage from "@assets/Logo5Nobackground1_1762920314202.png";
+import { FooterNewsletter } from "@/components/footer-newsletter";
 
 export function GlobalFooter() {
   const currentYear = new Date().getFullYear();
@@ -7,6 +8,8 @@ export function GlobalFooter() {
   return (
     <footer className="bg-gray-50 border-t border-gray-200 py-12 md:py-16" role="contentinfo">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FooterNewsletter variant="light" />
+        <div className="border-b border-gray-200 pb-8 mb-8" />
         <div className="flex flex-col items-center text-center space-y-6">
           <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <img src={logoImage} alt="Prolific Personalities Logo" className="w-10 h-10" />

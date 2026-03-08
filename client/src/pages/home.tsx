@@ -7,6 +7,7 @@ import { trackEvent } from "@/lib/analytics";
 import { trackLandingView } from "@/lib/posthog";
 import { Link } from "wouter";
 import { Brain, Target, Zap, Clock, ChevronRight, CheckCircle } from "lucide-react";
+import { FooterNewsletter } from "@/components/footer-newsletter";
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
 export default function Home() {
@@ -228,6 +229,56 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Research Credibility Stats */}
+        <section className="py-20 bg-muted/30">
+          <div className="max-w-4xl mx-auto px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              <div>
+                <p className="text-2xl font-bold text-foreground">35+</p>
+                <p className="text-sm text-muted-foreground mt-1">Peer-reviewed studies</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">7</p>
+                <p className="text-sm text-muted-foreground mt-1">Distinct productivity archetypes</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">82,000+</p>
+                <p className="text-sm text-muted-foreground mt-1">Words of personalized guidance</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">4-axis</p>
+                <p className="text-sm text-muted-foreground mt-1">Psychological framework</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* User Quotes */}
+        <section className="py-20">
+          <div className="max-w-3xl mx-auto px-6">
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="border-l-2 border-primary pl-6">
+                <p className="text-base italic text-foreground leading-relaxed">
+                  "The playbook read me. Because I can see examples that resonate, I actually follow through."
+                </p>
+                <p className="text-sm text-muted-foreground mt-3">— Stephen</p>
+              </div>
+              <div className="border-l-2 border-primary pl-6">
+                <p className="text-base italic text-foreground leading-relaxed">
+                  "Over-planning is sophisticated procrastination. This helped me see that and fix it."
+                </p>
+                <p className="text-sm text-muted-foreground mt-3">— Temi</p>
+              </div>
+              <div className="border-l-2 border-primary pl-6">
+                <p className="text-base italic text-foreground leading-relaxed">
+                  "I've read every productivity book out there. This is the first thing that felt personal."
+                </p>
+                <p className="text-sm text-muted-foreground mt-3">— Bree</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Final CTA */}
         <section className="py-24">
           <div className="max-w-3xl mx-auto px-6 text-center">
@@ -263,6 +314,8 @@ export default function Home() {
         {/* Footer */}
         <footer className="bg-foreground text-white py-16">
           <div className="max-w-5xl mx-auto px-6">
+            <FooterNewsletter variant="dark" />
+            <div className="border-b border-white/20 pb-8 mb-8" />
             <div className="grid md:grid-cols-4 gap-8">
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">

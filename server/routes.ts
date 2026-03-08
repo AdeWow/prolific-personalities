@@ -880,6 +880,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Newsletter subscribe from footer
+  app.post("/api/newsletter/subscribe", emailLimiter, async (req, res) => {
+    try {
+      const schema = z.object({
+        email: z.string().email("Please enter a valid email address"),
+      });
+      const { email } = schema.parse(req.body);
+
+      const existing = await storage.getEmailCaptureByEmail(email);
+
+      if (existing) {
+        if (existing.subscribed === 1 && existing.unsubscribed === 0) {
+          return res.status(200).json({
+            message: "You're already subscribed!",
+            status: "already_subscribed",
+          });
+        }
+
+        // Re-subscribe previously unsubscribed user
+        await db.update(emailCaptures)
+          .set({ subscribed: 1, unsubscribed: 0 })
+          .where(eq(emailCaptures.email, email));
+
+        return res.status(200).json({
+          message: "Welcome back! You've been re-subscribed.",
+          status: "resubscribed",
+        });
+      }
+
+      // New subscriber
+      const capture = await storage.saveEmailCapture({
+        email,
+        sessionId: `newsletter-${Date.now()}`,
+      });
+
+      // Send welcome email
+      if (resend) {
+        try {
+          const baseUrl = getPublicBaseUrl();
+          const { generateNewsletterWelcomeHtml } = await import("./emailTemplates");
+
+          await resend.emails.send({
+            from: "Prolific Personalities <support@prolificpersonalities.com>",
+            to: email,
+            subject: "Welcome to Prolific Personalities",
+            html: generateNewsletterWelcomeHtml(email, baseUrl),
+          });
+
+          await storage.updateEmailCaptureWelcomeSent(capture.id);
+          await storage.logEmail(email, "newsletter_welcome", undefined, undefined);
+        } catch (emailError) {
+          console.error("Failed to send newsletter welcome email:", emailError);
+        }
+      }
+
+      res.status(201).json({
+        message: "You're in. Check your inbox.",
+        status: "subscribed",
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid email address", errors: error.errors });
+      } else {
+        console.error("Newsletter subscribe error:", error);
+        res.status(500).json({ message: "Something went wrong. Please try again." });
+      }
+    }
+  });
+
   // Save waitlist entry
   app.post("/api/waitlist", emailLimiter, async (req, res) => {
     try {

@@ -1861,7 +1861,7 @@ export function generateDay30OnboardEmail(user: NurtureEmailUser): { subject: st
           </div>
           
           <p>Thanks for being part of this. Your feedback helps me make this better for everyone.</p>
-          
+
           <div class="signature">
             <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
           </div>
@@ -1871,6 +1871,100 @@ export function generateDay30OnboardEmail(user: NurtureEmailUser): { subject: st
     </body>
     </html>
   `;
-  
+
   return { subject, html };
+}
+
+export function generateNewsletterWelcomeHtml(email: string, baseUrl: string): string {
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Welcome to Prolific Personalities</title>
+      <style>
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+          line-height: 1.6;
+          color: #1e293b;
+          background-color: #f8fafc;
+          margin: 0;
+          padding: 0;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background-color: #ffffff;
+        }
+        .header {
+          background: linear-gradient(135deg, #4f8b84 0%, #5ba69e 100%);
+          color: white;
+          padding: 40px 30px;
+          text-align: center;
+        }
+        .header h1 {
+          margin: 0;
+          font-size: 24px;
+          font-weight: 700;
+        }
+        .content {
+          padding: 40px 30px;
+        }
+        .cta-button {
+          display: inline-block;
+          background: linear-gradient(135deg, #4f8b84, #5ba69e);
+          color: white !important;
+          text-decoration: none;
+          padding: 14px 32px;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 16px;
+          margin: 24px 0;
+        }
+        .footer {
+          padding: 24px 30px;
+          text-align: center;
+          font-size: 12px;
+          color: #94a3b8;
+          border-top: 1px solid #e2e8f0;
+        }
+        .footer a {
+          color: #94a3b8;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>Welcome to Prolific Personalities</h1>
+        </div>
+        <div class="content">
+          <p>Thanks for subscribing! You'll receive weekly insights on productivity strategies matched to how your brain actually works.</p>
+
+          <p><strong>What to expect:</strong></p>
+          <ul>
+            <li>Research-backed productivity strategies</li>
+            <li>Tips tailored to different working styles</li>
+            <li>Actionable micro-challenges you can try today</li>
+          </ul>
+
+          <p>Haven't discovered your productivity archetype yet? It only takes 5 minutes:</p>
+
+          <div style="text-align: center;">
+            <a href="${baseUrl}/quiz" class="cta-button">Take the Free Quiz</a>
+          </div>
+
+          <div style="margin-top: 32px;">
+            <p style="margin: 0;">— A.<br><span style="color: #64748b;">Founder, Prolific Personalities</span></p>
+          </div>
+        </div>
+        <div class="footer">
+          <p>You're receiving this because you subscribed at prolificpersonalities.com</p>
+          <p><a href="${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}">Unsubscribe</a></p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
 }
