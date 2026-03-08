@@ -2,6 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Satoshi — self-hosted from Fontshare (Indian Type Foundry) */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Logo-derived color palette - sophisticated muted tones */
   --background: hsl(36, 20%, 97%);
@@ -222,7 +259,7 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
 

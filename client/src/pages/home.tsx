@@ -75,7 +75,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-6">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <div className="text-center lg:text-left">
-                <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
+                <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-black text-foreground leading-tight mb-6">
                   Work with your brain,{" "}
                   <span className="text-gradient">not against it</span>
                 </h1>
