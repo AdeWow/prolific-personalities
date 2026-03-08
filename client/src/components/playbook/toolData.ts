@@ -1,11 +1,14 @@
 // Shared tool metadata used by ToolsFocused (tracking) and InlineToolCard (inline mentions).
 // This is the single source of truth for tool display names, taglines, and URLs.
 
+export type PricingTier = 'Free' | 'Freemium' | 'Paid';
+
 export interface ToolInfoEntry {
   name: string;
   tagline: string;
   why: string;
   url?: string;
+  pricing?: PricingTier;
 }
 
 export const toolInfo: Record<string, ToolInfoEntry> = {
@@ -14,96 +17,112 @@ export const toolInfo: Record<string, ToolInfoEntry> = {
     tagline: "Smart task management for structured minds",
     why: "Perfect for breaking down projects into actionable steps with deadlines",
     url: "https://todoist.com",
+    pricing: "Freemium",
   },
   notion: {
     name: "Notion",
     tagline: "All-in-one workspace for organized thinking",
     why: "Ideal for creating interconnected systems and knowledge bases",
     url: "https://www.notion.so",
+    pricing: "Freemium",
   },
   "google-calendar": {
     name: "Google Calendar",
     tagline: "Time blocking made simple",
     why: "Essential for protecting focus time and creating daily structure",
     url: "https://calendar.google.com",
+    pricing: "Free",
   },
   "toggl-track": {
     name: "Toggl Track",
     tagline: "Understand where your time really goes",
     why: "Reveals patterns in how you spend your productive hours",
     url: "https://toggl.com/track",
+    pricing: "Freemium",
   },
   forest: {
     name: "Forest",
     tagline: "Gamified focus sessions",
     why: "Adds fun to focus blocks - grow trees by staying on task",
     url: "https://www.forestapp.cc",
+    pricing: "Freemium",
   },
   rescuetime: {
     name: "RescueTime",
     tagline: "Automatic time tracking",
     why: "Runs in background to show your true productivity patterns",
     url: "https://www.rescuetime.com",
+    pricing: "Freemium",
   },
   focusmate: {
     name: "Focusmate",
     tagline: "Virtual coworking sessions",
     why: "Body doubling accountability that gets you started on hard tasks",
     url: "https://www.focusmate.com",
+    pricing: "Freemium",
   },
   freedom: {
     name: "Freedom",
     tagline: "Block distracting sites",
     why: "Creates boundaries when willpower alone isn't enough",
     url: "https://freedom.to",
+    pricing: "Paid",
   },
   "cold-turkey": {
     name: "Cold Turkey",
     tagline: "Unbreakable website blocker",
     why: "The nuclear option when you need serious focus protection",
     url: "https://getcoldturkey.com",
+    pricing: "Freemium",
   },
   sunsama: {
     name: "Sunsama",
     tagline: "Calm daily planning",
     why: "Brings mindfulness to your daily task review",
     url: "https://www.sunsama.com",
+    pricing: "Paid",
   },
   "apple-notes": {
     name: "Apple Notes",
     tagline: "Quick, frictionless note capture",
     why: "Zero-friction capture when ideas strike — already on your phone",
     url: "https://apps.apple.com/app/notes/id1110145109",
+    pricing: "Free",
   },
   pomofocus: {
     name: "Pomofocus",
     tagline: "Simple Pomodoro timer",
     why: "Free, browser-based, no setup — just start the timer",
     url: "https://pomofocus.io",
+    pricing: "Free",
   },
   momentum: {
     name: "Momentum",
     tagline: "New tab dashboard for focus",
     why: "Replaces distracting new-tab page with your daily focus",
     url: "https://momentumdash.com",
+    pricing: "Freemium",
   },
   trello: {
     name: "Trello",
     tagline: "Visual project boards",
     why: "Drag-and-drop simplicity for managing tasks and projects",
     url: "https://trello.com",
+    pricing: "Freemium",
   },
   beeminder: {
     name: "Beeminder",
     tagline: "Put money on your goals",
     why: "Financial stakes turn good intentions into consistent action",
     url: "https://www.beeminder.com",
+    pricing: "Freemium",
   },
   obsidian: {
     name: "Obsidian",
     tagline: "Local-first knowledge base",
     why: "Markdown-based notes with powerful linking for deep thinkers",
     url: "https://obsidian.md",
+    pricing: "Free",
   },
 };
 

@@ -696,11 +696,11 @@ This breaks the perfection-procrastination loop by:
 For your next project, write down BEFORE starting:
 
 **This is COMPLETE when:**
-1. [Specific criterion] ✓
-2. [Specific criterion] ✓
-3. [Specific criterion] ✓
-4. [Specific criterion] ✓
-5. [Specific criterion] ✓
+1. _____________________________ ✓
+2. _____________________________ ✓
+3. _____________________________ ✓
+4. _____________________________ ✓
+5. _____________________________ ✓
 
 **Example for a report:**
 This report is complete when:

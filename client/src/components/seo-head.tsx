@@ -8,6 +8,7 @@ interface SEOHeadProps {
   ogImage?: string;
   canonicalUrl?: string;
   keywords?: string;
+  noindex?: boolean;
   structuredData?: Record<string, any>;
   article?: {
     publishedTime?: string;
@@ -25,6 +26,7 @@ export function SEOHead({
   ogImage = '/og-image.png',
   canonicalUrl,
   keywords,
+  noindex = false,
   structuredData,
   article,
 }: SEOHeadProps) {
@@ -53,6 +55,12 @@ export function SEOHead({
     setMetaTag('description', description.slice(0, 155));
     if (keywords) {
       setMetaTag('keywords', keywords);
+    }
+
+    if (noindex) {
+      setMetaTag('robots', 'noindex, nofollow');
+    } else {
+      removeMetaTag('robots');
     }
 
     setMetaTag('og:title', ogTitle || title, true);
@@ -111,7 +119,7 @@ export function SEOHead({
       scriptTag.textContent = JSON.stringify(structuredData);
       document.head.appendChild(scriptTag);
     }
-  }, [title, description, ogTitle, ogDescription, ogImage, canonicalUrl, keywords, structuredData, article]);
+  }, [title, description, ogTitle, ogDescription, ogImage, canonicalUrl, keywords, noindex, structuredData, article]);
 
   return null;
 }

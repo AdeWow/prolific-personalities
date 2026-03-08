@@ -1,7 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Sparkles, Info, ArrowRight } from "lucide-react";
+import { Link } from "wouter";
 import type { Archetype } from "@/data/archetypes";
+import { archetypes } from "@/data/archetypes";
 
 interface ResultsHeroProps {
   archetype: Archetype;
@@ -42,30 +45,64 @@ export function ResultsHero({ archetype, confidence, confidenceLevel, secondaryA
                 
                 {confidence !== undefined && confidenceLevel && (
                   <div className="flex items-center justify-center gap-2 mt-4">
-                    <Badge 
-                      className={`px-4 py-2 text-sm font-semibold ${
-                        confidenceLevel === 'exact' 
-                          ? 'bg-green-100 text-green-700 border-green-300' 
-                          : confidenceLevel === 'strong'
-                          ? 'bg-blue-100 text-blue-700 border-blue-300'
-                          : confidenceLevel === 'moderate'
-                          ? 'bg-yellow-100 text-yellow-700 border-yellow-300'
-                          : confidenceLevel === 'weak'
-                          ? 'bg-accent/10 text-accent border-accent/30'
-                          : 'bg-accent/10 text-accent border-accent/30'
-                      }`}
-                      data-testid="confidence-badge"
-                    >
-                      {confidence}% Match Confidence
-                    </Badge>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge
+                            className={`px-4 py-2 text-sm font-semibold cursor-help gap-1.5 ${
+                              confidenceLevel === 'exact'
+                                ? 'bg-green-100 text-green-700 border-green-300'
+                                : confidenceLevel === 'strong'
+                                ? 'bg-blue-100 text-blue-700 border-blue-300'
+                                : confidenceLevel === 'moderate'
+                                ? 'bg-yellow-100 text-yellow-700 border-yellow-300'
+                                : confidenceLevel === 'weak'
+                                ? 'bg-accent/10 text-accent border-accent/30'
+                                : 'bg-accent/10 text-accent border-accent/30'
+                            }`}
+                            data-testid="confidence-badge"
+                          >
+                            {confidence}% Match Confidence
+                            <Info className="w-3.5 h-3.5 opacity-60" />
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-xs text-center">
+                          <p>Based on the consistency of your responses across the 4 productivity dimensions. Higher confidence means your answers were more consistent.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 )}
 
-                {secondaryArchetype && (
-                  <p className="text-muted-foreground mt-4">
-                    You also show traits of: <span className="font-semibold text-accent">{secondaryArchetype.name.replace(/^The\s+/i, 'the ')}</span>
-                  </p>
-                )}
+                {secondaryArchetype && (() => {
+                  const secondaryData = archetypes.find(a => a.id === secondaryArchetype.id);
+                  const displayName = secondaryArchetype.name.replace(/^The\s+/i, '');
+                  const accentColor = secondaryData?.color || 'purple';
+                  const colorMap: Record<string, string> = {
+                    blue: 'border-blue-400 bg-blue-50/50',
+                    purple: 'border-purple-400 bg-purple-50/50',
+                    amber: 'border-amber-400 bg-amber-50/50',
+                    orange: 'border-orange-400 bg-orange-50/50',
+                    green: 'border-green-400 bg-green-50/50',
+                    teal: 'border-teal-400 bg-teal-50/50',
+                    slate: 'border-slate-400 bg-slate-50/50',
+                  };
+                  const colorClasses = colorMap[accentColor] || colorMap.purple;
+                  return (
+                    <Link href={`/archetypes#${secondaryArchetype.id}`}>
+                      <div className={`mt-6 inline-flex items-center gap-3 px-5 py-3 rounded-xl border-l-4 ${colorClasses} cursor-pointer hover:shadow-md transition-all group`}>
+                        <div className="text-left">
+                          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Secondary type</p>
+                          <p className="text-base font-bold text-foreground">The {displayName}</p>
+                          {secondaryData?.tagline && (
+                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1 max-w-[280px]">{secondaryData.tagline}</p>
+                          )}
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+                      </div>
+                    </Link>
+                  );
+                })()}
               </div>
             </div>
           </CardContent>

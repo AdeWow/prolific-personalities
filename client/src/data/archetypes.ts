@@ -52,7 +52,7 @@ export const archetypes: Archetype[] = [
   {
     id: 'structured-achiever',
     name: 'The Structured Achiever',
-    title: 'Organized Goal-Crusher',
+    title: 'Structured Achiever',
     tagline: 'You thrive on systems, accountability, and clear goals. Structure is your superpower.',
     icon: '',
     image: structuredAchieverImage,
@@ -110,7 +110,7 @@ export const archetypes: Archetype[] = [
   {
     id: 'chaotic-creative',
     name: 'The Chaotic Creative',
-    title: 'Free-Spirited Innovator',
+    title: 'Chaotic Creative',
     tagline: 'Your mind is a fireworks show of ideas. The challenge? Turning sparks into finished projects.',
     icon: '',
     image: chaoticCreativeImage,
@@ -168,7 +168,7 @@ export const archetypes: Archetype[] = [
   {
     id: 'anxious-perfectionist',
     name: 'The Anxious Perfectionist',
-    title: 'Detail-Obsessed Procrastinator',
+    title: 'Anxious Perfectionist',
     tagline: 'High standards drive your excellence—but perfectionism is sabotaging your progress.',
     icon: '',
     image: anxiousPerfectionistImage,
@@ -226,7 +226,7 @@ export const archetypes: Archetype[] = [
   {
     id: 'novelty-seeker',
     name: 'The Novelty Seeker',
-    title: 'Stimulus-Driven Explorer',
+    title: 'Novelty Seeker',
     tagline: 'You\'re powered by excitement and new challenges. The routine? That\'s your kryptonite.',
     icon: '',
     image: noveltySeekerImage,
@@ -284,7 +284,7 @@ export const archetypes: Archetype[] = [
   {
     id: 'strategic-planner',
     name: 'The Strategic Planner',
-    title: 'Visionary Architect',
+    title: 'Strategic Planner',
     tagline: 'You see the big picture and build the roadmap. Execution is your superpower—when the vision is clear.',
     icon: '🗺️',
     image: strategicPlannerImage,
@@ -342,7 +342,7 @@ export const archetypes: Archetype[] = [
   {
     id: 'flexible-improviser',
     name: 'The Flexible Improviser',
-    title: 'Adaptive Action-Taker',
+    title: 'Flexible Improviser',
     tagline: 'You ride the waves of change with ease. Planning is optional; action is your default.',
     icon: '🌊',
     image: flexibleImproviserImage,
@@ -400,7 +400,7 @@ export const archetypes: Archetype[] = [
   {
     id: 'adaptive-generalist',
     name: 'The Adaptive Generalist',
-    title: 'Context-Shifting Polymath',
+    title: 'Adaptive Generalist',
     tagline: 'You don\'t have one productivity style—you have many. Your superpower is matching approach to context.',
     icon: '',
     image: adaptiveGeneralistImage,

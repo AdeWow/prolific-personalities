@@ -10,7 +10,8 @@ import { determineArchetypeEnhanced } from "@/lib/quiz-logic";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { trackResultsView, trackPaywallView, trackPaywallTierClick, trackCheckoutStart } from "@/lib/posthog";
-import { CheckCircle2, Mail, Download, Share2, Copy, Smartphone, ArrowRight } from "lucide-react";
+import { CheckCircle2, Mail, Download, Share2, Copy, Smartphone, ArrowRight, Info } from "lucide-react";
+import { SEOHead } from "@/components/seo-head";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
   DropdownMenu,
@@ -452,6 +453,11 @@ export default function Results() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
+      <SEOHead
+        title={`Your Result: ${archetype.name.replace(/^The\s+/i, '')}`}
+        description={archetype.tagline}
+        noindex={true}
+      />
       {/* Print-only Header */}
       <div className="hidden print-only bg-white border-b-2 border-foreground pb-4 mb-8">
         <div className="text-center">
@@ -637,58 +643,6 @@ export default function Results() {
           </div>
         </section>
 
-        {/* Mobile App Waitlist CTA */}
-        <section className="pb-12">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 shadow-lg" data-testid="app-waitlist-card">
-              <CardContent className="p-8">
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center">
-                      <Smartphone className="w-8 h-8 text-white" />
-                    </div>
-                  </div>
-                  <div className="flex-1 text-center md:text-left">
-                    <h3 className="text-xl font-bold text-foreground mb-2">The app is coming.</h3>
-                    <p className="text-muted-foreground">
-                      Daily tips. Focus modes. Progress tracking—all personalized to your archetype. Get early access.
-                    </p>
-                  </div>
-                  <div className="flex-shrink-0 w-full md:w-auto">
-                    {!appWaitlistJoined ? (
-                      <form onSubmit={handleAppWaitlist} className="flex flex-col sm:flex-row gap-2">
-                        <Input
-                          type="email"
-                          placeholder="your@email.com"
-                          value={appWaitlistEmail}
-                          onChange={(e) => setAppWaitlistEmail(e.target.value)}
-                          required
-                          disabled={appWaitlistMutation.isPending}
-                          className="w-full sm:w-64"
-                          data-testid="input-app-waitlist-email"
-                        />
-                        <Button 
-                          type="submit" 
-                          className="gradient-primary text-white"
-                          disabled={appWaitlistMutation.isPending}
-                          data-testid="button-app-waitlist-submit"
-                        >
-                          {appWaitlistMutation.isPending ? "Joining..." : "Get Early Access"}
-                        </Button>
-                      </form>
-                    ) : (
-                      <div className="flex items-center gap-2 text-green-600">
-                        <CheckCircle2 className="w-5 h-5" />
-                        <span className="font-medium">You're on the list!</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
         {/* B) How This Shows Up in Your Work */}
         <ShowsUpSection archetype={archetype} />
 
@@ -756,6 +710,58 @@ export default function Results() {
 
         {/* H) Retake Assessment */}
         <RetakeSection />
+
+        {/* I) Mobile App Waitlist */}
+        <section className="pb-12">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 shadow-lg" data-testid="app-waitlist-card">
+              <CardContent className="p-8">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="w-16 h-16 gradient-primary rounded-2xl flex items-center justify-center">
+                      <Smartphone className="w-8 h-8 text-white" />
+                    </div>
+                  </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <h3 className="text-xl font-bold text-foreground mb-2">The app is coming.</h3>
+                    <p className="text-muted-foreground">
+                      Daily tips. Focus modes. Progress tracking—all personalized to your archetype. Get early access.
+                    </p>
+                  </div>
+                  <div className="flex-shrink-0 w-full md:w-auto">
+                    {!appWaitlistJoined ? (
+                      <form onSubmit={handleAppWaitlist} className="flex flex-col sm:flex-row gap-2">
+                        <Input
+                          type="email"
+                          placeholder="your@email.com"
+                          value={appWaitlistEmail}
+                          onChange={(e) => setAppWaitlistEmail(e.target.value)}
+                          required
+                          disabled={appWaitlistMutation.isPending}
+                          className="w-full sm:w-64"
+                          data-testid="input-app-waitlist-email"
+                        />
+                        <Button
+                          type="submit"
+                          className="gradient-primary text-white"
+                          disabled={appWaitlistMutation.isPending}
+                          data-testid="button-app-waitlist-submit"
+                        >
+                          {appWaitlistMutation.isPending ? "Joining..." : "Get Early Access"}
+                        </Button>
+                      </form>
+                    ) : (
+                      <div className="flex items-center gap-2 text-green-600">
+                        <CheckCircle2 className="w-5 h-5" />
+                        <span className="font-medium">You're on the list!</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
         {/* Print-Only Detailed Analysis Section */}
         <div className="hidden print-only py-12">
@@ -856,8 +862,8 @@ export default function Results() {
         </div>
       </main>
 
-      {/* Mobile Sticky CTA */}
-      <MobileStickyCTA heroRef={heroRef} />
+      {/* Sticky CTA (hidden if already purchased) */}
+      <MobileStickyCTA heroRef={heroRef} hasPremiumAccess={hasPremiumAccess} />
     </div>
   );
 }

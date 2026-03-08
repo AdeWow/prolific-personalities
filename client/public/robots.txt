@@ -8,6 +8,9 @@ Disallow: /dev-tools
 Disallow: /api/
 Disallow: /admin/
 
+# Disallow user-specific results pages (duplicate content, no index value)
+Disallow: /results/
+
 # Allow search engines to index all main content
 Allow: /quiz
 Allow: /archetypes

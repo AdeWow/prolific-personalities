@@ -693,9 +693,6 @@ export default function Playbook() {
             </TabsList>
 
             <TabsContent value="content" className="space-y-6">
-              {/* Mobile App Banner */}
-              <MobileAppBanner className="lg:hidden" />
-              
               {selectedSection && (
                 <Card className="shadow-sm overflow-hidden">
                   <CardHeader className="pb-4">
