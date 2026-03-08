@@ -333,6 +333,30 @@
   animation: scale-in 0.2s ease-out;
 }
 
+/* Proli hero floating animations — gentle vertical bob */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes float-mid {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes float-fast {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-float-slow {
+  animation: float-slow 4s ease-in-out infinite;
+}
+.animate-float-mid {
+  animation: float-mid 3.2s ease-in-out infinite;
+}
+.animate-float-fast {
+  animation: float-fast 2.8s ease-in-out infinite;
+}
+
 /* Smooth hover transitions for interactive elements */
 button,
 a,

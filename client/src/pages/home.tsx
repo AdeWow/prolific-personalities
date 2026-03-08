@@ -9,7 +9,7 @@ import { Link } from "wouter";
 import { Brain, Target, Zap, Clock, ChevronRight, Users, AlertTriangle, Fingerprint, ClipboardList, BookOpen } from "lucide-react";
 import { FadeIn } from "@/components/fade-in";
 import { FooterNewsletter } from "@/components/footer-newsletter";
-import { HeroBrainIllustration } from "@/components/hero-brain-illustration";
+import { ProliHeroComposition } from "@/components/proli-hero-composition";
 import { testimonials } from "@/data/testimonials";
 import logoImage from "@assets/Logo5Nobackground_1762407438507.png";
 
@@ -107,7 +107,7 @@ export default function Home() {
               </div>
 
               <div className="flex justify-center lg:justify-end">
-                <HeroBrainIllustration />
+                <ProliHeroComposition />
               </div>
             </div>
           </div>
