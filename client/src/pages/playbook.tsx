@@ -41,6 +41,7 @@ import {
   Menu,
   X
 } from "lucide-react";
+import { FadeIn } from "@/components/fade-in";
 import { buildFlatSectionList, calculateReadingTime, useSubsectionProgress } from "@/components/playbook/usePlaybookNavigation";
 
 export default function Playbook() {
@@ -694,6 +695,7 @@ export default function Playbook() {
 
             <TabsContent value="content" className="space-y-6">
               {selectedSection && (
+                <FadeIn duration={250} distance={12}>
                 <Card className="shadow-sm overflow-hidden">
                   <CardHeader className="pb-4">
                     <div ref={contentTopRef}>
@@ -794,8 +796,9 @@ export default function Playbook() {
                     </div>
                   </CardContent>
                 </Card>
+                </FadeIn>
               )}
-              
+
               {/* Desktop Mobile App Banner */}
               <div className="hidden lg:block">
                 <MobileAppBanner />

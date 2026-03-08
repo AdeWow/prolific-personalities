@@ -296,6 +296,22 @@
   animation: scale-in 0.2s ease-out;
 }
 
+/* Smooth hover transitions for interactive elements */
+button,
+a,
+[role="button"] {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Card hover lift effect — apply via .card-hover class */
+.card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card-hover:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
 /* Accessibility: Reduced Motion Support - 508 Compliance */
 @media (prefers-reduced-motion: reduce) {
   *,

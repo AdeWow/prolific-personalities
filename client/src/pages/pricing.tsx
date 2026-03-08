@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
 import { SEOHead } from "@/components/seo-head";
 import { CheckCircle2, Sparkles, Lock, Zap, Target, RefreshCw, Loader2, ChevronDown, ArrowRight } from "lucide-react";
+import { FadeIn } from "@/components/fade-in";
 import { trackEvent } from "@/lib/analytics";
 import { testimonials } from "@/data/testimonials";
 import { trackPaywallView } from "@/lib/posthog";
@@ -279,7 +280,7 @@ export default function Pricing() {
         </section>
 
         {/* Pricing Cards */}
-        <section className="pb-12">
+        <FadeIn as="section" className="pb-12">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-8">
               {/* Discovery Plan */}
@@ -444,17 +445,17 @@ export default function Pricing() {
               </Card>
             </div>
           </div>
-        </section>
+        </FadeIn>
 
         {/* Social Proof Section */}
-        <section className="py-8">
+        <FadeIn as="section" className="py-8">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <SocialProofSection />
           </div>
-        </section>
+        </FadeIn>
 
         {/* Comparison Table */}
-        <section className="py-16 bg-white/50">
+        <FadeIn as="section" className="py-16 bg-white/50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-foreground text-center mb-12">
               Compare Plans
@@ -501,10 +502,10 @@ export default function Pricing() {
               </table>
             </div>
           </div>
-        </section>
+        </FadeIn>
 
         {/* Value Proposition */}
-        <section className="py-16">
+        <FadeIn as="section" className="py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-foreground text-center mb-12">
               Why Upgrade?
@@ -542,10 +543,10 @@ export default function Pricing() {
               </div>
             </div>
           </div>
-        </section>
+        </FadeIn>
 
         {/* Testimonials */}
-        <section className="py-16">
+        <FadeIn as="section" className="py-16">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-foreground text-center mb-12">
               What early users are saying
@@ -566,10 +567,10 @@ export default function Pricing() {
               Built on 35+ peer-reviewed studies. Your playbook is personalized to your archetype — not generic advice repackaged.
             </p>
           </div>
-        </section>
+        </FadeIn>
 
         {/* FAQ Section */}
-        <section className="py-16 bg-white/50">
+        <FadeIn as="section" className="py-16 bg-white/50">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-foreground text-center mb-12">
               Frequently Asked Questions
@@ -577,10 +578,10 @@ export default function Pricing() {
 
             <FAQAccordion items={faqItems} />
           </div>
-        </section>
+        </FadeIn>
 
         {/* CTA Section */}
-        <section className="py-16 bg-gradient-to-r from-primary/10 to-accent/10">
+        <FadeIn as="section" className="py-16 bg-gradient-to-r from-primary/10 to-accent/10">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
               Ready to discover your productivity archetype?
@@ -595,7 +596,7 @@ export default function Pricing() {
               </Button>
             </Link>
           </div>
-        </section>
+        </FadeIn>
       </main>
     </div>
   );

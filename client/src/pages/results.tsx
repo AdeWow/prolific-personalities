@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { trackResultsView, trackPaywallView, trackPaywallTierClick, trackCheckoutStart } from "@/lib/posthog";
 import { CheckCircle2, Mail, Download, Share2, Copy, Smartphone, ArrowRight, Info } from "lucide-react";
+import { FadeIn } from "@/components/fade-in";
 import { SEOHead } from "@/components/seo-head";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
@@ -637,19 +638,24 @@ export default function Results() {
         </section>
 
         {/* 4-Axis Visualization (keeping as requested for visual value) */}
-        <section className="pb-8 -mt-4">
+        <FadeIn as="section" className="pb-8 -mt-4">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <FourAxisVisual scores={transformedScores} />
           </div>
-        </section>
+        </FadeIn>
 
         {/* B) How This Shows Up in Your Work */}
-        <ShowsUpSection archetype={archetype} />
+        <FadeIn>
+          <ShowsUpSection archetype={archetype} />
+        </FadeIn>
 
         {/* C) Your Fastest Win Today */}
-        <FastestWinCard archetype={archetype} />
+        <FadeIn>
+          <FastestWinCard archetype={archetype} />
+        </FadeIn>
 
         {/* D) Paid Upsell Section or Access Button */}
+        <FadeIn>
         {hasPremiumAccess ? (
           <section id="upsell" className="py-16 gradient-primary scroll-mt-16">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -690,6 +696,7 @@ export default function Results() {
             defaultEmail={email || emailResultsInput}
           />
         )}
+        </FadeIn>
 
         {/* Testimonials section removed — only verified testimonials are on the homepage */}
 
@@ -705,11 +712,15 @@ export default function Results() {
 
         {/* G) Tool Recommendations (Accordion) */}
         {tools && tools.length > 0 && (
-          <ToolsAccordion tools={tools} archetypeName={archetype.name} />
+          <FadeIn>
+            <ToolsAccordion tools={tools} archetypeName={archetype.name} />
+          </FadeIn>
         )}
 
         {/* H) Retake Assessment */}
-        <RetakeSection />
+        <FadeIn>
+          <RetakeSection />
+        </FadeIn>
 
         {/* I) Mobile App Waitlist */}
         <section className="pb-12">

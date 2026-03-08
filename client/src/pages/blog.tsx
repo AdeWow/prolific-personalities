@@ -10,6 +10,7 @@ import { Header } from '@/components/header';
 import { SEOHead } from '@/components/seo-head';
 import { EmailCaptureCard } from '@/components/email-capture-card';
 import { Calendar, Clock, Pin, ExternalLink, Loader2 } from 'lucide-react';
+import { FadeIn } from '@/components/fade-in';
 import { getArchetypeSlug } from '@/data/tools';
 
 const ARCHETYPE_NAMES = [
@@ -317,7 +318,7 @@ export default function BlogPage() {
         )}
 
         {/* Blog Posts Grid */}
-        <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <FadeIn className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {filteredPosts.map((post) => (
             <Link key={post.id} href={`/blog/${post.slug}`}>
               <Card className="flex flex-col h-full hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer" data-testid={`card-blog-${post.slug}`}>
@@ -355,7 +356,7 @@ export default function BlogPage() {
               </Card>
             </Link>
           ))}
-        </div>
+        </FadeIn>
 
         {filteredPosts.length === 0 && !isLoading && (
           <div className="text-center py-12">

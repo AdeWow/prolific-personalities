@@ -83,11 +83,11 @@ export function Header() {
           <div className={`flex justify-between items-center transition-all duration-300 ${
             isScrolled ? 'py-2' : 'py-4'
           }`}>
-            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg">
-              <img 
-                src={logoImage} 
-                alt="Prolific Personalities Logo" 
-                className={`transition-all duration-300 ${isScrolled ? 'w-14 h-14' : 'w-20 h-20'}`} 
+            <Link href="/" className="flex items-center space-x-3 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg">
+              <img
+                src={logoImage}
+                alt="Prolific Personalities Logo"
+                className={`transition-all duration-300 hover:scale-105 ${isScrolled ? 'w-14 h-14' : 'w-20 h-20'}`}
               />
               <span className={`font-bold text-foreground transition-all duration-300 ${
                 isScrolled ? 'text-lg' : 'text-xl'

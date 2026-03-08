@@ -7,6 +7,7 @@ import { trackEvent } from "@/lib/analytics";
 import { trackLandingView } from "@/lib/posthog";
 import { Link } from "wouter";
 import { Brain, Target, Zap, Clock, ChevronRight, Users, AlertTriangle, Fingerprint, ClipboardList, BookOpen } from "lucide-react";
+import { FadeIn } from "@/components/fade-in";
 import { FooterNewsletter } from "@/components/footer-newsletter";
 import { HeroBrainIllustration } from "@/components/hero-brain-illustration";
 import { testimonials } from "@/data/testimonials";
@@ -113,7 +114,7 @@ export default function Home() {
         </section>
 
         {/* Problem → Solution Bridge */}
-        <section className="py-20 bg-muted/30">
+        <FadeIn as="section" className="py-20 bg-muted/30">
           <div className="max-w-5xl mx-auto px-6">
             <h2 className="text-3xl font-bold text-foreground text-center mb-4">
               Most productivity advice ignores how you actually think
@@ -123,7 +124,7 @@ export default function Home() {
             </p>
 
             <div className="grid md:grid-cols-3 gap-8">
-              <Card className="border-0 shadow-sm bg-white border-t-4 border-t-rose-400">
+              <Card className="border-0 shadow-sm bg-white border-t-4 border-t-rose-400 card-hover">
                 <CardContent className="p-8">
                   <div className="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center mb-5">
                     <Users className="h-6 w-6 text-rose-500" aria-hidden="true" />
@@ -137,7 +138,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-sm bg-white border-t-4 border-t-amber-400">
+              <Card className="border-0 shadow-sm bg-white border-t-4 border-t-amber-400 card-hover">
                 <CardContent className="p-8">
                   <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center mb-5">
                     <AlertTriangle className="h-6 w-6 text-amber-500" aria-hidden="true" />
@@ -151,7 +152,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-sm bg-white border-t-4 border-t-primary">
+              <Card className="border-0 shadow-sm bg-white border-t-4 border-t-primary card-hover">
                 <CardContent className="p-8">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5">
                     <Fingerprint className="h-6 w-6 text-primary" aria-hidden="true" />
@@ -166,10 +167,10 @@ export default function Home() {
               </Card>
             </div>
           </div>
-        </section>
+        </FadeIn>
 
         {/* Feature Cards */}
-        <section className="py-24">
+        <FadeIn as="section" className="py-24">
           <div className="max-w-5xl mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold text-foreground mb-4">
@@ -181,7 +182,7 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              <Card className="border-0 shadow-sm bg-white">
+              <Card className="border-0 shadow-sm bg-white card-hover">
                 <CardContent className="p-8">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
                     <Brain className="h-6 w-6 text-primary" aria-hidden="true" />
@@ -195,7 +196,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-sm bg-white">
+              <Card className="border-0 shadow-sm bg-white card-hover">
                 <CardContent className="p-8">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
                     <Target className="h-6 w-6 text-primary" aria-hidden="true" />
@@ -209,7 +210,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-sm bg-white">
+              <Card className="border-0 shadow-sm bg-white card-hover">
                 <CardContent className="p-8">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
                     <Zap className="h-6 w-6 text-primary" aria-hidden="true" />
@@ -224,10 +225,10 @@ export default function Home() {
               </Card>
             </div>
           </div>
-        </section>
+        </FadeIn>
 
         {/* How It Works */}
-        <section className="py-24 bg-muted/30">
+        <FadeIn as="section" className="py-24 bg-muted/30">
           <div className="max-w-4xl mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold text-foreground mb-4">
@@ -276,10 +277,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </FadeIn>
 
         {/* Research Credibility Stats */}
-        <section className="py-20">
+        <FadeIn as="section" className="py-20">
           <div className="max-w-4xl mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               <div>
@@ -300,10 +301,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </FadeIn>
 
         {/* User Quotes */}
-        <section className="py-20 bg-muted/30">
+        <FadeIn as="section" className="py-20 bg-muted/30">
           <div className="max-w-3xl mx-auto px-6">
             <div className="grid md:grid-cols-3 gap-8">
               {testimonials.map((t) => (
@@ -316,10 +317,10 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </FadeIn>
 
         {/* Final CTA */}
-        <section className="py-24">
+        <FadeIn as="section" className="py-24">
           <div className="max-w-3xl mx-auto px-6 text-center">
             <div className="flex items-center justify-center gap-2 mb-6 text-muted-foreground text-base">
               <Clock className="h-5 w-5" aria-hidden="true" />
@@ -348,7 +349,7 @@ export default function Home() {
               No signup required. Your answers stay private.
             </p>
           </div>
-        </section>
+        </FadeIn>
 
         {/* Footer */}
         <footer className="bg-foreground text-white py-16">
