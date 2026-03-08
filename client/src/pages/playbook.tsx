@@ -231,18 +231,34 @@ export default function Playbook() {
     },
   });
 
+  // localStorage-based action plan progress for unauthenticated users
+  const actionPlanStorageKey = `action-plan-progress-${archetype}`;
+  const [localActionPlan, setLocalActionPlan] = useState<{ dayNumber: number; taskId: string }[]>(() => {
+    try {
+      const stored = localStorage.getItem(actionPlanStorageKey);
+      return stored ? JSON.parse(stored) : [];
+    } catch { return []; }
+  });
+
+  const toggleLocalActionPlan = useCallback((dayNumber: number, taskId: string, completed: boolean) => {
+    setLocalActionPlan(prev => {
+      const next = completed
+        ? [...prev, { dayNumber, taskId }]
+        : prev.filter(t => !(t.dayNumber === dayNumber && t.taskId === taskId));
+      try { localStorage.setItem(actionPlanStorageKey, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, [actionPlanStorageKey]);
+
   const toggleActionPlanMutation = useMutation({
-    mutationFn: ({ dayNumber, taskId, completed }: { dayNumber: number; taskId: string; completed: boolean }) => 
+    mutationFn: ({ dayNumber, taskId, completed }: { dayNumber: number; taskId: string; completed: boolean }) =>
       authPost(`/api/playbook/${archetype}/action-plan/task`, { dayNumber, taskId, completed }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/playbook/${archetype}/action-plan`] });
     },
     onError: () => {
-      toast({ 
-        variant: "destructive", 
-        title: "Error", 
-        description: "Failed to update task. Please try again." 
-      });
+      // Silent failure — localStorage already has the progress
+      console.warn('[Playbook] Action plan API sync failed — using localStorage');
     },
   });
 
@@ -681,7 +697,7 @@ export default function Playbook() {
               <MobileAppBanner className="lg:hidden" />
               
               {selectedSection && (
-                <Card className="shadow-sm">
+                <Card className="shadow-sm overflow-hidden">
                   <CardHeader className="pb-4">
                     <div ref={contentTopRef}>
                       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5">
@@ -698,7 +714,7 @@ export default function Playbook() {
                       )}
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-6 pt-0 overflow-hidden" style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+                  <CardContent className="space-y-6 pt-0 overflow-hidden min-w-0" style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}>
                     <ContentRenderer
                       content={selectedSection.content}
                       sectionId={selectedSectionId}
@@ -792,15 +808,32 @@ export default function Playbook() {
             <TabsContent value="action-plan" className="space-y-4">
               <ActionPlanGame
                 tasks={playbook?.actionPlan || []}
-                completedTasks={(actionPlanData || []).filter(t => t.completed === 1).map(t => ({
-                  dayNumber: t.dayNumber,
-                  taskId: t.taskId
-                }))}
+                completedTasks={[
+                  // Merge API data (for logged-in users) with localStorage data
+                  ...(actionPlanData || []).filter(t => t.completed === 1).map(t => ({
+                    dayNumber: t.dayNumber,
+                    taskId: t.taskId,
+                  })),
+                  ...localActionPlan.filter(lt =>
+                    !(actionPlanData || []).some(at => at.dayNumber === lt.dayNumber && at.taskId === lt.taskId && at.completed === 1)
+                  ),
+                ]}
                 onToggleTask={(dayNumber, taskId, completed) => {
-                  toggleActionPlanMutation.mutate({ dayNumber, taskId, completed });
+                  // Always persist to localStorage (source of truth)
+                  toggleLocalActionPlan(dayNumber, taskId, completed);
+                  // If logged in, also sync to API (best-effort, no error shown)
+                  if (user && session?.access_token) {
+                    toggleActionPlanMutation.mutate({ dayNumber, taskId, completed });
+                  }
                 }}
                 isPending={toggleActionPlanMutation.isPending}
               />
+              {!user && (
+                <p className="text-sm text-muted-foreground text-center pt-2">
+                  <LogIn className="inline w-3.5 h-3.5 mr-1 -mt-0.5" />
+                  Log in to save your progress across devices
+                </p>
+              )}
             </TabsContent>
 
             <TabsContent value="tools" className="space-y-4">

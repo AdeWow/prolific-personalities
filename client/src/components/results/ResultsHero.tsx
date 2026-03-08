@@ -10,6 +10,14 @@ interface ResultsHeroProps {
   secondaryArchetype?: { id: string; name: string } | null;
 }
 
+function formatArchetypeLabel(name: string): string {
+  // Strip leading "The " from archetype names stored as "The Structured Achiever" etc.
+  const stripped = name.replace(/^The\s+/i, '');
+  // Use "an" before vowel sounds, "a" before consonants
+  const article = /^[aeiou]/i.test(stripped) ? 'an' : 'a';
+  return `You're ${article} ${stripped}`;
+}
+
 export function ResultsHero({ archetype, confidence, confidenceLevel, secondaryArchetype }: ResultsHeroProps) {
   return (
     <section className="py-12 bg-gradient-to-b from-white to-transparent">
@@ -26,7 +34,7 @@ export function ResultsHero({ archetype, confidence, confidenceLevel, secondaryA
             <div className="text-center space-y-6">
               <div>
                 <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-2" data-testid="archetype-name">
-                  You're a {archetype.name}
+                  {formatArchetypeLabel(archetype.name)}
                 </h1>
                 <p className="text-xl lg:text-2xl text-muted-foreground font-medium" data-testid="archetype-tagline">
                   {archetype.tagline}
@@ -55,7 +63,7 @@ export function ResultsHero({ archetype, confidence, confidenceLevel, secondaryA
 
                 {secondaryArchetype && (
                   <p className="text-muted-foreground mt-4">
-                    You also show traits of: <span className="font-semibold text-accent">{secondaryArchetype.name}</span>
+                    You also show traits of: <span className="font-semibold text-accent">{secondaryArchetype.name.replace(/^The\s+/i, 'the ')}</span>
                   </p>
                 )}
               </div>

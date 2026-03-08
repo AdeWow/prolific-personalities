@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { trackResultsView, trackPaywallView, trackPaywallTierClick, trackCheckoutStart } from "@/lib/posthog";
 import { CheckCircle2, Mail, Download, Share2, Copy, Smartphone, ArrowRight } from "lucide-react";
-import { TestimonialsSection } from "@/components/testimonials-section";
 import { FaFacebook, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import {
   DropdownMenu,
@@ -738,8 +737,7 @@ export default function Results() {
           />
         )}
 
-        {/* E) Testimonials */}
-        <TestimonialsSection variant="compact" showTitle={true} maxItems={3} />
+        {/* Testimonials section removed — only verified testimonials are on the homepage */}
 
         {/* F) Email Capture Fallback */}
         <EmailFallbackSection

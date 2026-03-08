@@ -105,11 +105,6 @@ export function UpsellSection({
             </div>
 
             <div className="border-t pt-8">
-              <div className="flex items-center justify-center gap-2 mb-4 text-sm text-muted-foreground">
-                <span className="inline-flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-                <span>12 people purchased in the last 24 hours</span>
-              </div>
-
               <div className="mb-6">
                 {!showPromoInput ? (
                   <button

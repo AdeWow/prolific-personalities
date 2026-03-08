@@ -330,7 +330,7 @@ export default function Home() {
               Ready to work smarter?
             </h2>
             <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">
-              Join thousands who've discovered their productivity archetype and started working with their brain, not against it.
+              Discover your productivity archetype and start working with your brain, not against it.
             </p>
             
             <Link href="/quiz">

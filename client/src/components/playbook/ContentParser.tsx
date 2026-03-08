@@ -319,7 +319,7 @@ export function ContentRenderer({ content, sectionId, archetype = '', session, r
   const doThisNowAction = getDoThisNowAction(sectionId);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0 max-w-full" style={{ overflowWrap: 'anywhere' }}>
       {blocks.map((block, idx) => {
         const toolIds = toolInsertions.get(idx);
         const blockElement = (() => { switch (block.type) {
@@ -499,9 +499,9 @@ export function ContentRenderer({ content, sectionId, archetype = '', session, r
 
           case 'citation':
             return (
-              <Card key={idx} className="bg-muted/30 border-l-2 border-muted">
-                <CardContent className="p-3">
-                  <p className="text-xs text-muted-foreground italic">{block.content}</p>
+              <Card key={idx} className="bg-muted/30 border-l-2 border-muted overflow-hidden">
+                <CardContent className="p-3 min-w-0" style={{ overflowWrap: 'anywhere' }}>
+                  <p className="text-xs text-muted-foreground italic break-words">{block.content}</p>
                 </CardContent>
               </Card>
             );
@@ -564,7 +564,7 @@ export function ContentRenderer({ content, sectionId, archetype = '', session, r
             if (cleanContent.length < 20) return null;
 
             return (
-              <p key={idx} className="text-[15px] text-muted-foreground leading-[1.75]">
+              <p key={idx} className="text-[15px] text-muted-foreground leading-[1.75] break-words">
                 {cleanContent}
               </p>
             );
