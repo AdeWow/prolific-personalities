@@ -12,13 +12,13 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { playbookContentMap } from "@shared/playbookContent";
-import { PDFPreview } from "@/components/pdf-preview";
 import { ProgressMilestones } from "@/components/playbook/ProgressMilestones";
 import { ActionPlanGame } from "@/components/playbook/ActionPlanGame";
 import { ToolsFocused } from "@/components/playbook/ToolsFocused";
 import { GuidedNotes } from "@/components/playbook/GuidedNotes";
 import { MobileAppBanner } from "@/components/playbook/MobileAppBanner";
 import { FirstTimeOverlay, useFirstTimeOverlay } from "@/components/playbook/FirstTimeOverlay";
+import { PremiumLibrary } from "@/components/playbook/PremiumLibrary";
 import { ContentRenderer } from "@/components/playbook/ContentParser";
 import { InlineSectionNote } from "@/components/playbook/InlineSectionNote";
 import { useInlineNotes } from "@/components/playbook/useInlineNotes";
@@ -31,7 +31,7 @@ import {
   CheckCircle2,
   Circle,
   CircleDot,
-  Download,
+  LibraryBig,
   ChevronRight,
   ChevronLeft,
   Clock,
@@ -687,9 +687,9 @@ export default function Playbook() {
                 <FileText className="h-4 w-4 sm:mr-2" />
                 <span className="hidden sm:inline">Notes</span>
               </TabsTrigger>
-              <TabsTrigger value="pdf" data-testid="tab-pdf">
-                <Download className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">PDF</span>
+              <TabsTrigger value="library" data-testid="tab-library">
+                <LibraryBig className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Library</span>
               </TabsTrigger>
             </TabsList>
 
@@ -953,24 +953,13 @@ export default function Playbook() {
               })()}
             </TabsContent>
 
-            <TabsContent value="pdf" className="space-y-4">
-              <PDFPreview
-                src={`/api/playbook/${archetype}/pdf`}
-                title={playbook?.title || "Premium Playbook"}
-                downloadFilename={`${playbook?.title || 'Playbook'}.pdf`}
-                height="700px"
-                showDownloadButton={true}
-                collapsible={false}
+            <TabsContent value="library" className="space-y-4">
+              <PremiumLibrary
+                archetype={archetype}
+                playbookTitle={playbook?.title || "Premium Playbook"}
                 authToken={session?.access_token}
+                hasPremiumAccess={hasAnyAccess}
               />
-              <Card className="bg-gray-50 dark:bg-gray-800">
-                <CardContent className="p-4">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-                    Tip: Use the interactive Content tab for the best reading experience with progress tracking, 
-                    or download the PDF for offline access.
-                  </p>
-                </CardContent>
-              </Card>
             </TabsContent>
           </Tabs>
         </main>
