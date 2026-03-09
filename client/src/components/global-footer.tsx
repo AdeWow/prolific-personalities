@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { Instagram } from "lucide-react";
 import logoImage from "@assets/Logo5Nobackground1_1762920314202.png";
 import { FooterNewsletter } from "@/components/footer-newsletter";
 
@@ -41,12 +42,24 @@ export function GlobalFooter() {
             </a>
           </nav>
 
-          <a 
-            href="mailto:support@prolificpersonalities.com" 
+          <a
+            href="mailto:support@prolificpersonalities.com"
             className="text-primary hover:underline font-medium"
           >
             support@prolificpersonalities.com
           </a>
+
+          <div className="flex items-center justify-center gap-4 pt-2">
+            <a
+              href="https://instagram.com/prolificpersonalities"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Follow us on Instagram"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+          </div>
 
           <div className="space-y-3 pt-4">
             <p className="text-xs text-gray-400">

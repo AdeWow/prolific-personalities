@@ -117,16 +117,16 @@ function MidArticleCTA({ archetypeTags }: { archetypeTags: string[] }) {
 
 function EndOfArticleCTA() {
   return (
-    <div className="mt-12 mb-8 bg-slate-800 rounded-xl p-8 text-center">
+    <div className="mt-12 mb-8 bg-teal-600 rounded-xl p-8 text-center">
       <p className="text-xl font-semibold text-white mb-2">
-        Ready to stop fighting your brain?
+        Discover your productivity archetype
       </p>
-      <p className="text-sm text-slate-300 mb-5">
-        Discover your productivity archetype and get a personalized strategy in 5 minutes.
+      <p className="text-sm text-teal-100 mb-5">
+        Take the free 5-minute assessment and get strategies that actually fit how you think.
       </p>
       <Link href="/quiz">
-        <Button className="bg-teal-500 hover:bg-teal-400 text-white px-8 py-3 rounded-xl text-base font-medium">
-          Take the Free Assessment
+        <Button className="bg-white hover:bg-teal-50 text-teal-700 px-8 py-3 rounded-xl text-base font-medium">
+          Take the Free Quiz
         </Button>
       </Link>
     </div>

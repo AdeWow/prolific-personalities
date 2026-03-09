@@ -6,7 +6,7 @@ import { SEOHead } from "@/components/seo-head";
 import { trackEvent } from "@/lib/analytics";
 import { trackLandingView } from "@/lib/posthog";
 import { Link } from "wouter";
-import { Brain, Target, Zap, Clock, ChevronRight, Users, AlertTriangle, Fingerprint, ClipboardList, BookOpen } from "lucide-react";
+import { Brain, Target, Zap, Clock, ChevronRight, Users, AlertTriangle, Fingerprint, ClipboardList, BookOpen, Instagram } from "lucide-react";
 import { FadeIn } from "@/components/fade-in";
 import { FooterNewsletter } from "@/components/footer-newsletter";
 import { ProliHeroComposition } from "@/components/proli-hero-composition";
@@ -71,7 +71,7 @@ export default function Home() {
 
       <main id="main-content" role="main">
         {/* Hero Section */}
-        <section className="py-20 lg:py-28" aria-labelledby="hero-heading">
+        <section className="py-12 lg:py-16" aria-labelledby="hero-heading">
           <div className="max-w-6xl mx-auto px-6">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <div className="text-center lg:text-left">
@@ -395,7 +395,19 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="border-t border-white/20 pt-8 mt-12 text-center text-gray-400 text-base">
+            <div className="flex items-center justify-center gap-4 pt-6">
+              <a
+                href="https://instagram.com/prolificpersonalities"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="Follow us on Instagram"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+            </div>
+
+            <div className="border-t border-white/20 pt-8 mt-8 text-center text-gray-400 text-base">
               <p>© {new Date().getFullYear()} Prolific Personalities. All rights reserved.</p>
             </div>
           </div>

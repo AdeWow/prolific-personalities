@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
@@ -107,6 +108,16 @@ export function FooterNewsletter({ variant }: FooterNewsletterProps) {
         {errorMsg && (
           <p className="text-sm text-red-400 mt-2" role="alert">{errorMsg}</p>
         )}
+
+        <p className={`text-xs mt-3 ${isDark ? "text-gray-500" : "text-muted-foreground"}`}>
+          Haven't taken the quiz yet?{" "}
+          <Link
+            href="/quiz"
+            className={`underline hover:no-underline ${isDark ? "text-gray-400 hover:text-white" : "text-primary hover:text-primary/80"}`}
+          >
+            Discover your type first&nbsp;→
+          </Link>
+        </p>
       </div>
     </div>
   );
