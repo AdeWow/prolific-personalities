@@ -318,9 +318,10 @@ export default function BlogPage() {
         )}
 
         {/* Blog Posts Grid */}
-        <FadeIn className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {filteredPosts.map((post) => (
-            <Link key={post.id} href={`/blog/${post.slug}`}>
+        <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {filteredPosts.map((post, i) => (
+            <FadeIn key={post.id} delay={Math.min(i * 60, 300)}>
+            <Link href={`/blog/${post.slug}`}>
               <Card className="flex flex-col h-full hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer" data-testid={`card-blog-${post.slug}`}>
                 {post.image && (
                   <AspectRatio ratio={16 / 9} className="bg-muted dark:bg-card rounded-t-lg overflow-hidden">
@@ -355,8 +356,9 @@ export default function BlogPage() {
                 </CardContent>
               </Card>
             </Link>
+            </FadeIn>
           ))}
-        </FadeIn>
+        </div>
 
         {filteredPosts.length === 0 && !isLoading && (
           <div className="text-center py-12">
