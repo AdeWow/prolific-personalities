@@ -90,6 +90,7 @@ const libraries: Record<string, ArchetypeLibrary> = {
       { filename: "CC_DeepDive_3_Boredom_Bridge.pdf", title: "The Boredom Bridge", description: "How to push through the boring middle of every project", category: "Framework" },
       { filename: "CC_DeepDive_3b_Energy_Management.pdf", title: "Energy Management", description: "Work with your energy cycles, not against them", category: "Framework" },
       { filename: "CC_DeepDive_4_Tools_Database.pdf", title: "Tools Database", description: "Tools for creative, non-linear brains", category: "Tools" },
+      { filename: "CC_DeepDive_5_30_Day_Plan.pdf", title: "30-Day Implementation Plan", description: "Day-by-day guide to building structure without killing creativity", category: "30-Day Plan" },
       { filename: "CC_DeepDive_6_Failure_Modes.pdf", title: "Failure Modes", description: "Recognize Shiny Object Syndrome and other creative traps", category: "Failure Modes" },
       { filename: "CC_DeepDive_7_Case_Studies.pdf", title: "Case Studies", description: "Real stories from Chaotic Creatives who learned to finish", category: "Case Studies" },
       { filename: "CC_DeepDive_8_Research.pdf", title: "Research Foundation", description: "The neuroscience of creativity and executive function", category: "Research" },
