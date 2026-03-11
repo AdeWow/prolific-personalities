@@ -4,7 +4,7 @@ async function main() {
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
   if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error("Missing ANTHROPIC_API_KEY in Replit Secrets.");
+    throw new Error("Missing ANTHROPIC_API_KEY environment variable.");
   }
 
   const models = await client.models.list();
