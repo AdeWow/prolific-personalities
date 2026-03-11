@@ -155,6 +155,10 @@ export function registerWebhookRoute(app: Express) {
           const customerEmail = session.customer_details?.email;
 
           if (orderId) {
+            // DEDUP: Fetch order before updating to check if already completed
+            const existingOrder = await storage.getOrderById(parseInt(orderId));
+            const wasAlreadyCompleted = existingOrder?.status === 'completed';
+
             // Look up local user by email to link the order correctly
             // This handles legacy users with numeric IDs
             let userId: string | undefined;
@@ -243,7 +247,8 @@ export function registerWebhookRoute(app: Express) {
             }
 
             // Send premium PDF email if we have customer email
-            if (resend && customerEmail && archetype && sessionId) {
+            // Skip if order was already completed (prevents duplicate emails on webhook retries)
+            if (resend && customerEmail && archetype && sessionId && !wasAlreadyCompleted) {
               try {
                 // Get archetype info
                 const archetypeInfo = getArchetypeInfo(archetype);
@@ -315,6 +320,8 @@ export function registerWebhookRoute(app: Express) {
                 );
               }
             } else {
+              if (wasAlreadyCompleted)
+                console.log(`⏭️ Order ${orderId} already completed — skipping duplicate email to ${customerEmail}`);
               if (!resend)
                 console.warn("⚠️ Resend not configured - skipping email");
               if (!customerEmail)
@@ -3406,12 +3413,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   async function processWeeklyAccountability() {
     const partnerSubscribers = await storage.getActivePartnerSubscribers();
+    const newsletterSubscribers = await storage.getActiveNewsletterSubscribers();
+
+    // Merge both lists, deduplicating by email (partner subscribers take priority)
+    const partnerEmails = new Set(partnerSubscribers.map(s => s.email.toLowerCase()));
+    const uniqueNewsletterSubs = newsletterSubscribers.filter(
+      s => !partnerEmails.has(s.email.toLowerCase())
+    );
+    const allSubscribers = [...partnerSubscribers, ...uniqueNewsletterSubs];
+
     const epochStart = new Date('2026-01-01').getTime();
     const weeksSinceEpoch = Math.floor((Date.now() - epochStart) / (7 * 24 * 60 * 60 * 1000));
     const weekNumber = (weeksSinceEpoch % 8) + 1;
     const results = [];
 
-    for (const subscriber of partnerSubscribers) {
+    for (const subscriber of allSubscribers) {
       try {
         const { subject, html } = generateWeeklyAccountabilityEmail({
           firstName: subscriber.firstName,
@@ -3428,22 +3444,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         if (error) {
           console.error(`Failed to send weekly email to ${subscriber.email}:`, error);
-          results.push({ userId: subscriber.userId, email: subscriber.email, status: "failed", error: error.message });
+          results.push({ userId: (subscriber as any).userId || null, email: subscriber.email, status: "failed", error: error.message });
           continue;
         }
 
-        results.push({ userId: subscriber.userId, email: subscriber.email, status: "sent", resendId: data?.id });
+        results.push({ userId: (subscriber as any).userId || null, email: subscriber.email, status: "sent", resendId: data?.id });
         console.log(`✅ Weekly accountability email sent to ${subscriber.email} (${data?.id})`);
       } catch (err) {
         console.error(`Failed to send weekly email to ${subscriber.email}:`, err);
-        results.push({ userId: subscriber.userId, email: subscriber.email, status: "failed", error: String(err) });
+        results.push({ userId: (subscriber as any).userId || null, email: subscriber.email, status: "failed", error: String(err) });
       }
     }
 
     const sent = results.filter((r) => r.status === "sent").length;
     const failed = results.filter((r) => r.status === "failed").length;
-    console.log(`📧 Weekly accountability cron completed: ${sent} sent, ${failed} failed`);
-    return { success: true, weekNumber, processed: partnerSubscribers.length, sent, failed, results };
+    console.log(`📧 Weekly accountability cron completed: ${sent} sent, ${failed} failed (${partnerSubscribers.length} partners + ${uniqueNewsletterSubs.length} newsletter)`);
+    return { success: true, weekNumber, processed: allSubscribers.length, sent, failed, results };
   }
 
   async function processNurtureSequence() {

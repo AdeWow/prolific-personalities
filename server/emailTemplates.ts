@@ -1,5 +1,15 @@
 import type { QuizScores } from "@shared/schema";
 
+/** Strip leading "The " from archetype titles so interpolations don't read "the The Structured Achiever" */
+function stripThe(title: string): string {
+  return title.replace(/^The\s+/i, "");
+}
+
+/** Return "a" or "an" based on whether the next word starts with a vowel sound */
+function aOrAn(nextWord: string): string {
+  return /^[aeiou]/i.test(nextWord) ? "an" : "a";
+}
+
 function getPublicBaseUrl(): string {
   const raw = process.env.SITE_URL || process.env.APP_URL;
   if (!raw) {
@@ -269,7 +279,7 @@ export interface PremiumPlaybookEmailData {
 export function generatePremiumPlaybookEmail(data: PremiumPlaybookEmailData): { subject: string; html: string } {
   const { archetype, resultsUrl } = data;
 
-  const subject = `Your Premium ${archetype.title} Playbook is Here`;
+  const subject = `Your Premium ${stripThe(archetype.title)} Playbook is Here`;
 
   const html = `
     <!DOCTYPE html>
@@ -402,7 +412,7 @@ export function generatePremiumPlaybookEmail(data: PremiumPlaybookEmailData): { 
           
           <div class="message-box">
             <h2>Thank You for Your Purchase!</h2>
-            <p>Your payment has been processed successfully. Your premium ${archetype.title} playbook is attached to this email.</p>
+            <p>Your payment has been processed successfully. Your premium ${stripThe(archetype.title)} playbook is attached to this email.</p>
           </div>
 
           <div class="attachment-info">
@@ -412,7 +422,7 @@ export function generatePremiumPlaybookEmail(data: PremiumPlaybookEmailData): { 
           <div class="whats-included">
             <h3>What's Inside Your Premium Playbook:</h3>
             <ul>
-              <li><strong>Complete Implementation Guide:</strong> Step-by-step instructions tailored to ${archetype.title}</li>
+              <li><strong>Complete Implementation Guide:</strong> Step-by-step instructions tailored to ${stripThe(archetype.title)}s</li>
               <li><strong>30-Day Action Plan:</strong> Daily actionable tasks to transform your productivity</li>
               <li><strong>Tool Setup Guides:</strong> Detailed tutorials for recommended productivity tools</li>
               <li><strong>Common Pitfalls & Solutions:</strong> Learn from others' mistakes and succeed faster</li>
@@ -696,7 +706,7 @@ export function generateWelcomeEmail(data: WelcomeEmailData): { subject: string;
           </div>
           
           <div class="quick-start">
-            <h2>3 strategies that actually work for ${archetype.title}s:</h2>
+            <h2>3 strategies that actually work for ${stripThe(archetype.title)}s:</h2>
             
             ${quickWins.strategies.map((strategy, index) => `
               <div class="strategy">
@@ -752,7 +762,7 @@ export interface AbandonedCartEmailData {
 export function generateAbandonedCartEmail(data: AbandonedCartEmailData): { subject: string; html: string } {
   const { archetype, checkoutUrl, unsubscribeUrl } = data;
 
-  const subject = `Still thinking about the ${archetype.title} Playbook?`;
+  const subject = `Still thinking about the ${stripThe(archetype.title)} Playbook?`;
 
   const html = `
     <!DOCTYPE html>
@@ -883,7 +893,7 @@ export function generateAbandonedCartEmail(data: AbandonedCartEmailData): { subj
         <div class="content">
           <p class="greeting">Hey,</p>
           
-          <p>I noticed you were checking out the <strong>${archetype.title} Playbook</strong> yesterday. No rush—I get it. $19 is still money, and you want to know it's worth it.</p>
+          <p>I noticed you were checking out the <strong>${stripThe(archetype.title)} Playbook</strong> yesterday. No rush—I get it. $19 is still money, and you want to know it's worth it.</p>
           
           <p>Here's what I'll say: if you've spent years trying productivity systems that felt wrong for how you actually think, this is different.</p>
           
@@ -895,10 +905,10 @@ export function generateAbandonedCartEmail(data: AbandonedCartEmailData): { subj
             <h3>What you'd get:</h3>
             
             <div class="benefit-item">
-              <strong>A 30-day action plan</strong> with specific daily tasks designed for how ${archetype.title}s actually work (not generic advice that assumes everyone's brain is the same)
+              <strong>A 30-day action plan</strong> with specific daily tasks designed for how ${stripThe(archetype.title)}s actually work (not generic advice that assumes everyone's brain is the same)
             </div>
             <div class="benefit-item">
-              <strong>Your specific failure modes</strong> — the traps other ${archetype.title}s fall into, so you can avoid them
+              <strong>Your specific failure modes</strong> — the traps other ${stripThe(archetype.title)}s fall into, so you can avoid them
             </div>
             <div class="benefit-item">
               <strong>Tool recommendations</strong> rated for your archetype (which apps work for you vs. which ones will waste your time)
@@ -1048,7 +1058,7 @@ const weeklyEmailThemes: WeeklyEmailTheme[] = [
     themeTitle: "Weekly Momentum Check",
     emoji: "🚀",
     headerGradient: "linear-gradient(135deg, #4f9a94 0%, #3d8b85 100%)",
-    introText: (archetype) => `As a ${archetype}, your unique strengths set you up for a powerful week. Let's build on that momentum.`,
+    introText: (archetype) => `As ${aOrAn(archetype)} ${archetype}, your unique strengths set you up for a powerful week. Let's build on that momentum.`,
     challengeTitle: "This Week's Growth Challenge",
     reflectionQuestions: [
       "What was your biggest win last week?",
@@ -1062,7 +1072,7 @@ const weeklyEmailThemes: WeeklyEmailTheme[] = [
     themeTitle: "Mindset Monday",
     emoji: "🧠",
     headerGradient: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
-    introText: (archetype) => `Happy Monday! As a ${archetype}, your mindset is your greatest asset. Let's set the tone for an intentional week.`,
+    introText: (archetype) => `Happy Monday! As ${aOrAn(archetype)} ${archetype}, your mindset is your greatest asset. Let's set the tone for an intentional week.`,
     challengeTitle: "Your Mindset Shift This Week",
     reflectionQuestions: [
       "What limiting belief can you challenge this week?",
@@ -1076,7 +1086,7 @@ const weeklyEmailThemes: WeeklyEmailTheme[] = [
     themeTitle: "Energy Audit",
     emoji: "⚡",
     headerGradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-    introText: (archetype) => `Time for an energy check! As a ${archetype}, understanding what energizes you is key to sustainable productivity.`,
+    introText: (archetype) => `Time for an energy check! As ${aOrAn(archetype)} ${archetype}, understanding what energizes you is key to sustainable productivity.`,
     challengeTitle: "This Week's Energy Focus",
     reflectionQuestions: [
       "What activities gave you energy last week?",
@@ -1090,7 +1100,7 @@ const weeklyEmailThemes: WeeklyEmailTheme[] = [
     themeTitle: "Deep Focus Friday Prep",
     emoji: "🎯",
     headerGradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-    introText: (archetype) => `Let's prepare for a week of focused work. As a ${archetype}, you have unique ways of achieving deep concentration.`,
+    introText: (archetype) => `Let's prepare for a week of focused work. As ${aOrAn(archetype)} ${archetype}, you have unique ways of achieving deep concentration.`,
     challengeTitle: "Your Focus Challenge",
     reflectionQuestions: [
       "What's the ONE thing that would make this week a success?",
@@ -1104,7 +1114,7 @@ const weeklyEmailThemes: WeeklyEmailTheme[] = [
     themeTitle: "Progress Pulse",
     emoji: "📊",
     headerGradient: "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
-    introText: (archetype) => `Let's take your progress pulse! As a ${archetype}, tracking your wins helps you build on what's working.`,
+    introText: (archetype) => `Let's take your progress pulse! As ${aOrAn(archetype)} ${archetype}, tracking your wins helps you build on what's working.`,
     challengeTitle: "This Week's Progress Target",
     reflectionQuestions: [
       "What did you accomplish that you're proud of?",
@@ -1118,7 +1128,7 @@ const weeklyEmailThemes: WeeklyEmailTheme[] = [
     themeTitle: "Strategic Reset",
     emoji: "🔄",
     headerGradient: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-    introText: (archetype) => `Time for a strategic reset! As a ${archetype}, periodic resets help you stay aligned with what matters most.`,
+    introText: (archetype) => `Time for a strategic reset! As ${aOrAn(archetype)} ${archetype}, periodic resets help you stay aligned with what matters most.`,
     challengeTitle: "Your Reset Focus",
     reflectionQuestions: [
       "What's working that you should keep doing?",
@@ -1132,7 +1142,7 @@ const weeklyEmailThemes: WeeklyEmailTheme[] = [
     themeTitle: "Strengths Spotlight",
     emoji: "💪",
     headerGradient: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
-    introText: (archetype) => `Let's spotlight your strengths! As a ${archetype}, leaning into what you do best accelerates your results.`,
+    introText: (archetype) => `Let's spotlight your strengths! As ${aOrAn(archetype)} ${archetype}, leaning into what you do best accelerates your results.`,
     challengeTitle: "Leverage Your Strengths",
     reflectionQuestions: [
       "When did you feel 'in the zone' last week?",
@@ -1146,7 +1156,7 @@ const weeklyEmailThemes: WeeklyEmailTheme[] = [
     themeTitle: "Intentional Week Ahead",
     emoji: "🌟",
     headerGradient: "linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)",
-    introText: (archetype) => `Let's set intentions for the week ahead! As a ${archetype}, clarity of purpose drives your best work.`,
+    introText: (archetype) => `Let's set intentions for the week ahead! As ${aOrAn(archetype)} ${archetype}, clarity of purpose drives your best work.`,
     challengeTitle: "Your Weekly Intention",
     reflectionQuestions: [
       "What word or theme will guide your week?",
@@ -1173,7 +1183,8 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
   const weeklyTip = tips[themeIndex];
   
   const greeting = firstName ? `Hi ${firstName}` : "Hey there";
-  const subject = `${theme.themeTitle}: Your ${archetype} Weekly Check-in`;
+  const displayName = stripThe(archetype);
+  const subject = `${theme.themeTitle}: Your ${displayName} Weekly Check-in`;
   
   const reflectionHtml = theme.reflectionQuestions.map(q => `
     <div style="display: flex; align-items: flex-start; margin-bottom: 8px; color: #475569;">
@@ -1201,7 +1212,7 @@ export function generateWeeklyAccountabilityEmail(data: WeeklyAccountabilityEmai
         <div style="padding: 40px 30px;">
           <p style="font-size: 18px; margin-bottom: 20px;">${greeting},</p>
           
-          <p style="margin-bottom: 20px;">${theme.introText(archetype)}</p>
+          <p style="margin-bottom: 20px;">${theme.introText(displayName)}</p>
           
           <div style="background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 100%); border-left: 4px solid #4f9a94; padding: 20px; margin: 24px 0; border-radius: 0 8px 8px 0;">
             <h3 style="font-size: 16px; font-weight: 600; color: #4f9a94; margin: 0 0 12px 0;">${theme.challengeTitle}</h3>
@@ -1419,7 +1430,7 @@ export function generateDay3NurtureEmail(user: NurtureEmailUser): { subject: str
   const content = getArchetypeContent(user.archetype);
   const archetypeName = content?.name || formatArchetypeName(user.archetype);
   
-  const subject = `The hidden advantage of being a ${archetypeName}`;
+  const subject = `The hidden advantage of being ${aOrAn(archetypeName)} ${archetypeName}`;
   
   const html = `
     <!DOCTYPE html>
@@ -1436,7 +1447,7 @@ export function generateDay3NurtureEmail(user: NurtureEmailUser): { subject: str
         <div class="content">
           <p>Hey,</p>
           
-          <p>Three days ago you discovered you're a <strong>${archetypeName}</strong>. Let me tell you why that's actually a significant advantage.</p>
+          <p>Three days ago you discovered you're ${aOrAn(archetypeName)} <strong>${archetypeName}</strong>. Let me tell you why that's actually a significant advantage.</p>
           
           <p>${content?.day3Advantage || "Your unique productivity profile gives you strengths that others don't have. The key is learning to work with your natural tendencies rather than against them."}</p>
           
@@ -1538,7 +1549,7 @@ export function generateDay7NurtureEmail(user: NurtureEmailUser): { subject: str
           
           <p>Research on person-environment fit (Kristof-Brown et al., 2005) shows that the same tool can be transformative for one person and useless for another. It's not about finding the "best" tool — it's about finding the right tool <em>for you</em>.</p>
           
-          <p>As a ${archetypeName}, here's what the research suggests:</p>
+          <p>As ${aOrAn(archetypeName)} ${archetypeName}, here's what the research suggests:</p>
           
           <div class="highlight-box">
             <p style="margin: 0;">${content?.day7Tool || "Choose tools that match your natural working style. The best productivity system is one you'll actually use consistently."}</p>
@@ -1568,7 +1579,7 @@ export function generateDay10NurtureEmail(user: NurtureEmailUser): { subject: st
   const archetypeName = content?.name || formatArchetypeName(user.archetype);
   const playbookUrl = `${BASE_URL}/results?archetype=${user.archetype}#upsell`;
   
-  const subject = `How a ${archetypeName} went from stuck to unstoppable`;
+  const subject = `How ${aOrAn(archetypeName)} ${archetypeName} went from stuck to unstoppable`;
   
   const stories: Record<string, { before: string; after: string; quote: string }> = {
     "chaotic-creative": {

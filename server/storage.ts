@@ -1142,6 +1142,27 @@ export class DatabaseStorage implements IStorage {
     return results.filter(r => r.userId && r.email) as { userId: string; email: string; archetype: string; firstName: string | null }[];
   }
 
+  // Get active newsletter subscribers for weekly emails (from emailCaptures table)
+  async getActiveNewsletterSubscribers(): Promise<{ email: string; archetype: string; firstName: null }[]> {
+    const results = await db
+      .select({
+        email: emailCaptures.email,
+        archetype: emailCaptures.archetype,
+      })
+      .from(emailCaptures)
+      .where(
+        and(
+          eq(emailCaptures.subscribed, 1),
+          eq(emailCaptures.unsubscribed, 0)
+        )
+      );
+
+    // Filter to only include entries with a valid archetype
+    return results
+      .filter(r => r.email && r.archetype)
+      .map(r => ({ email: r.email, archetype: r.archetype!, firstName: null }));
+  }
+
   // Admin test functions - delete user's orders
   async deleteOrdersByUserId(userId: string): Promise<number> {
     const result = await db.delete(orders).where(eq(orders.userId, userId));
