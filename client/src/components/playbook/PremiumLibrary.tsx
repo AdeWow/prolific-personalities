@@ -6,6 +6,7 @@ import { FadeIn } from "@/components/fade-in";
 import { Download, Lock, ExternalLink } from "lucide-react";
 import { Link } from "wouter";
 import { getLibrary, getPdfUrl, type PdfItem, type PdfCategory } from "@shared/premiumLibrary";
+import { trackEvent } from "@/lib/analytics";
 
 const categoryColors: Record<PdfCategory, string> = {
   Framework: "bg-blue-100 text-blue-700 border-blue-200",
@@ -48,6 +49,10 @@ function PdfCard({ item, hasPremiumAccess, delay }: { item: PdfItem; hasPremiumA
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-medium text-teal-700 hover:text-teal-900 transition-colors mt-auto"
+              onClick={() => trackEvent('pdf_downloaded', 'Engagement', item.title, undefined, {
+                category: item.category,
+                filename: item.filename,
+              })}
             >
               <Download className="h-3.5 w-3.5" />
               Download PDF
@@ -55,7 +60,12 @@ function PdfCard({ item, hasPremiumAccess, delay }: { item: PdfItem; hasPremiumA
             </a>
           ) : (
             <Link href="/pricing">
-              <Button variant="outline" size="sm" className="w-full text-xs gap-1.5 mt-auto">
+              <Button
+                variant="outline" size="sm" className="w-full text-xs gap-1.5 mt-auto"
+                onClick={() => trackEvent('premium_clicked', 'Conversion', item.title, undefined, {
+                  source: 'library_tab',
+                })}
+              >
                 <Lock className="h-3.5 w-3.5" />
                 Purchase to unlock
               </Button>
@@ -84,6 +94,10 @@ function TemplateCard({ item, hasPremiumAccess, delay }: { item: PdfItem; hasPre
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-[11px] font-medium text-teal-700 hover:text-teal-900 transition-colors"
+              onClick={() => trackEvent('pdf_downloaded', 'Engagement', item.title, undefined, {
+                category: 'Templates',
+                filename: item.filename,
+              })}
             >
               <Download className="h-3 w-3" />
               Download

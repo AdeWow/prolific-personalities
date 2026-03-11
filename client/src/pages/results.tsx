@@ -85,7 +85,11 @@ export default function Results() {
       setPaymentStatus(payment);
       if (payment === 'success') {
         setShowSuccessModal(true);
-        trackEvent('premium_purchase_completed', 'Conversion', 'Payment Success', 27);
+        trackEvent('purchase_completed', 'Conversion', 'Payment Success', undefined, {
+          product: 'premium_playbook',
+          archetype: archetype?.id || 'unknown',
+          source: 'results_page',
+        });
       } else if (payment === 'cancelled') {
         toast({
           title: "Payment Cancelled",
@@ -122,7 +126,9 @@ export default function Results() {
   
   useEffect(() => {
     if (archetype) {
-      trackEvent('result_viewed', 'Results', archetype.name);
+      trackEvent('results_viewed', 'Results', archetype.name, undefined, {
+        archetype: archetype.id,
+      });
       trackResultsView(archetype.id, false);
     }
   }, [archetype]);
@@ -174,7 +180,10 @@ export default function Results() {
     onSuccess: () => {
       setEmailSaved(true);
       localStorage.setItem('emailCaptured', 'true');
-      trackEvent('email_captured', 'Conversion', archetype?.name || 'Unknown');
+      trackEvent('newsletter_signup', 'Conversion', archetype?.name || 'Unknown', undefined, {
+        source: 'results_page',
+        archetype: archetype?.id || 'unknown',
+      });
       toast({
         title: "Email saved!",
         description: "We'll send your results to your inbox shortly.",
@@ -220,7 +229,12 @@ export default function Results() {
     },
     onSuccess: (data) => {
       if (data.url) {
-        trackEvent('premium_purchase_initiated', 'Conversion', archetype?.name || 'Unknown', 27);
+        trackEvent('checkout_started', 'Conversion', archetype?.name || 'Unknown', undefined, {
+          product: 'premium_playbook',
+          price: 19,
+          archetype: archetype?.id || 'unknown',
+          source: 'results_page',
+        });
         window.location.href = data.url;
       }
     },
@@ -336,6 +350,10 @@ export default function Results() {
 
   const handleUpgradeToPremium = () => {
     if (sessionId && archetype) {
+      trackEvent('premium_clicked', 'Conversion', archetype.name, undefined, {
+        source: 'results_page',
+        archetype: archetype.id,
+      });
       trackPaywallTierClick('playbook', archetype.id, 19);
       trackCheckoutStart('complete_playbook', archetype.id, 19);
       checkoutMutation.mutate({ archetype: archetype.id, sessionId });

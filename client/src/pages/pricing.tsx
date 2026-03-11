@@ -172,7 +172,13 @@ export default function Pricing() {
   const handlePlaybookPurchase = async () => {
     setIsCheckingOut(true);
     try {
-      trackEvent('pricing_playbook_click', 'Purchase', 'Playbook Pre-Purchase');
+      trackEvent('premium_clicked', 'Purchase', 'Playbook Pre-Purchase', undefined, {
+        source: 'pricing_page',
+      });
+      trackEvent('checkout_started', 'Conversion', 'Pricing Page Checkout', undefined, {
+        product: 'premium_playbook',
+        source: 'pricing_page',
+      });
       const response = await apiRequest('POST', '/api/create-prepurchase-session', {});
       const data = await response.json();
       if (data.url) {

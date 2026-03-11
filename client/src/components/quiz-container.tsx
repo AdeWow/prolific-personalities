@@ -66,7 +66,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
 
   useEffect(() => {
     if (!quizStarted) {
-      trackEvent('quiz_started', 'Quiz', 'Quiz Started', 1);
+      trackEvent('quiz_started', 'Quiz', 'Quiz Started', 1, { source: 'quiz_page' });
       trackQuizStart('quiz_page');
       setQuizStarted(true);
     }
@@ -240,7 +240,11 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     if (isLastPage && allQuestionsAnswered) {
       const scores = calculateScores(answers);
       const archetype = determineArchetype(scores);
-      trackEvent('quiz_completed', 'Quiz', `Archetype: ${archetype.name}`, questions.length);
+      trackEvent('quiz_completed', 'Quiz', `Archetype: ${archetype.name}`, questions.length, {
+        archetype: archetype.id,
+        question_count: questions.length,
+        completion_method: 'standard',
+      });
       trackQuizComplete(archetype.id, scores);
       saveResultsMutation.mutate({
         sessionId,

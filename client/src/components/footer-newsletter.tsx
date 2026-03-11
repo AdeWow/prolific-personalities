@@ -28,7 +28,9 @@ export function FooterNewsletter({ variant }: FooterNewsletterProps) {
         setStatus("already");
       } else {
         setStatus("success");
-        trackEvent("newsletter_subscribe", "Conversion", "Footer Newsletter");
+        trackEvent("newsletter_signup", "Conversion", "Footer Newsletter", undefined, {
+          source: "footer",
+        });
       }
       setEmail("");
       setErrorMsg("");

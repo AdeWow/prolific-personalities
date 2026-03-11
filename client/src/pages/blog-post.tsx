@@ -125,7 +125,12 @@ function EndOfArticleCTA() {
         Take the free 5-minute assessment and get strategies that actually fit how you think.
       </p>
       <Link href="/quiz">
-        <Button className="bg-white hover:bg-teal-50 text-teal-700 px-8 py-3 rounded-xl text-base font-medium">
+        <Button
+          className="bg-white hover:bg-teal-50 text-teal-700 px-8 py-3 rounded-xl text-base font-medium"
+          onClick={() => trackEvent('blog_cta_clicked', 'Conversion', 'End of Article CTA', undefined, {
+            source: 'blog_post',
+          })}
+        >
           Take the Free Quiz
         </Button>
       </Link>

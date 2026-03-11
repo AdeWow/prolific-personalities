@@ -46,7 +46,9 @@ export function EmailCaptureCard({
           description: "You're already on our mailing list.",
         });
       } else {
-        trackEvent('email_captured', 'Conversion', `Context: ${context}`);
+        trackEvent('newsletter_signup', 'Conversion', `Context: ${context}`, undefined, {
+          source: context,
+        });
         toast({
           title: "Success!",
           description: "You've been added to our mailing list. Check your inbox soon!",

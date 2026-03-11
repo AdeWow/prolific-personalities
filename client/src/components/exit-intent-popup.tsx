@@ -47,7 +47,9 @@ export function ExitIntentPopup() {
       setDismissed(true);
       localStorage.setItem('emailCaptured', 'true');
       localStorage.setItem('emailCaptureDate', Date.now().toString());
-      trackEvent('email_captured', 'Conversion', 'Exit Intent Popup');
+      trackEvent('newsletter_signup', 'Conversion', 'Exit Intent Popup', undefined, {
+        source: 'exit_intent',
+      });
       toast({
         title: "You're all set!",
         description: "Check your inbox for your first productivity insight.",

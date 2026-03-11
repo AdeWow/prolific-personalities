@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { playbookContentMap } from "@shared/playbookContent";
+import { trackEvent } from "@/lib/analytics";
 import { ProgressMilestones } from "@/components/playbook/ProgressMilestones";
 import { ActionPlanGame } from "@/components/playbook/ActionPlanGame";
 import { ToolsFocused } from "@/components/playbook/ToolsFocused";
@@ -121,6 +122,9 @@ export default function Playbook() {
         .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
         .join(' ');
       document.title = `${archetypeName} Playbook - Prolific Personalities`;
+      trackEvent('playbook_viewed', 'Engagement', archetypeName, undefined, {
+        archetype,
+      });
     }
   }, [archetype]);
 

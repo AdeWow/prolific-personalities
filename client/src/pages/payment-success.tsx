@@ -21,7 +21,10 @@ export default function PaymentSuccess() {
       setSessionId(sid);
     }
     // Track conversion (safe to call in useEffect after window check)
-    trackEvent('purchase_complete_page_view', 'Conversion', 'Payment Success Page');
+    trackEvent('purchase_completed', 'Conversion', 'Payment Success Page', undefined, {
+      product: 'premium_playbook',
+      source: 'payment_success_page',
+    });
   }, []);
 
   const shareOnTwitter = () => {

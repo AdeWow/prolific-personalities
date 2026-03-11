@@ -32,12 +32,14 @@ export const trackPageView = (url: string) => {
   });
 };
 
-// Track events
+// Track events — supports GA4 custom parameters via optional params object.
+// Legacy category/label/value args still work for backward compatibility.
 export const trackEvent = (
   action: string,
   category?: string,
   label?: string,
   value?: number,
+  params?: Record<string, string | number | boolean>,
 ) => {
   if (typeof window === 'undefined' || !window.gtag) return;
 
@@ -45,5 +47,6 @@ export const trackEvent = (
     event_category: category,
     event_label: label,
     value: value,
+    ...params,
   });
 };
