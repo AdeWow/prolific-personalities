@@ -11,6 +11,19 @@ declare global {
 
 const GA_ID = 'G-LB3WGLMTST';
 
+// Detect debug/developer users so their traffic can be filtered in GA4.
+// Set via ?debug=true in URL (also persists to localStorage) or
+// by manually setting localStorage.debug_user = "true".
+const getDebugUser = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  // URL param both signals and persists the flag
+  if (window.location.search.includes('debug=true')) {
+    try { localStorage.setItem('debug_user', 'true'); } catch {}
+    return true;
+  }
+  return localStorage.getItem('debug_user') === 'true';
+};
+
 // Initialize — gtag.js is already loaded by index.html, so we just
 // verify it's available. No duplicate script injection needed.
 export const initGA = () => {
@@ -29,11 +42,13 @@ export const trackPageView = (url: string) => {
 
   window.gtag('config', GA_ID, {
     page_path: url,
+    debug_user: getDebugUser(),
   });
 };
 
 // Track events — supports GA4 custom parameters via optional params object.
 // Legacy category/label/value args still work for backward compatibility.
+// debug_user is injected automatically into every event payload.
 export const trackEvent = (
   action: string,
   category?: string,
@@ -47,6 +62,7 @@ export const trackEvent = (
     event_category: category,
     event_label: label,
     value: value,
+    debug_user: getDebugUser(),
     ...params,
   });
 };

@@ -170,6 +170,14 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
       const questionNumber = startIndex + questionIndexInPage + 1;
       trackQuizQuestionAnswered(questionNumber, questions.length, question.axis);
 
+      // GA4 question-level tracking
+      trackEvent('quiz_question_answered', 'Quiz', `Q${questionId}`, undefined, {
+        question_id: questionId,
+        axis: question.axis,
+        question_type: question.type,
+        answer_value: typeof value === 'number' ? value : parseInt(value as string),
+      });
+
       // Clear validation state when a question is answered
       if (showValidation) setShowValidation(false);
 
@@ -244,6 +252,10 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
         archetype: archetype.id,
         question_count: questions.length,
         completion_method: 'standard',
+        structure_score: scores.structure ?? 0,
+        motivation_score: scores.motivation ?? 0,
+        cognitive_score: scores.cognitive ?? 0,
+        task_score: scores.task ?? 0,
       });
       trackQuizComplete(archetype.id, scores);
       saveResultsMutation.mutate({
