@@ -68,19 +68,19 @@ const mobilePositions: Array<{
   top: string; left: string; rotate: string; floatClass?: string;
 }> = [
   // 0 — Chaotic Creative (top-left)
-  { top: "3%",  left: "5%",   rotate: "-5deg", floatClass: "animate-float-slow" },
+  { top: "4%",  left: "8%",   rotate: "-5deg", floatClass: "animate-float-slow" },
   // 1 — Novelty Seeker (top-center)
-  { top: "0%",  left: "38%",  rotate: "3deg",  floatClass: "animate-float-mid" },
+  { top: "0%",  left: "36%",  rotate: "3deg",  floatClass: "animate-float-mid" },
   // 2 — Strategic Planner (top-right)
-  { top: "3%",  left: "72%",  rotate: "4deg" },
+  { top: "4%",  left: "66%",  rotate: "4deg" },
   // 3 — Structured Achiever (right)
-  { top: "40%", left: "78%",  rotate: "-3deg", floatClass: "animate-float-fast" },
+  { top: "38%", left: "73%",  rotate: "-3deg", floatClass: "animate-float-fast" },
   // 4 — Anxious Perfectionist (bottom-right)
-  { top: "73%", left: "64%",  rotate: "4deg" },
+  { top: "70%", left: "58%",  rotate: "4deg" },
   // 5 — Flexible Improviser (bottom-left)
-  { top: "73%", left: "8%",   rotate: "-4deg" },
+  { top: "70%", left: "10%",  rotate: "-4deg" },
   // 6 — Adaptive Generalist (left)
-  { top: "40%", left: "0%",   rotate: "3deg" },
+  { top: "38%", left: "2%",   rotate: "3deg" },
 ];
 
 export function ProliHeroComposition() {
@@ -178,8 +178,8 @@ export function ProliHeroComposition() {
 
       {/* ── Mobile (<768px) ───────────────────────────── */}
       <div
-        className="md:hidden relative w-full max-w-[300px] mx-auto"
-        style={{ height: "260px" }}
+        className="md:hidden relative w-full max-w-[320px] mx-auto"
+        style={{ height: "290px" }}
         role="img"
         aria-label="Proli mascot with 7 archetype variants"
       >
@@ -205,11 +205,11 @@ export function ProliHeroComposition() {
                   alt={v.alt}
                   loading="eager"
                   draggable={false}
-                  className="w-[42px] h-auto select-none opacity-85 drop-shadow-sm"
+                  className="w-[55px] h-auto select-none opacity-85 drop-shadow-sm"
                 />
                 {/* Mobile label — smaller font, no hover effects */}
                 <span
-                  className="block text-center text-[8px] font-medium -mt-0.5 whitespace-nowrap select-none pointer-events-none text-muted-foreground/60"
+                  className="block text-center text-[9px] font-medium -mt-0.5 whitespace-nowrap select-none pointer-events-none text-muted-foreground/60"
                   style={{ transform: `rotate(${counterRotate}deg)` }}
                 >
                   {v.label}
@@ -225,7 +225,7 @@ export function ProliHeroComposition() {
           alt="Proli, the Prolific Personalities mascot"
           loading="eager"
           draggable={false}
-          className="absolute w-[100px] h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 select-none drop-shadow-lg"
+          className="absolute w-[115px] h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 select-none drop-shadow-lg"
         />
       </div>
     </>
