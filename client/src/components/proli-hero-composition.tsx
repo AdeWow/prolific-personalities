@@ -34,19 +34,19 @@ const desktopPositions: Array<{
   top: string; left: string; rotate: string; floatClass?: string;
 }> = [
   // 0 — Chaotic Creative (top-left, slight tilt)
-  { top: "14%", left: "18%", rotate: "-8deg", floatClass: "animate-float-slow" },
+  { top: "12%", left: "14%", rotate: "-8deg", floatClass: "animate-float-slow" },
   // 1 — Novelty Seeker (top-center, peeking behind main)
-  { top: "10%", left: "42%", rotate: "3deg",  floatClass: "animate-float-mid" },
+  { top: "6%",  left: "42%", rotate: "3deg",  floatClass: "animate-float-mid" },
   // 2 — Strategic Planner (top-right)
-  { top: "16%", left: "64%", rotate: "6deg" },
+  { top: "12%", left: "68%", rotate: "6deg" },
   // 3 — Structured Achiever (right)
-  { top: "44%", left: "70%", rotate: "-4deg", floatClass: "animate-float-fast" },
+  { top: "44%", left: "76%", rotate: "-4deg", floatClass: "animate-float-fast" },
   // 4 — Anxious Perfectionist (bottom-right)
-  { top: "66%", left: "62%", rotate: "5deg" },
+  { top: "70%", left: "66%", rotate: "5deg" },
   // 5 — Flexible Improviser (bottom-left)
-  { top: "64%", left: "20%", rotate: "-6deg" },
+  { top: "70%", left: "16%", rotate: "-6deg" },
   // 6 — Adaptive Generalist (left)
-  { top: "42%", left: "12%", rotate: "4deg" },
+  { top: "44%", left: "5%",  rotate: "4deg" },
 ];
 
 /*
@@ -54,25 +54,33 @@ const desktopPositions: Array<{
  * Used for SVG connection lines. Main Proli sits at (50, 50).
  */
 const lineCenters = [
-  { x: 27, y: 24 },   // 0 — Chaotic Creative
-  { x: 51, y: 20 },   // 1 — Novelty Seeker
-  { x: 73, y: 26 },   // 2 — Strategic Planner
-  { x: 79, y: 54 },   // 3 — Structured Achiever
-  { x: 71, y: 76 },   // 4 — Anxious Perfectionist
-  { x: 29, y: 74 },   // 5 — Flexible Improviser
-  { x: 21, y: 52 },   // 6 — Adaptive Generalist
+  { x: 23, y: 22 },   // 0 — Chaotic Creative
+  { x: 51, y: 16 },   // 1 — Novelty Seeker
+  { x: 77, y: 22 },   // 2 — Strategic Planner
+  { x: 85, y: 54 },   // 3 — Structured Achiever
+  { x: 75, y: 80 },   // 4 — Anxious Perfectionist
+  { x: 25, y: 80 },   // 5 — Flexible Improviser
+  { x: 14, y: 54 },   // 6 — Adaptive Generalist
 ];
 
-/* Mobile: main Proli + 3 variants above the headline */
+/* Mobile: main Proli + all 7 variants arranged in a circle */
 const mobilePositions: Array<{
   top: string; left: string; rotate: string; floatClass?: string;
 }> = [
-  // 0 — Chaotic Creative (left)
-  { top: "10%", left: "2%",  rotate: "-6deg", floatClass: "animate-float-slow" },
-  // 1 — Novelty Seeker (top-center, behind main)
-  { top: "0%",  left: "38%", rotate: "3deg",  floatClass: "animate-float-mid" },
-  // 2 — Strategic Planner (right)
-  { top: "10%", left: "72%", rotate: "5deg" },
+  // 0 — Chaotic Creative (top-left)
+  { top: "3%",  left: "5%",   rotate: "-5deg", floatClass: "animate-float-slow" },
+  // 1 — Novelty Seeker (top-center)
+  { top: "0%",  left: "38%",  rotate: "3deg",  floatClass: "animate-float-mid" },
+  // 2 — Strategic Planner (top-right)
+  { top: "3%",  left: "72%",  rotate: "4deg" },
+  // 3 — Structured Achiever (right)
+  { top: "40%", left: "78%",  rotate: "-3deg", floatClass: "animate-float-fast" },
+  // 4 — Anxious Perfectionist (bottom-right)
+  { top: "73%", left: "64%",  rotate: "4deg" },
+  // 5 — Flexible Improviser (bottom-left)
+  { top: "73%", left: "8%",   rotate: "-4deg" },
+  // 6 — Adaptive Generalist (left)
+  { top: "40%", left: "0%",   rotate: "3deg" },
 ];
 
 export function ProliHeroComposition() {
@@ -170,13 +178,13 @@ export function ProliHeroComposition() {
 
       {/* ── Mobile (<768px) ───────────────────────────── */}
       <div
-        className="md:hidden relative w-full max-w-[260px] mx-auto"
-        style={{ height: "200px" }}
+        className="md:hidden relative w-full max-w-[300px] mx-auto"
+        style={{ height: "260px" }}
         role="img"
-        aria-label="Proli mascot with archetype variants"
+        aria-label="Proli mascot with 7 archetype variants"
       >
-        {/* Show 3 variants on mobile */}
-        {variants.slice(0, 3).map((v, i) => {
+        {/* Show all 7 variants on mobile */}
+        {variants.map((v, i) => {
           const pos = mobilePositions[i];
           const counterRotate = -parseFloat(pos.rotate);
 
@@ -197,11 +205,11 @@ export function ProliHeroComposition() {
                   alt={v.alt}
                   loading="eager"
                   draggable={false}
-                  className="w-[55px] h-auto select-none opacity-85 drop-shadow-sm"
+                  className="w-[42px] h-auto select-none opacity-85 drop-shadow-sm"
                 />
                 {/* Mobile label — smaller font, no hover effects */}
                 <span
-                  className="block text-center text-[9px] font-medium -mt-0.5 whitespace-nowrap select-none pointer-events-none text-muted-foreground/60"
+                  className="block text-center text-[8px] font-medium -mt-0.5 whitespace-nowrap select-none pointer-events-none text-muted-foreground/60"
                   style={{ transform: `rotate(${counterRotate}deg)` }}
                 >
                   {v.label}
@@ -217,7 +225,7 @@ export function ProliHeroComposition() {
           alt="Proli, the Prolific Personalities mascot"
           loading="eager"
           draggable={false}
-          className="absolute w-[110px] h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 select-none drop-shadow-lg"
+          className="absolute w-[100px] h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 select-none drop-shadow-lg"
         />
       </div>
     </>
