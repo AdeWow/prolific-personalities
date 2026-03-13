@@ -96,7 +96,7 @@ export function ProliHeroComposition() {
       >
         {/* SVG connection lines — lg+ only */}
         <svg
-          className="absolute inset-0 w-full h-full z-[5] pointer-events-none hidden lg:block"
+          className="absolute inset-0 w-full h-full z-0 pointer-events-none hidden lg:block"
           viewBox="0 0 100 100"
         >
           {lineCenters.map((ep, i) => (
