@@ -44,7 +44,6 @@ import {
   RetakeSection,
   MobileStickyCTA,
 } from "@/components/results";
-import { ShareCard } from "@/components/share-card";
 
 export default function Results() {
   const params = useParams();
@@ -62,9 +61,8 @@ export default function Results() {
   const [promoCodeMessage, setPromoCodeMessage] = useState("");
   const [appWaitlistEmail, setAppWaitlistEmail] = useState("");
   const [appWaitlistJoined, setAppWaitlistJoined] = useState(false);
-  const [isGeneratingCard, setIsGeneratingCard] = useState(false);
+  const [isDownloadingCard, setIsDownloadingCard] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
-  const shareCardRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const { session } = useAuthContext();
@@ -419,31 +417,27 @@ export default function Results() {
   };
 
   const handleDownloadCard = async () => {
-    if (!archetype || isGeneratingCard) return;
-    setIsGeneratingCard(true);
+    if (!archetype || isDownloadingCard) return;
+    setIsDownloadingCard(true);
     trackEvent('share_card_download', 'Social', archetype.name, undefined, {
       archetype: archetype.id,
     });
     try {
-      // Wait for the hidden card to render + image to load
-      await new Promise((r) => setTimeout(r, 600));
-      if (!shareCardRef.current) return;
-      const html2canvas = (await import("html2canvas")).default;
-      const canvas = await html2canvas(shareCardRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: null,
-      });
+      const imageUrl = `/images/share-cards/share-${archetype.id}.png`;
+      const response = await fetch(imageUrl);
+      if (!response.ok) throw new Error("Failed to fetch share card image");
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.download = `my-archetype-${archetype.id}.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.href = url;
       link.click();
+      URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("Card generation failed:", err);
+      console.error("Card download failed:", err);
       toast({ title: "Download failed", description: "Please try again." });
     } finally {
-      setIsGeneratingCard(false);
+      setIsDownloadingCard(false);
     }
   };
 
@@ -732,16 +726,34 @@ export default function Results() {
               <p className="text-sm text-muted-foreground mb-5">
                 Let others discover their productivity archetype too.
               </p>
+              {/* Share card preview thumbnail */}
+              <div className="flex justify-center mb-5">
+                <div
+                  className="overflow-hidden"
+                  style={{
+                    borderRadius: 12,
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    width: 200,
+                  }}
+                >
+                  <img
+                    src={`/images/share-cards/share-${archetype.id}.png`}
+                    alt={`${archetype.name} share card`}
+                    className="w-full h-auto block"
+                    style={{ borderRadius: 12 }}
+                  />
+                </div>
+              </div>
               <div className="flex flex-wrap justify-center gap-3">
                 <Button
                   variant="outline"
                   size="sm"
                   className="flex items-center gap-2"
                   onClick={handleDownloadCard}
-                  disabled={isGeneratingCard}
+                  disabled={isDownloadingCard}
                 >
                   <Download className="w-4 h-4" />
-                  {isGeneratingCard ? "Generating\u2026" : "Download Image"}
+                  {isDownloadingCard ? "Downloading\u2026" : "Download Image"}
                 </Button>
                 <Button
                   variant="outline"
@@ -765,27 +777,6 @@ export default function Results() {
             </div>
           </section>
         </FadeIn>
-
-        {/* Hidden offscreen container for html2canvas capture */}
-        {isGeneratingCard && archetype && (
-          <div
-            aria-hidden="true"
-            style={{
-              position: "fixed",
-              left: "-9999px",
-              top: 0,
-              zIndex: -1,
-              pointerEvents: "none",
-            }}
-          >
-            <ShareCard
-              ref={shareCardRef}
-              archetypeId={archetype.id}
-              archetypeName={archetype.name}
-              variant="portrait"
-            />
-          </div>
-        )}
 
         {/* D) Paid Upsell Section or Access Button */}
         <FadeIn>
