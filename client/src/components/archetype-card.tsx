@@ -21,11 +21,13 @@ export function ArchetypeCard({ archetype, className, detailed = false, clickabl
     )}>
       <CardContent className="p-6">
         {archetype.image ? (
-          <div className="w-16 h-16 rounded-2xl overflow-hidden mb-4 ring-2 ring-muted">
-            <img 
-              src={archetype.image} 
+          <div className={cn(
+            `w-16 h-16 rounded-full bg-${archetype.color}-100 flex items-center justify-center mb-4`
+          )}>
+            <img
+              src={archetype.image}
               alt={archetype.name}
-              className="w-full h-full object-cover object-center scale-125"
+              className="w-12 h-12 object-contain drop-shadow-sm"
             />
           </div>
         ) : (

@@ -17,21 +17,26 @@ const validSlugs = [
   'flexible-improviser',
 ];
 
-import anxiousPerfectionistImage from "@assets/7d8c5462-febe-45f3-b3bd-207fb697cc04_1762297180709.png";
-import chaoticCreativeImage from "@assets/763894fc-7172-473f-b45a-30417b2f157a_1762297193215.png";
-import strategicPlannerImage from "@assets/ae5e43be-19bd-4df2-b053-48732a922fc6_1762297362107.png";
-import structuredAchieverImage from "@assets/e3fac029-7f4f-4a16-a237-d141ea58b5d6_1762297404337.png";
-import flexibleImproviserImage from "@assets/84c5e71b-0e9d-4158-b8a2-ea2b5f1f0abd_1762297453206.png";
-import noveltySeekerImage from "@assets/56861868-15df-4eb4-a0ae-f1629437f82e_1762297512686.png";
-import adaptiveGeneralistImage from "@assets/d9e893a7-c0ec-4b6f-92b2-d9222bdeafbc_1765447835628.png";
+/* Proli mascot images */
+const proliImages: Record<string, string> = {
+  'structured-achiever': '/images/proli/structured-acheiver.png',
+  'chaotic-creative': '/images/proli/chaotic-creative.png',
+  'anxious-perfectionist': '/images/proli/anxious-perfectionist.png',
+  'novelty-seeker': '/images/proli/novelty-seeker.png',
+  'strategic-planner': '/images/proli/strategic-planner.png',
+  'flexible-improviser': '/images/proli/flexible-improviser.png',
+  'adaptive-generalist': '/images/proli/adaptive-generalist.png',
+};
 
-const archetypeImages: Record<string, string> = {
-  'structured-achiever': structuredAchieverImage,
-  'chaotic-creative': chaoticCreativeImage,
-  'anxious-perfectionist': anxiousPerfectionistImage,
-  'novelty-seeker': noveltySeekerImage,
-  'strategic-planner': strategicPlannerImage,
-  'flexible-improviser': flexibleImproviserImage,
+/* Brand accent colors for Proli background circles (keyed by archetype slug) */
+const accentColors: Record<string, string> = {
+  'structured-achiever': 'bg-blue-100',
+  'chaotic-creative': 'bg-purple-100',
+  'anxious-perfectionist': 'bg-teal-100',
+  'novelty-seeker': 'bg-red-100',
+  'strategic-planner': 'bg-indigo-100',
+  'flexible-improviser': 'bg-green-100',
+  'adaptive-generalist': 'bg-indigo-100',
 };
 
 const archetypeCards = [
@@ -112,11 +117,11 @@ export default function Archetypes() {
                   className="group"
                 >
                   <div className="bg-white border border-slate-200 rounded-2xl p-6 hover:border-slate-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer h-full flex flex-col">
-                    <div className="w-20 h-20 mx-auto mb-4 rounded-xl overflow-hidden">
-                      <img 
-                        src={archetypeImages[archetype.slug]} 
+                    <div className={`w-20 h-20 mx-auto mb-4 rounded-full ${accentColors[archetype.slug] || 'bg-slate-100'} flex items-center justify-center`}>
+                      <img
+                        src={proliImages[archetype.slug]}
                         alt={archetype.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        className="w-16 h-16 object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-200"
                       />
                     </div>
                     
@@ -144,11 +149,11 @@ export default function Archetypes() {
           <div className="max-w-3xl mx-auto text-center">
             <Link href="/archetypes/adaptive-generalist" className="group block">
               <div className="bg-white rounded-2xl shadow-lg p-8 border border-slate-200 hover:border-slate-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer">
-                <div className="w-20 h-20 mx-auto mb-4 rounded-xl overflow-hidden">
-                  <img 
-                    src={adaptiveGeneralistImage} 
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <img
+                    src={proliImages['adaptive-generalist']}
                     alt="The Adaptive Generalist"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                    className="w-16 h-16 object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-200"
                   />
                 </div>
                 <h3 className="text-2xl font-bold text-neutral-800 mb-3">

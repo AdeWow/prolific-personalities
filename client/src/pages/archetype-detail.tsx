@@ -6,22 +6,26 @@ import { SEOHead } from "@/components/seo-head";
 import { archetypes } from "@/data/archetypes";
 import { ArrowRight, ChevronRight, Star, XCircle } from "lucide-react";
 
-import anxiousPerfectionistImage from "@assets/7d8c5462-febe-45f3-b3bd-207fb697cc04_1762297180709.png";
-import chaoticCreativeImage from "@assets/763894fc-7172-473f-b45a-30417b2f157a_1762297193215.png";
-import strategicPlannerImage from "@assets/ae5e43be-19bd-4df2-b053-48732a922fc6_1762297362107.png";
-import structuredAchieverImage from "@assets/e3fac029-7f4f-4a16-a237-d141ea58b5d6_1762297404337.png";
-import flexibleImproviserImage from "@assets/84c5e71b-0e9d-4158-b8a2-ea2b5f1f0abd_1762297453206.png";
-import noveltySeekerImage from "@assets/56861868-15df-4eb4-a0ae-f1629437f82e_1762297512686.png";
-import adaptiveGeneralistImage from "@assets/d9e893a7-c0ec-4b6f-92b2-d9222bdeafbc_1765447835628.png";
+/* Proli mascot images */
+const proliImages: Record<string, string> = {
+  'structured-achiever': '/images/proli/structured-acheiver.png',
+  'chaotic-creative': '/images/proli/chaotic-creative.png',
+  'anxious-perfectionist': '/images/proli/anxious-perfectionist.png',
+  'novelty-seeker': '/images/proli/novelty-seeker.png',
+  'strategic-planner': '/images/proli/strategic-planner.png',
+  'flexible-improviser': '/images/proli/flexible-improviser.png',
+  'adaptive-generalist': '/images/proli/adaptive-generalist.png',
+};
 
-const archetypeImages: Record<string, string> = {
-  'structured-achiever': structuredAchieverImage,
-  'chaotic-creative': chaoticCreativeImage,
-  'anxious-perfectionist': anxiousPerfectionistImage,
-  'novelty-seeker': noveltySeekerImage,
-  'strategic-planner': strategicPlannerImage,
-  'flexible-improviser': flexibleImproviserImage,
-  'adaptive-generalist': adaptiveGeneralistImage,
+/* Soft radial accent behind the Proli mascot (keyed by archetype slug) */
+const accentBg: Record<string, string> = {
+  'structured-achiever': 'bg-blue-100/60',
+  'chaotic-creative': 'bg-purple-100/60',
+  'anxious-perfectionist': 'bg-teal-100/60',
+  'novelty-seeker': 'bg-red-100/60',
+  'strategic-planner': 'bg-indigo-100/60',
+  'flexible-improviser': 'bg-green-100/60',
+  'adaptive-generalist': 'bg-indigo-100/60',
 };
 
 const archetypeDetails: Record<string, {
@@ -117,7 +121,6 @@ export default function ArchetypeDetail() {
   }
 
   const details = archetypeDetails[slug];
-  const image = archetypeImages[slug];
   const otherArchetypes = archetypes.filter(a => a.id !== slug && validSlugs.includes(a.id));
 
   return (
@@ -137,12 +140,25 @@ export default function ArchetypeDetail() {
               <ChevronRight className="w-4 h-4 rotate-180 mr-1" />
               All Archetypes
             </Link>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              {archetype.name}
-            </h1>
-            <p className="text-xl text-white/90 italic">
-              {details.tagline}
-            </p>
+            <div className="flex items-center gap-6 md:gap-8">
+              <div className="flex-shrink-0">
+                <div className="w-[120px] md:w-[180px] h-[120px] md:h-[180px] rounded-full bg-white/15 flex items-center justify-center">
+                  <img
+                    src={proliImages[slug]}
+                    alt={archetype.name}
+                    className="w-[100px] md:w-[150px] h-auto drop-shadow-lg"
+                  />
+                </div>
+              </div>
+              <div>
+                <h1 className="text-3xl md:text-5xl font-bold text-white mb-3">
+                  {archetype.name}
+                </h1>
+                <p className="text-lg md:text-xl text-white/90 italic">
+                  {details.tagline}
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -156,11 +172,13 @@ export default function ArchetypeDetail() {
                 ))}
               </div>
               <div className="md:col-span-2 flex items-center justify-center">
-                <img 
-                  src={image} 
-                  alt={archetype.name}
-                  className="max-w-full h-auto rounded-xl shadow-lg"
-                />
+                <div className={`w-[200px] h-[200px] rounded-full ${accentBg[slug] || 'bg-slate-100/60'} flex items-center justify-center`}>
+                  <img
+                    src={proliImages[slug]}
+                    alt={archetype.name}
+                    className="w-[160px] h-auto drop-shadow-md"
+                  />
+                </div>
               </div>
             </div>
 
@@ -237,10 +255,10 @@ export default function ArchetypeDetail() {
                   href={`/archetypes/${other.id}`}
                   className="group bg-white border border-slate-200 rounded-xl p-4 hover:border-slate-300 hover:shadow-md transition-all text-center"
                 >
-                  <img 
-                    src={archetypeImages[other.id]} 
+                  <img
+                    src={proliImages[other.id]}
                     alt={other.name}
-                    className="w-12 h-12 mx-auto mb-2 rounded-lg object-cover group-hover:scale-110 transition-transform"
+                    className="w-12 h-12 mx-auto mb-2 object-contain drop-shadow-sm group-hover:scale-110 transition-transform"
                   />
                   <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900">
                     {other.name.replace('The ', '')}

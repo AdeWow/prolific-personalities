@@ -1,10 +1,13 @@
-import anxiousPerfectionistImage from "@assets/7d8c5462-febe-45f3-b3bd-207fb697cc04_1762297180709.png";
-import chaoticCreativeImage from "@assets/763894fc-7172-473f-b45a-30417b2f157a_1762297193215.png";
-import strategicPlannerImage from "@assets/ae5e43be-19bd-4df2-b053-48732a922fc6_1762297362107.png";
-import structuredAchieverImage from "@assets/e3fac029-7f4f-4a16-a237-d141ea58b5d6_1762297404337.png";
-import flexibleImproviserImage from "@assets/84c5e71b-0e9d-4158-b8a2-ea2b5f1f0abd_1762297453206.png";
-import noveltySeekerImage from "@assets/56861868-15df-4eb4-a0ae-f1629437f82e_1762297512686.png";
-import adaptiveGeneralistImage from "@assets/d9e893a7-c0ec-4b6f-92b2-d9222bdeafbc_1765447835628.png";
+/* Proli mascot images — served from /public/images/proli/ */
+const proliImages: Record<string, string> = {
+  'structured-achiever': '/images/proli/structured-acheiver.png', // Note: filename typo kept
+  'chaotic-creative': '/images/proli/chaotic-creative.png',
+  'anxious-perfectionist': '/images/proli/anxious-perfectionist.png',
+  'novelty-seeker': '/images/proli/novelty-seeker.png',
+  'strategic-planner': '/images/proli/strategic-planner.png',
+  'flexible-improviser': '/images/proli/flexible-improviser.png',
+  'adaptive-generalist': '/images/proli/adaptive-generalist.png',
+};
 
 export interface Archetype {
   id: string;
@@ -55,7 +58,7 @@ export const archetypes: Archetype[] = [
     title: 'Structured Achiever',
     tagline: 'You thrive on systems, accountability, and clear goals. Structure is your superpower.',
     icon: '',
-    image: structuredAchieverImage,
+    image: proliImages['structured-achiever'],
     color: 'blue',
     gradientFrom: 'from-blue-400',
     gradientTo: 'to-indigo-400',
@@ -113,7 +116,7 @@ export const archetypes: Archetype[] = [
     title: 'Chaotic Creative',
     tagline: 'Your mind is a fireworks show of ideas. The challenge? Turning sparks into finished projects.',
     icon: '',
-    image: chaoticCreativeImage,
+    image: proliImages['chaotic-creative'],
     color: 'purple',
     gradientFrom: 'from-purple-400',
     gradientTo: 'to-violet-400',
@@ -171,7 +174,7 @@ export const archetypes: Archetype[] = [
     title: 'Anxious Perfectionist',
     tagline: 'High standards drive your excellence—but perfectionism is sabotaging your progress.',
     icon: '',
-    image: anxiousPerfectionistImage,
+    image: proliImages['anxious-perfectionist'],
     color: 'teal',
     gradientFrom: 'from-teal-400',
     gradientTo: 'to-cyan-400',
@@ -229,7 +232,7 @@ export const archetypes: Archetype[] = [
     title: 'Novelty Seeker',
     tagline: 'You\'re powered by excitement and new challenges. The routine? That\'s your kryptonite.',
     icon: '',
-    image: noveltySeekerImage,
+    image: proliImages['novelty-seeker'],
     color: 'red',
     gradientFrom: 'from-red-400',
     gradientTo: 'to-pink-400',
@@ -287,7 +290,7 @@ export const archetypes: Archetype[] = [
     title: 'Strategic Planner',
     tagline: 'You see the big picture and build the roadmap. Execution is your superpower—when the vision is clear.',
     icon: '🗺️',
-    image: strategicPlannerImage,
+    image: proliImages['strategic-planner'],
     color: 'indigo',
     gradientFrom: 'from-indigo-400',
     gradientTo: 'to-blue-400',
@@ -345,7 +348,7 @@ export const archetypes: Archetype[] = [
     title: 'Flexible Improviser',
     tagline: 'You ride the waves of change with ease. Planning is optional; action is your default.',
     icon: '🌊',
-    image: flexibleImproviserImage,
+    image: proliImages['flexible-improviser'],
     color: 'green',
     gradientFrom: 'from-green-400',
     gradientTo: 'to-emerald-400',
@@ -403,7 +406,7 @@ export const archetypes: Archetype[] = [
     title: 'Adaptive Generalist',
     tagline: 'You don\'t have one productivity style—you have many. Your superpower is matching approach to context.',
     icon: '',
-    image: adaptiveGeneralistImage,
+    image: proliImages['adaptive-generalist'],
     color: 'indigo',
     gradientFrom: 'from-indigo-400',
     gradientTo: 'to-purple-400',
