@@ -44,6 +44,7 @@ import {
   RetakeSection,
   MobileStickyCTA,
 } from "@/components/results";
+import { ShareCard } from "@/components/share-card";
 
 export default function Results() {
   const params = useParams();
@@ -61,6 +62,9 @@ export default function Results() {
   const [promoCodeMessage, setPromoCodeMessage] = useState("");
   const [appWaitlistEmail, setAppWaitlistEmail] = useState("");
   const [appWaitlistJoined, setAppWaitlistJoined] = useState(false);
+  const [isGeneratingCard, setIsGeneratingCard] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const shareCardRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const { session } = useAuthContext();
@@ -414,6 +418,54 @@ export default function Results() {
     window.open(url, '_blank');
   };
 
+  const handleDownloadCard = async () => {
+    if (!archetype || isGeneratingCard) return;
+    setIsGeneratingCard(true);
+    trackEvent('share_card_download', 'Social', archetype.name, undefined, {
+      archetype: archetype.id,
+    });
+    try {
+      // Wait for the hidden card to render + image to load
+      await new Promise((r) => setTimeout(r, 600));
+      if (!shareCardRef.current) return;
+      const html2canvas = (await import("html2canvas")).default;
+      const canvas = await html2canvas(shareCardRef.current, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: null,
+      });
+      const link = document.createElement("a");
+      link.download = `my-archetype-${archetype.id}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } catch (err) {
+      console.error("Card generation failed:", err);
+      toast({ title: "Download failed", description: "Please try again." });
+    } finally {
+      setIsGeneratingCard(false);
+    }
+  };
+
+  const handleShareCopyLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    setLinkCopied(true);
+    trackEvent('share_link_copied', 'Social', archetype?.name || 'Unknown', undefined, {
+      source: 'share_section',
+    });
+    setTimeout(() => setLinkCopied(false), 2000);
+  };
+
+  const handleShareOnX = () => {
+    if (!archetype) return;
+    const text = `I'm ${archetype.name}! Discover your productivity archetype at prolificpersonalities.com/quiz`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    trackEvent('share_twitter', 'Social', archetype.name, undefined, {
+      source: 'share_section',
+    });
+    window.open(url, '_blank', 'width=550,height=420');
+  };
+
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email && sessionId) {
@@ -671,6 +723,69 @@ export default function Results() {
         <FadeIn>
           <FastestWinCard archetype={archetype} />
         </FadeIn>
+
+        {/* C½) Share Your Result */}
+        <FadeIn>
+          <section className="py-10">
+            <div className="max-w-xl mx-auto px-4 text-center">
+              <h3 className="text-lg font-semibold text-foreground mb-1">Share Your Result</h3>
+              <p className="text-sm text-muted-foreground mb-5">
+                Let others discover their productivity archetype too.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                  onClick={handleDownloadCard}
+                  disabled={isGeneratingCard}
+                >
+                  <Download className="w-4 h-4" />
+                  {isGeneratingCard ? "Generating\u2026" : "Download Image"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                  onClick={handleShareCopyLink}
+                >
+                  <Copy className="w-4 h-4" />
+                  {linkCopied ? "Copied!" : "Copy Link"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                  onClick={handleShareOnX}
+                >
+                  <FaTwitter className="w-4 h-4" />
+                  Share on X
+                </Button>
+              </div>
+            </div>
+          </section>
+        </FadeIn>
+
+        {/* Hidden offscreen container for html2canvas capture */}
+        {isGeneratingCard && archetype && (
+          <div
+            aria-hidden="true"
+            style={{
+              position: "fixed",
+              left: "-9999px",
+              top: 0,
+              zIndex: -1,
+              pointerEvents: "none",
+            }}
+          >
+            <ShareCard
+              ref={shareCardRef}
+              archetypeId={archetype.id}
+              archetypeName={archetype.name}
+              variant="portrait"
+            />
+          </div>
+        )}
 
         {/* D) Paid Upsell Section or Access Button */}
         <FadeIn>
