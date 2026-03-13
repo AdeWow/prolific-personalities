@@ -2,9 +2,9 @@
  * Proli mascot hero composition — main Proli centered with 7 archetype
  * variants arranged in a loose arc around it. Used in the homepage hero.
  *
- * Each variant uses a wrapper div for position + rotation, a middle div
- * for hover scale, and a nested img for the optional float animation.
- * This avoids the CSS animation overwriting the inline `rotate()` transform.
+ * Each variant uses a wrapper div for position + rotation, a float div
+ * (animate-float-*) that moves img + label together, and a nested hover
+ * scale div. This keeps rotate, float, and scale on separate elements.
  *
  * Features:
  * - Archetype labels below each variant (always visible)
@@ -129,31 +129,30 @@ export function ProliHeroComposition() {
               onMouseEnter={() => setHoveredIdx(i)}
               onMouseLeave={() => setHoveredIdx(null)}
             >
-              {/* Inner wrapper for hover scale (separate from rotate) */}
-              <div className={`transition-transform duration-300 ${isHovered ? "scale-110" : ""}`}>
-                <img
-                  src={v.src}
-                  alt={v.alt}
-                  loading="eager"
-                  draggable={false}
-                  className={`
-                    w-[70px] lg:w-[85px] h-auto select-none
-                    opacity-85 drop-shadow-sm
-                    ${pos.floatClass || ""}
-                  `}
-                />
-                {/* Archetype label — counter-rotated to stay horizontal */}
-                <span
-                  className={`
-                    block text-center text-[10px] lg:text-[12px] font-medium
-                    mt-0.5 whitespace-nowrap select-none pointer-events-none
-                    transition-colors duration-300
-                    ${isHovered ? "text-foreground" : "text-muted-foreground/60"}
-                  `}
-                  style={{ transform: `rotate(${counterRotate}deg)` }}
-                >
-                  {v.label}
-                </span>
+              {/* Float wrapper — moves img + label together */}
+              <div className={pos.floatClass || ""}>
+                {/* Hover scale wrapper (separate from float translateY) */}
+                <div className={`transition-transform duration-300 ${isHovered ? "scale-110" : ""}`}>
+                  <img
+                    src={v.src}
+                    alt={v.alt}
+                    loading="eager"
+                    draggable={false}
+                    className="w-[70px] lg:w-[85px] h-auto select-none opacity-85 drop-shadow-sm"
+                  />
+                  {/* Archetype label — counter-rotated to stay horizontal */}
+                  <span
+                    className={`
+                      block text-center text-[10px] lg:text-[12px] font-medium
+                      -mt-0.5 whitespace-nowrap select-none pointer-events-none
+                      transition-colors duration-300
+                      ${isHovered ? "text-foreground" : "text-muted-foreground/60"}
+                    `}
+                    style={{ transform: `rotate(${counterRotate}deg)` }}
+                  >
+                    {v.label}
+                  </span>
+                </div>
               </div>
             </div>
           );
@@ -165,7 +164,7 @@ export function ProliHeroComposition() {
           alt="Proli, the Prolific Personalities mascot"
           loading="eager"
           draggable={false}
-          className="absolute w-[210px] lg:w-[260px] h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 select-none drop-shadow-lg transition-transform duration-500 group-hover:scale-[1.02]"
+          className="absolute w-[170px] lg:w-[210px] h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 select-none drop-shadow-lg transition-transform duration-500 group-hover:scale-[1.02]"
         />
       </div>
 
@@ -191,24 +190,23 @@ export function ProliHeroComposition() {
                 transform: `rotate(${pos.rotate})`,
               }}
             >
-              <img
-                src={v.src}
-                alt={v.alt}
-                loading="eager"
-                draggable={false}
-                className={`
-                  w-[55px] h-auto select-none
-                  opacity-85 drop-shadow-sm
-                  ${pos.floatClass || ""}
-                `}
-              />
-              {/* Mobile label — smaller font, no hover effects */}
-              <span
-                className="block text-center text-[9px] font-medium mt-0 whitespace-nowrap select-none pointer-events-none text-muted-foreground/60"
-                style={{ transform: `rotate(${counterRotate}deg)` }}
-              >
-                {v.label}
-              </span>
+              {/* Float wrapper — moves img + label together */}
+              <div className={pos.floatClass || ""}>
+                <img
+                  src={v.src}
+                  alt={v.alt}
+                  loading="eager"
+                  draggable={false}
+                  className="w-[55px] h-auto select-none opacity-85 drop-shadow-sm"
+                />
+                {/* Mobile label — smaller font, no hover effects */}
+                <span
+                  className="block text-center text-[9px] font-medium -mt-0.5 whitespace-nowrap select-none pointer-events-none text-muted-foreground/60"
+                  style={{ transform: `rotate(${counterRotate}deg)` }}
+                >
+                  {v.label}
+                </span>
+              </div>
             </div>
           );
         })}
@@ -219,7 +217,7 @@ export function ProliHeroComposition() {
           alt="Proli, the Prolific Personalities mascot"
           loading="eager"
           draggable={false}
-          className="absolute w-[130px] h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 select-none drop-shadow-lg"
+          className="absolute w-[110px] h-auto left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 select-none drop-shadow-lg"
         />
       </div>
     </>
