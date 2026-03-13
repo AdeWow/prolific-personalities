@@ -169,6 +169,27 @@ export default function Home() {
           </div>
         </FadeIn>
 
+        {/* Mid-page CTA */}
+        <FadeIn as="section" className="py-20">
+          <div className="max-w-2xl mx-auto px-6 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
+              Ready to find out?
+            </h2>
+            <p className="text-muted-foreground text-base mb-8">
+              It takes 5 minutes. No email required to start.
+            </p>
+            <Link href="/quiz">
+              <Button
+                className="gradient-primary text-white px-8 py-6 rounded-xl font-semibold text-lg w-full sm:w-auto"
+                onClick={() => trackEvent('mid_page_cta_click', 'Conversion', 'Take the Quiz')}
+              >
+                Take the Free Quiz
+                <ChevronRight className="ml-2 h-5 w-5" aria-hidden="true" />
+              </Button>
+            </Link>
+          </div>
+        </FadeIn>
+
         {/* Feature Cards */}
         <FadeIn as="section" className="py-24">
           <div className="max-w-5xl mx-auto px-6">
