@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { playbookContentMap } from "@shared/playbookContent";
 import { trackEvent } from "@/lib/analytics";
+import { SEOHead } from "@/components/seo-head";
 import { ProgressMilestones } from "@/components/playbook/ProgressMilestones";
 import { ActionPlanGame } from "@/components/playbook/ActionPlanGame";
 import { ToolsFocused } from "@/components/playbook/ToolsFocused";
@@ -530,6 +531,11 @@ export default function Playbook() {
   // User has access - render the actual playbook
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
+      <SEOHead
+        title={`${archetype.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Playbook`}
+        description="Your premium productivity playbook"
+        noindex
+      />
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

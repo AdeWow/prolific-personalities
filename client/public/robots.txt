@@ -1,26 +1,15 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://prolificpersonalities.com/sitemap.xml
-
-# Disallow admin/dev pages
-Disallow: /dev-tools
+Disallow: /dashboard
 Disallow: /api/
-Disallow: /admin/
-
-# Disallow user-specific results pages (duplicate content, no index value)
-Disallow: /results/
-
-# Allow search engines to index all main content
-Allow: /quiz
-Allow: /archetypes
-Allow: /blog
-Allow: /pricing
-Allow: /about
-Allow: /faq
-Allow: /science
-Allow: /resources
-Allow: /founder
-Allow: /refund-policy
-Allow: /coach
-Allow: /dashboard
+Disallow: /login
+Disallow: /login/
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /admin
+Disallow: /playbook/
+Disallow: /results
+Disallow: /payment-success
+Disallow: /payment-cancelled
+Disallow: /purchase-success
+Disallow: /auth/

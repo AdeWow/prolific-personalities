@@ -1,9 +1,10 @@
+import { useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PDFPreview } from "@/components/pdf-preview";
 import { FadeIn } from "@/components/fade-in";
-import { Download, Lock, ExternalLink } from "lucide-react";
+import { Download, Lock, Loader2 } from "lucide-react";
 import { Link } from "wouter";
 import { getLibrary, getPdfUrl, type PdfItem, type PdfCategory } from "@shared/premiumLibrary";
 import { trackEvent } from "@/lib/analytics";
@@ -26,8 +27,72 @@ interface PremiumLibraryProps {
   hasPremiumAccess: boolean;
 }
 
-function PdfCard({ item, hasPremiumAccess, delay }: { item: PdfItem; hasPremiumAccess: boolean; delay: number }) {
-  const url = getPdfUrl(item.filename);
+/**
+ * Fetch a presigned URL from the server, then open it in a new tab.
+ * Returns false if the request fails.
+ */
+async function fetchSignedUrlAndOpen(
+  apiUrl: string,
+  authToken: string | undefined,
+  filename: string,
+): Promise<boolean> {
+  try {
+    const headers: Record<string, string> = {};
+    if (authToken) {
+      headers["Authorization"] = `Bearer ${authToken}`;
+    }
+    const res = await fetch(apiUrl, { headers });
+    if (!res.ok) return false;
+    const { url } = await res.json();
+    if (!url) return false;
+
+    // Open in a new tab — the presigned URL is short-lived
+    window.open(url, "_blank", "noopener,noreferrer");
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function useSecureDownload(authToken?: string) {
+  const [loading, setLoading] = useState<string | null>(null);
+
+  const download = useCallback(
+    async (item: PdfItem) => {
+      const apiUrl = getPdfUrl(item.filename);
+      setLoading(item.filename);
+      try {
+        const ok = await fetchSignedUrlAndOpen(apiUrl, authToken, item.filename);
+        if (!ok) {
+          console.error("Failed to get signed URL for", item.filename);
+        }
+      } finally {
+        setLoading(null);
+      }
+      trackEvent("pdf_downloaded", "Engagement", item.title, undefined, {
+        category: item.category,
+        filename: item.filename,
+      });
+    },
+    [authToken],
+  );
+
+  return { download, loading };
+}
+
+function PdfCard({
+  item,
+  hasPremiumAccess,
+  delay,
+  onDownload,
+  isDownloading,
+}: {
+  item: PdfItem;
+  hasPremiumAccess: boolean;
+  delay: number;
+  onDownload: (item: PdfItem) => void;
+  isDownloading: boolean;
+}) {
   const colorClass = categoryColors[item.category] || "bg-gray-100 text-gray-700 border-gray-200";
 
   return (
@@ -44,20 +109,18 @@ function PdfCard({ item, hasPremiumAccess, delay }: { item: PdfItem; hasPremiumA
             {item.description}
           </p>
           {hasPremiumAccess ? (
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-teal-700 hover:text-teal-900 transition-colors mt-auto"
-              onClick={() => trackEvent('pdf_downloaded', 'Engagement', item.title, undefined, {
-                category: item.category,
-                filename: item.filename,
-              })}
+            <button
+              onClick={() => onDownload(item)}
+              disabled={isDownloading}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-teal-700 hover:text-teal-900 transition-colors mt-auto disabled:opacity-50"
             >
-              <Download className="h-3.5 w-3.5" />
-              Download PDF
-              <ExternalLink className="h-3 w-3 opacity-50" />
-            </a>
+              {isDownloading ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Download className="h-3.5 w-3.5" />
+              )}
+              {isDownloading ? "Generating link..." : "Download PDF"}
+            </button>
           ) : (
             <Link href="/pricing">
               <Button
@@ -77,9 +140,19 @@ function PdfCard({ item, hasPremiumAccess, delay }: { item: PdfItem; hasPremiumA
   );
 }
 
-function TemplateCard({ item, hasPremiumAccess, delay }: { item: PdfItem; hasPremiumAccess: boolean; delay: number }) {
-  const url = getPdfUrl(item.filename);
-
+function TemplateCard({
+  item,
+  hasPremiumAccess,
+  delay,
+  onDownload,
+  isDownloading,
+}: {
+  item: PdfItem;
+  hasPremiumAccess: boolean;
+  delay: number;
+  onDownload: (item: PdfItem) => void;
+  isDownloading: boolean;
+}) {
   return (
     <FadeIn delay={delay} distance={12}>
       <Card className="hover:shadow-md transition-shadow">
@@ -89,19 +162,18 @@ function TemplateCard({ item, hasPremiumAccess, delay }: { item: PdfItem; hasPre
             {item.description}
           </p>
           {hasPremiumAccess ? (
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-[11px] font-medium text-teal-700 hover:text-teal-900 transition-colors"
-              onClick={() => trackEvent('pdf_downloaded', 'Engagement', item.title, undefined, {
-                category: 'Templates',
-                filename: item.filename,
-              })}
+            <button
+              onClick={() => onDownload(item)}
+              disabled={isDownloading}
+              className="inline-flex items-center gap-1.5 text-[11px] font-medium text-teal-700 hover:text-teal-900 transition-colors disabled:opacity-50"
             >
-              <Download className="h-3 w-3" />
-              Download
-            </a>
+              {isDownloading ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <Download className="h-3 w-3" />
+              )}
+              {isDownloading ? "Loading..." : "Download"}
+            </button>
           ) : (
             <Link href="/pricing">
               <Button variant="outline" size="sm" className="w-full text-[11px] gap-1 h-7">
@@ -118,6 +190,7 @@ function TemplateCard({ item, hasPremiumAccess, delay }: { item: PdfItem; hasPre
 
 export function PremiumLibrary({ archetype, playbookTitle, authToken, hasPremiumAccess }: PremiumLibraryProps) {
   const library = getLibrary(archetype);
+  const { download, loading } = useSecureDownload(authToken);
 
   if (!library) {
     return (
@@ -167,6 +240,8 @@ export function PremiumLibrary({ archetype, playbookTitle, authToken, hasPremium
               item={item}
               hasPremiumAccess={hasPremiumAccess}
               delay={Math.min(i * 50, 250)}
+              onDownload={download}
+              isDownloading={loading === item.filename}
             />
           ))}
         </div>
@@ -188,6 +263,8 @@ export function PremiumLibrary({ archetype, playbookTitle, authToken, hasPremium
                 item={item}
                 hasPremiumAccess={hasPremiumAccess}
                 delay={Math.min(i * 50, 200)}
+                onDownload={download}
+                isDownloading={loading === item.filename}
               />
             ))}
           </div>

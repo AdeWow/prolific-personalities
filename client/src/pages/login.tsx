@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { Loader2, Mail, ArrowLeft } from "lucide-react";
 import { SiGoogle } from "react-icons/si";
+import { SEOHead } from "@/components/seo-head";
 import logoImage from "@assets/Logo5Nobackground1_1762920314202.png";
 
 export default function Login() {
@@ -144,6 +145,11 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-4">
+      <SEOHead
+        title="Log In"
+        description="Sign in to access your dashboard and results"
+        noindex
+      />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-4">
           <Link href="/" className="flex justify-center">

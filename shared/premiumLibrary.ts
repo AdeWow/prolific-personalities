@@ -1,9 +1,8 @@
 /**
  * Premium PDF Library catalog
- * All files hosted on Cloudflare R2 at R2_BASE
+ * Files hosted on Cloudflare R2 — accessed via server-side presigned URLs only.
+ * Never expose the direct R2 URL to the client.
  */
-
-export const R2_BASE = "https://files.prolificpersonalities.com";
 
 export type PdfCategory =
   | "Framework"
@@ -179,7 +178,7 @@ export function getLibrary(archetypeSlug: string): ArchetypeLibrary | undefined 
   return libraries[archetypeSlug];
 }
 
-/** Build the full download URL for a PDF item */
+/** Build the API URL to request a signed download link for a PDF item */
 export function getPdfUrl(filename: string): string {
-  return `${R2_BASE}/${filename}`;
+  return `/api/secure-pdf/${encodeURIComponent(filename)}`;
 }

@@ -16,6 +16,8 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { getPremiumAssetForArchetype } from "./premiumAssets";
+import { getPresignedR2Url, isR2Configured } from "./r2";
+import { getLibrary } from "@shared/premiumLibrary";
 import { Resend } from "resend";
 import {
   generateResultsEmail,
@@ -2738,6 +2740,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   );
 
+  // ─── Secure PDF signed URL endpoint (R2 presigned URLs) ─────────
+  // Returns a short-lived presigned URL for a premium library PDF.
+  // Client must never receive or construct the direct R2 URL.
+  app.get(
+    "/api/secure-pdf/:filename",
+    supabaseAuth,
+    async (req: any, res) => {
+      try {
+        if (!isR2Configured()) {
+          res.status(503).json({ message: "File storage not configured" });
+          return;
+        }
+
+        const supabaseUser = req.supabaseUser;
+        const { filename } = req.params;
+
+        // Validate filename is a real premium library PDF (prevent arbitrary key access)
+        const decodedFilename = decodeURIComponent(filename);
+        let isValidFile = false;
+        const allArchetypes = [
+          "adaptive-generalist", "anxious-perfectionist", "chaotic-creative",
+          "flexible-improviser", "novelty-seeker", "structured-achiever", "strategic-planner",
+        ];
+        for (const slug of allArchetypes) {
+          const lib = getLibrary(slug);
+          if (!lib) continue;
+          const allFiles = [...lib.deepDives, ...lib.templates];
+          if (allFiles.some((item) => item.filename === decodedFilename)) {
+            isValidFile = true;
+            break;
+          }
+        }
+        if (!isValidFile) {
+          res.status(404).json({ message: "File not found" });
+          return;
+        }
+
+        // Verify the user has a completed purchase (pay once, lifetime access)
+        const localUser = await storage.upsertUser({
+          id: supabaseUser.id,
+          email: supabaseUser.email || null,
+          firstName: supabaseUser.user_metadata?.full_name?.split(" ")[0] || null,
+          lastName: supabaseUser.user_metadata?.full_name?.split(" ").slice(1).join(" ") || null,
+          profileImageUrl: supabaseUser.user_metadata?.avatar_url || null,
+        });
+        const hasAccess = await storage.hasAnyPremiumAccess(localUser.id);
+        if (!hasAccess) {
+          res.status(403).json({ message: "Purchase required to access this file" });
+          return;
+        }
+
+        // Generate a presigned URL (10-minute expiry)
+        const signedUrl = await getPresignedR2Url(decodedFilename, 600);
+        res.json({ url: signedUrl });
+      } catch (error) {
+        console.error("Error generating signed PDF URL:", error);
+        res.status(500).json({ message: "Failed to generate download link" });
+      }
+    },
+  );
+
   // Process abandoned cart emails (call this from a cron job or manually)
   app.post("/api/process-abandoned-carts", async (req, res) => {
     try {
@@ -3842,15 +3905,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // robots.txt for SEO
-  app.get("/robots.txt", (req, res) => {
-    const baseUrl = getPublicBaseUrl();
-
+  // robots.txt for SEO (single authoritative handler — no Sitemap line)
+  app.get("/robots.txt", (_req, res) => {
     const robotsTxt = `User-agent: *
 Allow: /
 Disallow: /dashboard
 Disallow: /api/
 Disallow: /login
+Disallow: /login/
 Disallow: /signup
 Disallow: /forgot-password
 Disallow: /admin
@@ -3859,8 +3921,7 @@ Disallow: /results
 Disallow: /payment-success
 Disallow: /payment-cancelled
 Disallow: /purchase-success
-
-Sitemap: ${baseUrl}/sitemap.xml
+Disallow: /auth/
 `;
 
     res.header("Content-Type", "text/plain");

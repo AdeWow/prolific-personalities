@@ -196,12 +196,7 @@ export async function resolvePageMeta(
 // ─── Sitemap ────────────────────────────────────────────────────────
 
 export function registerSeoRoutes(app: Express) {
-  // robots.txt
-  app.get("/robots.txt", (_req: Request, res: Response) => {
-    res.type("text/plain").send(
-      `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`,
-    );
-  });
+  // robots.txt is handled in routes.ts — do not register a handler here.
 
   // sitemap.xml
   app.get("/sitemap.xml", async (_req: Request, res: Response) => {

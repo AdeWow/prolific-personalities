@@ -45,6 +45,7 @@ export default function PaymentSuccess() {
       <SEOHead
         title="Payment Successful"
         description="Your premium report purchase was successful"
+        noindex
       />
       <Header />
 
