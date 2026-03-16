@@ -198,7 +198,7 @@ export async function resolvePageMeta(
 export function registerSeoRoutes(app: Express) {
   // robots.txt is handled in routes.ts — do not register a handler here.
 
-  // sitemap.xml
+  // sitemap.xml (single authoritative handler — routes.ts defers here)
   app.get("/sitemap.xml", async (_req: Request, res: Response) => {
     try {
       const urls: Array<{
@@ -208,39 +208,41 @@ export function registerSeoRoutes(app: Express) {
         priority: number;
       }> = [];
 
-      // Static pages
-      urls.push({
-        loc: SITE_URL,
-        changefreq: "weekly",
-        priority: 1.0,
-      });
-      urls.push({
-        loc: `${SITE_URL}/quiz`,
-        changefreq: "monthly",
-        priority: 0.9,
-      });
-      urls.push({
-        loc: `${SITE_URL}/blog`,
-        changefreq: "weekly",
-        priority: 0.8,
-      });
-      urls.push({
-        loc: `${SITE_URL}/science`,
-        changefreq: "monthly",
-        priority: 0.6,
-      });
-      urls.push({
-        loc: `${SITE_URL}/archetypes`,
-        changefreq: "monthly",
-        priority: 0.7,
-      });
+      // Static public pages
+      const staticPages: Array<{
+        path: string;
+        changefreq: string;
+        priority: number;
+      }> = [
+        { path: "/", changefreq: "weekly", priority: 1.0 },
+        { path: "/quiz", changefreq: "monthly", priority: 0.9 },
+        { path: "/blog", changefreq: "weekly", priority: 0.8 },
+        { path: "/archetypes", changefreq: "monthly", priority: 0.8 },
+        { path: "/pricing", changefreq: "monthly", priority: 0.7 },
+        { path: "/the-research", changefreq: "monthly", priority: 0.7 },
+        { path: "/science", changefreq: "monthly", priority: 0.6 },
+        { path: "/about", changefreq: "monthly", priority: 0.6 },
+        { path: "/faq", changefreq: "monthly", priority: 0.6 },
+        { path: "/founder", changefreq: "yearly", priority: 0.5 },
+        { path: "/refund-policy", changefreq: "yearly", priority: 0.3 },
+        { path: "/privacy", changefreq: "yearly", priority: 0.3 },
+        { path: "/terms", changefreq: "yearly", priority: 0.3 },
+      ];
 
-      // Archetype pages
+      for (const page of staticPages) {
+        urls.push({
+          loc: `${SITE_URL}${page.path}`,
+          changefreq: page.changefreq,
+          priority: page.priority,
+        });
+      }
+
+      // Archetype pages (dynamic from archetypeData import)
       for (const slug of Object.keys(archetypeData)) {
         urls.push({
           loc: `${SITE_URL}/archetypes/${slug}`,
           changefreq: "monthly",
-          priority: 0.6,
+          priority: 0.7,
         });
       }
 

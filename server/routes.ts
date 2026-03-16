@@ -463,6 +463,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     legacyHeaders: false,
   });
 
+  // Session-access limiter - 10 requests per minute per IP (unauthenticated endpoint)
+  const sessionAccessLimiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 10,
+    message: { message: "Too many access checks, please try again later" },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
   // Apply general rate limiting to all API routes
   app.use("/api/", apiLimiter);
 
@@ -2515,7 +2524,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   );
 
   // Check if sessionId has premium access (no auth required - for prepaid anonymous users)
-  app.get("/api/playbook/:archetype/session-access", async (req, res) => {
+  app.get("/api/playbook/:archetype/session-access", sessionAccessLimiter, async (req, res) => {
     try {
       const { archetype } = req.params;
       const sessionId = req.query.sessionId as string | undefined;
@@ -3928,99 +3937,7 @@ Disallow: /auth/
     res.send(robotsTxt);
   });
 
-  // XML Sitemap for SEO
-  app.get("/sitemap.xml", async (req, res) => {
-    const baseUrl = getPublicBaseUrl();
-
-    const staticPages = [
-      { url: "/", priority: "1.0", changefreq: "weekly" },
-      { url: "/quiz", priority: "0.9", changefreq: "monthly" },
-      { url: "/blog", priority: "0.8", changefreq: "weekly" },
-      { url: "/archetypes", priority: "0.8", changefreq: "monthly" },
-      { url: "/pricing", priority: "0.6", changefreq: "monthly" },
-      { url: "/the-research", priority: "0.7", changefreq: "monthly" },
-      { url: "/resources", priority: "0.7", changefreq: "monthly" },
-      { url: "/about", priority: "0.6", changefreq: "monthly" },
-      { url: "/faq", priority: "0.6", changefreq: "monthly" },
-      { url: "/founder", priority: "0.5", changefreq: "yearly" },
-      { url: "/refund-policy", priority: "0.3", changefreq: "yearly" },
-      { url: "/privacy", priority: "0.3", changefreq: "yearly" },
-      { url: "/terms", priority: "0.3", changefreq: "yearly" },
-    ];
-
-    const archetypes = [
-      "chaotic-creative",
-      "anxious-perfectionist",
-      "structured-achiever",
-      "novelty-seeker",
-      "strategic-planner",
-      "flexible-improviser",
-    ];
-
-    const blogSlugs = [
-      "dog-applied-head-of-growth-productivity-strategy",
-      "confessions-imperfect-founder-procrastination",
-      "time-blocking-less-productive-some-brains",
-      "constant-stimulation-adhd-or-productivity-style",
-      "cant-stick-to-routine-what-to-do-instead",
-      "start-everything-finish-nothing-psychology",
-      "cant-focus-anymore-brain-wont-cooperate",
-      "flexible-improvisers-energy-wont-follow-schedule",
-      "strategic-planners-brilliant-plans-never-reality",
-      "novelty-seekers-boredom-kills-projects",
-      "structured-achiever-hidden-trap",
-      "anxious-perfectionist-paradox",
-      "chaotic-creatives-brain-not-broken",
-      "choose-productivity-tool-5-minutes",
-      "discipline-advice-destroys-productivity",
-      "why-every-productivity-system-has-failed-you",
-      "productivity-archetype-changes-fluid-styles",
-      "digital-minimalism-challenge",
-      "when-productivity-hurts",
-      "6-productivity-archetypes-explained",
-    ];
-
-    const today = new Date().toISOString().split("T")[0];
-
-    let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-`;
-
-    for (const page of staticPages) {
-      sitemap += `  <url>
-    <loc>${baseUrl}${page.url}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
-  </url>
-`;
-    }
-
-    for (const archetype of archetypes) {
-      sitemap += `  <url>
-    <loc>${baseUrl}/archetypes/${archetype}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-`;
-    }
-
-    for (const slug of blogSlugs) {
-      sitemap += `  <url>
-    <loc>${baseUrl}/blog/${slug}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-`;
-    }
-
-    sitemap += `</urlset>`;
-
-    res.header("Content-Type", "application/xml");
-    res.send(sitemap);
-  });
+  // sitemap.xml is handled in seo.ts — do not register a handler here.
 
   // ============================================
   // MOBILE AUTHENTICATION ENDPOINTS
