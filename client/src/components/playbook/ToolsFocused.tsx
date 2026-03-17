@@ -83,7 +83,7 @@ export function ToolsFocused({ recommendedTools, toolsData, onUpdateTool, isPend
       <a
         href={url}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener noreferrer sponsored"
         className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 font-medium transition-colors"
         onClick={(e) => e.stopPropagation()}
       >

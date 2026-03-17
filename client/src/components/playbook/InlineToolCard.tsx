@@ -33,7 +33,7 @@ export function InlineToolCard({ toolId }: InlineToolCardProps) {
         <a
           href={info.url}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener noreferrer sponsored"
           className="flex items-center gap-1 text-xs text-primary-accessible hover:text-primary font-medium flex-shrink-0 mt-1 transition-colors"
         >
           Try this

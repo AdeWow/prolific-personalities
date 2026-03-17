@@ -154,7 +154,7 @@ export function ToolCard({ tool, archetypeName }: ToolCardProps) {
           <a
             href={tool.affiliateLink}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer sponsored"
             className="block"
             onClick={() => trackEvent('tool_clicked', 'Engagement', tool.name, tool.fitScore)}
           >

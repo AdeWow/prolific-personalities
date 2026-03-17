@@ -8,8 +8,8 @@ export interface ToolData {
 }
 
 export const toolUrls: Record<string, string> = {
-  "Notion": "https://www.notion.com",
-  "Todoist": "https://todoist.com",
+  "Notion": "https://affiliate.notion.so/ee1hrvauvp2o",
+  "Todoist": "https://get.todoist.io/dbakhgy6kkbb",
   "Trello": "https://trello.com",
   "Forest App": "https://www.forestapp.cc",
   "Freedom": "https://freedom.to",
@@ -32,7 +32,7 @@ export const toolUrls: Record<string, string> = {
 export const combinedToolUrls: Record<string, { first: { name: string; url: string }; second: { name: string; url: string } }> = {
   "Things 3 or Todoist": {
     first: { name: "Things 3", url: "https://culturedcode.com/things/" },
-    second: { name: "Todoist", url: "https://todoist.com" }
+    second: { name: "Todoist", url: "https://get.todoist.io/dbakhgy6kkbb" }
   },
   "Fantastical or Google Calendar": {
     first: { name: "Fantastical", url: "https://flexibits.com/fantastical" },
@@ -43,7 +43,7 @@ export const combinedToolUrls: Record<string, { first: { name: string; url: stri
     second: { name: "Google Keep", url: "https://keep.google.com" }
   },
   "Notion or Asana": {
-    first: { name: "Notion", url: "https://www.notion.com" },
+    first: { name: "Notion", url: "https://affiliate.notion.so/ee1hrvauvp2o" },
     second: { name: "Asana", url: "https://asana.com" }
   },
   "Obsidian or Roam": {

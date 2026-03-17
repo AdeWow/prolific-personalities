@@ -30,17 +30,17 @@ function ToolLink({ name, className = "" }: { name: string; className?: string }
         <a 
           href={combinedTool.first.url}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener noreferrer sponsored"
           className="cursor-pointer hover:text-teal-600 hover:underline transition-colors inline-flex items-center gap-1"
         >
           {combinedTool.first.name}
           <ExternalLink className="h-3 w-3 text-slate-400" />
         </a>
         {" or "}
-        <a 
+        <a
           href={combinedTool.second.url}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener noreferrer sponsored"
           className="cursor-pointer hover:text-teal-600 hover:underline transition-colors inline-flex items-center gap-1"
         >
           {combinedTool.second.name}
@@ -60,7 +60,7 @@ function ToolLink({ name, className = "" }: { name: string; className?: string }
     <a 
       href={url}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer sponsored"
       className={`cursor-pointer hover:text-teal-600 hover:underline transition-colors inline-flex items-center gap-1 ${className}`}
     >
       {name}

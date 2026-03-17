@@ -133,7 +133,7 @@ export const toolsData: Omit<InsertTool, 'id'>[] = [
     tagline: 'All-in-one workspace',
     description: 'Modular productivity platform combining notes, tasks, databases, and wikis. Highly customizable with templates for every use case.',
     logo: '/tools/notion.png',
-    website: 'https://www.notion.so',
+    website: 'https://affiliate.notion.so/ee1hrvauvp2o',
     category: 'planning',
     archetypeFit: {
       'structured-achiever': 88,
@@ -162,7 +162,7 @@ export const toolsData: Omit<InsertTool, 'id'>[] = [
       'Can become overwhelming',
       'Temptation to over-organize'
     ],
-    affiliateLink: 'https://www.notion.so/?ref=prolific',
+    affiliateLink: 'https://affiliate.notion.so/ee1hrvauvp2o',
     directLink: 'https://www.notion.so',
     tags: ['notes', 'databases', 'wiki', 'project-management'],
     bestFor: ['System builders', 'Strategic planners', 'Template lovers'],
@@ -174,7 +174,7 @@ export const toolsData: Omit<InsertTool, 'id'>[] = [
     tagline: 'Simple, powerful task management',
     description: 'Clean task manager with natural language input, recurring tasks, priorities, and productivity tracking. Works everywhere.',
     logo: '/tools/todoist.png',
-    website: 'https://todoist.com',
+    website: 'https://get.todoist.io/dbakhgy6kkbb',
     category: 'task-management',
     archetypeFit: {
       'structured-achiever': 90,
@@ -203,7 +203,7 @@ export const toolsData: Omit<InsertTool, 'id'>[] = [
       'Can get overwhelming with many tasks',
       'No built-in time blocking'
     ],
-    affiliateLink: 'https://todoist.com/?ref=prolific',
+    affiliateLink: 'https://get.todoist.io/dbakhgy6kkbb',
     directLink: 'https://todoist.com',
     tags: ['tasks', 'gtd', 'productivity', 'organization'],
     bestFor: ['Task-oriented thinkers', 'GTD practitioners', 'Momentum chasers'],

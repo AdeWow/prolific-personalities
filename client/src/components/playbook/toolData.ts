@@ -16,14 +16,14 @@ export const toolInfo: Record<string, ToolInfoEntry> = {
     name: "Todoist",
     tagline: "Smart task management for structured minds",
     why: "Perfect for breaking down projects into actionable steps with deadlines",
-    url: "https://todoist.com",
+    url: "https://get.todoist.io/dbakhgy6kkbb",
     pricing: "Freemium",
   },
   notion: {
     name: "Notion",
     tagline: "All-in-one workspace for organized thinking",
     why: "Ideal for creating interconnected systems and knowledge bases",
-    url: "https://www.notion.so",
+    url: "https://affiliate.notion.so/ee1hrvauvp2o",
     pricing: "Freemium",
   },
   "google-calendar": {
