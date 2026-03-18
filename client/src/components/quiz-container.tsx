@@ -66,7 +66,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
 
   useEffect(() => {
     if (!quizStarted) {
-      trackEvent('quiz_started', 'Quiz', 'Quiz Started', 1, { source: 'quiz_page' });
+      trackEvent('quiz_started', 'Quiz', 'Quiz Started', 1, { source: 'quiz_page', question_total: questions.length });
       trackQuizStart('quiz_page');
       setQuizStarted(true);
     }
@@ -173,6 +173,8 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
       // GA4 question-level tracking
       trackEvent('quiz_question_answered', 'Quiz', `Q${questionId}`, undefined, {
         question_id: questionId,
+        question_number: questionNumber,
+        question_total: questions.length,
         axis: question.axis,
         question_type: question.type,
         answer_value: typeof value === 'number' ? value : parseInt(value as string),
@@ -251,6 +253,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
       trackEvent('quiz_completed', 'Quiz', `Archetype: ${archetype.name}`, questions.length, {
         archetype: archetype.id,
         question_count: questions.length,
+        question_total: questions.length,
         completion_method: 'standard',
         structure_score: scores.structure ?? 0,
         motivation_score: scores.motivation ?? 0,
