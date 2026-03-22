@@ -282,6 +282,54 @@ export function registerSeoRoutes(app: Express) {
       res.status(500).type("text/plain").send("Sitemap generation failed");
     }
   });
+
+  // RSS feed for blog
+  app.get("/rss.xml", async (_req: Request, res: Response) => {
+    try {
+      const items: string[] = [];
+
+      // Fetch blog posts from Notion (non-fatal if unavailable)
+      try {
+        const { getPublishedPosts } = await import("./notion");
+        const posts = await getPublishedPosts();
+
+        for (const post of posts) {
+          if (!post.slug || !post.title) continue;
+          const pubDate = post.publishDate
+            ? new Date(post.publishDate).toUTCString()
+            : new Date().toUTCString();
+          items.push(`    <item>
+      <title>${escXml(post.title)}</title>
+      <link>${SITE_URL}/blog/${escXml(post.slug)}</link>
+      <guid isPermaLink="true">${SITE_URL}/blog/${escXml(post.slug)}</guid>
+      <description>${escXml(post.metaDescription || post.title)}</description>
+      <pubDate>${pubDate}</pubDate>${post.author ? `\n      <author>${escXml(post.author)}</author>` : ""}${post.category ? `\n      <category>${escXml(post.category)}</category>` : ""}
+    </item>`);
+        }
+      } catch {
+        // If Notion is unavailable, RSS feed still returns valid XML with no items
+      }
+
+      const lastBuildDate = new Date().toUTCString();
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>${escXml(SITE_NAME)} Blog</title>
+    <link>${SITE_URL}/blog</link>
+    <description>Research-backed productivity strategies matched to how your brain actually works.</description>
+    <language>en-us</language>
+    <lastBuildDate>${lastBuildDate}</lastBuildDate>
+    <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />
+${items.join("\n")}
+  </channel>
+</rss>`;
+
+      res.type("application/rss+xml").send(xml);
+    } catch (err) {
+      console.error("[SEO] RSS feed generation failed:", err);
+      res.status(500).type("text/plain").send("RSS feed generation failed");
+    }
+  });
 }
 
 function escXml(s: string): string {
