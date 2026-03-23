@@ -20,11 +20,8 @@ export default function PaymentSuccess() {
     if (sid) {
       setSessionId(sid);
     }
-    // Track conversion (safe to call in useEffect after window check)
-    trackEvent('purchase_completed', 'Conversion', 'Payment Success Page', undefined, {
-      product: 'premium_playbook',
-      source: 'payment_success_page',
-    });
+    // purchase_completed is now fired server-side from the Stripe webhook
+    // (server/analytics.ts) and as a client backup in results.tsx.
   }, []);
 
   const shareOnTwitter = () => {

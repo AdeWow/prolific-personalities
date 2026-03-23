@@ -43,6 +43,7 @@ import { registerChatRoutes } from "./integrations/chat";
 import OpenAI from "openai";
 import { buildSystemPrompt } from "./archetypePrompts";
 import { registerSeoRoutes } from "./seo";
+import { sendGA4PurchaseEvent } from "./analytics";
 import {
   getScheduledNewsletters,
   getNewsletterContent,
@@ -321,7 +322,18 @@ export function registerWebhookRoute(app: Express) {
                   emailError,
                 );
               }
-            } else {
+            }
+
+            // Fire server-side GA4 purchase event (non-blocking, deduped by wasAlreadyCompleted)
+            if (!wasAlreadyCompleted) {
+              sendGA4PurchaseEvent({
+                clientId: customerEmail || session.customer as string || crypto.randomUUID(),
+                transactionId: session.id,
+                amountTotalCents: session.amount_total || 0,
+                archetype: archetype || undefined,
+              });
+            }
+          } else {
               if (wasAlreadyCompleted)
                 console.log(`⏭️ Order ${orderId} already completed — skipping duplicate email to ${customerEmail}`);
               if (!resend)

@@ -90,7 +90,7 @@ export default function Results() {
         trackEvent('purchase_completed', 'Conversion', 'Payment Success', undefined, {
           product: 'premium_playbook',
           archetype: archetype?.id || 'unknown',
-          source: 'results_page',
+          source: 'client',
         });
       } else if (payment === 'cancelled') {
         toast({
