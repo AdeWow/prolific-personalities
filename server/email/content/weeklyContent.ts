@@ -78,7 +78,7 @@ export const WEEKLY_CONTENT: WeeklyEmailContent[] = [
     blogUrl: "https://prolificpersonalities.com/blog/a-dog-applied-for-my-head-of-growth-position",
     universalBody:
       `<p>Hey,</p>
-<p>His name was Biscuit. He had no relevant experience.</p>
+<p>His name was Benny. He had no relevant experience.</p>
 <p>He also had a clearer daily structure than most of the humans I spoke to \u2014 and zero guilt about rest.</p>
 <p>This one is lighter. But it makes a point I keep coming back to about how we think about rest, consistency, and what \u201cproductive\u201d actually means.</p>`,
     personalizedContext: null,

@@ -311,6 +311,7 @@ export function registerWebhookRoute(app: Express) {
                       content: pdfBase64,
                     },
                   ],
+                  tags: [{ name: "sequence", value: "playbook-delivery" }, { name: "email_number", value: "1" }],
                 });
 
                 if (emailResponse.error) {
@@ -424,6 +425,7 @@ export function registerWebhookRoute(app: Express) {
                         <p><a href="${getPublicBaseUrl()}/dashboard">Update Payment Method</a></p>
                         <p>If you have questions, reply to this email.</p>
                       `,
+                      tags: [{ name: "sequence", value: "transactional" }, { name: "email_number", value: "1" }],
                     });
                     console.log(`✅ Payment failure notification sent to ${customerEmail}`);
                   } catch (emailErr) {
@@ -889,6 +891,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               to: validatedData.email,
               subject,
               html,
+              tags: [{ name: "sequence", value: "post-quiz" }, { name: "email_number", value: "1" }],
             });
 
             // Mark welcome email as sent
@@ -960,6 +963,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             to: email,
             subject: "Welcome to Prolific Personalities",
             html: generateNewsletterWelcomeHtml(email, baseUrl),
+            tags: [{ name: "sequence", value: "newsletter-welcome" }, { name: "email_number", value: "1" }],
           });
 
           await storage.updateEmailCaptureWelcomeSent(capture.id);
@@ -1068,6 +1072,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         to: email,
         subject,
         html,
+        tags: [{ name: "sequence", value: "post-quiz" }, { name: "email_number", value: "2" }],
       });
 
       if (emailResponse.error) {
@@ -1107,6 +1112,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             to: email,
             subject: welcomeEmail.subject,
             html: welcomeEmail.html,
+            tags: [{ name: "sequence", value: "post-quiz" }, { name: "email_number", value: "1" }],
           });
 
           await storage.updateEmailCaptureWelcomeSent(capture.id);
@@ -1342,6 +1348,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                       content: pdfBase64,
                     },
                   ],
+                  tags: [{ name: "sequence", value: "playbook-delivery" }, { name: "email_number", value: "1" }],
                 });
 
                 if (emailResponse.error) {
@@ -1796,6 +1803,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 subject,
                 html,
                 attachments: [{ filename: pdfAsset.pdfFilename, content: pdfBase64 }],
+                tags: [{ name: "sequence", value: "playbook-delivery" }, { name: "email_number", value: "1" }],
               });
 
               if (emailResponse.error) {
@@ -2685,6 +2693,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               content: pdfBase64,
             },
           ],
+          tags: [{ name: "sequence", value: "playbook-delivery" }, { name: "email_number", value: "1" }],
         });
 
         if (emailResponse.error) {
@@ -2864,6 +2873,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             to: checkout.email,
             subject,
             html,
+            tags: [{ name: "sequence", value: "abandoned-cart" }, { name: "email_number", value: "1" }],
           });
 
           await storage.markAbandonedEmailSent(checkout.id);
@@ -2949,10 +2959,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const sampleScores = {
-        structure: 85,
-        motivation: 70,
-        cognitive: 65,
-        task: 80,
+        structure: 28,
+        motivation: 24,
+        cognitive: 22,
+        task: 26,
       };
 
       const results: Array<{ type: string; status: string; error?: string; resendId?: string }> = [];
@@ -4220,6 +4230,7 @@ Disallow: /auth/
             </p>
           </div>
         `,
+        tags: [{ name: "sequence", value: "transactional" }, { name: "email_number", value: "1" }],
       });
 
       console.log(`✅ Magic link sent to ${normalizedEmail}`);
