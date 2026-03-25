@@ -113,6 +113,10 @@ export const emailCaptures = pgTable("email_captures", {
   day3OnboardSent: integer("day3_onboard_sent").notNull().default(0),
   day7OnboardSent: integer("day7_onboard_sent").notNull().default(0),
   day30OnboardSent: integer("day30_onboard_sent").notNull().default(0),
+  // Win-back sequence tracking (post-nurture, pre-purchase)
+  winBackDay14Sent: integer("win_back_day14_sent").notNull().default(0),
+  winBackDay30Sent: integer("win_back_day30_sent").notNull().default(0),
+  winBackDay60Sent: integer("win_back_day60_sent").notNull().default(0),
   // Unsubscribe tracking
   unsubscribed: integer("unsubscribed").notNull().default(0),
 });
@@ -249,6 +253,9 @@ export const insertEmailCaptureSchema = createInsertSchema(emailCaptures).omit({
   day3OnboardSent: true,
   day7OnboardSent: true,
   day30OnboardSent: true,
+  winBackDay14Sent: true,
+  winBackDay30Sent: true,
+  winBackDay60Sent: true,
   unsubscribed: true,
 });
 

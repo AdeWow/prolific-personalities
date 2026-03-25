@@ -718,6 +718,50 @@ export default function Results() {
           <FastestWinCard archetype={archetype} />
         </FadeIn>
 
+        {/* D) Paid Upsell Section or Access Button */}
+        <FadeIn>
+        {hasPremiumAccess ? (
+          <section id="upsell" className="py-16 gradient-primary scroll-mt-16">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Card className="bg-white shadow-2xl">
+                <CardContent className="p-8 lg:p-12 text-center">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 mb-4">
+                    <CheckCircle2 className="w-8 h-8 text-white" />
+                  </div>
+                  <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-3">
+                    Your {archetype.title} Playbook is Ready!
+                  </h2>
+                  <p className="text-lg text-muted-foreground mb-8">
+                    You have full access to your personalized productivity playbook with frameworks, tools, and a 30-day action plan.
+                  </p>
+                  <Link href={`/playbook/${archetype.id}?sessionId=${sessionId}`}>
+                    <Button size="lg" className="gradient-primary text-white text-lg px-8 py-6">
+                      <ArrowRight className="w-5 h-5 mr-2" />
+                      Access Your Playbook Now
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+        ) : (
+          <UpsellSection
+            archetype={archetype}
+            sessionId={sessionId || ''}
+            onUpgrade={handleUpgradeToPremium}
+            isUpgrading={checkoutMutation.isPending}
+            promoCode={promoCode}
+            setPromoCode={handlePromoCodeChange}
+            promoCodeValid={promoCodeValid}
+            promoCodeMessage={promoCodeMessage}
+            onValidatePromo={validatePromoCode}
+            onApplyPromo={handleApplyPromoCode}
+            isApplyingPromo={promoCodeMutation.isPending}
+            defaultEmail={email || emailResultsInput}
+          />
+        )}
+        </FadeIn>
+
         {/* C½) Share Your Result */}
         <FadeIn>
           <section className="py-10">
@@ -776,50 +820,6 @@ export default function Results() {
               </div>
             </div>
           </section>
-        </FadeIn>
-
-        {/* D) Paid Upsell Section or Access Button */}
-        <FadeIn>
-        {hasPremiumAccess ? (
-          <section id="upsell" className="py-16 gradient-primary scroll-mt-16">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-              <Card className="bg-white shadow-2xl">
-                <CardContent className="p-8 lg:p-12 text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 mb-4">
-                    <CheckCircle2 className="w-8 h-8 text-white" />
-                  </div>
-                  <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-3">
-                    Your {archetype.title} Playbook is Ready!
-                  </h2>
-                  <p className="text-lg text-muted-foreground mb-8">
-                    You have full access to your personalized productivity playbook with frameworks, tools, and a 30-day action plan.
-                  </p>
-                  <Link href={`/playbook/${archetype.id}?sessionId=${sessionId}`}>
-                    <Button size="lg" className="gradient-primary text-white text-lg px-8 py-6">
-                      <ArrowRight className="w-5 h-5 mr-2" />
-                      Access Your Playbook Now
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-        ) : (
-          <UpsellSection
-            archetype={archetype}
-            sessionId={sessionId || ''}
-            onUpgrade={handleUpgradeToPremium}
-            isUpgrading={checkoutMutation.isPending}
-            promoCode={promoCode}
-            setPromoCode={handlePromoCodeChange}
-            promoCodeValid={promoCodeValid}
-            promoCodeMessage={promoCodeMessage}
-            onValidatePromo={validatePromoCode}
-            onApplyPromo={handleApplyPromoCode}
-            isApplyingPromo={promoCodeMutation.isPending}
-            defaultEmail={email || emailResultsInput}
-          />
-        )}
         </FadeIn>
 
         {/* Testimonials section removed — only verified testimonials are on the homepage */}

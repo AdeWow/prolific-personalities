@@ -47,10 +47,10 @@ export function UpsellSection({
                 <Lock className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-3">
-                Unlock Your Complete {archetype.title} Playbook
+                You just identified the pattern. Here is how to work with it.
               </h2>
               <p className="text-lg text-muted-foreground">
-                Transform insight into action with your personalized productivity system
+                Most productivity advice was not built for how you think. This was.
               </p>
             </div>
 
@@ -58,7 +58,7 @@ export function UpsellSection({
               <div>
                 <h4 className="font-bold text-foreground mb-3 flex items-center">
                   <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
-                  3 Full Framework Guides
+                  Frameworks built for your archetype
                 </h4>
                 <ul className="space-y-2 text-muted-foreground text-sm">
                   {archetype.premiumIncludes.frameworks.map((item, index) => (
@@ -70,7 +70,7 @@ export function UpsellSection({
               <div>
                 <h4 className="font-bold text-foreground mb-3 flex items-center">
                   <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
-                  Tool Recommendations
+                  Tools that fit how you actually work
                 </h4>
                 <ul className="space-y-2 text-muted-foreground text-sm">
                   {archetype.premiumIncludes.tools.map((item, index) => (
@@ -82,7 +82,7 @@ export function UpsellSection({
               <div>
                 <h4 className="font-bold text-foreground mb-3 flex items-center">
                   <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
-                  30-Day Implementation Plan
+                  A 30-day plan you will actually follow
                 </h4>
                 <ul className="space-y-2 text-muted-foreground text-sm">
                   {archetype.premiumIncludes.plan.map((item, index) => (
@@ -94,7 +94,7 @@ export function UpsellSection({
               <div>
                 <h4 className="font-bold text-foreground mb-3 flex items-center">
                   <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
-                  Common Failure Modes
+                  Why your past systems failed — and what to do instead
                 </h4>
                 <ul className="space-y-2 text-muted-foreground text-sm">
                   {archetype.premiumIncludes.special.map((item, index) => (
@@ -170,11 +170,11 @@ export function UpsellSection({
                 onClick={onUpgrade}
                 disabled={isUpgrading}
               >
-                {isUpgrading ? 'Processing...' : 'Get My Full Report — $19'}
+                {isUpgrading ? 'Processing...' : 'Get My Full Playbook — $19'}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <p className="text-center text-muted-foreground text-sm mt-4">
-                One-time payment • Instant download • 100+ page personalized playbook
+                One-time payment • Instant access • Built for your archetype
               </p>
               <p className="text-center text-muted-foreground text-xs mt-2">
                 30-day satisfaction guarantee.{" "}

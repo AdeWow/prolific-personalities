@@ -31,6 +31,8 @@ export interface IStorage {
   getEmailCapturesForOnboarding(dayNumber: number): Promise<EmailCapture[]>;
   markNurtureEmailSent(id: number, dayNumber: number): Promise<void>;
   markOnboardingEmailSent(id: number, dayNumber: number): Promise<void>;
+  getEmailCapturesForWinBack(dayNumber: number): Promise<EmailCapture[]>;
+  markWinBackEmailSent(id: number, dayNumber: number): Promise<void>;
   logEmail(email: string, emailType: string, archetype?: string, resendId?: string): Promise<void>;
   unsubscribeEmail(email: string): Promise<void>;
   // Checkout attempts (for abandoned cart)
@@ -433,6 +435,48 @@ export class DatabaseStorage implements IStorage {
     const update = columnMap[dayNumber];
     if (!update) return;
     
+    await db.update(emailCaptures).set(update).where(eq(emailCaptures.id, id));
+  }
+
+  async getEmailCapturesForWinBack(dayNumber: number): Promise<EmailCapture[]> {
+    const now = new Date();
+    const daysAgo = new Date(now.getTime() - dayNumber * 24 * 60 * 60 * 1000);
+    const dayBefore = new Date(daysAgo.getTime() - 24 * 60 * 60 * 1000);
+
+    const columnMap: Record<number, keyof typeof emailCaptures> = {
+      14: 'winBackDay14Sent',
+      30: 'winBackDay30Sent',
+      60: 'winBackDay60Sent',
+    };
+
+    const column = columnMap[dayNumber];
+    if (!column) return [];
+
+    const results = await db.select().from(emailCaptures);
+    return results.filter(row => {
+      const capturedAt = new Date(row.capturedAt);
+      return (
+        capturedAt <= daysAgo &&
+        capturedAt > dayBefore &&
+        row.subscribed === 1 &&
+        row.unsubscribed === 0 &&
+        row.purchased === 0 &&
+        row.archetype !== null &&
+        (row as any)[column] === 0
+      );
+    });
+  }
+
+  async markWinBackEmailSent(id: number, dayNumber: number): Promise<void> {
+    const columnMap: Record<number, any> = {
+      14: { winBackDay14Sent: 1 },
+      30: { winBackDay30Sent: 1 },
+      60: { winBackDay60Sent: 1 },
+    };
+
+    const update = columnMap[dayNumber];
+    if (!update) return;
+
     await db.update(emailCaptures).set(update).where(eq(emailCaptures.id, id));
   }
 
@@ -1121,13 +1165,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Get active Partner subscribers for weekly emails
-  async getActivePartnerSubscribers(): Promise<{ userId: string; email: string; archetype: string; firstName: string | null }[]> {
+  async getActivePartnerSubscribers(): Promise<{ userId: string; email: string; archetype: string; firstName: string | null; subscribedAt: Date | null }[]> {
     const results = await db
       .select({
         userId: orders.userId,
         email: orders.customerEmail,
         archetype: orders.archetype,
         firstName: users.firstName,
+        subscribedAt: orders.createdAt,
       })
       .from(orders)
       .leftJoin(users, eq(orders.userId, users.id))
@@ -1137,17 +1182,18 @@ export class DatabaseStorage implements IStorage {
           eq(orders.status, 'completed')
         )
       );
-    
+
     // Filter to only include valid entries with email
-    return results.filter(r => r.userId && r.email) as { userId: string; email: string; archetype: string; firstName: string | null }[];
+    return results.filter(r => r.userId && r.email) as { userId: string; email: string; archetype: string; firstName: string | null; subscribedAt: Date | null }[];
   }
 
   // Get active newsletter subscribers for weekly emails (from emailCaptures table)
-  async getActiveNewsletterSubscribers(): Promise<{ email: string; archetype: string; firstName: null }[]> {
+  async getActiveNewsletterSubscribers(): Promise<{ email: string; archetype: string; firstName: null; subscribedAt: Date | null }[]> {
     const results = await db
       .select({
         email: emailCaptures.email,
         archetype: emailCaptures.archetype,
+        subscribedAt: emailCaptures.capturedAt,
       })
       .from(emailCaptures)
       .where(
@@ -1160,7 +1206,7 @@ export class DatabaseStorage implements IStorage {
     // Filter to only include entries with a valid archetype
     return results
       .filter(r => r.email && r.archetype)
-      .map(r => ({ email: r.email, archetype: r.archetype!, firstName: null }));
+      .map(r => ({ email: r.email, archetype: r.archetype!, firstName: null, subscribedAt: r.subscribedAt }));
   }
 
   // Admin test functions - delete user's orders

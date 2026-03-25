@@ -25,6 +25,7 @@ import {
   generateWelcomeEmail,
   generateAbandonedCartEmail,
   generateWeeklyAccountabilityEmail,
+  generateWeeklyRotationEmail,
   generateDay3NurtureEmail,
   generateDay5NurtureEmail,
   generateDay7NurtureEmail,
@@ -33,7 +34,11 @@ import {
   generateDay3OnboardEmail,
   generateDay7OnboardEmail,
   generateDay30OnboardEmail,
-} from "./emailTemplates";
+  generateNewsletterWelcomeHtml,
+  generateWinBackDay14Email,
+  generateWinBackDay30Email,
+  generateWinBackDay60Email,
+} from "./email";
 import { getArchetypeInfo, archetypeData } from "./archetypeData";
 import {
   insertCheckoutAttemptSchema,
@@ -322,18 +327,7 @@ export function registerWebhookRoute(app: Express) {
                   emailError,
                 );
               }
-            }
-
-            // Fire server-side GA4 purchase event (non-blocking, deduped by wasAlreadyCompleted)
-            if (!wasAlreadyCompleted) {
-              sendGA4PurchaseEvent({
-                clientId: customerEmail || session.customer as string || crypto.randomUUID(),
-                transactionId: session.id,
-                amountTotalCents: session.amount_total || 0,
-                archetype: archetype || undefined,
-              });
-            }
-          } else {
+            } else {
               if (wasAlreadyCompleted)
                 console.log(`⏭️ Order ${orderId} already completed — skipping duplicate email to ${customerEmail}`);
               if (!resend)
@@ -344,6 +338,16 @@ export function registerWebhookRoute(app: Express) {
                 console.warn("⚠️ No archetype metadata - skipping email");
               if (!sessionId)
                 console.warn("⚠️ No sessionId metadata - skipping email");
+            }
+
+            // Fire server-side GA4 purchase event (non-blocking, deduped by wasAlreadyCompleted)
+            if (!wasAlreadyCompleted) {
+              sendGA4PurchaseEvent({
+                clientId: customerEmail || session.customer as string || crypto.randomUUID(),
+                transactionId: session.id,
+                amountTotalCents: session.amount_total || 0,
+                archetype: archetype || undefined,
+              });
             }
           }
         }
@@ -949,7 +953,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (resend) {
         try {
           const baseUrl = getPublicBaseUrl();
-          const { generateNewsletterWelcomeHtml } = await import("./emailTemplates");
+          const { generateNewsletterWelcomeHtml } = await import("./email");
 
           await resend.emails.send({
             from: "Prolific Personalities <support@prolificpersonalities.com>",
@@ -3079,19 +3083,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
       }
 
-      // 6. Weekly Accountability Emails (all 8 variations)
-      for (let week = 1; week <= 8; week++) {
-        const weeklyEmail = generateWeeklyAccountabilityEmail({
-          firstName: null,
-          archetype: sampleArchetype.title,
-          weekNumber: week,
+      // 6. Weekly Rotation Emails (weeks 1, 4, 8 — personalized + universal samples)
+      const weeklyTestCases = [
+        { week: 1, archetype: sampleArchetype.id, label: "Week 1 (personalized)" },
+        { week: 4, archetype: undefined, label: "Week 4 (universal)" },
+        { week: 5, archetype: sampleArchetype.id, label: "Week 5 (personalized)" },
+        { week: 8, archetype: undefined, label: "Week 8 (universal)" },
+      ];
+      for (const tc of weeklyTestCases) {
+        const weeklyEmail = generateWeeklyRotationEmail({
+          email,
+          firstName: "Adeola",
+          archetype: tc.archetype,
+          weekNumber: tc.week,
         });
-        await sendTestEmail(`Weekly Accountability Week ${week}`, () =>
+        await sendTestEmail(`Weekly Rotation ${tc.label}`, () =>
           resend.emails.send({
             from: "Prolific Personalities <support@prolificpersonalities.com>",
             to: email,
             subject: `[TEST] ${weeklyEmail.subject}`,
             html: weeklyEmail.html,
+          })
+        );
+      }
+
+      // 7. Win-Back Sequence Emails (3 emails)
+      const winBackUser = { email, firstName: "Adeola", archetype: sampleArchetype.id };
+      const winBackEmails = [
+        { name: "Win-Back Day 14", generator: generateWinBackDay14Email },
+        { name: "Win-Back Day 30", generator: generateWinBackDay30Email },
+        { name: "Win-Back Day 60", generator: generateWinBackDay60Email },
+      ];
+      for (const { name, generator } of winBackEmails) {
+        const { subject, html } = generator(winBackUser);
+        await sendTestEmail(name, () =>
+          resend.emails.send({
+            from: "Prolific Personalities <support@prolificpersonalities.com>",
+            to: email,
+            subject: `[TEST] ${subject}`,
+            html,
           })
         );
       }
@@ -3506,14 +3536,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     );
     const allSubscribers = [...partnerSubscribers, ...uniqueNewsletterSubs];
 
-    const epochStart = new Date('2026-01-01').getTime();
-    const weeksSinceEpoch = Math.floor((Date.now() - epochStart) / (7 * 24 * 60 * 60 * 1000));
-    const weekNumber = (weeksSinceEpoch % 8) + 1;
+    const now = Date.now();
     const results = [];
 
     for (const subscriber of allSubscribers) {
       try {
-        const { subject, html } = generateWeeklyAccountabilityEmail({
+        // Calculate per-subscriber week number based on their subscription date
+        let weekNumber = 1;
+        const subscribedAt = (subscriber as any).subscribedAt as Date | null;
+        if (subscribedAt) {
+          const daysSinceSubscribed = Math.floor((now - new Date(subscribedAt).getTime()) / (24 * 60 * 60 * 1000));
+          const weeksElapsed = Math.floor(daysSinceSubscribed / 7);
+          weekNumber = (weeksElapsed % 12) + 1;
+        }
+
+        const { subject, html } = generateWeeklyRotationEmail({
+          email: subscriber.email,
           firstName: subscriber.firstName,
           archetype: subscriber.archetype,
           weekNumber,
@@ -3532,8 +3570,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           continue;
         }
 
-        results.push({ userId: (subscriber as any).userId || null, email: subscriber.email, status: "sent", resendId: data?.id });
-        console.log(`✅ Weekly accountability email sent to ${subscriber.email} (${data?.id})`);
+        results.push({ userId: (subscriber as any).userId || null, email: subscriber.email, status: "sent", weekNumber, resendId: data?.id });
+        console.log(`✅ Weekly rotation email sent to ${subscriber.email} week ${weekNumber} (${data?.id})`);
       } catch (err) {
         console.error(`Failed to send weekly email to ${subscriber.email}:`, err);
         results.push({ userId: (subscriber as any).userId || null, email: subscriber.email, status: "failed", error: String(err) });
@@ -3542,8 +3580,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     const sent = results.filter((r) => r.status === "sent").length;
     const failed = results.filter((r) => r.status === "failed").length;
-    console.log(`📧 Weekly accountability cron completed: ${sent} sent, ${failed} failed (${partnerSubscribers.length} partners + ${uniqueNewsletterSubs.length} newsletter)`);
-    return { success: true, weekNumber, processed: allSubscribers.length, sent, failed, results };
+    console.log(`📧 Weekly rotation cron completed: ${sent} sent, ${failed} failed (${partnerSubscribers.length} partners + ${uniqueNewsletterSubs.length} newsletter)`);
+    return { success: true, processed: allSubscribers.length, sent, failed, results };
   }
 
   async function processNurtureSequence() {
@@ -3655,6 +3693,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const totalSent = results.reduce((acc, r) => acc + r.sent, 0);
     const totalFailed = results.reduce((acc, r) => acc + r.failed, 0);
     console.log(`📧 Onboarding sequence cron completed: ${totalSent} sent, ${totalFailed} failed`);
+    return { success: true, totalSent, totalFailed, results };
+  }
+
+  async function processWinBackSequence() {
+    const winBackDays = [14, 30, 60];
+    const results: { day: number; sent: number; failed: number }[] = [];
+
+    for (const dayNumber of winBackDays) {
+      const captures = await storage.getEmailCapturesForWinBack(dayNumber);
+      let sent = 0;
+      let failed = 0;
+
+      for (const capture of captures) {
+        if (!capture.archetype) continue;
+
+        try {
+          const user = { email: capture.email, archetype: capture.archetype };
+          let emailContent;
+
+          switch (dayNumber) {
+            case 14: emailContent = generateWinBackDay14Email(user); break;
+            case 30: emailContent = generateWinBackDay30Email(user); break;
+            case 60: emailContent = generateWinBackDay60Email(user); break;
+            default: continue;
+          }
+
+          const { data, error } = await resend!.emails.send({
+            from: "Prolific Personalities <support@prolificpersonalities.com>",
+            to: capture.email,
+            subject: emailContent.subject,
+            html: emailContent.html,
+          });
+
+          if (error) {
+            console.error(`Failed to send day ${dayNumber} win-back to ${capture.email}:`, error);
+            failed++;
+            continue;
+          }
+
+          await storage.markWinBackEmailSent(capture.id, dayNumber);
+          await storage.logEmail(capture.email, `win_back_day${dayNumber}`, capture.archetype, data?.id);
+          console.log(`✅ Day ${dayNumber} win-back email sent to ${capture.email}`);
+          sent++;
+        } catch (err) {
+          console.error(`Failed to send day ${dayNumber} win-back to ${capture.email}:`, err);
+          failed++;
+        }
+      }
+
+      results.push({ day: dayNumber, sent, failed });
+    }
+
+    const totalSent = results.reduce((acc, r) => acc + r.sent, 0);
+    const totalFailed = results.reduce((acc, r) => acc + r.failed, 0);
+    console.log(`📧 Win-back sequence cron completed: ${totalSent} sent, ${totalFailed} failed`);
     return { success: true, totalSent, totalFailed, results };
   }
 
@@ -3875,6 +3968,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/cron/win-back-sequence", async (req, res) => {
+    if (!verifyCronAuth(req, res)) return;
+    try {
+      res.json(await processWinBackSequence());
+    } catch (error) {
+      console.error("Win-back sequence cron error:", error);
+      res.status(500).json({ error: "Failed to send win-back emails" });
+    }
+  });
+
   // ─── Unified daily cron endpoint ──────────────────────────────────
 
   app.post("/api/cron/daily", async (req, res) => {
@@ -3916,6 +4019,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (err: any) {
       console.error("Daily cron — newsletters failed:", err);
       results.newsletters = { success: false, error: err.message || String(err) };
+    }
+
+    // 5. Win-back sequence
+    try {
+      const r = await processWinBackSequence();
+      results.winBack = { success: true, sent: r.totalSent };
+    } catch (err: any) {
+      console.error("Daily cron — win-back sequence failed:", err);
+      results.winBack = { success: false, error: err.message || String(err) };
     }
 
     console.log(`📧 Daily cron completed:`, JSON.stringify(results));
