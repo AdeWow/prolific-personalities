@@ -37,6 +37,8 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
   const [celebrationsShown, setCelebrationsShown] = useState<Set<number>>(new Set());
   const [pendingPageAdvance, setPendingPageAdvance] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
+  const [showMidQuizHint, setShowMidQuizHint] = useState(false);
+  const [midQuizHintDismissed, setMidQuizHintDismissed] = useState(false);
   const [, setLocation] = useLocation();
   const searchString = useSearch();
   const { toast } = useToast();
@@ -89,7 +91,10 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
       trackEvent('quiz_progress', 'Quiz', '75% Complete', 75);
       setMilestonesTracked(prev => new Set(prev).add(75));
     }
-  }, [progressPercentage, milestonesTracked]);
+    if (answeredCount === 14 && !midQuizHintDismissed && !showMidQuizHint) {
+      setShowMidQuizHint(true);
+    }
+  }, [progressPercentage, milestonesTracked, answeredCount, midQuizHintDismissed, showMidQuizHint]);
 
   const { session } = useAuth();
   
@@ -396,6 +401,21 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
     return null;
   };
 
+  const getMidQuizHintHeading = () => {
+    const structureQuestions = questions.filter(q => q.axis === 'structure');
+    let structureSum = 0;
+    structureQuestions.forEach(q => {
+      const raw = answers[q.id];
+      if (raw !== undefined) {
+        structureSum += q.scoring[raw.toString()] || 0;
+      }
+    });
+    if (structureSum > 21) {
+      return "You show strong patterns around structure and consistency.";
+    }
+    return "You show strong patterns around flexibility and adaptability.";
+  };
+
   return (
     <div className="w-full max-w-3xl mx-auto">
       {showCelebration && (
@@ -411,7 +431,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
             Discover Your Productivity Archetype
           </h2>
           <p className="text-base text-muted-foreground dark:text-muted-foreground">
-            Answer honestly for the most accurate results
+            28 questions • takes about 4 minutes
           </p>
         </div>
       )}
@@ -420,7 +440,7 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-muted-foreground dark:text-muted-foreground">
-              Page {currentPage + 1} of {totalPages}
+              {progressPercentage}% complete
             </span>
             <span className="text-sm font-medium text-primary-accessible">
               {answeredCount} of {questions.length} answered
@@ -429,6 +449,29 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
           <Progress value={progressPercentage} className="h-2" />
         </CardContent>
       </Card>
+
+      {showMidQuizHint && !midQuizHintDismissed && (
+        <div className="mb-6 border-l-4 border-primary bg-primary/5 rounded-r-lg p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-1">
+            Early signal
+          </p>
+          <p className="text-sm font-semibold text-foreground mb-1">
+            {getMidQuizHintHeading()}
+          </p>
+          <p className="text-sm text-muted-foreground mb-3">
+            Keep going — your full archetype result uses all 28 answers to find your precise pattern.
+          </p>
+          <button
+            onClick={() => {
+              setMidQuizHintDismissed(true);
+              setShowMidQuizHint(false);
+            }}
+            className="text-xs text-primary underline hover:no-underline"
+          >
+            Got it
+          </button>
+        </div>
+      )}
 
       <div className="space-y-4">
         {currentQuestions.map((question, indexInPage) => {

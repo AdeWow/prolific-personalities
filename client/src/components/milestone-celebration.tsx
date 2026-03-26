@@ -9,12 +9,12 @@ interface MilestoneCelebrationProps {
 const milestoneData = {
   1: {
     title: "Halfway there!",
-    message: "You're doing great! Most people give up by now. Not you though.",
+    message: "You are more than halfway there. The result gets more accurate from here.",
     progress: 50
   },
   2: {
     title: "Almost done! Just 3 more",
-    message: "You're 89% done! Your future productive self thanks you.",
+    message: "Three questions left. Your archetype is almost ready.",
     progress: 89
   }
 };

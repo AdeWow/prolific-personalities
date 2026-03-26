@@ -12,7 +12,19 @@ export interface Question {
 }
 
 export const questions: Question[] = [
-  // AXIS 1: STRUCTURE ORIENTATION (Rigid ↔ Flexible) - Questions 1-7
+  // AXIS 1: STRUCTURE ORIENTATION (Rigid ↔ Flexible) - 7 questions
+  {
+    id: 'q3',
+    text: 'It\'s Monday morning. How do you typically start your work day?',
+    type: 'scenario',
+    options: [
+      'I have a detailed plan/to-do list prepared from last week',
+      'I check my calendar and figure out priorities as I go',
+      'I see what feels interesting/urgent and dive in'
+    ],
+    axis: 'structure',
+    scoring: { '0': 5, '1': 3, '2': 1 }
+  },
   {
     id: 'q1',
     text: 'I feel most productive when my day follows a predictable routine.',
@@ -30,18 +42,6 @@ export const questions: Question[] = [
     axis: 'structure',
     scoring: { '1': 5, '2': 4, '3': 3, '4': 2, '5': 1 },
     reverseScored: true
-  },
-  {
-    id: 'q3',
-    text: 'It\'s Monday morning. How do you typically start your work day?',
-    type: 'scenario',
-    options: [
-      'I have a detailed plan/to-do list prepared from last week',
-      'I check my calendar and figure out priorities as I go',
-      'I see what feels interesting/urgent and dive in'
-    ],
-    axis: 'structure',
-    scoring: { '0': 5, '1': 3, '2': 1 }
   },
   {
     id: 'q4',
@@ -82,7 +82,20 @@ export const questions: Question[] = [
     reverseScored: false
   },
 
-  // AXIS 2: MOTIVATION STYLE (Intrinsic ↔ Extrinsic) - Questions 8-14
+  // AXIS 2: MOTIVATION STYLE (Intrinsic ↔ Extrinsic) - 7 questions
+  {
+    id: 'q14',
+    text: 'Your current project feels boring. What would help you push through?',
+    type: 'scenario',
+    options: [
+      'Someone checking in on my progress regularly',
+      'Reminding myself why this matters to me personally',
+      'Gamifying it (rewards, streaks, challenges)',
+      'Finding a more interesting angle to explore'
+    ],
+    axis: 'motivation',
+    scoring: { '0': 5, '1': 1, '2': 5, '3': 1 }
+  },
   {
     id: 'q8',
     text: 'I\'m most motivated to complete tasks when others are counting on me or watching my progress.',
@@ -143,21 +156,8 @@ export const questions: Question[] = [
     scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
     reverseScored: false
   },
-  {
-    id: 'q14',
-    text: 'Your current project feels boring. What would help you push through?',
-    type: 'scenario',
-    options: [
-      'Someone checking in on my progress regularly',
-      'Reminding myself why this matters to me personally',
-      'Gamifying it (rewards, streaks, challenges)',
-      'Finding a more interesting angle to explore'
-    ],
-    axis: 'motivation',
-    scoring: { '0': 5, '1': 1, '2': 5, '3': 1 }
-  },
 
-  // AXIS 3: COGNITIVE FOCUS (Big Picture ↔ Detail-Oriented) - Questions 15-21
+  // AXIS 3: COGNITIVE FOCUS (Big Picture ↔ Detail-Oriented) - 7 questions (unchanged)
   {
     id: 'q15',
     text: 'I\'m energized by brainstorming possibilities and long-term strategy.',
@@ -230,7 +230,20 @@ export const questions: Question[] = [
     scoring: { '0': 5, '1': 1 }
   },
 
-  // AXIS 4: TASK RELATIONSHIP (Avoidant ↔ Action-Oriented) - Questions 22-28
+  // AXIS 4: TASK RELATIONSHIP (Avoidant ↔ Action-Oriented) - 7 questions
+  {
+    id: 'q28',
+    text: 'It\'s 2pm on a workday and you have a challenging task on your to-do list. What happens?',
+    type: 'scenario',
+    options: [
+      'I tackle it head-on while I have energy',
+      'I do easier tasks first to build momentum',
+      'I find myself distracted (email, social media, snacks)',
+      'I decide to do it tomorrow when I\'m "more ready"'
+    ],
+    axis: 'task',
+    scoring: { '0': 1, '1': 3, '2': 4, '3': 5 }
+  },
   {
     id: 'q22',
     text: 'I frequently delay starting tasks, even when I know they\'re important.',
@@ -289,18 +302,5 @@ export const questions: Question[] = [
     axis: 'task',
     scoring: { '1': 5, '2': 4, '3': 3, '4': 2, '5': 1 },
     reverseScored: true
-  },
-  {
-    id: 'q28',
-    text: 'It\'s 2pm on a workday and you have a challenging task on your to-do list. What happens?',
-    type: 'scenario',
-    options: [
-      'I tackle it head-on while I have energy',
-      'I do easier tasks first to build momentum',
-      'I find myself distracted (email, social media, snacks)',
-      'I decide to do it tomorrow when I\'m "more ready"'
-    ],
-    axis: 'task',
-    scoring: { '0': 1, '1': 3, '2': 4, '3': 5 }
   }
 ];
