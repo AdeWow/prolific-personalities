@@ -98,6 +98,21 @@ const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
+const RESEND_AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID || "";
+
+/** Fire-and-forget: add or update a contact in the Resend audience. */
+function upsertResendContact(email: string) {
+  if (!RESEND_AUDIENCE_ID || !process.env.RESEND_API_KEY) return;
+  fetch(`https://api.resend.com/audiences/${RESEND_AUDIENCE_ID}/contacts`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, unsubscribed: false }),
+  }).catch((err) => console.error("Resend audience upsert failed:", err));
+}
+
 // Register Stripe webhook handler with raw body parser (must be called before express.json())
 export function registerWebhookRoute(app: Express) {
   // Surface missing webhook secret loudly at startup
@@ -894,6 +909,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               tags: [{ name: "sequence", value: "post-quiz" }, { name: "email_number", value: "1" }],
             });
 
+            upsertResendContact(validatedData.email);
+
             // Mark welcome email as sent
             await storage.updateEmailCaptureWelcomeSent(capture.id);
             console.log(`Welcome email sent to ${validatedData.email}`);
@@ -965,6 +982,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             html: generateNewsletterWelcomeHtml(email, baseUrl),
             tags: [{ name: "sequence", value: "newsletter-welcome" }, { name: "email_number", value: "1" }],
           });
+
+          upsertResendContact(email);
 
           await storage.updateEmailCaptureWelcomeSent(capture.id);
           await storage.logEmail(email, "newsletter_welcome", undefined, undefined);
@@ -1082,6 +1101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log(`✅ Quiz results emailed to ${email}`);
+      upsertResendContact(email);
 
       // Also save to email_captures and send welcome email (only if not already captured)
       try {
