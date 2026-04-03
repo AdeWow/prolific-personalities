@@ -701,6 +701,56 @@ export default function Results() {
           />
         </section>
 
+        {/* Email Capture — Primary position after archetype reveal */}
+        <FadeIn as="section" className="pb-6 -mt-2">
+          <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Card className="bg-white shadow-md border border-neutral-200" data-testid="email-capture-primary">
+              <CardContent className="p-6">
+                <div className="text-center mb-4">
+                  <Mail className="w-10 h-10 text-[#396969] mx-auto mb-3" />
+                  <h3 className="text-xl font-bold text-foreground mb-1">
+                    Get your full {archetype.name} breakdown — free
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Your personalized strategies, tool recommendations, and 30-day action plan — delivered to your inbox.
+                  </p>
+                </div>
+
+                {!emailSaved ? (
+                  <form onSubmit={handleEmailSubmit} className="space-y-3">
+                    <Input
+                      type="email"
+                      placeholder="Enter your email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="w-full"
+                      data-testid="input-email-primary"
+                    />
+                    <Button
+                      type="submit"
+                      className="w-full text-white"
+                      style={{ backgroundColor: '#396969' }}
+                      disabled={emailResultsMutation.isPending || emailSaved}
+                      data-testid="button-submit-email-primary"
+                    >
+                      {emailResultsMutation.isPending ? "Sending..." : "Get My Free Guide →"}
+                    </Button>
+                    <p className="text-xs text-muted-foreground text-center">
+                      Free forever. Unsubscribe anytime.
+                    </p>
+                  </form>
+                ) : (
+                  <div className="text-center py-2" data-testid="email-primary-success">
+                    <CheckCircle2 className="w-10 h-10 mx-auto mb-2 text-green-600" />
+                    <p className="text-sm font-medium text-green-700">Your guide is on the way!</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </FadeIn>
+
         {/* 4-Axis Visualization (keeping as requested for visual value) */}
         <FadeIn as="section" className="pb-8 -mt-4">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

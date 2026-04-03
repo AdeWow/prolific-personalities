@@ -17,6 +17,10 @@ interface PageMeta {
   canonical?: string;
   articlePublishedTime?: string;
   jsonLd?: object;
+  /** HTML snippet to inject inside <div id="ssr-content"> for crawlers */
+  ssrContent?: string;
+  /** When true, the route should return a 404 status code */
+  notFound?: boolean;
 }
 
 /**
@@ -72,7 +76,45 @@ export function injectMeta(html: string, meta: PageMeta): string {
     `<meta property="og:site_name" content="${SITE_NAME}" />\n    <meta name="twitter:card" content="summary_large_image" />\n    ${ogTags.join("\n    ")}`,
   );
 
+  // Inject SSR body content for crawlers (hidden from users by React hydration)
+  if (meta.ssrContent) {
+    html = html.replace(
+      '<div id="root"></div>',
+      `<div id="root"></div>\n    <div id="ssr-content" style="display:none">${meta.ssrContent}</div>`,
+    );
+  }
+
   return html;
+}
+
+/**
+ * Extract plain text from Notion block objects, up to maxLen characters.
+ * Handles paragraph, heading, bulleted_list_item, numbered_list_item, quote blocks.
+ */
+function extractTextFromBlocks(blocks: any[] | undefined, maxLen: number): string {
+  if (!blocks || !Array.isArray(blocks)) return "";
+  let text = "";
+  for (const block of blocks) {
+    if (text.length >= maxLen) break;
+    const richTexts =
+      block?.paragraph?.rich_text ||
+      block?.heading_1?.rich_text ||
+      block?.heading_2?.rich_text ||
+      block?.heading_3?.rich_text ||
+      block?.bulleted_list_item?.rich_text ||
+      block?.numbered_list_item?.rich_text ||
+      block?.quote?.rich_text;
+    if (richTexts && Array.isArray(richTexts)) {
+      for (const rt of richTexts) {
+        if (rt?.plain_text) text += rt.plain_text + " ";
+      }
+    }
+  }
+  text = text.trim();
+  if (text.length > maxLen) {
+    text = text.slice(0, maxLen) + "…";
+  }
+  return text;
 }
 
 function escHtml(s: string): string {
@@ -138,6 +180,8 @@ export async function resolvePageMeta(
       const { getPostBySlug } = await import("./notion");
       const post = await getPostBySlug(slug);
       if (post) {
+        // Build a text excerpt from Notion blocks for crawler body content
+        const excerpt = extractTextFromBlocks(post.content, 200);
         return {
           title: `${post.title} | ${SITE_NAME}`,
           description: post.metaDescription || post.title,
@@ -168,10 +212,17 @@ export async function resolvePageMeta(
               url: SITE_URL,
             },
           },
+          ssrContent: `<h1>${escHtml(post.title)}</h1>${excerpt ? `<p>${escHtml(excerpt)}</p>` : ""}`,
         };
       }
+      // Post not found — return 404 meta
+      return {
+        title: `Post Not Found | ${SITE_NAME}`,
+        description: "The blog post you're looking for doesn't exist.",
+        notFound: true,
+      };
     } catch {
-      // Fall through to default meta
+      // Data fetch failed — fall through to serve default index.html with 200
     }
   }
 
@@ -181,12 +232,22 @@ export async function resolvePageMeta(
     const slug = archetypeMatch[1];
     const info = archetypeData[slug];
     if (info) {
+      const descExcerpt = info.description.length > 200
+        ? info.description.slice(0, 200) + "…"
+        : info.description;
       return {
         title: `${info.title} — Productivity Archetype | ${SITE_NAME}`,
         description: info.tagline,
         canonical: `${SITE_URL}/archetypes/${slug}`,
+        ssrContent: `<h1>${escHtml(info.title)}</h1><p>${escHtml(info.tagline)}</p><p>${escHtml(descExcerpt)}</p>`,
       };
     }
+    // Archetype not found — return 404
+    return {
+      title: `Archetype Not Found | ${SITE_NAME}`,
+      description: "The productivity archetype you're looking for doesn't exist.",
+      notFound: true,
+    };
   }
 
   // Unknown client-side route — return homepage defaults so the SPA still works

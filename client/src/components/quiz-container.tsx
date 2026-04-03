@@ -76,6 +76,16 @@ export function QuizContainer({ showHeader = true, showFocusIndicator = true }: 
 
   useEffect(() => {
     trackQuizPageView(currentPage + 1, totalPages);
+
+    // Fire quiz_question_view for each question on the newly visible page
+    const pageStart = currentPage * QUESTIONS_PER_PAGE;
+    const pageEnd = Math.min(pageStart + QUESTIONS_PER_PAGE, questions.length);
+    for (let i = pageStart; i < pageEnd; i++) {
+      trackEvent('quiz_question_view', 'Quiz', undefined, undefined, {
+        question_number: i + 1,
+        question_id: questions[i].id,
+      });
+    }
   }, [currentPage, totalPages]);
 
   useEffect(() => {

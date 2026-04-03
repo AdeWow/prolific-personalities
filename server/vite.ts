@@ -67,7 +67,8 @@ export async function setupVite(app: Express, server: Server) {
       }
 
       const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
+      const status = meta?.notFound ? 404 : 200;
+      res.status(status).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       next(e);
@@ -99,8 +100,9 @@ export function serveStatic(app: Express) {
     try {
       const meta = await resolvePageMeta(url);
       if (meta) {
+        const status = meta.notFound ? 404 : 200;
         res
-          .status(200)
+          .status(status)
           .set({ "Content-Type": "text/html" })
           .end(injectMeta(indexHtml, meta));
       } else {
