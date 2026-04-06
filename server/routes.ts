@@ -843,14 +843,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     "digital-minimalism-notification-freedom": "digital-minimalism-challenge",
     "productivity-guilt-self-compassion": "when-productivity-hurts",
     "fluid-productivity-style-transitions": "productivity-archetype-changes-fluid-styles",
-    "estj-productivity-over-optimization": "structured-achiever-hidden-trap",
-    "understanding-productivity-archetypes": "6-productivity-archetypes-explained",
+    "understanding-productivity-archetypes": "16-personalities-productivity-trap",
   };
   for (const [oldSlug, newSlug] of Object.entries(blogRedirects)) {
     app.get(`/blog/${oldSlug}`, (_req, res) => {
       res.redirect(301, `/blog/${newSlug}`);
     });
   }
+
+  // Redirect for old 2pm slug with space (matched via decoded path)
+  app.get("/blog/:slug", (req, res, next) => {
+    if (req.params.slug === "Why-Your-Energy-Crashes-at-2 p.m-And-What-Your-Archetype-Says-About-It") {
+      return res.redirect(301, "/blog/why-your-energy-crashes-at-2pm");
+    }
+    next();
+  });
 
   // Seed tools database (one-time operation)
   app.post("/api/tools/seed", writeLimiter, async (req, res) => {
