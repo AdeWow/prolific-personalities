@@ -838,6 +838,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ success: true, message: "Blog cache cleared" });
   });
 
+  // 301 redirects for renamed blog posts
+  const blogRedirects: Record<string, string> = {
+    "digital-minimalism-notification-freedom": "digital-minimalism-challenge",
+    "productivity-guilt-self-compassion": "when-productivity-hurts",
+    "fluid-productivity-style-transitions": "productivity-archetype-changes-fluid-styles",
+    "estj-productivity-over-optimization": "structured-achiever-hidden-trap",
+    "understanding-productivity-archetypes": "6-productivity-archetypes-explained",
+  };
+  for (const [oldSlug, newSlug] of Object.entries(blogRedirects)) {
+    app.get(`/blog/${oldSlug}`, (_req, res) => {
+      res.redirect(301, `/blog/${newSlug}`);
+    });
+  }
+
   // Seed tools database (one-time operation)
   app.post("/api/tools/seed", writeLimiter, async (req, res) => {
     try {
